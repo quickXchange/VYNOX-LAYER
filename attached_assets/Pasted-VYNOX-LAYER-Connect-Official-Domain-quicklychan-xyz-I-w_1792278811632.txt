@@ -1,0 +1,48 @@
+VYNOX LAYER — Connect Official Domain quicklychan.xyz
+
+I want to connect my official domain:
+
+quicklychan.xyz
+
+to the new VYNOX LAYER website hosted on Vercel, with the backend on Render and database on Supabase.
+
+The old website currently uses this domain.
+
+Please prepare a safe production-domain migration.
+
+1. Inspect the existing Vercel projects, Render backend, Supabase configuration and GitHub deployment workflow.
+
+2. Identify the correct Vercel frontend project for the official VYNOX LAYER website. Do not point the domain to the Solara demo or customer Admin preview.
+
+3. Prepare domain configuration for:
+   - quicklychan.xyz
+   - [www.quicklychan.xyz](http://www.quicklychan.xyz/)
+
+4. Check the required DNS A, CNAME and TXT records using Vercel's actual domain configuration. Provide the exact records I must enter at my domain registrar.
+
+5. Prepare automatic HTTPS/SSL certification and correct www-to-apex or apex-to-www redirects.
+
+6. Verify API URLs, CORS, authentication callbacks, email links, Owner login, MFA and session handling for the new domain.
+
+7. Preserve all existing Owner accounts, business data, Supabase policies, provider secrets and customer records.
+
+8. Ensure the public domain does not accidentally expose the protected acceptance environment, internal Admin pages, fictional customer data or Sandbox-only financial operations.
+
+9. Maintain the existing protected acceptance website separately for testing.
+
+10. Back up the current DNS configuration and prepare a rollback plan.
+
+11. Run all readiness checks, identify any blockers and fix application-level issues safely.
+
+12. Do not change live DNS or cut over the public domain until you provide the exact migration plan and I explicitly approve the final switch.
+
+Do not republish to Replit.
+
+Use the existing GitHub Actions → Vercel + Render deployment architecture.
+
+FINAL RESULT:
+- Confirm the correct Vercel project.
+- Provide exact DNS records.
+- Confirm HTTPS readiness.
+- Confirm authentication and backend configuration.
+- Tell me when it is safe to switch quicklychan.xyz to the new VYNOX LAYER website.

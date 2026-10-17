@@ -39,6 +39,18 @@ and same-origin API journey. Do not diagnose an application-gate 403 as failed S
 headers restricted to the exact protected host, keep credentials in memory, and
 revoke temporary access with a readback that preserves SSO and existing bypasses.
 
+Successful provider authorization in a Node HTTP request does not prove that a
+managed browser's navigation carries the same authorization. Establish a genuine
+provider-issued session in that browser context before testing the native gate.
+
+**Why:** A fresh browser reached provider SSO even though the same approved grant
+returned the real application gate in Node. A provider-issued browser session
+resolved verification without changing SSO or bypassing application authentication.
+
+**How to apply:** Keep provider authorization separate from application access.
+Use only the exact protected origin, never fabricate application cookies, and
+revoke temporary provider grants after closing the test context.
+
 Normalize object-key order before comparing provider protection snapshots across
 the execution sandbox boundary.
 
