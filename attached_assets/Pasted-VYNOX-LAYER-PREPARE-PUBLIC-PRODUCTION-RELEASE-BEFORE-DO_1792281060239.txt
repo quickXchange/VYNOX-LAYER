@@ -1,0 +1,56 @@
+VYNOX LAYER — PREPARE PUBLIC PRODUCTION RELEASE BEFORE DOMAIN CUTOVER
+
+Continue from the completed quicklychan.xyz migration readiness report.
+
+The correct Vercel project is qxlayer-staging.
+
+Complete the two remaining preparation phases before DNS cutover.
+
+1. PUBLIC PRODUCTION RELEASE
+
+- Prepare a real Production deployment of the approved main VYNOX LAYER platform.
+- Keep the existing protected acceptance deployment available separately.
+- Preserve the existing GitHub Actions → Vercel + Render workflow.
+- Ensure Production uses correctly scoped backend configuration and securely isolated data, authentication and credentials.
+- Prevent Sandbox test orders and Solara demo activity from modifying real customer records.
+- Keep actual financial execution disabled until separately authorized.
+
+2. PRODUCTION AUTHENTICATION AND API
+
+- Configure the public backend origin and frontend API routing.
+- Correct CORS and authentication callback configuration.
+- Make email verification, password recovery and notification links environment-aware.
+- Verify Owner login and MFA without changing existing credentials.
+- Confirm customer accounts, Super Admin permissions and tenant isolation.
+- Ensure the protected acceptance access code is not required on the public website.
+- Keep internal testing routes and fictional demo data inaccessible to unauthorized public visitors.
+
+3. DOMAIN PREPARATION
+
+- Prepare Vercel domain assignments for quicklychan.xyz and [www.quicklychan.xyz](http://www.quicklychan.xyz/).
+- Obtain and report any actual Vercel TXT ownership verification challenge.
+- Prepare HTTPS and redirect configuration.
+- Do not invent DNS records.
+- Do not change registrar DNS or activate the public domain yet.
+
+4. VERIFICATION
+
+- Test the real Production deployment on a temporary Vercel hostname.
+- Test public pages, Owner login, MFA, Admin access, customer isolation, Swap, Convert, Orders and Pricing Rules.
+- Verify no sensitive data or protected acceptance features leak into the public environment.
+- Confirm rollback readiness and deployment health.
+
+Implement and fix application/configuration blockers where authorized.
+
+Do not delete existing customer data, change public DNS, switch quicklychan.xyz, or republish to Replit.
+
+When finished, provide:
+- Public Production preview URL
+- Protected Acceptance URL
+- Backend/API health status
+- Authentication and MFA test results
+- Production isolation verification
+- Remaining domain verification steps
+- Final DNS cutover readiness verdict
+
+Stop before the final DNS switch and request my approval.

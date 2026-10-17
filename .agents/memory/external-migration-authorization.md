@@ -3,6 +3,24 @@ name: External preparation authorization
 description: External migration authorization history, isolated initialization approval, and the public Live/cutover hold.
 ---
 
+## Public Production preparation before domain cutover
+
+The user has authorized a real public Production deployment of the approved main
+platform on a temporary Vercel hostname, with public API/authentication preparation
+and actual Vercel domain assignments/ownership challenges. Keep protected
+acceptance separately available. Public access must not require the acceptance
+code, expose internal/demo data, or let Sandbox activity change real customers.
+Financial execution remains disabled. Preserve existing credentials and MFA.
+
+**Why:** The user explicitly requested implementation and verification before
+the final domain switch, not another readiness-only report.
+
+**How to apply:** This supersedes the earlier prohibition on creating the public
+Production deployment, not the DNS/public-domain activation hold. Do not change
+registrar DNS, switch quicklychan.xyz, republish Replit, delete customer data or
+incur unapproved additional costs. Verify on the temporary hostname, report
+remaining blockers honestly, and request approval before the final DNS switch.
+
 ## Protected application parity after Owner acceptance
 
 After confirming Production Owner setup, MFA/Admin login and reload, the user
