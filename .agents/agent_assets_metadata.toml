@@ -1162,3 +1162,17 @@ mtime_ms = 1792276609731
 storage_uri = "gcs://replit-rams-assets-reed/rams/assets/repl:372d2684-97ec-4ce5-b16a-77fb322db72a/98f09f10-cef0-4687-a6a4-96e04acb26a0/43a411da-7ce8-49ea-a9b8-c88e97b7690c"
 storage_version_token = "1792276618558567"
 content_type = "application/pdf"
+
+[[outputs]]
+id = "B8Hcv2KhZlxkgG9s5371A"
+uri = "file://generated-artifacts/official-domain-migration/VYNOX-LAYER-official-domain-migration-plan.html"
+type = "html"
+title = "VYNOX LAYER — Official-domain migration plan"
+description = "Readiness findings, exact Vercel DNS targets, canonical www redirect, authentication and acceptance-isolation blockers, HTTPS conditions, rollback procedure, and a downloadable observed DNS backup. Preparation only; DNS cutover is not approved."
+logical_id = "cc2e819c-be21-4a0f-961e-766da1fab965"
+content_hash = "sha256:70a106d9a81d40691fcf54ec37eb484934277641da06f4d011f5a16aa53d20cf"
+size = 50857
+mtime_ms = 1792280891791
+storage_uri = "gcs://replit-rams-assets-reed/rams/assets/repl:372d2684-97ec-4ce5-b16a-77fb322db72a/cc2e819c-be21-4a0f-961e-766da1fab965/d37c27e2-02d4-4d5a-9916-50f9b754fdf5"
+storage_version_token = "1792280943986710"
+content_type = "text/html"
