@@ -27,5 +27,10 @@
     "file": "0007_global_exchange_catalog.sql",
     "sha256": "7f9831fbfa0cd904da08d7b8d6d251a0d3e4378500716b25ca943432dee3e2fc",
     "source": "../migrations/0007_global_exchange_catalog.sql"
+  },
+  {
+    "file": "0008_tenant_site_releases.sql",
+    "sha256": "0a5f15c3629574cb287f2bbeafd72a35a15c3c730cd079745064e95177316bd2",
+    "source": "../migrations/0008_tenant_site_releases.sql"
   }
 ]

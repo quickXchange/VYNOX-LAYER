@@ -10,6 +10,10 @@ export async function verifyTarget(client, { policyRole = "PUBLIC" } = {}) {
     expected.tables.find(t => t.name === "pricing_rules").policies.find(p => p.name === "qx_read").using = "true";
   }
   const schema = JSON.parse(await readFile(new URL("../../deploy/migrations/schema-reference.json", import.meta.url), "utf8"));
+  const site = JSON.parse(await readFile(new URL("../../deploy/migrations/site-release-reference.json", import.meta.url), "utf8"));
+  for (const key of ["columns", "constraints", "indexes"])
+    schema[key] = [...schema[key], ...site[key]].sort((a,b) => a.table_name.localeCompare(b.table_name) || (key === "columns" ? 0 : a.name.localeCompare(b.name)));
+  expected.tables = [...expected.tables, ...site.tables].sort((a,b) => a.name.localeCompare(b.name));
   assert.deepEqual(canonicalSchema(await readSchema(client)), canonicalSchema(schema),
     "Actual columns, reviewed constant defaults, constraints and indexes must match.");
   const actual = await client.query(`SELECT c.relname AS name,c.relrowsecurity AS enabled,

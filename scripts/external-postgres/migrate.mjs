@@ -51,7 +51,8 @@ export async function migrate(env = process.env) {
       throw new Error("Invalid/unsorted migration manifest.");
     if (entry.source && (!production || ![
       "../migrations/0001_application_schema.sql", "../migrations/0002_runtime_security.sql",
-      "0004_latest-schema-PREPARED.sql", "0005_auth_runtime.sql", "../migrations/0007_global_exchange_catalog.sql"].includes(entry.source)))
+      "0004_latest-schema-PREPARED.sql", "0005_auth_runtime.sql", "../migrations/0007_global_exchange_catalog.sql",
+      "../migrations/0008_tenant_site_releases.sql"].includes(entry.source)))
       throw new Error("Unreviewed Production migration source");
     const sql = await readFile(new URL(entry.source ?? entry.file, dir), "utf8");
     if (createHash("sha256").update(sql).digest("hex") !== entry.sha256)

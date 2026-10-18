@@ -1,0 +1,274 @@
+{
+  "columns": [
+    {
+      "table_name": "tenant_release_assets",
+      "name": "id",
+      "type": "uuid",
+      "required": true,
+      "default_value": "gen_random_uuid()"
+    },
+    {
+      "table_name": "tenant_release_assets",
+      "name": "tenant_id",
+      "type": "uuid",
+      "required": true,
+      "default_value": null
+    },
+    {
+      "table_name": "tenant_release_assets",
+      "name": "object_key",
+      "type": "text",
+      "required": true,
+      "default_value": null
+    },
+    {
+      "table_name": "tenant_release_assets",
+      "name": "checksum",
+      "type": "text",
+      "required": true,
+      "default_value": null
+    },
+    {
+      "table_name": "tenant_release_assets",
+      "name": "extension",
+      "type": "text",
+      "required": true,
+      "default_value": null
+    },
+    {
+      "table_name": "tenant_release_assets",
+      "name": "content_type",
+      "type": "text",
+      "required": true,
+      "default_value": null
+    },
+    {
+      "table_name": "tenant_release_assets",
+      "name": "size",
+      "type": "integer",
+      "required": true,
+      "default_value": null
+    },
+    {
+      "table_name": "tenant_release_assets",
+      "name": "published_at",
+      "type": "timestamp with time zone",
+      "required": false,
+      "default_value": null
+    },
+    {
+      "table_name": "tenant_release_assets",
+      "name": "created_at",
+      "type": "timestamp with time zone",
+      "required": true,
+      "default_value": "now()"
+    },
+    {
+      "table_name": "tenant_releases",
+      "name": "id",
+      "type": "uuid",
+      "required": true,
+      "default_value": "gen_random_uuid()"
+    },
+    {
+      "table_name": "tenant_releases",
+      "name": "tenant_id",
+      "type": "uuid",
+      "required": true,
+      "default_value": null
+    },
+    {
+      "table_name": "tenant_releases",
+      "name": "version",
+      "type": "integer",
+      "required": true,
+      "default_value": null
+    },
+    {
+      "table_name": "tenant_releases",
+      "name": "config",
+      "type": "jsonb",
+      "required": true,
+      "default_value": null
+    },
+    {
+      "table_name": "tenant_releases",
+      "name": "checksum",
+      "type": "text",
+      "required": true,
+      "default_value": null
+    },
+    {
+      "table_name": "tenant_releases",
+      "name": "draft_checksum",
+      "type": "text",
+      "required": false,
+      "default_value": null
+    },
+    {
+      "table_name": "tenant_releases",
+      "name": "created_by",
+      "type": "text",
+      "required": true,
+      "default_value": null
+    },
+    {
+      "table_name": "tenant_releases",
+      "name": "created_at",
+      "type": "timestamp with time zone",
+      "required": true,
+      "default_value": "now()"
+    },
+    {
+      "table_name": "tenants",
+      "name": "live_release_id",
+      "type": "uuid",
+      "required": false,
+      "default_value": null
+    }
+  ],
+  "constraints": [
+    {
+      "table_name": "tenant_release_assets",
+      "name": "tenant_release_asset_hash",
+      "type": "u",
+      "definition": "UNIQUE (tenant_id, checksum)",
+      "validated": true
+    },
+    {
+      "table_name": "tenant_release_assets",
+      "name": "tenant_release_assets_pkey",
+      "type": "p",
+      "definition": "PRIMARY KEY (id)",
+      "validated": true
+    },
+    {
+      "table_name": "tenant_release_assets",
+      "name": "tenant_release_assets_tenant_id_fkey",
+      "type": "f",
+      "definition": "FOREIGN KEY (tenant_id) REFERENCES tenants(id) ON DELETE CASCADE",
+      "validated": true
+    },
+    {
+      "table_name": "tenant_releases",
+      "name": "tenant_release_owner",
+      "type": "u",
+      "definition": "UNIQUE (id, tenant_id)",
+      "validated": true
+    },
+    {
+      "table_name": "tenant_releases",
+      "name": "tenant_release_version",
+      "type": "u",
+      "definition": "UNIQUE (tenant_id, version)",
+      "validated": true
+    },
+    {
+      "table_name": "tenant_releases",
+      "name": "tenant_releases_checksum_check",
+      "type": "c",
+      "definition": "CHECK (checksum ~ '^[0-9a-f]{64}$'::text)",
+      "validated": true
+    },
+    {
+      "table_name": "tenant_releases",
+      "name": "tenant_releases_pkey",
+      "type": "p",
+      "definition": "PRIMARY KEY (id)",
+      "validated": true
+    },
+    {
+      "table_name": "tenant_releases",
+      "name": "tenant_releases_tenant_id_fkey",
+      "type": "f",
+      "definition": "FOREIGN KEY (tenant_id) REFERENCES tenants(id) ON DELETE CASCADE",
+      "validated": true
+    },
+    {
+      "table_name": "tenant_releases",
+      "name": "tenant_releases_version_check",
+      "type": "c",
+      "definition": "CHECK (version > 0)",
+      "validated": true
+    },
+    {
+      "table_name": "tenants",
+      "name": "tenant_live_release_owner",
+      "type": "f",
+      "definition": "FOREIGN KEY (live_release_id, id) REFERENCES tenant_releases(id, tenant_id) DEFERRABLE INITIALLY DEFERRED",
+      "validated": true
+    }
+  ],
+  "indexes": [
+    {
+      "table_name": "tenant_release_assets",
+      "name": "tenant_release_asset_hash",
+      "definition": "CREATE UNIQUE INDEX tenant_release_asset_hash ON public.tenant_release_assets USING btree (tenant_id, checksum)",
+      "valid": true
+    },
+    {
+      "table_name": "tenant_release_assets",
+      "name": "tenant_release_assets_pkey",
+      "definition": "CREATE UNIQUE INDEX tenant_release_assets_pkey ON public.tenant_release_assets USING btree (id)",
+      "valid": true
+    },
+    {
+      "table_name": "tenant_releases",
+      "name": "tenant_release_owner",
+      "definition": "CREATE UNIQUE INDEX tenant_release_owner ON public.tenant_releases USING btree (id, tenant_id)",
+      "valid": true
+    },
+    {
+      "table_name": "tenant_releases",
+      "name": "tenant_release_version",
+      "definition": "CREATE UNIQUE INDEX tenant_release_version ON public.tenant_releases USING btree (tenant_id, version)",
+      "valid": true
+    },
+    {
+      "table_name": "tenant_releases",
+      "name": "tenant_releases_pkey",
+      "definition": "CREATE UNIQUE INDEX tenant_releases_pkey ON public.tenant_releases USING btree (id)",
+      "valid": true
+    }
+  ],
+  "tables": [
+    {
+      "name": "tenant_release_assets",
+      "enabled": true,
+      "forced": true,
+      "policies": [
+        {
+          "name": "qx_read",
+          "check": null,
+          "using": "((COALESCE(current_setting('app.is_super_admin'::text, true), ''::text) = 'true'::text) OR (((tenant_id)::text = COALESCE(current_setting('app.tenant_id'::text, true), ''::text)) AND (COALESCE(current_setting('app.tenant_id'::text, true), ''::text) <> ''::text)))",
+          "command": "r"
+        },
+        {
+          "name": "qx_write",
+          "check": "(((COALESCE(current_setting('app.is_super_admin'::text, true), ''::text) = 'true'::text) OR (((tenant_id)::text = COALESCE(current_setting('app.tenant_id'::text, true), ''::text)) AND (COALESCE(current_setting('app.tenant_id'::text, true), ''::text) <> ''::text))) AND (COALESCE(current_setting('app.can_write'::text, true), ''::text) = 'true'::text))",
+          "using": "(((COALESCE(current_setting('app.is_super_admin'::text, true), ''::text) = 'true'::text) OR (((tenant_id)::text = COALESCE(current_setting('app.tenant_id'::text, true), ''::text)) AND (COALESCE(current_setting('app.tenant_id'::text, true), ''::text) <> ''::text))) AND (COALESCE(current_setting('app.can_write'::text, true), ''::text) = 'true'::text))",
+          "command": "*"
+        }
+      ]
+    },
+    {
+      "name": "tenant_releases",
+      "enabled": true,
+      "forced": true,
+      "policies": [
+        {
+          "name": "qx_read",
+          "check": null,
+          "using": "((COALESCE(current_setting('app.is_super_admin'::text, true), ''::text) = 'true'::text) OR (((tenant_id)::text = COALESCE(current_setting('app.tenant_id'::text, true), ''::text)) AND (COALESCE(current_setting('app.tenant_id'::text, true), ''::text) <> ''::text)))",
+          "command": "r"
+        },
+        {
+          "name": "qx_write",
+          "check": "(((COALESCE(current_setting('app.is_super_admin'::text, true), ''::text) = 'true'::text) OR (((tenant_id)::text = COALESCE(current_setting('app.tenant_id'::text, true), ''::text)) AND (COALESCE(current_setting('app.tenant_id'::text, true), ''::text) <> ''::text))) AND (COALESCE(current_setting('app.can_write'::text, true), ''::text) = 'true'::text))",
+          "using": "(((COALESCE(current_setting('app.is_super_admin'::text, true), ''::text) = 'true'::text) OR (((tenant_id)::text = COALESCE(current_setting('app.tenant_id'::text, true), ''::text)) AND (COALESCE(current_setting('app.tenant_id'::text, true), ''::text) <> ''::text))) AND (COALESCE(current_setting('app.can_write'::text, true), ''::text) = 'true'::text))",
+          "command": "*"
+        }
+      ]
+    }
+  ]
+}
