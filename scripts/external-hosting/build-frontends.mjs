@@ -4,7 +4,7 @@ import { brotliCompressSync, gzipSync, constants } from "node:zlib";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { frontendRoutes } from "./frontend-routes.mjs";
-import { publicPreparation } from "../../lib/production-access-gate/public-preparation.mjs";
+import { publicPreparation, productionBrowserAuthMetadataValid } from "../../lib/production-access-gate/public-preparation.mjs";
 const root = fileURLToPath(new URL("../../", import.meta.url));
 process.chdir(root);
 const api = new URL(process.env.QXLAYER_API_ORIGIN ?? "https://unconfigured.invalid");
@@ -15,6 +15,13 @@ const authProvider = process.env.QXLAYER_AUTH_PROVIDER;
 if (authProvider !== "supabase" || !["staging", "production"].includes(process.env.QXLAYER_EXTERNAL_ENVIRONMENT))
   throw new Error("External frontend builds require Supabase and an explicit isolated target.");
 if (process.env.QXLAYER_EXTERNAL_ENVIRONMENT === "production") {
+  if (!productionBrowserAuthMetadataValid({
+    projectRef: process.env.QXLAYER_PRODUCTION_SUPABASE_AUTH_PROJECT_REF,
+    origin: process.env.QXLAYER_PRODUCTION_SUPABASE_AUTH_URL,
+    acceptance: process.env.QXLAYER_EXTERNAL_ACCEPTANCE_APPROVED,
+    preparation: process.env.QXLAYER_PUBLIC_PREPARATION_APPROVED,
+    official: process.env.QXLAYER_VYNOX_DOMAIN_CONNECTION_APPROVED,
+  })) throw new Error("Production browser authentication metadata must pass before packaging.");
   const ref = process.env.QXLAYER_PRODUCTION_SUPABASE_AUTH_PROJECT_REF ?? "";
   if (!/^[a-z0-9]{20}$/.test(ref) || ["nktstksmfpcsjnjbeqsk", "muvedavhbpgpdrrnjrih"].includes(ref) ||
       process.env.QXLAYER_PRODUCTION_SUPABASE_AUTH_URL !==
@@ -29,6 +36,7 @@ for (const [name, base] of [["private-label-console", "/"], ["private-label-webs
       VITE_EXTERNAL_DEPLOYMENT: "true",
       VITE_QXLAYER_EXTERNAL_ACCEPTANCE_APPROVED: process.env.QXLAYER_EXTERNAL_ACCEPTANCE_APPROVED,
       VITE_QXLAYER_PUBLIC_PREPARATION_APPROVED: process.env.QXLAYER_PUBLIC_PREPARATION_APPROVED,
+      VITE_QXLAYER_VYNOX_DOMAIN_CONNECTION_APPROVED: process.env.QXLAYER_VYNOX_DOMAIN_CONNECTION_APPROVED,
       VITE_QXLAYER_AUTH_PROVIDER: authProvider,
       VITE_QXLAYER_PRODUCTION_SUPABASE_AUTH_PROJECT_REF: process.env.QXLAYER_PRODUCTION_SUPABASE_AUTH_PROJECT_REF,
       VITE_QXLAYER_PRODUCTION_SUPABASE_AUTH_URL: process.env.QXLAYER_PRODUCTION_SUPABASE_AUTH_URL,

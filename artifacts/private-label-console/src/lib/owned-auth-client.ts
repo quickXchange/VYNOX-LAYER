@@ -1,18 +1,17 @@
 import { supabaseFacade } from "@/lib/supabase-auth-client";
+import { productionBrowserAuthMetadataValid } from "../../../../lib/production-access-gate/public-preparation.mjs";
 
 const provider = import.meta.env.VITE_QXLAYER_AUTH_PROVIDER;
 const environment = import.meta.env.VITE_QXLAYER_EXTERNAL_ENVIRONMENT;
 export const supabaseDevelopmentAuth = provider === "supabase" && environment === "development";
 const production = provider === "supabase" && environment === "production";
-if (production && (
-    !/^[a-z0-9]{20}$/.test(import.meta.env.VITE_QXLAYER_PRODUCTION_SUPABASE_AUTH_PROJECT_REF ?? "") ||
-    ["nktstksmfpcsjnjbeqsk", "muvedavhbpgpdrrnjrih"].includes(import.meta.env.VITE_QXLAYER_PRODUCTION_SUPABASE_AUTH_PROJECT_REF) ||
-    import.meta.env.VITE_QXLAYER_PRODUCTION_SUPABASE_AUTH_URL !==
-      (import.meta.env.VITE_QXLAYER_EXTERNAL_ACCEPTANCE_APPROVED === "true" ?
-        "https://qxlayer-acceptance-vynox3.vercel.app" :
-        import.meta.env.VITE_QXLAYER_PUBLIC_PREPARATION_APPROVED === "true" ?
-          (import.meta.env.VITE_QXLAYER_PRODUCTION_SUPABASE_AUTH_URL === "https://www.quicklychan.xyz" ?
-            "https://www.quicklychan.xyz" : "https://qxlayer-staging.vercel.app") : "https://www.quicklychan.xyz"))) {
+if (production && !productionBrowserAuthMetadataValid({
+    projectRef: import.meta.env.VITE_QXLAYER_PRODUCTION_SUPABASE_AUTH_PROJECT_REF,
+    origin: import.meta.env.VITE_QXLAYER_PRODUCTION_SUPABASE_AUTH_URL,
+    acceptance: import.meta.env.VITE_QXLAYER_EXTERNAL_ACCEPTANCE_APPROVED,
+    preparation: import.meta.env.VITE_QXLAYER_PUBLIC_PREPARATION_APPROVED,
+    official: import.meta.env.VITE_QXLAYER_VYNOX_DOMAIN_CONNECTION_APPROVED,
+  })) {
   throw new Error("Production Supabase authentication requires its isolated project and canonical Live origin.");
 }
 if (supabaseDevelopmentAuth && (!import.meta.env.DEV ||
