@@ -8,7 +8,9 @@ export const preparationIsolation: RequestHandler = (req,res,next) => {
   const publicMode = publicPreparation();
   const acceptanceRestricted = process.env.QXLAYER_ACCEPTANCE_PREPARATION_ISOLATION === "true";
   if (!publicMode && !acceptanceRestricted) { next(); return; }
-  const path = req.path;
+  let path: string;
+  try { path = decodeURIComponent(req.path).toLowerCase(); }
+  catch { res.status(400).json({error:"Invalid request path."}); return; }
   if (publicMode && /\/(?:execute|broadcast|payouts?|withdrawals?|deposits?)(?:\/|$)/.test(path) &&
       !["GET","HEAD","OPTIONS"].includes(req.method)) {
     res.status(403).json({error:"Financial execution is not authorized."}); return;
@@ -18,7 +20,7 @@ export const preparationIsolation: RequestHandler = (req,res,next) => {
   if (publicMode && (
       /^\/api\/(?:public\/)?(?:demo(?:-isolation)?|internal|testing)(?:\/|$|-)/.test(path) ||
       [...values("QXLAYER_PUBLIC_EXCLUDED_TENANTS"),...values("QXLAYER_PUBLIC_EXCLUDED_SLUGS")]
-        .some(id => path.split("/").includes(id)))) {
+        .some(id => path.toLowerCase().split("/").includes(id.toLowerCase())))) {
     res.status(404).json({error:"Not available."}); return;
   }
   if (["GET","HEAD","OPTIONS"].includes(req.method) || path.startsWith("/api/supabase-auth/") ||

@@ -17,7 +17,8 @@ test("public preparation denies demo, real-customer mutations and execution with
    return{code,next};};
   assert.equal(probe("GET","/api/public/product-catalog").next,true);
   assert.equal(probe("POST","/api/supabase-auth/action").next,true);
-  for(const path of ["/api/demo/session","/api/public/sites/solara-site/exchange","/api/tenants/solara-tenant/settings"])
+  for(const path of ["/api/demo/session","/api/d%65mo/session","/api/public/sites/solara-site/exchange",
+   "/api/public/sites/%73olara-site/exchange","/api/tenants/SOLARA-TENANT/settings"])
    assert.equal(probe("GET",path).code,404);
   assert.equal(probe("POST","/api/tenants/real-tenant/exchange/orders").code,403);
   assert.equal(probe("POST","/api/platform/settings").code,403);
