@@ -1,7 +1,7 @@
 import { createHmac, randomBytes, randomInt, timingSafeEqual } from "node:crypto";
 import { authSupportPool as pool } from "@workspace/db";
 import { HttpError } from "../../lib/errors";
-import { developmentSupabaseAuth, supabaseEmailLoginEnabled, supabaseAuthConfiguration, supabaseSessionSecret } from "./config";
+import { developmentSupabaseAuth, productionSupabaseAuth, supabaseEmailLoginEnabled, supabaseAuthConfiguration, supabaseSessionSecret } from "./config";
 import { sessionCodec } from "./crypto";
 import { businessId, hasVerifiedFactor, type AuthSession, type Payload } from "./session";
 import type { SupabaseUser } from "./provider";
@@ -27,9 +27,10 @@ export async function verifiedGmailSuperAdmin(user: SupabaseUser): Promise<boole
   if (!supabaseEmailLoginEnabled() || !user.email_confirmed_at ||
       !/^[^@\s]+@gmail\.com$/i.test(user.email ?? "") || !hasVerifiedFactor(user)) return false;
   supabaseAuthConfiguration(); // Enforce pinned project/origin/runtime before any operation.
-  const result = await pool.query(
+  const result = await pool.query(productionSupabaseAuth() ?
+    "SELECT EXISTS(SELECT 1 FROM vynox_supabase_auth.active_admin_subjects() WHERE subject=$1::uuid) AS eligible" :
     "SELECT EXISTS(SELECT 1 FROM public.platform_admins WHERE clerk_user_id=$1 AND active=true) AS eligible",
-    [await businessId(user.id)]);
+    [productionSupabaseAuth() ? user.id : await businessId(user.id)]);
   return result.rows[0]?.eligible === true;
 }
 

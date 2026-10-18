@@ -5,7 +5,7 @@ import { defineConfig } from 'vite';
 
 import runtimeErrorOverlay from '@replit/vite-plugin-runtime-error-modal';
 import { accessGateVitePlugin } from '../../lib/production-access-gate/index.mjs';
-import { publicPreparation, PUBLIC_PREPARATION_ORIGIN } from '../../lib/production-access-gate/public-preparation.mjs';
+import { publicPreparation } from '../../lib/production-access-gate/public-preparation.mjs';
 
 const rawPort = process.env.PORT;
 
@@ -33,7 +33,7 @@ if (process.env.QXLAYER_EXTERNAL_ENVIRONMENT === 'production') {
       process.env.QXLAYER_PRODUCTION_SUPABASE_AUTH_URL !==
         (process.env.QXLAYER_EXTERNAL_ACCEPTANCE_APPROVED === 'true' ?
           'https://qxlayer-acceptance-vynox3.vercel.app' :
-          publicPreparation(process.env) ? PUBLIC_PREPARATION_ORIGIN : 'https://www.quicklychan.xyz')) {
+          publicPreparation(process.env) ? process.env.QXLAYER_PUBLIC_PRODUCTION_ORIGIN : 'https://www.quicklychan.xyz')) {
     throw new Error('Production build requires isolated Supabase Auth public metadata.');
   }
   process.env.VITE_QXLAYER_AUTH_PROVIDER = 'supabase';

@@ -48,7 +48,6 @@ export async function authRequest<T>(path: string, options: {
     const error = await response.json().catch(() => ({})) as { error_code?: string; msg?: string; message?: string };
     const code = error.error_code;
     if (response.status === 429) {
-      if (!developmentSupabaseAuth()) throw new HttpError(429, "Too many attempts. Wait before trying again.");
       const header = response.headers.get("retry-after");
       const message = error.msg ?? error.message ?? "";
       const frequency = message.length < 300 && /^For security purposes, you can only request this after ([0-9]+) seconds?\.$/.exec(message);

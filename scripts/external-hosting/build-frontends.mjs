@@ -20,7 +20,7 @@ if (process.env.QXLAYER_EXTERNAL_ENVIRONMENT === "production") {
       process.env.QXLAYER_PRODUCTION_SUPABASE_AUTH_URL !==
         (process.env.QXLAYER_EXTERNAL_ACCEPTANCE_APPROVED === "true" ?
           "https://qxlayer-acceptance-vynox3.vercel.app" :
-          publicPreparation(process.env) ? "https://qxlayer-staging.vercel.app" : "https://www.quicklychan.xyz"))
+          publicPreparation(process.env) ? process.env.QXLAYER_PUBLIC_PRODUCTION_ORIGIN : "https://www.quicklychan.xyz"))
     throw new Error("Production frontend builds require isolated Production Auth metadata.");
 }
 for (const [name, base] of [["private-label-console", "/"], ["private-label-website", "/private-label-website/"]]) {

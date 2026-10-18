@@ -1,6 +1,6 @@
 // Explicitly scoped providers only; never activate authentication from storage settings.
 // Never infer Supabase Auth from the database/storage provider.
-import { publicPreparation, PUBLIC_PREPARATION_ORIGIN } from "../../../../../lib/production-access-gate/public-preparation.mjs";
+import { publicPreparation } from "../../../../../lib/production-access-gate/public-preparation.mjs";
 export const STAGING_AUTH_PROJECT = "muvedavhbpgpdrrnjrih";
 export const DEVELOPMENT_AUTH_PROJECT = "nktstksmfpcsjnjbeqsk";
 export const PRODUCTION_AUTH_ORIGIN = "https://www.quicklychan.xyz";
@@ -60,7 +60,7 @@ export function supabaseAuthConfiguration(env = process.env) {
         [DEVELOPMENT_AUTH_PROJECT, STAGING_AUTH_PROJECT].includes(project))
       throw new Error("Production requires its own isolated Supabase Auth project.");
     const origin = productionAcceptance(env) ? ACCEPTANCE_AUTH_ORIGIN :
-      publicPreparation(env) ? PUBLIC_PREPARATION_ORIGIN : PRODUCTION_AUTH_ORIGIN;
+      publicPreparation(env) ? env.QXLAYER_PUBLIC_PRODUCTION_ORIGIN! : PRODUCTION_AUTH_ORIGIN;
     if (env.QXLAYER_PRODUCTION_SUPABASE_AUTH_URL !== origin)
       throw new Error("Production authentication must use the exact canonical Live HTTPS origin.");
     const apiKey = env.QXLAYER_PRODUCTION_SUPABASE_AUTH_SERVER_KEY;

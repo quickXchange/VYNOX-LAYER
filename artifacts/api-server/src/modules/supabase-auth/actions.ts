@@ -64,7 +64,6 @@ export async function limitAction(req: Request, action: string, account = "") {
       ELSE vynox_supabase_auth.rate_limits.reset_at END
       RETURNING hits,GREATEST(1,ceil(extract(epoch FROM(reset_at-now()))))::int AS retry_after`, [key]);
   if (result.rows[0].hits > maximum) {
-    if (!developmentSupabaseAuth()) throw new HttpError(429, "Too many attempts. Wait a minute before retrying.");
     const wait = Number(result.rows[0].retry_after) || 60;
     throw new HttpError(429, `Please wait ${wait} seconds before trying again.`, wait);
   }

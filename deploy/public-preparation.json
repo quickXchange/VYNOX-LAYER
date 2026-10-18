@@ -4,6 +4,6 @@
   "temporaryOrigin": "https://qxlayer-staging.vercel.app",
   "renderServiceId": "srv-dba0q0gm7kps73f1k9fg",
   "apiOrigin": "https://vynox-public-api.onrender.com",
-  "officialDomainCutoverApproved": false,
+  "officialDomainCutoverApproved": true,
   "financialExecutionApproved": false
 }

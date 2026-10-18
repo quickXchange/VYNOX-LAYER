@@ -1,4 +1,5 @@
 import { randomBytes } from "node:crypto";
+import { publicPreparation, PUBLIC_PREPARATION_ORIGIN } from "../../../../../lib/production-access-gate/public-preparation.mjs";
 import type { Request, Response } from "express";
 import { authSupportPool as pool } from "@workspace/db";
 import { HttpError } from "../../lib/errors";
@@ -141,6 +142,11 @@ export async function reauthenticate(s: AuthSession, password: string) {
   await authRequest("/logout?scope=local", { method: "POST", accessToken: tokens.access_token });
 }
 export function assertAuthOrigin(req: Request) {
-  if (req.get("origin") !== supabaseAuthConfiguration().origin || req.get("sec-fetch-site") === "cross-site")
+  const configured = supabaseAuthConfiguration().origin;
+  // Keep the existing temporary Production login usable during registrar DNS
+  // propagation. No wildcard origins and no change to acceptance authorization.
+  const transition = configured === "https://www.quicklychan.xyz" && publicPreparation() &&
+    req.get("origin") === PUBLIC_PREPARATION_ORIGIN;
+  if ((!transition && req.get("origin") !== configured) || req.get("sec-fetch-site") === "cross-site")
     throw new HttpError(403, "Same-origin authentication request required.");
 }

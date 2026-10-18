@@ -42,6 +42,12 @@ if(process.argv[2]==="before"){
  const assigned=await vr("/v4/aliases/"+new URL(config.temporaryOrigin).hostname);
  assert(assigned.deployment.id===deployment.id);
  for(const domain of ["quicklychan.xyz","www.quicklychan.xyz"]){
+   if(config.officialDomainCutoverApproved){
+    await vr("/v2/now/deployments/"+deployment.id+"/aliases","POST",{alias:domain});
+    const official=await vr("/v4/aliases/"+domain);
+    assert(official.deployment.id===deployment.id,"Official alias must use the reviewed Production");
+    continue;
+   }
   const response=await fetch(`https://api.vercel.com/v4/aliases/${domain}?teamId=${config.teamId}`,{headers:{Authorization:`Bearer ${process.env.VERCEL_TOKEN}`}});
   assert(response.status===404,"Official domain must remain unactivated");
  }

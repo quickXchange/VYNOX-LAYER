@@ -49,7 +49,8 @@ export async function emailLoginChallengeExpiresAt(req: Request): Promise<number
 /** Locate an EXISTING authorized subject for delivery, not email-based role assignment. */
 export async function eligibleEmailLoginUser(email: string): Promise<SupabaseUser | null> {
   const cfg = requireDevelopment();
-  const admins = await pool.query(`SELECT DISTINCT COALESCE(l.subject::text,
+  const admins = await pool.query(productionSupabaseAuth() ?
+    "SELECT subject::text FROM vynox_supabase_auth.active_admin_subjects()" : `SELECT DISTINCT COALESCE(l.subject::text,
     CASE WHEN a.clerk_user_id LIKE 'supabase:%' THEN substring(a.clerk_user_id from 10) END) AS subject
     FROM public.platform_admins a LEFT JOIN vynox_supabase_auth.identity_links l ON l.business_id=a.clerk_user_id
     WHERE a.active=true LIMIT 51`);

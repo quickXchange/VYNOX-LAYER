@@ -1,4 +1,4 @@
-name: Approved public Production preparation (no DNS cutover)
+name: Official-domain Production release (financial execution held)
 on:
   workflow_dispatch:
     inputs:
@@ -26,14 +26,15 @@ jobs:
       QXLAYER_EXTERNAL_CANDIDATE: "false"
       QXLAYER_EXTERNAL_ACCEPTANCE_APPROVED: "false"
       QXLAYER_PUBLIC_PREPARATION_APPROVED: "true"
-      QXLAYER_PUBLIC_PRODUCTION_ORIGIN: https://qxlayer-staging.vercel.app
-      QXLAYER_PLATFORM_URL: https://qxlayer-staging.vercel.app
+      QXLAYER_OFFICIAL_DOMAIN_CONNECTION_APPROVED: "true"
+      QXLAYER_PUBLIC_PRODUCTION_ORIGIN: https://www.quicklychan.xyz
+      QXLAYER_PLATFORM_URL: https://www.quicklychan.xyz
       QXLAYER_PRODUCTION_SUPABASE_AUTH_CUTOVER_APPROVED: "false"
       QXLAYER_FINANCIAL_EXECUTION_ENABLED: "false"
       PRODUCTION_ACCESS_GATE_ENABLED: "false"
       QXLAYER_AUTH_PROVIDER: supabase
       QXLAYER_PRODUCTION_SUPABASE_AUTH_PROJECT_REF: qcgvhlphalxqzzsxqjhi
-      QXLAYER_PRODUCTION_SUPABASE_AUTH_URL: https://qxlayer-staging.vercel.app
+      QXLAYER_PRODUCTION_SUPABASE_AUTH_URL: https://www.quicklychan.xyz
       QXLAYER_API_ORIGIN: https://vynox-public-api.onrender.com
     steps:
       - uses: actions/checkout@v4

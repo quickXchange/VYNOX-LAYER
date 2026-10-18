@@ -61,8 +61,10 @@ async function scenario(run: (f: {
     factors: [{ id: factor, factor_type: "totp", status: "verified" }] };
   function query(sql: string, values: unknown[] = []) {
     assert(!/(?:INSERT INTO|UPDATE|DELETE FROM) public\./.test(sql), "No role/business writes permitted");
-    if (sql.includes("SELECT DISTINCT COALESCE")) return { rowCount: 1, rows: [{ subject }] };
-    if (sql.includes("public.platform_admins")) return { rowCount: 1, rows: [{ eligible }] };
+    if (sql.includes("SELECT DISTINCT COALESCE") || sql.startsWith("SELECT subject::text FROM vynox_supabase_auth.active_admin_subjects"))
+      return { rowCount: 1, rows: [{ subject }] };
+    if (sql.includes("public.platform_admins") || sql.includes("EXISTS(SELECT 1 FROM vynox_supabase_auth.active_admin_subjects"))
+      return { rowCount: 1, rows: [{ eligible }] };
     if (sql.includes("identity_links")) return { rowCount: 1, rows: [{ business_id: "preserved-synthetic-id" }] };
     if (sql.includes("INSERT INTO vynox_supabase_auth.sessions")) envelope = String(values[2]);
     if (sql.includes("UPDATE vynox_supabase_auth.sessions")) envelope = String(values[1]);

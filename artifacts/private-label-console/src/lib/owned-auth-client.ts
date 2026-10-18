@@ -11,7 +11,8 @@ if (production && (
       (import.meta.env.VITE_QXLAYER_EXTERNAL_ACCEPTANCE_APPROVED === "true" ?
         "https://qxlayer-acceptance-vynox3.vercel.app" :
         import.meta.env.VITE_QXLAYER_PUBLIC_PREPARATION_APPROVED === "true" ?
-          "https://qxlayer-staging.vercel.app" : "https://www.quicklychan.xyz"))) {
+          (import.meta.env.VITE_QXLAYER_PRODUCTION_SUPABASE_AUTH_URL === "https://www.quicklychan.xyz" ?
+            "https://www.quicklychan.xyz" : "https://qxlayer-staging.vercel.app") : "https://www.quicklychan.xyz"))) {
   throw new Error("Production Supabase authentication requires its isolated project and canonical Live origin.");
 }
 if (supabaseDevelopmentAuth && (!import.meta.env.DEV ||
