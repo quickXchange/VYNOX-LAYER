@@ -529,3 +529,19 @@ configuration. Never mistake the managed Production replica for the primary.
 Keep the backup key independently recoverable outside Replit; do not treat a
 private directory as an encrypted filesystem or approve legacy plaintext
 assembly into a ciphertext-only destination. QuickXchange stays separate.
+
+## Public Production preparation before DNS cutover
+
+The user authorized a real public Production deployment on a temporary hostname
+in the existing qxlayer-staging Vercel project, preserving protected acceptance
+separately. They approved one additional always-on Render API: "$7/month base
+plus usage."
+
+**Why:** The user requires actual implementation and native verification before
+the official-domain switch, not another readiness-only report.
+
+**How to apply:** Preserve existing Owner credentials/MFA and customer data.
+Sandbox/Solara activity must not modify real customer records. Keep financial
+execution disabled. Domain registration, actual ownership-challenge readback
+and redirect preparation are authorized; registrar DNS changes, official-domain
+activation and Replit Republish are not. Obtain final-switch approval separately.

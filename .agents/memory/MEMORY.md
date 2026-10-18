@@ -26,12 +26,15 @@
 - [Provider foundation safety](provider-foundation-safety.md) — catalog/configuration is not connectivity; real adapters, vaults, webhooks and idempotent execution require separate approval.
 - [Production readback evidence](production-readback-evidence.md) — empty schema diffs do not prove CHECK parity; SQL success envelopes must contain the expected results.
 - [QA cleanup durability](qa-cleanup-durability.md) — persist exact disposable fixture scope through workspace restarts; /tmp can vanish before database cleanup.
+- [QA clone integrity](qa-tenant-clone-integrity.md) — settings JSON is insufficient: preserve catalog assignments and remap globally owned method/pricing IDs before write tests.
 - [QA browser credentials](qa-browser-credential-custody.md) — tester subprocesses may lack workspace secrets; validate approved in-memory gate inputs before native journeys.
 - [Commercial pricing safety](commercial-pricing-safety.md) — undecided prices are not zero; separate real commercial configuration from technical recovery.
 - [Public marketing baseline](public-marketing-baseline.md) — presentation-only recovery can ship with code; it is not Production database or owner-access restoration.
 - [Hostname normalization](hostname-normalization.md) — IDN conversion can discard URL syntax; validate customer input before canonicalizing it.
 - [Integration verification boundaries](integration-verification-boundaries.md) — privileged-role RLS queries are not isolation proof; source-schema references need a bounded allowlist.
-- [External migration scope](external-migration-authorization.md) — protected app/global-configuration parity approved; preserve Owner, public Live and DNS; no cutover.
+- [External migration scope](external-migration-authorization.md) — temporary public Production and one paid API approved; preserve Owner, acceptance, official Live and DNS.
+- [Render Corepack runtime](render-corepack-runtime.md) — newer build images have read-only system shims; invoke the pinned manager without rewriting them.
+- [Render rollout readback](render-rollout-readback.md) — verify environment-only policy changes through public traffic after live; commit/health alone can miss draining instances.
 - [Performance comparisons](performance-comparisons.md) — normalize build/auth settings; distinguish bootstrap, complete-route bytes, lab clicks and field/cloud results.
 - [Production client TLS](production-client-tls.md) — provider backend SSL flags do not prove client transport; require verified client TLS without weakening CA/hostname or channel binding.
 - [Authenticated recovery](authenticated-streaming-recovery.md) — GCM update output is unauthenticated; use ciphertext-only caching and whole-envelope/package verification before recovery.
