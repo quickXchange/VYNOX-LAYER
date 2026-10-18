@@ -20,7 +20,16 @@ if(process.argv[2]==="before"){
  await writeFile(".public-preparation-before.json",JSON.stringify({acceptance:acceptance.deployment.id}));
 }else{
  const before=JSON.parse(await readFile(".public-preparation-before.json","utf8"));
- assert(acceptance.deployment.id===before.acceptance,"Public release must not replace acceptance");
+ if(acceptance.deployment.id!==before.acceptance){
+  // The existing independent main-push workflow may advance acceptance while
+  // this manual Production release runs. Only its same reviewed Preview commit
+  // is legitimate; this workflow never binds or replaces the acceptance alias.
+  const reviewedAcceptance=await vr("/v13/deployments/"+acceptance.deployment.id);
+  assert(reviewedAcceptance.projectId===config.projectId&&reviewedAcceptance.readyState==="READY"&&
+   [null,"preview"].includes(reviewedAcceptance.target??null)&&
+   (reviewedAcceptance.meta?.githubCommitSha??reviewedAcceptance.meta?.gitCommitSha)===process.env.GITHUB_SHA,
+   "Acceptance changed outside the reviewed protected Preview release");
+ }
  const url=new URL(process.env.PUBLIC_PREPARATION_DEPLOYMENT);
  assert(url.protocol==="https:"&&/^qxlayer-staging-[a-z0-9-]+\.vercel\.app$/.test(url.hostname));
  const deployment=await vr("/v13/deployments/"+url.hostname);
