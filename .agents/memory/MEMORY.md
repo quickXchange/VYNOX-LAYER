@@ -69,3 +69,4 @@
 - [Semantic JSONB replay](semantic-jsonb-replay.md) — idempotency compares normalized field values, never JSON object insertion order.
 - [Tenant release boundary](tenant-release-boundary.md) — deliberate immutable data releases; preserve operational/Owner safety and independently authored customer text.
 - [Vercel domain aliases](vercel-domain-alias-safety.md) — assigning a Vercel alias can move it from another deployment; require exact target approval and verify the alias list afterward.
+- [Acceptance request sandbox](acceptance-request-sandbox.md) — one requester is identified by provider-verified email fingerprint; sandbox submissions stay outside email, review, billing and delivery.

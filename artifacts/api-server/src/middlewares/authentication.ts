@@ -1,4 +1,5 @@
 import type { RequestHandler, Response } from "express";
+import { createHash } from "node:crypto";
 import { resolvePrincipal, type Principal } from "../modules/authentication/service";
 import { demoPrincipal, assertDemoRequest } from "../modules/demo/session";
 import { HttpError } from "../lib/errors";
@@ -23,6 +24,12 @@ export const requireAuthentication: RequestHandler = async (req, res, next): Pro
       throw new HttpError(428, "MFA_REQUIRED: Complete two-factor verification.");
     const principal = await resolvePrincipal(await businessId(s.user.id));
     principal.authenticationProvider = "supabase";
+    // Internal authorization fingerprint only; never return the email itself.
+    if (s.user.email && s.user.email_confirmed_at) {
+      principal.verifiedEmailSha256 = createHash("sha256")
+        .update(s.user.email.trim().toLowerCase())
+        .digest("hex");
+    }
     if (principal.role === "super_admin" && (!hasVerifiedFactor(s.user) || !mfaSatisfied))
       throw new HttpError(428, "MFA_REQUIRED: Enable and verify two-factor authentication in Account Security.");
     res.locals.principal = principal;

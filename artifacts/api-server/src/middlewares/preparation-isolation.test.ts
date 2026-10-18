@@ -83,3 +83,60 @@ test("only the verified original Owner can read the approved excluded tenant",as
   assert.equal(acceptance.next,true);assert.equal(acceptance.authCalls,0);
  }finally{for(const key of Object.keys(process.env))if(!(key in before))delete process.env[key];Object.assign(process.env,before);}
 });
+
+test("Acceptance preparation allows only the designated verified email on the two sandbox write routes",async ()=>{
+ const before={...process.env};
+ const emailHash=createHash("sha256").update("sandbox.requester@example.test").digest("hex");
+ Object.assign(process.env,{...publicEnv,QXLAYER_PUBLIC_PREPARATION_APPROVED:"false",
+  QXLAYER_ACCEPTANCE_PREPARATION_ISOLATION:"true",
+  QXLAYER_ACCEPTANCE_SANDBOX_REQUESTER_EMAIL_SHA256:emailHash});
+ try {
+  const probe=async(method:string,path:string,principal:unknown={
+   userId:"synthetic-requester",role:"unassigned",memberships:[],
+   authenticationProvider:"supabase",verifiedEmailSha256:emailHash,
+  })=>{
+   let code=0,next=false,authCalls=0;
+   const res={locals:{principal:null as unknown,preparationSandboxWrite:false},
+    status:(n:number)=>{code=n;return{json:()=>{}}}};
+   const auth:RequestHandler=async(_req,response,done)=>{
+    authCalls++;response.locals.principal=principal;done();
+   };
+   await createPreparationIsolation(auth)({method,path} as any,res as any,()=>{next=true;});
+   return{code,next,authCalls,locals:res.locals};
+  };
+  for(const path of ["/api/customer/order-attachments","/api/customer/white-label-requests"]) {
+   const allowed=await probe("POST",path);
+   assert.equal(allowed.next,true);assert.equal(allowed.authCalls,1);
+   assert.equal(allowed.locals.preparationSandboxWrite,true);
+   for(const principal of [
+    {userId:"different-email",role:"unassigned",memberships:[],authenticationProvider:"supabase",
+     verifiedEmailSha256:createHash("sha256").update("other@example.test").digest("hex")},
+    {userId:"synthetic-demo",role:"staff",memberships:[],demo:true,verifiedEmailSha256:emailHash},
+    {userId:"wrong-provider",role:"unassigned",memberships:[],verifiedEmailSha256:emailHash},
+   ]) {
+    const denied=await probe("POST",path,principal);
+    assert.equal(denied.code,403);assert.equal(denied.next,false);
+   }
+  }
+  for(const [method,path] of [
+   ["POST","/api/customer/white-label-requests/extra"],
+   ["PUT","/api/customer/white-label-requests"],
+   ["POST","/api/operator/white-label-requests/id/review"],
+   ["POST","/api/platform/settings"],
+  ]) {
+   const denied=await probe(method,path);
+   assert.equal(denied.code,403);assert.equal(denied.next,false);
+   assert.equal(denied.authCalls,0);
+  }
+  delete process.env.QXLAYER_ACCEPTANCE_SANDBOX_REQUESTER_EMAIL_SHA256;
+  const unconfigured=await probe("POST","/api/customer/white-label-requests");
+  assert.equal(unconfigured.code,403);assert.equal(unconfigured.next,false);
+  process.env.QXLAYER_ACCEPTANCE_SANDBOX_REQUESTER_EMAIL_SHA256=emailHash;
+  process.env.QXLAYER_PUBLIC_PREPARATION_APPROVED="true";
+  const publicMode=await probe("POST","/api/customer/white-label-requests");
+  assert.equal(publicMode.code,403);assert.equal(publicMode.next,false);
+ } finally {
+  for(const key of Object.keys(process.env))if(!(key in before))delete process.env[key];
+  Object.assign(process.env,before);
+ }
+});

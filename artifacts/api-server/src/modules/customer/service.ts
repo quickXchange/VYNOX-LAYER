@@ -5,7 +5,7 @@ import { contextFor, requireSuperAdmin, type Principal } from "../authentication
 import { HttpError } from "../../lib/errors";
 import { audit } from "../../lib/audit";
 import { requireFeature, resolveEntitlements } from "../entitlements/resolver";
-import { requestColumns as columns, orderView, event, eventColumns, requestContext, assertTransition, assertFinalPricing } from "./order-model";
+import { requestColumns as columns, orderView, event, eventColumns, requestContext, assertTransition, assertFinalPricing, isSandboxRequest } from "./order-model";
 import { catalogSelection } from "./order-catalog";
 import { prepareReviewedWebsite } from "./preparation";
 import { assertPaid } from "../commerce/service";
@@ -42,13 +42,15 @@ export function assertDeliveredExchangeAccess(p: Principal, tenantId: string) {
 export function listRequests(p: Principal, operator = false) {
   if (operator) requireSuperAdmin(p);
   return withDatabase(requestContext(p), async c => {
-    const r = await c.query(`SELECT ${columns} FROM white_label_requests ${operator ? "" : "WHERE customer_user_id=$1"} ORDER BY created_at DESC`, operator ? [] : [p.userId]);
+    const r = await c.query(`SELECT ${columns} FROM white_label_requests
+      WHERE ${operator ? "configuration->>'sandboxOnly' IS DISTINCT FROM 'true'" : "customer_user_id=$1"}
+      ORDER BY created_at DESC`, operator ? [] : [p.userId]);
     const orders = [];
     for (const row of r.rows) orders.push(await orderView(c, row));
     return orders;
   });
 }
-export function submitRequest(p: Principal, raw: WhiteLabelRequestInput) {
+export function submitRequest(p: Principal, raw: WhiteLabelRequestInput, sandboxOnly = false) {
   if (p.role === "super_admin") throw new HttpError(403, "Super Admin reviews customer requests; use a customer account to submit.");
   const input = SubmitWhiteLabelRequestBody.parse(raw);
   if(input.actions.some(action=>!["swap","convert"].includes(action)))
@@ -62,6 +64,8 @@ export function submitRequest(p: Principal, raw: WhiteLabelRequestInput) {
     const previous = await c.query(`SELECT ${columns} FROM white_label_requests WHERE customer_user_id=$1 AND idempotency_key=$2`, [p.userId, idempotencyKey]);
     if (previous.rowCount) {
       const old = previous.rows[0];
+      if (isSandboxRequest(old.configuration) !== sandboxOnly)
+        throw new HttpError(409, "This submission key belongs to a request in a different preparation mode.");
       if (old.configuration.inputFingerprint ? old.configuration.inputFingerprint !== fingerprint :
           Object.keys(configuration).some(k => JSON.stringify(old.configuration[k]) !== JSON.stringify(configuration[k as keyof typeof configuration]))) throw new HttpError(409, "This submission key belongs to another request.");
       return orderView(c, old);
@@ -88,13 +92,16 @@ export function submitRequest(p: Principal, raw: WhiteLabelRequestInput) {
     categoryFor(design?.logoAttachmentId, "logo"); categoryFor(design?.faviconAttachmentId, "favicon");
     design?.referenceAttachmentIds.forEach(id => categoryFor(id, "design_reference"));
     configuration.attachmentIds?.forEach(id => categoryFor(id, "requirement"));
+    const storedConfiguration = { ...configuration, ...(sandboxOnly ? { sandboxOnly: true } : {}),
+      catalogSnapshot: snapshot, inputFingerprint: fingerprint };
     const inserted = await c.query(`INSERT INTO white_label_requests (customer_user_id,idempotency_key,configuration)
-      VALUES ($1,$2,$3) ON CONFLICT (customer_user_id,idempotency_key) DO NOTHING RETURNING ${columns}`, [p.userId, idempotencyKey, JSON.stringify({ ...configuration, catalogSnapshot: snapshot, inputFingerprint: fingerprint })]);
+      VALUES ($1,$2,$3) ON CONFLICT (customer_user_id,idempotency_key) DO NOTHING RETURNING ${columns}`, [p.userId, idempotencyKey, JSON.stringify(storedConfiguration)]);
     const row = inserted.rows[0] ?? (await c.query(`SELECT ${columns} FROM white_label_requests WHERE customer_user_id=$1 AND idempotency_key=$2`, [p.userId, idempotencyKey])).rows[0];
     if (!row || row.configuration.inputFingerprint !== fingerprint) throw new HttpError(409, "This submission key belongs to another request.");
     if (inserted.rowCount) {
       await c.query("UPDATE white_label_attachments SET request_id=$1 WHERE id=ANY($2::uuid[]) AND owner_user_id=$3 AND request_id IS NULL", [row.id, ids, p.userId]);
-      await event(c, p, row.id, "status", "White Label request submitted. Configuration and attachments await Super Admin review.", "customer", "new");
+      if (!sandboxOnly)
+        await event(c, p, row.id, "status", "White Label request submitted. Configuration and attachments await Super Admin review.", "customer", "new");
     }
     return orderView(c, row);
   });
@@ -106,6 +113,7 @@ export function reviewRequest(p: Principal, id: string, raw: WhiteLabelReviewInp
     const existing = await c.query(`SELECT ${columns} FROM white_label_requests WHERE id=$1 FOR UPDATE`, [id]);
     if (!existing.rowCount) throw new HttpError(404, "White Label request not found.");
     const old = existing.rows[0];
+    if (isSandboxRequest(old.configuration)) throw new HttpError(404, "White Label request not found.");
     assertTransition(old.status, input.status);
     const selection = ["rejected", "cancelled"].includes(input.status) ? (old.approvedConfiguration ?? { plan: null, addons: [] }) :
       await catalogSelection(c, input.approvedPlanId !== undefined ? input.approvedPlanId : (old.approvedConfiguration?.plan?.id ?? old.configuration.catalogSnapshot?.plan?.id ?? null),
@@ -141,7 +149,8 @@ export function reviewRequest(p: Principal, id: string, raw: WhiteLabelReviewInp
     // Only the explicit Super Admin delivery endpoint may deliver a request.
     return orderView(c, r.rows[0]);
   }).catch(async error => {
-    if (input.status === "approved") await recordProvisioningFailure(p, id, error);
+    if (input.status === "approved" && (error as {status?: number})?.status !== 404)
+      await recordProvisioningFailure(p, id, error);
     throw error;
   });
 }
@@ -150,6 +159,7 @@ export async function deliverLinkedRequest(c: DatabaseClient, p: Principal, id: 
     const request = await c.query(`SELECT ${columns} FROM white_label_requests WHERE id=$1 FOR UPDATE`, [id]);
     if (!request.rowCount) throw new HttpError(404, "White Label request not found.");
     const row = request.rows[0];
+    if (isSandboxRequest(row.configuration)) throw new HttpError(404, "White Label request not found.");
     if (row.status === "delivered" && row.tenantId === tenantId) return orderView(c, row);
     await assertPaid(c, id, row, row.approvedConfiguration);
     if (row.tenantId && row.tenantId !== tenantId) throw new HttpError(409, "This request is linked to a different Exchange.");
@@ -196,7 +206,9 @@ export function deliverRequest(p: Principal, id: string, tenantId: string) {
 export function orderDetail(p: Principal, id: string, operator = false) {
   if (operator) requireSuperAdmin(p);
   return withDatabase(requestContext(p), async c => {
-    const r = await c.query(`SELECT ${columns} FROM white_label_requests WHERE id=$1 ${operator ? "" : "AND customer_user_id=$2"}`, operator ? [id] : [id, p.userId]);
+    const r = await c.query(`SELECT ${columns} FROM white_label_requests WHERE id=$1
+      ${operator ? "AND configuration->>'sandboxOnly' IS DISTINCT FROM 'true'" : "AND customer_user_id=$2"}`,
+      operator ? [id] : [id, p.userId]);
     if (!r.rowCount) throw new HttpError(404, "White Label order not found.");
     const history = await c.query(`SELECT ${eventColumns} FROM white_label_events WHERE request_id=$1 ${operator ? "" : "AND visibility='customer'"} ORDER BY created_at,id`, [id]);
     return { order: await orderView(c, r.rows[0]), history: history.rows.map(row =>
@@ -210,8 +222,9 @@ export function appendNote(p: Principal, id: string, raw: WhiteLabelNoteInput) {
   const note = AddWhiteLabelNoteBody.parse(raw);
   if (!note.message.trim()) throw new HttpError(400, "Write a note message.");
   return withDatabase(requestContext(p, true), async c => {
-    const r = await c.query("SELECT id FROM white_label_requests WHERE id=$1 FOR UPDATE", [id]);
+    const r = await c.query("SELECT id,configuration FROM white_label_requests WHERE id=$1 FOR UPDATE", [id]);
     if (!r.rowCount) throw new HttpError(404, "White Label order not found.");
+    if (isSandboxRequest(r.rows[0].configuration)) throw new HttpError(404, "White Label order not found.");
     const added = await event(c, p, id, "note", note.message.trim(), note.visibility);
     if (note.visibility === "customer") await c.query("UPDATE white_label_requests SET operator_note=$2,updated_at=now() WHERE id=$1", [id, note.message.trim()]);
     return added;

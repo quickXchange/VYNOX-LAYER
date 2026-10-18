@@ -2,7 +2,7 @@ import { withDatabase, type DatabaseClient } from "@workspace/db";
 import { publishedOffers } from "./pricing-publication";
 import { z } from "zod";
 import { requireSuperAdmin, type Principal } from "../authentication/service";
-import { requestContext, event } from "../customer/order-model";
+import { requestContext, event, isSandboxRequest } from "../customer/order-model";
 import { catalogSelection, whiteLabelCatalog } from "../customer/order-catalog";
 import { HttpError } from "../../lib/errors";
 import { audit } from "../../lib/audit";
@@ -44,6 +44,7 @@ async function owned(c: DatabaseClient, p: Principal, id: string) {
   const q = await c.query(`SELECT id,customer_user_id,configuration,status,monthly_price,setup_price,currency,customization_price,custom_design_decision,approved_configuration FROM white_label_requests
     WHERE id=$1 AND (customer_user_id=$2 OR $3) FOR UPDATE`, [id, p.userId, p.role === "super_admin"]);
   if (!q.rowCount) throw new HttpError(404, "Order not found.");
+  if (isSandboxRequest(q.rows[0].configuration)) throw new HttpError(404, "Order not found.");
   return q.rows[0];
 }
 async function billing(c: DatabaseClient, row: any) {
@@ -135,6 +136,8 @@ export function settle(p: Principal, invoiceId: string, raw: unknown, reject = f
   });
 }
 export async function assertPaid(c: DatabaseClient, orderId: string, quotation?: any, selection?: any) {
+  const request = await c.query("SELECT configuration FROM white_label_requests WHERE id=$1", [orderId]);
+  if (isSandboxRequest(request.rows[0]?.configuration)) throw new HttpError(404, "Order not found.");
   const q = await c.query("SELECT status,pricing_snapshot FROM qxlayer_commerce.invoices WHERE order_id=$1", [orderId]);
   const paid = q.rows[0];
   if (paid?.status !== "paid") throw new HttpError(409, "Verified payment is required before approval, setup or delivery.");

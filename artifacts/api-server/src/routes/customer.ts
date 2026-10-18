@@ -35,7 +35,9 @@ router.get("/customer/white-label-requests/:requestId", async (req, res) => res.
 router.get("/operator/white-label-requests/:requestId", async (req, res) => res.json(GetWhiteLabelRequestResponse.parse(await orderDetail(principalFrom(res), GetWhiteLabelRequestParams.parse(req.params).requestId, true))));
 router.post("/operator/white-label-requests/:requestId/notes", async (req, res) => res.status(201).json(AddWhiteLabelNoteResponse.parse(await appendNote(principalFrom(res), AddWhiteLabelNoteParams.parse(req.params).requestId, AddWhiteLabelNoteBody.parse(req.body)))));
 router.get("/customer/white-label-requests", async (_req, res) => res.json(ListMyWhiteLabelRequestsResponse.parse(await listRequests(principalFrom(res)))));
-router.post("/customer/white-label-requests", async (req, res) => res.status(201).json(SubmitWhiteLabelRequestResponse.parse(await submitRequest(principalFrom(res), SubmitWhiteLabelRequestBody.parse(req.body)))));
+router.post("/customer/white-label-requests", async (req, res) => res.status(201).json(SubmitWhiteLabelRequestResponse.parse(await submitRequest(
+  principalFrom(res), SubmitWhiteLabelRequestBody.parse(req.body), res.locals.preparationSandboxWrite === true,
+))));
 router.get("/operator/white-label-requests", async (_req, res) => res.json(ListWhiteLabelRequestsResponse.parse(await listRequests(principalFrom(res), true))));
 router.put("/operator/white-label-requests/:requestId/review", async (req, res) => res.json(ReviewWhiteLabelRequestResponse.parse(await reviewRequest(principalFrom(res), ReviewWhiteLabelRequestParams.parse(req.params).requestId, ReviewWhiteLabelRequestBody.parse(req.body)))));
 router.post("/operator/white-label-requests/:requestId/provision", async (req, res) => res.json(ProvisionWhiteLabelRequestResponse.parse(await deliverRequest(principalFrom(res), ProvisionWhiteLabelRequestParams.parse(req.params).requestId, ProvisionWhiteLabelRequestBody.parse(req.body).tenantId))));

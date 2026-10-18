@@ -12,6 +12,10 @@ tenant_id AS "tenantId",created_at AS "createdAt",updated_at AS "updatedAt"`;
 export const attachmentColumns = `id,file_name AS "fileName",content_type AS "contentType",size,category,created_at AS "createdAt"`;
 export const eventColumns = `id,kind,author_user_id AS author,visibility,message,status,created_at AS "createdAt"`;
 export const requestContext = (p: Principal, write = false) => ({ actorId: p.userId, isSuperAdmin: p.role === "super_admin", canWrite: write });
+export function isSandboxRequest(configuration: unknown): boolean {
+  return !!configuration && typeof configuration === "object" &&
+    (configuration as Record<string, unknown>).sandboxOnly === true;
+}
 const terminal = ["delivered", "rejected", "cancelled"];
 const transitions: Record<string, string[]> = {
   new: ["reviewing", "waiting_for_client", "quote_ready", "approved", "rejected", "cancelled"],
@@ -65,7 +69,8 @@ export async function event(c: DatabaseClient, p: Principal, id: string, kind: "
   // Fresh unique event ID: avoid ON CONFLICT, which also checks private SELECT
   // policies and would deny an otherwise valid customer-only INSERT.
   if (visibility === "customer") await c.query(`INSERT INTO qxlayer_commerce.email_outbox(event_id,order_id,customer_user_id,subject,message)
-    SELECT $1,id,customer_user_id,'VYNOX LAYER order WL-'||lpad(order_number::text,6,'0'), $3 FROM white_label_requests WHERE id=$2`,
+    SELECT $1,id,customer_user_id,'VYNOX LAYER order WL-'||lpad(order_number::text,6,'0'), $3 FROM white_label_requests
+    WHERE id=$2 AND configuration->>'sandboxOnly' IS DISTINCT FROM 'true'`,
     [r.rows[0].id, id, message]);
   return r.rows[0];
 }
