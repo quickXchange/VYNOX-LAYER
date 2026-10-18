@@ -64,7 +64,15 @@ export function supabaseObject(key: string, env = process.env, fetcher: typeof f
   };
 }
 
+let testObjectFactory: ((key: string) => ReturnType<typeof supabaseObject>) | undefined;
+/** Explicit dependency injection for disposable CI only, never a runtime fallback. */
+export function installDisposableTestObjectStore(factory: NonNullable<typeof testObjectFactory>) {
+  if (process.env.NODE_ENV !== "test" || process.env.QXLAYER_MIGRATION_TEST !== "true")
+    throw new Error("Disposable test storage is forbidden outside CI tests.");
+  testObjectFactory = factory;
+}
 export function privateObject(key: string) {
+  if (testObjectFactory) return testObjectFactory(key);
   const provider = process.env.QXLAYER_STORAGE_PROVIDER ?? "replit";
   if (provider === "supabase") return supabaseObject(key);
   if (provider !== "replit") throw new HttpError(503, "Unknown storage provider.");

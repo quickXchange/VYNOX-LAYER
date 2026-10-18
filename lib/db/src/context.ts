@@ -32,7 +32,7 @@ export async function withDatabase<T>(
   try {
     const role = runtimeRole();
     if (role === "qxlayer_runtime") {
-      await client.query(context.repeatableRead ? "BEGIN ISOLATION LEVEL REPEATABLE READ" : context.canWrite === true ? "BEGIN" : "BEGIN READ ONLY");
+      await client.query(context.repeatableRead ? `BEGIN ISOLATION LEVEL REPEATABLE READ${context.canWrite === true ? "" : " READ ONLY"}` : context.canWrite === true ? "BEGIN" : "BEGIN READ ONLY");
       const expectedLogin = publicPreparation() ? "qxlayer_public_app" : "qxlayer_app";
       const login = await client.query(`SELECT session_user=$1 AND NOT r.rolsuper
         AND NOT r.rolbypassrls AND NOT r.rolinherit AND NOT r.rolcreaterole AND NOT r.rolcreatedb
@@ -44,7 +44,7 @@ export async function withDatabase<T>(
     } else {
       // Static commands only: batch transport, not authorization or guard results.
       // Every transaction still performs the full schema/policy/grant readback.
-      await client.query(`${context.repeatableRead ? "BEGIN ISOLATION LEVEL REPEATABLE READ" : context.canWrite === true ? "BEGIN" : "BEGIN READ ONLY"}; SET LOCAL ROLE pg_database_owner; SET LOCAL search_path=pg_catalog,public; SET LOCAL row_security=on`);
+      await client.query(`${context.repeatableRead ? `BEGIN ISOLATION LEVEL REPEATABLE READ${context.canWrite === true ? "" : " READ ONLY"}` : context.canWrite === true ? "BEGIN" : "BEGIN READ ONLY"}; SET LOCAL ROLE pg_database_owner; SET LOCAL search_path=pg_catalog,public; SET LOCAL row_security=on`);
     }
     const security = await client.query<{ safe: boolean }>(`
       SELECT NOT r.rolsuper AND NOT r.rolbypassrls AND

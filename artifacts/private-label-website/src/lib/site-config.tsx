@@ -16,6 +16,6 @@ export function useReleasedSiteConfig(slug: string) {
       return migrateSiteSnapshot(await r.json());
     },
     enabled: !!slug, retry: false, staleTime: 0, refetchOnMount: 'always',
-    refetchInterval: 15_000, refetchOnWindowFocus: true, refetchOnReconnect: true,
+    refetchInterval: 15_000, refetchIntervalInBackground: true, refetchOnWindowFocus: true, refetchOnReconnect: true,
   });
 }

@@ -30,7 +30,7 @@ export function TenantReleases({ tenantId, readOnly }: { tenantId: string; readO
   const inv = useInvalidateTenant();
   const { toast } = useToast();
   const key = ['/tenants', tenantId, 'releases'];
-  const q = useQuery({ queryKey: key, queryFn: () => call<Releases>('GET', `/tenants/${encodeURIComponent(tenantId)}/releases`), retry: false });
+  const q = useQuery({ queryKey: key, queryFn: () => call<Releases>('GET', `/tenants/${encodeURIComponent(tenantId)}/releases`), retry: false, staleTime: 0, refetchInterval: 15_000, refetchOnWindowFocus: true });
   const [confirm, setConfirm] = useState<{ id: string; version: number } | null>(null);
   const [previewing, setPreviewing] = useState(false);
   const refresh = () => { qc.invalidateQueries({ queryKey: key }); inv(tenantId); };

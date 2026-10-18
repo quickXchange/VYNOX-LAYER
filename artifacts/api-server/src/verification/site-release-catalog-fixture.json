@@ -1,0 +1,273 @@
+{
+  "modules": [
+    {
+      "key": "crypto_exchange",
+      "name": "Crypto Exchange",
+      "description": "Exchange, swap, and convert product entitlement. Engine implementation is deferred.",
+      "category": "Financial",
+      "sandboxAvailable": true,
+      "lifecycle": "sandbox_only",
+      "requiresAssetNetworks": true,
+      "features": [
+        {
+          "key": "swap",
+          "label": "swap",
+          "dependsOn": [
+            "crypto_exchange"
+          ]
+        },
+        {
+          "key": "convert",
+          "label": "convert",
+          "dependsOn": [
+            "crypto_exchange"
+          ]
+        },
+        {
+          "key": "buy",
+          "label": "Buy (Buy/Sell)",
+          "dependsOn": [
+            "crypto_exchange"
+          ]
+        },
+        {
+          "key": "sell",
+          "label": "Sell (Buy/Sell)",
+          "dependsOn": [
+            "crypto_exchange"
+          ]
+        }
+      ],
+      "limits": []
+    },
+    {
+      "key": "website",
+      "name": "Website",
+      "description": "Shared dynamically branded sandbox website. No payment execution.",
+      "category": "Channels",
+      "sandboxAvailable": true,
+      "lifecycle": "core_ready",
+      "requiresAssetNetworks": false,
+      "features": [],
+      "limits": []
+    }
+  ],
+  "definitions": [
+    {
+      "key": "android_app",
+      "label": "Android App",
+      "kind": "feature",
+      "value_type": "boolean"
+    },
+    {
+      "key": "api_keys",
+      "label": "Sandbox API key configuration",
+      "kind": "feature",
+      "value_type": "boolean"
+    },
+    {
+      "key": "articles",
+      "label": "Articles / Content",
+      "kind": "feature",
+      "value_type": "boolean"
+    },
+    {
+      "key": "buy",
+      "label": "Buy",
+      "kind": "feature",
+      "value_type": "boolean"
+    },
+    {
+      "key": "cloud_mining",
+      "label": "Cloud Mining",
+      "kind": "feature",
+      "value_type": "boolean"
+    },
+    {
+      "key": "convert",
+      "label": "Convert",
+      "kind": "feature",
+      "value_type": "boolean"
+    },
+    {
+      "key": "crypto_card",
+      "label": "Crypto Card",
+      "kind": "feature",
+      "value_type": "boolean"
+    },
+    {
+      "key": "crypto_engine",
+      "label": "Crypto Engine",
+      "kind": "feature",
+      "value_type": "boolean"
+    },
+    {
+      "key": "crypto_exchange",
+      "label": "Crypto Exchange",
+      "kind": "feature",
+      "value_type": "boolean"
+    },
+    {
+      "key": "crypto_payments",
+      "label": "Crypto Payments",
+      "kind": "feature",
+      "value_type": "boolean"
+    },
+    {
+      "key": "dex",
+      "label": "DEX",
+      "kind": "feature",
+      "value_type": "boolean"
+    },
+    {
+      "key": "earn",
+      "label": "Earn",
+      "kind": "feature",
+      "value_type": "boolean"
+    },
+    {
+      "key": "ios_app",
+      "label": "iOS App",
+      "kind": "feature",
+      "value_type": "boolean"
+    },
+    {
+      "key": "kolo",
+      "label": "Kolo",
+      "kind": "feature",
+      "value_type": "boolean"
+    },
+    {
+      "key": "max_api_keys",
+      "label": "Active API keys",
+      "kind": "limit",
+      "value_type": "integer"
+    },
+    {
+      "key": "max_monthly_transactions",
+      "label": "Monthly sandbox transaction units",
+      "kind": "limit",
+      "value_type": "integer"
+    },
+    {
+      "key": "max_monthly_volume",
+      "label": "Monthly volume in plan currency",
+      "kind": "limit",
+      "value_type": "decimal"
+    },
+    {
+      "key": "max_payment_methods",
+      "label": "Payment method configurations",
+      "kind": "limit",
+      "value_type": "integer"
+    },
+    {
+      "key": "max_staff",
+      "label": "Staff members",
+      "kind": "limit",
+      "value_type": "integer"
+    },
+    {
+      "key": "max_supported_assets",
+      "label": "Supported assets",
+      "kind": "limit",
+      "value_type": "integer"
+    },
+    {
+      "key": "max_supported_networks",
+      "label": "Supported networks",
+      "kind": "limit",
+      "value_type": "integer"
+    },
+    {
+      "key": "max_webhooks",
+      "label": "Webhook configurations",
+      "kind": "limit",
+      "value_type": "integer"
+    },
+    {
+      "key": "merchant_api",
+      "label": "Merchant API",
+      "kind": "feature",
+      "value_type": "boolean"
+    },
+    {
+      "key": "quickex",
+      "label": "Quickex",
+      "kind": "feature",
+      "value_type": "boolean"
+    },
+    {
+      "key": "quickex_customer_credentials",
+      "label": "Customer-owned Quickex credentials",
+      "kind": "feature",
+      "value_type": "boolean"
+    },
+    {
+      "key": "rpc_nodes",
+      "label": "RPC / Nodes",
+      "kind": "feature",
+      "value_type": "boolean"
+    },
+    {
+      "key": "sell",
+      "label": "Sell",
+      "kind": "feature",
+      "value_type": "boolean"
+    },
+    {
+      "key": "staking",
+      "label": "Staking",
+      "kind": "feature",
+      "value_type": "boolean"
+    },
+    {
+      "key": "swap",
+      "label": "Swap",
+      "kind": "feature",
+      "value_type": "boolean"
+    },
+    {
+      "key": "telegram_bot",
+      "label": "Telegram Bot (deferred)",
+      "kind": "feature",
+      "value_type": "boolean"
+    },
+    {
+      "key": "telegram_mini_app",
+      "label": "Telegram Mini App (deferred)",
+      "kind": "feature",
+      "value_type": "boolean"
+    },
+    {
+      "key": "webhooks",
+      "label": "Webhook configuration",
+      "kind": "feature",
+      "value_type": "boolean"
+    },
+    {
+      "key": "website",
+      "label": "Private-label website",
+      "kind": "feature",
+      "value_type": "boolean"
+    },
+    {
+      "key": "whatsapp_bot",
+      "label": "WhatsApp Bot",
+      "kind": "feature",
+      "value_type": "boolean"
+    },
+    {
+      "key": "whitebit",
+      "label": "WhiteBIT",
+      "kind": "feature",
+      "value_type": "boolean"
+    },
+    {
+      "key": "whitebit_customer_credentials",
+      "label": "Customer-owned WhiteBIT credentials",
+      "kind": "feature",
+      "value_type": "boolean"
+    }
+  ]
+}

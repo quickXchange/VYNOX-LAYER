@@ -5,9 +5,10 @@ import { connectionOptions, runtimeRole } from "../../../../lib/db/src/connectio
 import { assertExternalEnvironment } from "./external-environment";
 import { applicationTableNames } from "../../../../lib/db/src/schema-table-names";
 import reference from "../../../../deploy/migrations/rls-reference.json";
+import releaseReference from "../../../../deploy/migrations/site-release-reference.json";
 
 test("Existing Replit database defaults stay unchanged; external runtime fails closed", () => {
-  assert.deepEqual(applicationTableNames().sort(),reference.tables.map(t=>t.name).sort(),"Code table coverage requires matching reviewed migrations.");
+  assert.deepEqual(applicationTableNames().sort(),[...reference.tables,...releaseReference.tables].map(t=>t.name).sort(),"Code table coverage requires matching reviewed migrations.");
   const env = {DATABASE_URL:"postgresql://synthetic@localhost/disposable"};
   assert.deepEqual(connectionOptions(env), {connectionString:env.DATABASE_URL});
   assert.equal(runtimeRole(env),"pg_database_owner");

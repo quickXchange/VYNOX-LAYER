@@ -4,6 +4,8 @@ import { rowPolicies } from "../../../../lib/db/src/row-security";
 if (process.env.NODE_ENV !== "development" || process.env.QXLAYER_DATABASE_PROVIDER === "supabase")
   throw new Error("This installer is Development-only. Production requires reviewed external migration.");
 try {
+  const target = (await pool.query("SELECT current_database() AS db,current_user AS actor")).rows[0];
+  if (target.db !== "heliumdb" || target.actor !== "postgres") throw new Error("Refusing an unrecognized Development database target.");
   await pool.query(await readFile("../../deploy/migrations/007-tenant-site-releases.sql", "utf8"));
   for (const name of ["tenant_releases", "tenant_release_assets"]) {
     const policy = rowPolicies(name, true);

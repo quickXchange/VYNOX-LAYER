@@ -4,6 +4,7 @@
 # No need to store the pnpm store twice.
 .local
 /generated-artifacts/
+/.cache/
 /.vercel/
 /deploy/env/*.env
 /attached_assets/QuickXchange-VYNOX-LAYER-Migration-Package_1792189982746.zip

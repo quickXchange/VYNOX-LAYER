@@ -21,7 +21,10 @@ export function safeImage(input: Buffer, type: string) {
     const sanitized = sanitizeHtml(text, { allowedTags: ["svg", "g", "path", "rect", "circle", "ellipse", "line", "polyline", "polygon", "title", "desc"],
       allowedAttributes: { svg: ["xmlns", "viewBox", "width", "height"], "*": ["d", "x", "y", "x1", "x2", "y1", "y2", "cx", "cy", "r", "rx", "ry", "width", "height", "points", "fill", "stroke", "stroke-width", "opacity", "transform", "fill-rule"] },
       allowedSchemes: [], parser: { lowerCaseTags: false, lowerCaseAttributeNames: false },
-      transformTags: { "*": (tagName, attributes) => ({ tagName, attribs: Object.fromEntries(Object.entries(attributes).filter(([, v]) => !/url\s*\(|javascript:|data:|https?:|[<>&]/i.test(v))) }) },
+      transformTags: { "*": (tagName, attributes) => ({ tagName, attribs: {
+        ...Object.fromEntries(Object.entries(attributes).filter(([k, v]) => k !== "xmlns" && !/url\s*\(|javascript:|data:|https?:|[<>&]/i.test(v))),
+        ...(tagName === "svg" ? { xmlns: "http://www.w3.org/2000/svg" } : {}),
+      } }) },
     });
     if (!/<svg(?:\s|>)/.test(sanitized)) throw new HttpError(400, "An SVG root is required.");
     bytes = Buffer.from(sanitized);
@@ -138,7 +141,11 @@ export async function publishAssets(c: DatabaseClient, tenantId: string, config:
 export async function releasedAsset(tenantId: string, name: string) {
   if (!/^[a-f0-9-]{36}$/.test(tenantId) || !/^[a-f0-9]{64}\.(png|jpg|svg|webp|gif|ico)$/.test(name)) throw new HttpError(404, "Asset not found.");
   return withDatabase({ actorId: "public-release-asset", tenantId }, async c => {
-    const r = await c.query("SELECT content_type FROM tenant_release_assets WHERE tenant_id=$1 AND checksum=$2 AND extension=$3 AND published_at IS NOT NULL", [tenantId, name.split(".")[0], name.split(".")[1]]);
+    const r = await c.query(`SELECT a.content_type FROM tenant_release_assets a JOIN tenants t ON t.id=a.tenant_id
+      WHERE a.tenant_id=$1 AND a.checksum=$2 AND a.extension=$3 AND a.published_at IS NOT NULL AND t.status='active'
+      AND ($4 OR EXISTS(SELECT 1 FROM white_label_requests w WHERE w.tenant_id=t.id AND w.status='delivered'))
+      AND NOT EXISTS(SELECT 1 FROM white_label_requests w WHERE w.tenant_id=t.id AND w.status<>'delivered')`,
+      [tenantId, name.split(".")[0], name.split(".")[1], process.env.NODE_ENV === "development" || process.env.NODE_ENV === "test"]);
     if (!r.rowCount) throw new HttpError(404, "Asset not found.");
     return { file: privateFile(`public-assets/${tenantId}/${name}`), contentType: r.rows[0].content_type as string };
   });

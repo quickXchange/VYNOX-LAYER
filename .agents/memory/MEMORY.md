@@ -66,3 +66,4 @@
 - [Reference seed idempotency](reference-seed-idempotency.md) — schema-only releases must not replay identical previously applied seed data over later operator edits or deletions.
 - [Exchange group selectors](exchange-group-selectors.md) — typed Crypto/Fiat groups must survive scope reconciliation and unrelated settings saves, with server-consistent specificity.
 - [Semantic JSONB replay](semantic-jsonb-replay.md) — idempotency compares normalized field values, never JSON object insertion order.
+- [Tenant release boundary](tenant-release-boundary.md) — deliberate immutable data releases; preserve operational/Owner safety and independently authored customer text.
