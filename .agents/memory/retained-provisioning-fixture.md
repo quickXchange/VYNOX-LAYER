@@ -37,3 +37,20 @@ verification. Preserve the demo customer and all its review data. Use the
 existing Owner account for Super Admin review without changing its password,
 MFA or permissions. Do not publish synthetic plans globally merely to enable
 customer design selection; use the approved private-quotation lifecycle.
+
+## Official-domain Owner viewing
+
+The user approved Owner-only access to the retained demo's private Customer
+Admin on vynoxlayer.com. Keep its public website, public demo access and other
+accounts blocked there. This approval is for viewing the admin; it does not
+remove the existing business-write or financial-execution holds.
+
+**Why:** The public Production fixture exclusion also blocked the original
+Owner's private admin requests, making the existing Open Customer Admin link
+fail. The user explicitly chose Owner-only official-domain access rather than
+protected-preview-only access.
+
+**How to apply:** Require the original canonical Owner identity, an active
+Super Admin role and the normal session/MFA checks. Never substitute generic
+Super Admin access, weaken MFA, expose the public fixture, or modify the
+separate protected preview to satisfy this permission.

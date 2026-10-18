@@ -20,7 +20,7 @@
 - [QuickXchange provider reuse](migration-project-roles.md) — approved verified source-only package; tenant-scoped reuse without sharing business data or credentials.
 - [Preview request security](preview-request-security.md) — sandboxed forms may have opaque origins; Development ingress and direct Production cookie behavior must be distinguished.
 - [Approved Exchange master](master-exchange-template.md) — current NovaX is the approved shared master; preserve its design and use isolated tenant configuration, not frontend copies.
-- [Retained customer demos](retained-provisioning-fixture.md) — preserve Asterlane Development and separate Solara protected external Sandbox demo; no custom domain required for Solara.
+- [Retained customer demos](retained-provisioning-fixture.md) — preserve Asterlane and Solara; official-domain Solara viewing is original-Owner-only, never public access.
 - [Setup website previews](setup-website-preview-policy.md) — shared website previews require live operator authority, tenant isolation and no activation, delivery or mutation.
 - [Development runtime detection](development-runtime-detection.md) — REPLIT_ENVIRONMENT can say production in the workspace; use the service’s explicit run mode for preview guards.
 - [Provider foundation safety](provider-foundation-safety.md) — catalog/configuration is not connectivity; real adapters, vaults, webhooks and idempotent execution require separate approval.
