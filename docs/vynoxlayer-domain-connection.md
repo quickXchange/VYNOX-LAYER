@@ -1,4 +1,20 @@
-# Official domain connection — blocked at registrar access
+# Official domain connection — DNS ready, HTTPS pending
+
+## Latest readback — 2026-10-18
+
+- Both apex and www now resolve to `64.29.17.1` and `216.198.79.1`.
+- Vercel reports both domains verified, `misconfigured: false`, with no conflicts.
+- www is configured through A records, not CNAME; Vercel accepts this configuration.
+- Project configuration retains www → apex HTTP 308.
+- Direct HTTPS requests to both domains fail during the TLS handshake.
+  Certificate readiness, actual redirect behavior and frontend/API functionality
+  on the new domain remain unverified.
+- No DNS, hosting, application, identity or database changes were made during
+  this readback. Registrar API automation is no longer a prerequisite for the
+  presently accepted web DNS configuration.
+
+The sections below record the earlier preparation and blockers; their
+DNS-not-ready observations are superseded by the readback above.
 
 ## Authorized scope
 
