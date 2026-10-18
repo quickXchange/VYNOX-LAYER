@@ -29,10 +29,20 @@ router.use("/public/sites", (_req, res, next) => {
 });
 router.get("/public/sites/:slug", async (req, res) => {
   const { slug } = GetPublicSiteParams.parse(req.params);
-  res.json(GetPublicSiteResponse.parse(await getPublicSite(slug, undefined, await authorizedWebsitePreview(req, slug))));
+  const site = await getPublicSite(slug, undefined, await authorizedWebsitePreview(req, slug));
+  if ("releaseChecksum" in site) res.set({ "Cache-Control": "no-cache", ETag: `"${site.releaseChecksum}"` });
+  res.json(GetPublicSiteResponse.parse(site));
 });
 router.get("/public/sites/:slug/branding/:kind", async (req, res) => {
-  const { file, contentType } = await publicBrandingFile(req.params.slug, req.params.kind, await authorizedWebsitePreview(req, req.params.slug));
+  const preview = await authorizedWebsitePreview(req, req.params.slug);
+  if (!preview) {
+    const { releasedConfig } = await import("../modules/website/release-config");
+    const live = await releasedConfig(req.params.slug);
+    const url = req.params.kind === "logo" ? live.config.site.logoUrl : req.params.kind === "favicon" ? live.config.site.websiteSettings.faviconUrl : null;
+    if (!url) { res.status(404).end(); return; }
+    res.set("Cache-Control", "no-store").redirect(302, url); return;
+  }
+  const { file, contentType } = await publicBrandingFile(req.params.slug, req.params.kind, preview);
   res.set({ "Content-Type": contentType, "X-Content-Type-Options": "nosniff", "Content-Security-Policy": "default-src 'none'", "Cache-Control": "no-store" });
   file.createReadStream().on("error", () => { if (!res.headersSent) res.status(404).end(); else res.destroy(); }).pipe(res);
 });

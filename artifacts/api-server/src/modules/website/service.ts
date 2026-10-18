@@ -1,4 +1,5 @@
 import { withDatabase } from "@workspace/db";
+import { GetPublicSiteResponse, GetPublicCapabilityResponse, type PublicSite } from "@workspace/api-zod";
 import { HttpError } from "../../lib/errors";
 import { readTenant } from "../tenants/service";
 import { requireFeature, resolveEntitlements } from "../entitlements/resolver";
@@ -31,8 +32,19 @@ export async function deliveredPublicSite(slug: string): Promise<boolean> {
     return !!result.rowCount;
   });
 }
+export function getPublicSite(slug: string, feature?: undefined, preview?: WebsitePreview): Promise<PublicSite>;
+export function getPublicSite(slug: string, feature: string, preview?: WebsitePreview): Promise<ReturnType<typeof GetPublicCapabilityResponse.parse>>;
 export async function getPublicSite(slug: string, feature?: string, preview?: WebsitePreview) {
+  const { draftConfig, releasedConfig } = await import("./release-config");
   const id = await publicTenantId(slug, preview);
+  if (!preview) {
+    const live = await releasedConfig(slug);
+    if (feature) {
+      if (!live.config.site.features[feature]) throw new HttpError(403, "This capability is not included in the released site.");
+      return { feature, status: feature === "crypto_exchange" ? "sandbox_ready" : "foundation_only", message: "Released Sandbox presentation only. No financial execution is enabled." };
+    }
+    return { ...live.config.site, schema_version: 1, releaseChecksum: live.checksum, preview: false };
+  }
   return withDatabase({ actorId: "public-site", tenantId: id, isSuperAdmin: !!preview }, async (client) => {
     const e = await resolveEntitlements(client, id);
     if ((!preview && e.tenantStatus !== "active") || e.status !== "active" || !e.features.website) throw new HttpError(404, "Website not available.");
@@ -52,13 +64,15 @@ export async function getPublicSite(slug: string, feature?: string, preview?: We
        WHERE t.tenant_id=$1 ORDER BY a.symbol,n.name`, [id],
     );
     // Never serialize t/e wholesale: their plan, usage, overrides, IDs and staff are private.
-    return {
+    const draft = await draftConfig(client, id);
+    return GetPublicSiteResponse.parse({
+      ...draft.site, schema_version: 1, preview: true,
       tenantSlug: t.slug, brandName: t.brandName, logoUrl: previewBrandingUrl(t.logoUrl, slug, preview),
       primaryColor: t.primaryColor, accentColor: t.accentColor, themeMode: t.themeMode,
       domain: t.domain, sandboxOnly: true, websiteSettings: {
         ...t.websiteSettings, faviconUrl: previewBrandingUrl(t.websiteSettings.faviconUrl, slug, preview),
       },
       features: publicFeatures, assets: assets.rows,
-    };
+    });
   });
 }

@@ -34,6 +34,11 @@ export function rowPolicies(name: string, tenantOwned: boolean) {
   } else if (name === "tenant_memberships") {
     read = `${root} OR (${scope}) OR (${tenant}='' AND clerk_user_id=${actor})`;
     write = `${root} OR ((${scope}) AND ${setting("can_manage_staff")}='true')`;
+  } else if (name === "tenant_releases" || name === "tenant_release_assets") {
+    // No public-slug predicate: the server exposes only an explicitly curated
+    // snapshot/asset. An anon browser cannot inspect drafts, history or object keys.
+    read = `${root} OR (${scope})`;
+    write = `${root} OR (${scope})`;
   } else if (name === "tenant_domains") {
     // No tenants subquery here: tenants' domain lookup must remain acyclic.
     read = `${root} OR (${scope}) OR (${domain}<>'' AND domain=${domain} AND status='verified')`;

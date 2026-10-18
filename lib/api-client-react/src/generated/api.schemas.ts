@@ -2900,6 +2900,44 @@ export interface MutationStatus {
   ok: boolean;
 }
 
+export interface TenantReleaseMetadata {
+  id: string;
+  version: number;
+  checksum: string;
+  createdBy: string;
+  createdAt: string;
+  diff: string[];
+}
+
+export interface ReleaseChecklistItem {
+  key: string;
+  label: string;
+  ready: boolean;
+  message: string;
+}
+
+export interface TenantReleaseState {
+  /** @nullable */
+  liveReleaseId: string | null;
+  /** @nullable */
+  liveChecksum: string | null;
+  draftChecksum: string;
+  checklist: ReleaseChecklistItem[];
+  history: TenantReleaseMetadata[];
+}
+
+export type ReleasedSiteConfigAddonsItem = {
+  key: string;
+  name: string;
+};
+
+export type ReleasedSiteConfigDisplayLimits = {[key: string]: string | number | boolean | null};
+
+export type ReleasedSiteConfigProvidersItem = {
+  provider: string;
+  configured: boolean;
+};
+
 export type PublicSiteThemeMode = typeof PublicSiteThemeMode[keyof typeof PublicSiteThemeMode];
 
 
@@ -2912,6 +2950,11 @@ export const PublicSiteThemeMode = {
 export type PublicSiteFeatures = {[key: string]: boolean};
 
 export interface PublicSite {
+  schema_version?: number;
+  releaseChecksum?: string;
+  preview?: boolean;
+  defaultLanguage?: string;
+  supportedLanguages?: string[];
   tenantSlug: string;
   brandName: string;
   /** @nullable */
@@ -2925,6 +2968,15 @@ export interface PublicSite {
   websiteSettings: WebsiteSettings;
   features: PublicSiteFeatures;
   assets: AssetNetwork[];
+}
+
+export interface ReleasedSiteConfig {
+  schema_version: number;
+  site: PublicSite;
+  exchange: PublicExchange | null;
+  addons: ReleasedSiteConfigAddonsItem[];
+  displayLimits: ReleasedSiteConfigDisplayLimits;
+  providers: ReleasedSiteConfigProvidersItem[];
 }
 
 export interface CapabilityStatus {
@@ -3370,6 +3422,20 @@ export interface TestTenantIntegrationInput {
      */
   reason: string;
 }
+
+export type GetReleasedSiteConfigParams = {
+slug?: string;
+host?: string;
+};
+
+export type PreviewTenantDraft200 = {
+  url: string;
+  expiresAt: string;
+};
+
+export type UploadTenantDraftAsset201 = {
+  url: string;
+};
 
 export type GetPhase1Catalog200PlansItem = { [key: string]: unknown };
 

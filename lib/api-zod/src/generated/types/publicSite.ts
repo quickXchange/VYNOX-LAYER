@@ -11,6 +11,11 @@ import type { PublicSiteThemeMode } from './publicSiteThemeMode';
 import type { WebsiteSettings } from './websiteSettings';
 
 export interface PublicSite {
+  schema_version?: number;
+  releaseChecksum?: string;
+  preview?: boolean;
+  defaultLanguage?: string;
+  supportedLanguages?: string[];
   tenantSlug: string;
   brandName: string;
   /** @nullable */

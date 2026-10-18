@@ -3,6 +3,7 @@ import { ArrowDownUp, ChevronDown, Info, ShieldCheck } from 'lucide-react';
 import type { ExchangeOrderReview, ExchangeQuote, PublicSite } from '@workspace/api-client-react';
 import { useGetPublicExchange, getGetPublicExchangeQueryKey, createSandboxQuote, createSandboxOrder, reviewSandboxOrder } from '@workspace/api-client-react';
 import { websitePreviewRequest } from '../../lib/development-preview';
+import { useCurrentSiteConfig } from '../../lib/site-config';
 import type { Caps, ExchangeTab } from '../../lib/capabilities';
 import { AMOUNT, buildPairs, isTab, uniqueOptions, type Option, type Pair } from '../../lib/exchange-model';
 import { EMPTY_DETAILS, toCustomerDetails, validateDetails, type DetailsForm, type PayoutKind } from '../../lib/exchange-details';
@@ -51,7 +52,9 @@ function Side({ id, label, option, value, onValue, readOnly, onPick, error, disa
 }
 
 export function LiveWidget({ site, caps, allowedActions, initialAction, onRateInfo }: { site: PublicSite; caps: Caps; allowedActions?: ExchangeTab[]; initialAction?: ExchangeTab; onRateInfo?: (info: RateInfo) => void }) {
-  const exchangeQ = useGetPublicExchange(site.tenantSlug, { request: websitePreviewRequest(site.tenantSlug), query: { queryKey: getGetPublicExchangeQueryKey(site.tenantSlug), refetchInterval: 15000 } });
+  const snapshot = useCurrentSiteConfig();
+  const networkExchangeQ = useGetPublicExchange(site.tenantSlug, { request: websitePreviewRequest(site.tenantSlug), query: { enabled: !snapshot, queryKey: getGetPublicExchangeQueryKey(site.tenantSlug), refetchInterval: snapshot ? false : 15000 } });
+  const exchangeQ = snapshot ? { ...networkExchangeQ, data: snapshot.exchange ?? undefined, isLoading: false, isError: !snapshot.exchange } : networkExchangeQ;
   const config = exchangeQ.data;
   const allTabs = config ? config.actions.filter(isTab) : [];
   const tabs = allowedActions ? allTabs.filter((t) => allowedActions.includes(t)) : allTabs;

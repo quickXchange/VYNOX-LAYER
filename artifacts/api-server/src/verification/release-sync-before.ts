@@ -18,7 +18,7 @@ try {
   const before = await getPublicSite(tenant.slug);
   const t = await getTenant(p, tenant.id);
   await saveBrand(p, tenant.id, { brandName: "Unreleased Draft Brand", logoUrl: "https://placehold.co/160x64/png?text=Draft",
-    primaryColor: "#153F6B", accentColor: "#146747", themeMode: t.themeMode,
+    primaryColor: "#153F6B", accentColor: "#146747", themeMode: t.themeMode as "light" | "dark" | "system",
     defaultLanguage: t.defaultLanguage, supportedLanguages: t.supportedLanguages });
   const after = await getPublicSite(tenant.slug);
   assert.equal(after.brandName, "Unreleased Draft Brand");

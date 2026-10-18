@@ -17,6 +17,70 @@ tags:
   - name: catalog
     description: Sandbox product, asset, and network catalogs
 paths:
+  /public/site-config:
+    get:
+      operationId: getReleasedSiteConfig
+      parameters:
+        - {name: slug, in: query, schema: {type: string}}
+        - {name: host, in: query, schema: {type: string}}
+      responses:
+        "200": {description: Immutable live presentation; ETag is checksum, content: {application/json: {schema: {$ref: "#/components/schemas/ReleasedSiteConfig"}}}}
+        "304": {description: Release unchanged}
+        "404": {description: Site not found or not released}
+  /tenants/{tenantId}/releases:
+    get:
+      operationId: getTenantReleases
+      parameters: [{$ref: "#/components/parameters/TenantId"}]
+      responses:
+        "200": {description: Authorized history and readiness, content: {application/json: {schema: {$ref: "#/components/schemas/TenantReleaseState"}}}}
+    post:
+      operationId: releaseTenantSite
+      parameters: [{$ref: "#/components/parameters/TenantId"}]
+      responses:
+        "201": {description: Atomic data release; no deployment or activation, content: {application/json: {schema: {$ref: "#/components/schemas/TenantReleaseMetadata"}}}}
+        "409": {description: Draft validation failed}
+  /tenants/{tenantId}/releases/{releaseId}/rollback:
+    post:
+      operationId: rollbackTenantSite
+      parameters:
+        - {$ref: "#/components/parameters/TenantId"}
+        - {name: releaseId, in: path, required: true, schema: {type: string, format: uuid}}
+      responses:
+        "200": {description: Live pointer changed; draft unchanged, content: {application/json: {schema: {$ref: "#/components/schemas/TenantReleaseMetadata"}}}}
+  /tenants/{tenantId}/release-preview:
+    post:
+      operationId: previewTenantDraft
+      parameters: [{$ref: "#/components/parameters/TenantId"}]
+      responses:
+        "200":
+          description: Short-lived authorized draft preview
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  url: {type: string}
+                  expiresAt: {type: string}
+                required: [url, expiresAt]
+  /tenants/{tenantId}/release-assets:
+    post:
+      operationId: uploadTenantDraftAsset
+      parameters: [{$ref: "#/components/parameters/TenantId"}]
+      requestBody:
+        required: true
+        content:
+          application/octet-stream:
+            schema: {type: string, format: binary}
+      responses:
+        "201":
+          description: Private draft asset URL
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  url: {type: string}
+                required: [url]
   /exchange/catalog:
     get:
       operationId: getGlobalExchangeCatalog
@@ -2917,9 +2981,54 @@ components:
       type: object
       properties: {ok: {type: boolean}}
       required: [ok]
+    TenantReleaseMetadata:
+      type: object
+      properties:
+        id: {type: string}
+        version: {type: integer}
+        checksum: {type: string}
+        createdBy: {type: string}
+        createdAt: {type: string}
+        diff: {type: array, items: {type: string}}
+      required: [id, version, checksum, createdBy, createdAt, diff]
+    ReleaseChecklistItem:
+      type: object
+      properties:
+        key: {type: string}
+        label: {type: string}
+        ready: {type: boolean}
+        message: {type: string}
+      required: [key, label, ready, message]
+    TenantReleaseState:
+      type: object
+      properties:
+        liveReleaseId: {type: ["string", "null"]}
+        liveChecksum: {type: ["string", "null"]}
+        draftChecksum: {type: string}
+        checklist: {type: array, items: {$ref: "#/components/schemas/ReleaseChecklistItem"}}
+        history: {type: array, items: {$ref: "#/components/schemas/TenantReleaseMetadata"}}
+      required: [liveReleaseId, liveChecksum, draftChecksum, checklist, history]
+    ReleasedSiteConfig:
+      type: object
+      properties:
+        schema_version: {type: integer}
+        site: {$ref: "#/components/schemas/PublicSite"}
+        exchange:
+          anyOf:
+            - {$ref: "#/components/schemas/PublicExchange"}
+            - {type: "null"}
+        addons: {type: array, items: {type: object, properties: {key: {type: string}, name: {type: string}}, required: [key, name]}}
+        displayLimits: {type: object, additionalProperties: {type: ["string", "number", "boolean", "null"]}}
+        providers: {type: array, items: {type: object, properties: {provider: {type: string}, configured: {type: boolean}}, required: [provider, configured]}}
+      required: [schema_version, site, exchange, addons, displayLimits, providers]
     PublicSite:
       type: object
       properties:
+        schema_version: {type: integer}
+        releaseChecksum: {type: string}
+        preview: {type: boolean}
+        defaultLanguage: {type: string}
+        supportedLanguages: {type: array, items: {type: string}}
         tenantSlug: {type: string}
         brandName: {type: string}
         logoUrl: {type: ["string", "null"]}

@@ -57,6 +57,8 @@ export function BrandSection({ tenant, readOnly, onSaved, saveLabel }: SP) {
     themeMode: tenant.themeMode, defaultLanguage: tenant.defaultLanguage, langs: tenant.supportedLanguages.join(', '),
   }), [tenant]);
   const [f, setF] = useState(init);
+  const [uploadingLogo, setUploadingLogo] = useState(false);
+  const [logoUploadError, setLogoUploadError] = useState('');
   useEffect(() => setF(init), [init]);
   const set = (k: keyof typeof f, v: string) => setF((s) => ({ ...s, [k]: v }));
   const langs = f.langs.split(',').map((x) => x.trim()).filter(Boolean);
@@ -82,7 +84,23 @@ export function BrandSection({ tenant, readOnly, onSaved, saveLabel }: SP) {
         footer={<>{err && !readOnly && <span role="alert" className="mr-auto text-sm text-destructive">{err}</span>}<SaveBtn id="brand" pending={m.isPending} disabled={!!err} readOnly={readOnly} label={saveLabel} /></>}>
         <div className="grid gap-4 md:grid-cols-2">
           <div className="space-y-1.5"><Label>Brand name</Label><Input data-testid="input-brandName" disabled={readOnly} value={f.brandName} onChange={(e) => set('brandName', e.target.value)} /></div>
-          <div className="space-y-1.5"><Label>Logo URL</Label><Input data-testid="input-logoUrl" disabled={readOnly} placeholder="https://" value={f.logoUrl} onChange={(e) => set('logoUrl', e.target.value)} /></div>
+          <div className="space-y-1.5"><Label>Logo URL</Label><Input data-testid="input-logoUrl" disabled={readOnly || uploadingLogo} placeholder="https://" value={f.logoUrl} onChange={(e) => set('logoUrl', e.target.value)} />
+            <Label className="block text-xs text-muted-foreground" htmlFor={`logo-upload-${tenant.id}`}>Or upload a private draft logo (maximum 2 MB), then Save branding and Release.</Label>
+            <input id={`logo-upload-${tenant.id}`} type="file" accept="image/png,image/jpeg,image/webp,image/gif,image/svg+xml,image/x-icon" disabled={readOnly || uploadingLogo} data-testid="input-release-logo"
+              onChange={async e => {
+                const file = e.target.files?.[0]; if (!file) return;
+                setLogoUploadError(''); setUploadingLogo(true);
+                try {
+                  if (file.size > 2 * 1024 * 1024) throw new Error('Use an image up to 2 MB.');
+                  const r = await fetch(`/api/tenants/${tenant.id}/release-assets`, { method: 'POST', credentials: 'include', headers: { 'Content-Type': file.type || 'application/octet-stream' }, body: file });
+                  if (!r.ok) throw new Error('Upload failed. Use a supported image and check your branding permission.');
+                  const result = await r.json() as { url: string }; set('logoUrl', result.url);
+                } catch (error) { setLogoUploadError(error instanceof Error ? error.message : 'Logo upload failed.'); }
+                finally { setUploadingLogo(false); }
+              }} />
+            {uploadingLogo && <p className="text-xs">Uploading private draft…</p>}
+            {logoUploadError && <p role="alert" className="text-xs text-destructive">{logoUploadError}</p>}
+          </div>
           {color('primaryColor', 'Primary color')}{color('accentColor', 'Accent color')}
           <div className="space-y-1.5"><Label>Theme mode</Label>
             <Select disabled={readOnly} value={f.themeMode} onValueChange={(v) => set('themeMode', v)}>

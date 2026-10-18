@@ -64,6 +64,7 @@ import type {
   ExchangeWalletScanInput,
   GetDomainHostingProof200,
   GetPhase1Catalog200,
+  GetReleasedSiteConfigParams,
   GlobalCatalogPatch,
   GlobalExchangeCatalog,
   HealthStatus,
@@ -92,6 +93,7 @@ import type {
   PlatformReferenceInput,
   PlatformRejectionInput,
   PlatformSettlementInput,
+  PreviewTenantDraft200,
   PricingPublication,
   PricingPublicationInput,
   ProductConfiguration,
@@ -108,6 +110,7 @@ import type {
   PublicSite,
   PublicTelegramMiniConfig,
   RegisterTenantTelegramWebhook200,
+  ReleasedSiteConfig,
   ResourceCreated,
   ResourceInput,
   ResourceItem,
@@ -130,8 +133,11 @@ import type {
   TenantInput,
   TenantIntegrationRuntime,
   TenantModulesInput,
+  TenantReleaseMetadata,
+  TenantReleaseState,
   TenantSummary,
   TestTenantIntegrationInput,
+  UploadTenantDraftAsset201,
   WebsiteErrorDiagnostic,
   WebsitePreview,
   WebsiteSettings,
@@ -198,6 +204,444 @@ const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKe
   }
   return result;
 };
+
+export const getGetReleasedSiteConfigUrl = (params?: GetReleasedSiteConfigParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/public/site-config?${stringifiedParams}` : `/api/public/site-config`
+}
+
+export const getReleasedSiteConfig = async (params?: GetReleasedSiteConfigParams, options?: Parameters<typeof customFetch>[1]): Promise<ReleasedSiteConfig> => {
+
+  return customFetch<ReleasedSiteConfig>(getGetReleasedSiteConfigUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetReleasedSiteConfigQueryKey = (params?: GetReleasedSiteConfigParams,) => {
+    return [
+    `/api/public/site-config`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getGetReleasedSiteConfigQueryOptions = <TData = Awaited<ReturnType<typeof getReleasedSiteConfig>>, TError = ErrorType<void>>(params?: GetReleasedSiteConfigParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getReleasedSiteConfig>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetReleasedSiteConfigQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getReleasedSiteConfig>>> = ({ signal }) => getReleasedSiteConfig(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getReleasedSiteConfig>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetReleasedSiteConfigQueryResult = NonNullable<Awaited<ReturnType<typeof getReleasedSiteConfig>>>
+export type GetReleasedSiteConfigQueryError = ErrorType<void>
+
+
+
+export function useGetReleasedSiteConfig<TData = Awaited<ReturnType<typeof getReleasedSiteConfig>>, TError = ErrorType<void>>(
+ params?: GetReleasedSiteConfigParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getReleasedSiteConfig>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetReleasedSiteConfigQueryOptions(params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getGetTenantReleasesUrl = (tenantId: string,) => {
+
+
+
+
+  return `/api/tenants/${tenantId}/releases`
+}
+
+export const getTenantReleases = async (tenantId: string, options?: Parameters<typeof customFetch>[1]): Promise<TenantReleaseState> => {
+
+  return customFetch<TenantReleaseState>(getGetTenantReleasesUrl(tenantId),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetTenantReleasesQueryKey = (tenantId: string,) => {
+    return [
+    `/api/tenants/${tenantId}/releases`
+    ] as const;
+    }
+
+
+export const getGetTenantReleasesQueryOptions = <TData = Awaited<ReturnType<typeof getTenantReleases>>, TError = ErrorType<unknown>>(tenantId: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getTenantReleases>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetTenantReleasesQueryKey(tenantId);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getTenantReleases>>> = ({ signal }) => getTenantReleases(tenantId, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: tenantId !== null && tenantId !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getTenantReleases>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetTenantReleasesQueryResult = NonNullable<Awaited<ReturnType<typeof getTenantReleases>>>
+export type GetTenantReleasesQueryError = ErrorType<unknown>
+
+
+
+export function useGetTenantReleases<TData = Awaited<ReturnType<typeof getTenantReleases>>, TError = ErrorType<unknown>>(
+ tenantId: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getTenantReleases>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetTenantReleasesQueryOptions(tenantId,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getReleaseTenantSiteUrl = (tenantId: string,) => {
+
+
+
+
+  return `/api/tenants/${tenantId}/releases`
+}
+
+export const releaseTenantSite = async (tenantId: string, options?: Parameters<typeof customFetch>[1]): Promise<TenantReleaseMetadata> => {
+
+  return customFetch<TenantReleaseMetadata>(getReleaseTenantSiteUrl(tenantId),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+
+
+
+export const getReleaseTenantSiteMutationKey = () => ['releaseTenantSite'] as const;
+
+export const getReleaseTenantSiteMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof releaseTenantSite>>, TError,ReleaseTenantSiteMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof releaseTenantSite>>, TError,ReleaseTenantSiteMutationVariables, TContext> => {
+
+const mutationKey = getReleaseTenantSiteMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof releaseTenantSite>>, ReleaseTenantSiteMutationVariables> = (props) => {
+          const {tenantId} = props ?? {};
+
+          return  releaseTenantSite(tenantId,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ReleaseTenantSiteMutationResult = NonNullable<Awaited<ReturnType<typeof releaseTenantSite>>>
+
+    export type ReleaseTenantSiteMutationError = ErrorType<void>
+    export type ReleaseTenantSiteMutationVariables = {tenantId: string}
+
+    export const useReleaseTenantSite = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof releaseTenantSite>>, TError,ReleaseTenantSiteMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof releaseTenantSite>>,
+        TError,
+        ReleaseTenantSiteMutationVariables,
+        TContext
+      > => {
+      return useMutation(getReleaseTenantSiteMutationOptions(options));
+    }
+
+export const getRollbackTenantSiteUrl = (tenantId: string,
+    releaseId: string,) => {
+
+
+
+
+  return `/api/tenants/${tenantId}/releases/${releaseId}/rollback`
+}
+
+export const rollbackTenantSite = async (tenantId: string,
+    releaseId: string, options?: Parameters<typeof customFetch>[1]): Promise<TenantReleaseMetadata> => {
+
+  return customFetch<TenantReleaseMetadata>(getRollbackTenantSiteUrl(tenantId,releaseId),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+
+
+
+export const getRollbackTenantSiteMutationKey = () => ['rollbackTenantSite'] as const;
+
+export const getRollbackTenantSiteMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof rollbackTenantSite>>, TError,RollbackTenantSiteMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof rollbackTenantSite>>, TError,RollbackTenantSiteMutationVariables, TContext> => {
+
+const mutationKey = getRollbackTenantSiteMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof rollbackTenantSite>>, RollbackTenantSiteMutationVariables> = (props) => {
+          const {tenantId,releaseId} = props ?? {};
+
+          return  rollbackTenantSite(tenantId,releaseId,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type RollbackTenantSiteMutationResult = NonNullable<Awaited<ReturnType<typeof rollbackTenantSite>>>
+
+    export type RollbackTenantSiteMutationError = ErrorType<unknown>
+    export type RollbackTenantSiteMutationVariables = {tenantId: string;releaseId: string}
+
+    export const useRollbackTenantSite = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof rollbackTenantSite>>, TError,RollbackTenantSiteMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof rollbackTenantSite>>,
+        TError,
+        RollbackTenantSiteMutationVariables,
+        TContext
+      > => {
+      return useMutation(getRollbackTenantSiteMutationOptions(options));
+    }
+
+export const getPreviewTenantDraftUrl = (tenantId: string,) => {
+
+
+
+
+  return `/api/tenants/${tenantId}/release-preview`
+}
+
+export const previewTenantDraft = async (tenantId: string, options?: Parameters<typeof customFetch>[1]): Promise<PreviewTenantDraft200> => {
+
+  return customFetch<PreviewTenantDraft200>(getPreviewTenantDraftUrl(tenantId),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+
+
+
+export const getPreviewTenantDraftMutationKey = () => ['previewTenantDraft'] as const;
+
+export const getPreviewTenantDraftMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof previewTenantDraft>>, TError,PreviewTenantDraftMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof previewTenantDraft>>, TError,PreviewTenantDraftMutationVariables, TContext> => {
+
+const mutationKey = getPreviewTenantDraftMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof previewTenantDraft>>, PreviewTenantDraftMutationVariables> = (props) => {
+          const {tenantId} = props ?? {};
+
+          return  previewTenantDraft(tenantId,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PreviewTenantDraftMutationResult = NonNullable<Awaited<ReturnType<typeof previewTenantDraft>>>
+
+    export type PreviewTenantDraftMutationError = ErrorType<unknown>
+    export type PreviewTenantDraftMutationVariables = {tenantId: string}
+
+    export const usePreviewTenantDraft = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof previewTenantDraft>>, TError,PreviewTenantDraftMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof previewTenantDraft>>,
+        TError,
+        PreviewTenantDraftMutationVariables,
+        TContext
+      > => {
+      return useMutation(getPreviewTenantDraftMutationOptions(options));
+    }
+
+export const getUploadTenantDraftAssetUrl = (tenantId: string,) => {
+
+
+
+
+  return `/api/tenants/${tenantId}/release-assets`
+}
+
+export const uploadTenantDraftAsset = async (tenantId: string,
+    uploadTenantDraftAssetBody: Blob, options?: Parameters<typeof customFetch>[1]): Promise<UploadTenantDraftAsset201> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<UploadTenantDraftAsset201>(getUploadTenantDraftAssetUrl(tenantId),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/octet-stream', ...getHeaders(options?.headers) },
+    body: uploadTenantDraftAssetBody
+  }
+);}
+
+
+
+
+
+export const getUploadTenantDraftAssetMutationKey = () => ['uploadTenantDraftAsset'] as const;
+
+export const getUploadTenantDraftAssetMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof uploadTenantDraftAsset>>, TError,UploadTenantDraftAssetMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof uploadTenantDraftAsset>>, TError,UploadTenantDraftAssetMutationVariables, TContext> => {
+
+const mutationKey = getUploadTenantDraftAssetMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof uploadTenantDraftAsset>>, UploadTenantDraftAssetMutationVariables> = (props) => {
+          const {tenantId,data} = props ?? {};
+
+          return  uploadTenantDraftAsset(tenantId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UploadTenantDraftAssetMutationResult = NonNullable<Awaited<ReturnType<typeof uploadTenantDraftAsset>>>
+    export type UploadTenantDraftAssetMutationBody = BodyType<Blob>
+    export type UploadTenantDraftAssetMutationError = ErrorType<unknown>
+    export type UploadTenantDraftAssetMutationVariables = {tenantId: string;data: BodyType<Blob>}
+
+    export const useUploadTenantDraftAsset = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof uploadTenantDraftAsset>>, TError,UploadTenantDraftAssetMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof uploadTenantDraftAsset>>,
+        TError,
+        UploadTenantDraftAssetMutationVariables,
+        TContext
+      > => {
+      return useMutation(getUploadTenantDraftAssetMutationOptions(options));
+    }
 
 export const getGetGlobalExchangeCatalogUrl = () => {
 

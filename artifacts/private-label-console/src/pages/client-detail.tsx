@@ -17,6 +17,7 @@ import { useCan, type Permission } from '@/lib/principal';
 import { useInvalidateTenant } from '@/lib/invalidate';
 import { useToast } from '@/hooks/use-toast';
 import { WebsitePreviewAction } from '@/components/app/website-preview-action';
+import { TenantReleases } from '@/components/app/tenant-releases';
 
 function Group({ title, note, open, children }: { title: string; note: string; open?: boolean; children: React.ReactNode }) {
   return (
@@ -124,6 +125,7 @@ function ClientDetailInner() {
               <SubscriptionSections tenantId={t.id} canManage={can.manageSubscription} show={['suspension']} />
             </TabsContent>
             <TabsContent value="config" className="space-y-3">
+              <TenantReleases tenantId={t.id} readOnly={roFor('configuration.manage') || !isSuper && can.role !== 'client_admin'} />
               <Group open title="Branding" note="Name, logo, colors, language"><BrandSection tenant={t} readOnly={roFor('branding.manage')} /></Group>
               <Group title="Domain" note="Hostname and ownership verification"><DomainSection tenant={t} readOnly={roFor('domains.manage')} /><DomainOwnershipSection tenant={t} readOnly={roFor('domains.manage')} /></Group>
               <Group title="Module and asset setup" note="Modules, assets, networks, product settings">

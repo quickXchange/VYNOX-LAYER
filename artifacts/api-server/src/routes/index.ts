@@ -1,4 +1,5 @@
 import { Router, type IRouter } from "express";
+import siteReleasesRouter from "./site-releases";
 import healthRouter from "./health";
 import demoRouter from "./demo";
 import catalogRouter from "./catalog";
@@ -22,6 +23,7 @@ import { assertDeliveredExchangeAccess } from "../modules/customer/service";
 import { GetTenantParams } from "@workspace/api-zod";
 
 const router: IRouter = Router();
+router.use(siteReleasesRouter);
 import demoIsolationRouter from "./demo-isolation";
 
 router.use(demoIsolationRouter);

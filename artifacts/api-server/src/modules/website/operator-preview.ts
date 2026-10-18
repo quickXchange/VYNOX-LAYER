@@ -20,6 +20,10 @@ export function verifyPreview(token: string | undefined, slug: string, actorId: 
     ? v as unknown as WebsitePreview : null;
 }
 export async function authorizedWebsitePreview(req: Request, slug: string): Promise<WebsitePreview | undefined> {
+  if (req.get("X-QX-Release-Preview")) {
+    const { releasePreviewFor } = await import("./release-preview");
+    return releasePreviewFor(req, slug);
+  }
   const marker = req.get("x-qx-website-preview") ?? req.query.preview;
   if (marker === undefined) return undefined;
   if (marker !== "session" && marker !== "1") throw new HttpError(403, "Invalid private preview.");

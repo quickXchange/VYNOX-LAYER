@@ -7,6 +7,8 @@ export function safeHttps(value: string | null) {
   if (!value) return;
   // Only the curated, order-linked branding files can be same-origin URLs.
   if (/^\/api\/public\/sites\/[a-z0-9]+(?:-[a-z0-9]+)*\/branding\/(?:logo|favicon)$/.test(value)) return;
+  if (/^\/api\/tenants\/[a-f0-9-]{36}\/release-assets\/[a-f0-9-]{36}$/.test(value) ||
+    /^\/api\/public\/release-assets\/[a-f0-9-]{36}\/[a-f0-9]{64}\.(png|jpg|svg|webp|gif|ico)$/.test(value)) return;
   try {
     const u = new URL(value);
     if (u.protocol !== "https:" || u.username || u.password) throw new Error();

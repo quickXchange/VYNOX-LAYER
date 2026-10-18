@@ -7,14 +7,18 @@ import { Hero } from '@/components/hero';
 import { ExchangeWidget } from '@/components/exchange-widget';
 import { resolveCaps } from '@/lib/capabilities';
 import { humanize } from '@/lib/theme';
+import { SiteConfigContext, useReleasedSiteConfig } from '@/lib/site-config';
 
 const BelowFold = lazy(() => import('@/components/below-fold'));
 
 export function Gate({ slug, ambient, children }: { slug: string; ambient?: boolean; children: (s: PublicSite) => ReactNode }) {
-  const q = useGetPublicSite(slug, { request: websitePreviewRequest(slug), query: { enabled: !!slug, queryKey: getGetPublicSiteQueryKey(slug), retry: false, staleTime: 0, refetchOnMount: "always", refetchOnWindowFocus: true, refetchInterval: 15000, refetchIntervalInBackground: true } });
+  const q = useReleasedSiteConfig(slug);
   if (q.isLoading) return <SiteSkeleton />;
-  if (q.isError || !q.data) return <Unavailable onRetry={() => void q.refetch()} />;
-  return <SiteShell key={q.data.tenantSlug} site={q.data} ambient={ambient}>{children(q.data)}</SiteShell>;
+  if (q.isError || !q.data) return <Unavailable title="Site not found or unavailable" body={q.error?.message ?? 'This site has not been released.'} onRetry={() => void q.refetch()} />;
+  return <SiteConfigContext.Provider value={q.data}>
+    {q.data.site.preview && <aside className="border-b bg-amber-50 p-3 text-center text-sm font-medium text-amber-950" data-testid="banner-draft-preview">Preview, not live — only your authorized administrator session can see this draft.</aside>}
+    <SiteShell key={q.data.site.tenantSlug} site={q.data.site} ambient={ambient}>{children(q.data.site)}</SiteShell>
+  </SiteConfigContext.Provider>;
 }
 
 const BelowSkeleton = () => <div className="s-wrap py-20" aria-busy="true"><div className="s-skel h-8 w-64" /><div className="mt-6 grid gap-3 sm:grid-cols-3"><div className="s-skel h-28" /><div className="s-skel h-28" /><div className="s-skel h-28" /></div></div>;

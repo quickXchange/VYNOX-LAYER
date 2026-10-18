@@ -75,6 +75,7 @@
   },
   "dependencies": {
     "@workspace/amount-format": "workspace:*",
+    "@workspace/api-zod": "workspace:*",
     "@workspace/i18n": "workspace:*",
     "@workspace/payment-logo": "workspace:*",
     "@workspace/quickxchange-mini-core": "workspace:*",

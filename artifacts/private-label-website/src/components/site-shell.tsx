@@ -7,6 +7,7 @@ import { navItems, primaryCta, resolveCaps } from '../lib/capabilities';
 import { useAnchors } from '../lib/anchors';
 import { useSiteTheme } from '../hooks/use-site-theme';
 import { useDocumentMeta } from '../hooks/use-document-meta';
+import { useCurrentSiteConfig } from '../lib/site-config';
 import { Ambient } from './ambient';
 
 export function BrandMark({ site, size = 32 }: { site: PublicSite; size?: number }) {
@@ -97,6 +98,7 @@ export function SiteShell({ site, children, ambient = false, platform }: { site:
 }
 
 function Footer({ site, nav }: { site: PublicSite; nav: { id: string; label: string }[] }) {
+  const snapshot = useCurrentSiteConfig();
   const ws = site.websiteSettings;
   const base = `/${site.tenantSlug}`;
   const { href, go } = useAnchors(site.tenantSlug);
@@ -109,6 +111,7 @@ function Footer({ site, nav }: { site: PublicSite; nav: { id: string; label: str
         <div>
           <div className="flex items-center gap-2.5"><BrandMark site={site} size={30} /><span className="text-lg font-semibold tracking-tight">{site.brandName}</span></div>
           {ws.footerText.trim() && <p className="s-muted mt-4 max-w-sm whitespace-pre-line text-sm leading-relaxed" data-testid="text-footer">{ws.footerText}</p>}
+          {!!snapshot?.addons.length && <p className="s-muted mt-3 text-xs" data-testid="text-released-addons">Enabled add-ons: {snapshot.addons.map(a => a.name).join(', ')}</p>}
         </div>
         <div><p className={col}>Navigate</p>{nav.map((n) => <a key={n.id} href={href(n.id)} onClick={go(n.id)} className={lk}>{n.label}</a>)}</div>
         <div><p className={col}>Support</p>

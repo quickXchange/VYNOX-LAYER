@@ -115,6 +115,12 @@ export function exchangeConfiguration(principal: Principal, tenantId: string, in
   });
 }
 export async function publicExchange(slug: string, preview?: WebsitePreview) {
+  if (!preview) {
+    const { releasedConfig } = await import("../../modules/website/release-config");
+    const live = await releasedConfig(slug);
+    if (!live.config.exchange) throw new HttpError(404, "Exchange is not included in the released site.");
+    return live.config.exchange;
+  }
   const tenantId = await publicTenantId(slug, preview);
   return withDatabase({ actorId: "sandbox-visitor", tenantId, isSuperAdmin: !!preview }, async client => {
     const e = await resolveEntitlements(client, tenantId); guard(e, undefined, !!preview);

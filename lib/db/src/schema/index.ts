@@ -1,3 +1,4 @@
+export * from "./tenant-releases";
 export * from "./global-exchange-catalog";
 export * from "./tenant-integrations";
 export * from "./supabase-sessions";

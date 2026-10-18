@@ -8,6 +8,346 @@
 import * as zod from 'zod';
 
 
+export const GetReleasedSiteConfigQueryParams = zod.object({
+  "slug": zod.coerce.string().optional(),
+  "host": zod.coerce.string().optional()
+})
+
+export const getReleasedSiteConfigResponseSiteWebsiteSettingsReviewLinksItemLabelMax = 80;
+
+export const getReleasedSiteConfigResponseSiteWebsiteSettingsReviewLinksItemUrlMax = 2048;
+
+export const getReleasedSiteConfigResponseSiteWebsiteSettingsReviewLinksMax = 6;
+
+export const getReleasedSiteConfigResponseSiteWebsiteSettingsNavigationItemLabelMax = 60;
+
+export const getReleasedSiteConfigResponseSiteWebsiteSettingsNavigationMax = 12;
+
+export const getReleasedSiteConfigResponseSiteWebsiteSettingsSecondaryColorRegExp = new RegExp('^#[0-9A-Fa-f]{6}$');
+export const getReleasedSiteConfigResponseSiteWebsiteSettingsWebsiteNameMin = 2;
+export const getReleasedSiteConfigResponseSiteWebsiteSettingsWebsiteNameMax = 120;
+
+export const getReleasedSiteConfigResponseSiteWebsiteSettingsGlowColorRegExp = new RegExp('^#[0-9A-Fa-f]{6}$');
+export const getReleasedSiteConfigResponseSiteWebsiteSettingsFaqItemQuestionMin = 2;
+export const getReleasedSiteConfigResponseSiteWebsiteSettingsFaqItemQuestionMax = 180;
+
+export const getReleasedSiteConfigResponseSiteWebsiteSettingsFaqItemAnswerMin = 2;
+export const getReleasedSiteConfigResponseSiteWebsiteSettingsFaqItemAnswerMax = 2000;
+
+export const getReleasedSiteConfigResponseSiteWebsiteSettingsFaqMax = 16;
+
+export const getReleasedSiteConfigResponseSiteWebsiteSettingsFaviconUrlMax = 2048;
+
+export const getReleasedSiteConfigResponseSiteWebsiteSettingsHeroTitleMin = 2;
+export const getReleasedSiteConfigResponseSiteWebsiteSettingsHeroTitleMax = 180;
+
+export const getReleasedSiteConfigResponseSiteWebsiteSettingsHeroSubtitleMax = 1000;
+
+export const getReleasedSiteConfigResponseSiteWebsiteSettingsSupportEmailMax = 254;
+
+export const getReleasedSiteConfigResponseSiteWebsiteSettingsSupportUrlMax = 2048;
+
+export const getReleasedSiteConfigResponseSiteWebsiteSettingsSupportDetailsMax = 2000;
+
+export const getReleasedSiteConfigResponseSiteWebsiteSettingsSocialLinksItemLabelMax = 80;
+
+export const getReleasedSiteConfigResponseSiteWebsiteSettingsSocialLinksItemUrlMax = 2048;
+
+export const getReleasedSiteConfigResponseSiteWebsiteSettingsSocialLinksMax = 12;
+
+export const getReleasedSiteConfigResponseSiteWebsiteSettingsFooterTextMax = 2000;
+
+export const getReleasedSiteConfigResponseSiteWebsiteSettingsPrivacyContentMax = 20000;
+
+export const getReleasedSiteConfigResponseSiteWebsiteSettingsTermsContentMax = 20000;
+
+export const getReleasedSiteConfigResponseExchangeOneCurrenciesItemIdRegExp = new RegExp('^[A-Za-z0-9:_-]{1,100}$');
+export const getReleasedSiteConfigResponseExchangeOneCurrenciesItemCodeMax = 40;
+
+export const getReleasedSiteConfigResponseExchangeOneCurrenciesItemNameMax = 160;
+
+export const getReleasedSiteConfigResponseExchangeOneCurrenciesItemLogoUrlMax = 2000;
+
+export const getReleasedSiteConfigResponseExchangeOneCurrenciesItemRevisionMin = 0;
+
+export const getReleasedSiteConfigResponseExchangeOneDefaultPairsSwapSourceMax = 80;
+
+export const getReleasedSiteConfigResponseExchangeOneDefaultPairsSwapDestinationMax = 80;
+
+export const getReleasedSiteConfigResponseExchangeOneDefaultPairsConvertSourceMax = 80;
+
+export const getReleasedSiteConfigResponseExchangeOneDefaultPairsConvertDestinationMax = 80;
+
+export const getReleasedSiteConfigResponseExchangeOneRoutesItemSourceMax = 80;
+
+export const getReleasedSiteConfigResponseExchangeOneRoutesItemDestinationMax = 80;
+
+export const getReleasedSiteConfigResponseExchangeOneRoutesItemRateRegExp = new RegExp('^\\d{1,18}(\\.\\d{1,18})?$');
+export const getReleasedSiteConfigResponseExchangeOneRoutesItemMinimumRegExp = new RegExp('^\\d{1,18}(\\.\\d{1,18})?$');
+export const getReleasedSiteConfigResponseExchangeOneRoutesItemMaximumRegExp = new RegExp('^\\d{1,18}(\\.\\d{1,18})?$');
+export const getReleasedSiteConfigResponseExchangeOneRoutesItemFeeBpsMin = 0;
+export const getReleasedSiteConfigResponseExchangeOneRoutesItemFeeBpsMax = 5000;
+
+export const getReleasedSiteConfigResponseExchangeOneRoutesItemFixedFeeRegExp = new RegExp('^\\d{1,18}(\\.\\d{1,18})?$');
+export const getReleasedSiteConfigResponseExchangeOneRoutesItemSpreadBpsMin = 0;
+export const getReleasedSiteConfigResponseExchangeOneRoutesItemSpreadBpsMax = 5000;
+
+export const getReleasedSiteConfigResponseExchangeOneRoutesItemPaymentMethodIdsMax = 30;
+
+export const getReleasedSiteConfigResponseExchangeOneRoutesItemProviderIdMax = 80;
+
+export const getReleasedSiteConfigResponseExchangeOnePaymentMethodsItemLabelMin = 2;
+export const getReleasedSiteConfigResponseExchangeOnePaymentMethodsItemLabelMax = 80;
+
+export const getReleasedSiteConfigResponseExchangeOnePaymentMethodsItemInstructionsMax = 2000;
+
+export const getReleasedSiteConfigResponseExchangeOnePaymentMethodsItemCurrencyRegExp = new RegExp('^[A-Z]{3}$');
+export const getReleasedSiteConfigResponseExchangeOnePaymentMethodsItemCatalogIdMax = 100;
+
+export const getReleasedSiteConfigResponseExchangeOnePaymentMethodsItemAccountFieldsMaxOne = 500;
+
+export const getReleasedSiteConfigResponseExchangeOnePaymentMethodsItemCurrenciesItemRegExp = new RegExp('^[A-Z]{3}$');
+export const getReleasedSiteConfigResponseExchangeOnePaymentMethodsItemCurrenciesMax = 180;
+
+export const getReleasedSiteConfigResponseExchangeOnePaymentMethodsItemLogoUrlMax = 2000;
+
+export const getReleasedSiteConfigResponseExchangeOnePaymentMethodsItemMinimumRegExp = new RegExp('^\\d{1,18}(\\.\\d{1,18})?$');
+export const getReleasedSiteConfigResponseExchangeOnePaymentMethodsItemMaximumRegExp = new RegExp('^\\d{1,18}(\\.\\d{1,18})?$');
+export const getReleasedSiteConfigResponseExchangeOnePaymentMethodsItemFeeBpsMin = 0;
+export const getReleasedSiteConfigResponseExchangeOnePaymentMethodsItemFeeBpsMax = 5000;
+
+export const getReleasedSiteConfigResponseExchangeOnePaymentMethodsItemFixedFeeRegExp = new RegExp('^\\d{1,18}(\\.\\d{1,18})?$');
+export const getReleasedSiteConfigResponseExchangeOnePaymentMethodsItemReserveRegExp = new RegExp('^\\d{1,18}(\\.\\d{1,18})?$');
+
+
+export const GetReleasedSiteConfigResponse = zod.object({
+  "schema_version": zod.number().int(),
+  "site": zod.object({
+  "schema_version": zod.number().int().optional(),
+  "releaseChecksum": zod.string().optional(),
+  "preview": zod.boolean().optional(),
+  "defaultLanguage": zod.string().optional(),
+  "supportedLanguages": zod.array(zod.string()).optional(),
+  "tenantSlug": zod.string(),
+  "brandName": zod.string(),
+  "logoUrl": zod.string().nullable(),
+  "primaryColor": zod.string(),
+  "accentColor": zod.string(),
+  "themeMode": zod.enum(['light', 'dark', 'system']),
+  "domain": zod.string().nullable(),
+  "sandboxOnly": zod.boolean(),
+  "websiteSettings": zod.object({
+  "reviewLinks": zod.array(zod.object({
+  "label": zod.string().min(1).max(getReleasedSiteConfigResponseSiteWebsiteSettingsReviewLinksItemLabelMax),
+  "url": zod.string().max(getReleasedSiteConfigResponseSiteWebsiteSettingsReviewLinksItemUrlMax)
+})).max(getReleasedSiteConfigResponseSiteWebsiteSettingsReviewLinksMax).optional(),
+  "navigation": zod.array(zod.object({
+  "key": zod.enum(['exchange', 'payments', 'telegram', 'how', 'developers', 'about', 'faq']),
+  "label": zod.string().min(1).max(getReleasedSiteConfigResponseSiteWebsiteSettingsNavigationItemLabelMax),
+  "visible": zod.boolean()
+})).max(getReleasedSiteConfigResponseSiteWebsiteSettingsNavigationMax).optional(),
+  "secondaryColor": zod.string().regex(getReleasedSiteConfigResponseSiteWebsiteSettingsSecondaryColorRegExp),
+  "templateKey": zod.enum(['standard-exchange']).optional(),
+  "websiteName": zod.string().min(getReleasedSiteConfigResponseSiteWebsiteSettingsWebsiteNameMin).max(getReleasedSiteConfigResponseSiteWebsiteSettingsWebsiteNameMax).optional(),
+  "sandboxLabel": zod.enum(['Sandbox', 'Sandbox Demo']).optional(),
+  "glowColor": zod.string().regex(getReleasedSiteConfigResponseSiteWebsiteSettingsGlowColorRegExp).optional(),
+  "surfaceStyle": zod.enum(['solid', 'glass']).optional(),
+  "borderRadius": zod.enum(['sharp', 'soft', 'rounded']).optional(),
+  "faq": zod.array(zod.object({
+  "question": zod.string().min(getReleasedSiteConfigResponseSiteWebsiteSettingsFaqItemQuestionMin).max(getReleasedSiteConfigResponseSiteWebsiteSettingsFaqItemQuestionMax),
+  "answer": zod.string().min(getReleasedSiteConfigResponseSiteWebsiteSettingsFaqItemAnswerMin).max(getReleasedSiteConfigResponseSiteWebsiteSettingsFaqItemAnswerMax)
+})).max(getReleasedSiteConfigResponseSiteWebsiteSettingsFaqMax).optional(),
+  "faviconUrl": zod.string().max(getReleasedSiteConfigResponseSiteWebsiteSettingsFaviconUrlMax).nullable(),
+  "fontKey": zod.enum(['system', 'inter', 'manrope', 'dm-sans', 'space-grotesk']),
+  "heroTitle": zod.string().min(getReleasedSiteConfigResponseSiteWebsiteSettingsHeroTitleMin).max(getReleasedSiteConfigResponseSiteWebsiteSettingsHeroTitleMax),
+  "heroSubtitle": zod.string().max(getReleasedSiteConfigResponseSiteWebsiteSettingsHeroSubtitleMax),
+  "supportEmail": zod.string().max(getReleasedSiteConfigResponseSiteWebsiteSettingsSupportEmailMax).nullable(),
+  "supportUrl": zod.string().max(getReleasedSiteConfigResponseSiteWebsiteSettingsSupportUrlMax).nullable(),
+  "supportDetails": zod.string().max(getReleasedSiteConfigResponseSiteWebsiteSettingsSupportDetailsMax),
+  "socialLinks": zod.array(zod.object({
+  "label": zod.string().min(1).max(getReleasedSiteConfigResponseSiteWebsiteSettingsSocialLinksItemLabelMax),
+  "url": zod.string().max(getReleasedSiteConfigResponseSiteWebsiteSettingsSocialLinksItemUrlMax)
+})).max(getReleasedSiteConfigResponseSiteWebsiteSettingsSocialLinksMax),
+  "footerText": zod.string().max(getReleasedSiteConfigResponseSiteWebsiteSettingsFooterTextMax),
+  "privacyContent": zod.string().max(getReleasedSiteConfigResponseSiteWebsiteSettingsPrivacyContentMax),
+  "termsContent": zod.string().max(getReleasedSiteConfigResponseSiteWebsiteSettingsTermsContentMax)
+}),
+  "features": zod.record(zod.string(), zod.boolean()),
+  "assets": zod.array(zod.object({
+  "assetId": zod.string(),
+  "assetNetworkId": zod.string().optional(),
+  "symbol": zod.string(),
+  "name": zod.string(),
+  "networkId": zod.string(),
+  "networkName": zod.string(),
+  "testnet": zod.boolean(),
+  "logoUrl": zod.string().nullish(),
+  "decimals": zod.number().int().optional(),
+  "memoRequired": zod.boolean().optional()
+}))
+}),
+  "exchange": zod.union([zod.object({
+  "fiatCurrencies": zod.array(zod.string()).optional(),
+  "currencies": zod.array(zod.object({
+  "kind": zod.enum(['currencies', 'payment_methods', 'assets', 'networks']),
+  "id": zod.string().regex(getReleasedSiteConfigResponseExchangeOneCurrenciesItemIdRegExp),
+  "code": zod.string().min(1).max(getReleasedSiteConfigResponseExchangeOneCurrenciesItemCodeMax),
+  "name": zod.string().min(1).max(getReleasedSiteConfigResponseExchangeOneCurrenciesItemNameMax),
+  "status": zod.enum(['enabled', 'disabled', 'catalog_only']),
+  "logoUrl": zod.string().max(getReleasedSiteConfigResponseExchangeOneCurrenciesItemLogoUrlMax).nullable(),
+  "metadata": zod.record(zod.string(), zod.unknown()),
+  "revision": zod.number().int().min(getReleasedSiteConfigResponseExchangeOneCurrenciesItemRevisionMin)
+})).optional(),
+  "defaultPairs": zod.object({
+  "swap": zod.object({
+  "source": zod.string().min(1).max(getReleasedSiteConfigResponseExchangeOneDefaultPairsSwapSourceMax),
+  "destination": zod.string().min(1).max(getReleasedSiteConfigResponseExchangeOneDefaultPairsSwapDestinationMax),
+  "paymentMethodId": zod.string().uuid().optional()
+}).optional(),
+  "convert": zod.object({
+  "source": zod.string().min(1).max(getReleasedSiteConfigResponseExchangeOneDefaultPairsConvertSourceMax),
+  "destination": zod.string().min(1).max(getReleasedSiteConfigResponseExchangeOneDefaultPairsConvertDestinationMax),
+  "paymentMethodId": zod.string().uuid().optional()
+}).optional()
+}).optional(),
+  "enabled": zod.boolean(),
+  "defaultAction": zod.enum(['swap', 'convert', 'buy', 'sell']).optional(),
+  "actions": zod.array(zod.enum(['swap', 'convert', 'buy', 'sell'])),
+  "assets": zod.array(zod.object({
+  "assetId": zod.string(),
+  "assetNetworkId": zod.string().optional(),
+  "symbol": zod.string(),
+  "name": zod.string(),
+  "networkId": zod.string(),
+  "networkName": zod.string(),
+  "testnet": zod.boolean(),
+  "logoUrl": zod.string().nullish(),
+  "decimals": zod.number().int().optional(),
+  "memoRequired": zod.boolean().optional()
+})),
+  "routes": zod.array(zod.object({
+  "id": zod.string().uuid(),
+  "source": zod.string().min(1).max(getReleasedSiteConfigResponseExchangeOneRoutesItemSourceMax),
+  "destination": zod.string().min(1).max(getReleasedSiteConfigResponseExchangeOneRoutesItemDestinationMax),
+  "action": zod.enum(['swap', 'convert', 'buy', 'sell']),
+  "enabled": zod.boolean(),
+  "rate": zod.string().regex(getReleasedSiteConfigResponseExchangeOneRoutesItemRateRegExp),
+  "minimum": zod.string().regex(getReleasedSiteConfigResponseExchangeOneRoutesItemMinimumRegExp),
+  "maximum": zod.string().regex(getReleasedSiteConfigResponseExchangeOneRoutesItemMaximumRegExp),
+  "feeBps": zod.number().int().min(getReleasedSiteConfigResponseExchangeOneRoutesItemFeeBpsMin).max(getReleasedSiteConfigResponseExchangeOneRoutesItemFeeBpsMax),
+  "fixedFee": zod.string().regex(getReleasedSiteConfigResponseExchangeOneRoutesItemFixedFeeRegExp),
+  "spreadBps": zod.number().int().min(getReleasedSiteConfigResponseExchangeOneRoutesItemSpreadBpsMin).max(getReleasedSiteConfigResponseExchangeOneRoutesItemSpreadBpsMax),
+  "paymentMethodIds": zod.array(zod.string().uuid()).max(getReleasedSiteConfigResponseExchangeOneRoutesItemPaymentMethodIdsMax),
+  "providerId": zod.string().max(getReleasedSiteConfigResponseExchangeOneRoutesItemProviderIdMax).optional()
+})),
+  "paymentMethods": zod.array(zod.object({
+  "receivingIbanRequired": zod.boolean().optional().describe('Public field requirement only; no operator bank details'),
+  "id": zod.string().uuid(),
+  "label": zod.string().min(getReleasedSiteConfigResponseExchangeOnePaymentMethodsItemLabelMin).max(getReleasedSiteConfigResponseExchangeOnePaymentMethodsItemLabelMax),
+  "instructions": zod.string().max(getReleasedSiteConfigResponseExchangeOnePaymentMethodsItemInstructionsMax).optional().describe('Optional sandbox payment instructions, frozen on order creation; never include credentials'),
+  "enabled": zod.boolean(),
+  "currency": zod.string().regex(getReleasedSiteConfigResponseExchangeOnePaymentMethodsItemCurrencyRegExp),
+  "catalogId": zod.string().max(getReleasedSiteConfigResponseExchangeOnePaymentMethodsItemCatalogIdMax).optional(),
+  "accountFields": zod.record(zod.string(), zod.string().max(getReleasedSiteConfigResponseExchangeOnePaymentMethodsItemAccountFieldsMaxOne)).optional(),
+  "currencies": zod.array(zod.string().regex(getReleasedSiteConfigResponseExchangeOnePaymentMethodsItemCurrenciesItemRegExp)).max(getReleasedSiteConfigResponseExchangeOnePaymentMethodsItemCurrenciesMax).optional(),
+  "buy": zod.boolean(),
+  "sell": zod.boolean(),
+  "logoUrl": zod.string().max(getReleasedSiteConfigResponseExchangeOnePaymentMethodsItemLogoUrlMax).nullish(),
+  "methodType": zod.enum(['bank', 'card', 'manual']).optional(),
+  "minimum": zod.string().regex(getReleasedSiteConfigResponseExchangeOnePaymentMethodsItemMinimumRegExp).optional(),
+  "maximum": zod.string().regex(getReleasedSiteConfigResponseExchangeOnePaymentMethodsItemMaximumRegExp).nullish(),
+  "feeBps": zod.number().int().min(getReleasedSiteConfigResponseExchangeOnePaymentMethodsItemFeeBpsMin).max(getReleasedSiteConfigResponseExchangeOnePaymentMethodsItemFeeBpsMax).optional(),
+  "fixedFee": zod.string().regex(getReleasedSiteConfigResponseExchangeOnePaymentMethodsItemFixedFeeRegExp).optional(),
+  "reserve": zod.string().regex(getReleasedSiteConfigResponseExchangeOnePaymentMethodsItemReserveRegExp).optional().describe('Administrator-maintained sandbox reserve metadata in fiat currency. No funds exist and this does not affect quotes or execution.')
+})),
+  "fiatCurrency": zod.string(),
+  "publicNote": zod.string()
+}),zod.null()]),
+  "addons": zod.array(zod.object({
+  "key": zod.string(),
+  "name": zod.string()
+})),
+  "displayLimits": zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean()]).nullable()),
+  "providers": zod.array(zod.object({
+  "provider": zod.string(),
+  "configured": zod.boolean()
+}))
+})
+
+
+export const GetTenantReleasesParams = zod.object({
+  "tenantId": zod.coerce.string().uuid()
+})
+
+export const GetTenantReleasesResponse = zod.object({
+  "liveReleaseId": zod.string().nullable(),
+  "liveChecksum": zod.string().nullable(),
+  "draftChecksum": zod.string(),
+  "checklist": zod.array(zod.object({
+  "key": zod.string(),
+  "label": zod.string(),
+  "ready": zod.boolean(),
+  "message": zod.string()
+})),
+  "history": zod.array(zod.object({
+  "id": zod.string(),
+  "version": zod.number().int(),
+  "checksum": zod.string(),
+  "createdBy": zod.string(),
+  "createdAt": zod.string(),
+  "diff": zod.array(zod.string())
+}))
+})
+
+
+export const ReleaseTenantSiteParams = zod.object({
+  "tenantId": zod.coerce.string().uuid()
+})
+
+export const ReleaseTenantSiteResponse = zod.object({
+  "id": zod.string(),
+  "version": zod.number().int(),
+  "checksum": zod.string(),
+  "createdBy": zod.string(),
+  "createdAt": zod.string(),
+  "diff": zod.array(zod.string())
+})
+
+
+export const RollbackTenantSiteParams = zod.object({
+  "tenantId": zod.coerce.string().uuid(),
+  "releaseId": zod.coerce.string().uuid()
+})
+
+export const RollbackTenantSiteResponse = zod.object({
+  "id": zod.string(),
+  "version": zod.number().int(),
+  "checksum": zod.string(),
+  "createdBy": zod.string(),
+  "createdAt": zod.string(),
+  "diff": zod.array(zod.string())
+})
+
+
+export const PreviewTenantDraftParams = zod.object({
+  "tenantId": zod.coerce.string().uuid()
+})
+
+export const PreviewTenantDraftResponse = zod.object({
+  "url": zod.string(),
+  "expiresAt": zod.string()
+})
+
+
+export const UploadTenantDraftAssetParams = zod.object({
+  "tenantId": zod.coerce.string().uuid()
+})
+
+export const UploadTenantDraftAssetResponse = zod.object({
+  "url": zod.string()
+})
+
+
 export const getGlobalExchangeCatalogResponseEntriesItemIdRegExp = new RegExp('^[A-Za-z0-9:_-]{1,100}$');
 export const getGlobalExchangeCatalogResponseEntriesItemCodeMax = 40;
 
@@ -7635,6 +7975,11 @@ export const resolvePublicDomainResponseWebsiteSettingsTermsContentMax = 20000;
 
 
 export const ResolvePublicDomainResponse = zod.object({
+  "schema_version": zod.number().int().optional(),
+  "releaseChecksum": zod.string().optional(),
+  "preview": zod.boolean().optional(),
+  "defaultLanguage": zod.string().optional(),
+  "supportedLanguages": zod.array(zod.string()).optional(),
   "tenantSlug": zod.string(),
   "brandName": zod.string(),
   "logoUrl": zod.string().nullable(),
@@ -10962,6 +11307,11 @@ export const getPublicSiteResponseWebsiteSettingsTermsContentMax = 20000;
 
 
 export const GetPublicSiteResponse = zod.object({
+  "schema_version": zod.number().int().optional(),
+  "releaseChecksum": zod.string().optional(),
+  "preview": zod.boolean().optional(),
+  "defaultLanguage": zod.string().optional(),
+  "supportedLanguages": zod.array(zod.string()).optional(),
   "tenantSlug": zod.string(),
   "brandName": zod.string(),
   "logoUrl": zod.string().nullable(),
