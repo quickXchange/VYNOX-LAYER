@@ -41,6 +41,14 @@ await rm(output, { recursive: true, force: true });
 const fn = path.join(output, "functions/frontend.func");
 await mkdir(path.join(fn, "static"), { recursive: true });
 await cp("artifacts/private-label-console/dist/public", path.join(fn, "static"), { recursive: true });
+if (process.env.QXLAYER_VYNOX_DOMAIN_CONNECTION_APPROVED === "true" &&
+    publicPreparation(process.env)) {
+  const index = path.join(fn, "static/index.html");
+  const html = await readFile(index, "utf8");
+  await writeFile(index, html.replace("</head>",
+    '<link rel="canonical" href="https://vynoxlayer.com/" />\n' +
+    '<meta property="og:url" content="https://vynoxlayer.com/" />\n</head>'));
+}
 await cp("artifacts/private-label-website/dist/public", path.join(fn, "static/private-label-website"), { recursive: true });
 await cp("lib/production-access-gate", path.join(fn, "lib/production-access-gate"), { recursive: true });
 const bootstrap = process.env.QXLAYER_PREVIEW_BOOTSTRAP === "true";

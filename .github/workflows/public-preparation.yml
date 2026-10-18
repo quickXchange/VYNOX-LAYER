@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       approve_temporary_production:
-        description: Deploy the temporary Production hostname only; no official-domain cutover
+        description: Release approved official Production domain; preserve acceptance, legacy domains and financial hold
         type: boolean
         required: true
         default: false
@@ -27,14 +27,15 @@ jobs:
       QXLAYER_EXTERNAL_ACCEPTANCE_APPROVED: "false"
       QXLAYER_PUBLIC_PREPARATION_APPROVED: "true"
       QXLAYER_OFFICIAL_DOMAIN_CONNECTION_APPROVED: "true"
-      QXLAYER_PUBLIC_PRODUCTION_ORIGIN: https://www.quicklychan.xyz
-      QXLAYER_PLATFORM_URL: https://www.quicklychan.xyz
+      QXLAYER_VYNOX_DOMAIN_CONNECTION_APPROVED: "true"
+      QXLAYER_PUBLIC_PRODUCTION_ORIGIN: https://vynoxlayer.com
+      QXLAYER_PLATFORM_URL: https://vynoxlayer.com
       QXLAYER_PRODUCTION_SUPABASE_AUTH_CUTOVER_APPROVED: "false"
       QXLAYER_FINANCIAL_EXECUTION_ENABLED: "false"
       PRODUCTION_ACCESS_GATE_ENABLED: "false"
       QXLAYER_AUTH_PROVIDER: supabase
       QXLAYER_PRODUCTION_SUPABASE_AUTH_PROJECT_REF: qcgvhlphalxqzzsxqjhi
-      QXLAYER_PRODUCTION_SUPABASE_AUTH_URL: https://www.quicklychan.xyz
+      QXLAYER_PRODUCTION_SUPABASE_AUTH_URL: https://vynoxlayer.com
       QXLAYER_API_ORIGIN: https://vynox-public-api.onrender.com
     steps:
       - uses: actions/checkout@v4
@@ -58,7 +59,7 @@ jobs:
           RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
       - name: Build approved public frontends
         run: pnpm run external:build:frontend
-      - name: Deploy real Production without assigning official domains
+      - name: Deploy real Production without automatic domain reassignment
         id: deployment
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
@@ -67,7 +68,7 @@ jobs:
           node -e 'require("fs").writeFileSync(".vercel/project.json", JSON.stringify({orgId:"team_eoJE6FCcm9esuqnRTUsmopzy",projectId:"prj_MoGcFUBrfUHrmtRjHqNuYIaUbQcx"}))'
           url=$(pnpm dlx vercel@63.1.2 deploy --prebuilt --prod --skip-domain --yes --token "$VERCEL_TOKEN")
           echo "url=$url" >> "$GITHUB_OUTPUT"
-      - name: Verify Production identity and bind temporary hostname only
+      - name: Verify Production and bind approved primary and www only
         run: node scripts/external-hosting/verify-public-preparation.mjs after
         env:
           RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
