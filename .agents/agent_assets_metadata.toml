@@ -1176,3 +1176,31 @@ mtime_ms = 1792280891791
 storage_uri = "gcs://replit-rams-assets-reed/rams/assets/repl:372d2684-97ec-4ce5-b16a-77fb322db72a/cc2e819c-be21-4a0f-961e-766da1fab965/d37c27e2-02d4-4d5a-9916-50f9b754fdf5"
 storage_version_token = "1792280943986710"
 content_type = "text/html"
+
+[[outputs]]
+id = "zRWq5AgyE6WIvg7Hl1U41"
+uri = "file://generated-artifacts/release-sync/development-before.jpg"
+type = "image"
+title = "Before tenant Release"
+description = "Fresh Development QA tenant: original logo, navy color and authored website name."
+logical_id = "e2b66c02-a1c6-4fc0-aeea-39c829b8132f"
+content_hash = "sha256:04f44461721414aca18251505ec2affe63890d298a3b73ab62cbcd7a54856d53"
+size = 115658
+mtime_ms = 1792319165817
+storage_uri = "gcs://replit-rams-assets-reed/rams/assets/repl:372d2684-97ec-4ce5-b16a-77fb322db72a/e2b66c02-a1c6-4fc0-aeea-39c829b8132f/e11cbaae-3b92-47d3-b1ba-5d0708b06d89"
+storage_version_token = "1792319585268487"
+content_type = "image/jpeg"
+
+[[outputs]]
+id = "B_fGKh_cEg4qOWihsL5Lh"
+uri = "file://generated-artifacts/release-sync/development-after.jpg"
+type = "image"
+title = "After tenant Release"
+description = "Same QA tenant after Release: updated logo, purple color and authored name. Continuous-page updates and background rollback were separately verified."
+logical_id = "0a094207-f14b-4bda-b4f0-aafeecd892cd"
+content_hash = "sha256:461e44166dd5874bfe83162e30bb347d95a519bada3be4cb7578202907d5eef8"
+size = 115402
+mtime_ms = 1792319226069
+storage_uri = "gcs://replit-rams-assets-reed/rams/assets/repl:372d2684-97ec-4ce5-b16a-77fb322db72a/0a094207-f14b-4bda-b4f0-aafeecd892cd/dfbe2a3a-5030-4ab4-bbde-f0c7429a666c"
+storage_version_token = "1792319586004961"
+content_type = "image/jpeg"
