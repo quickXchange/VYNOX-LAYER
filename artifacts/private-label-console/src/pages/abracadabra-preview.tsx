@@ -42,6 +42,8 @@ type TenantReview = {
   allowGuestCheckout: boolean;
 };
 
+const SLUG = 'abracadabra-sandbox';
+
 const products = [
   { name: 'Crypto / Fiat Swap', detail: 'Crypto to fiat, and fiat to crypto', icon: ArrowLeftRight },
   { name: 'Crypto / Crypto Convert', detail: 'Convert between supported digital assets', icon: ArrowDownUp },
@@ -58,7 +60,7 @@ function SandboxBanner({ status }: { status: string }) {
       <div className="min-w-0">
         <p className="text-sm font-semibold">Protected Sandbox preview · {status === 'draft' ? 'Development draft' : `Development ${status}`}</p>
         <p className="mt-1 text-xs leading-relaxed text-amber-900/80 dark:text-amber-100/75 sm:text-sm">
-          This tenant is an unactivated draft. Exchange routes, pricing, payments, orders, and financial execution are off.
+          Only the reviewed Swap and Convert setup is available for preview. No live pricing, payments, orders, or financial execution are enabled.
         </p>
       </div>
       <span className="ml-auto hidden shrink-0 rounded-full border border-current/20 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.14em] sm:inline-flex">Read only</span>
@@ -72,7 +74,7 @@ function ViewSwitcher({ mode, onChange }: { mode: PreviewMode; onChange: (next: 
       <div>
         <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Experience review</p>
         <h1 className="mt-1 font-display text-3xl tracking-tight sm:text-4xl">Abracadabra</h1>
-        <p className="mt-1 text-sm text-muted-foreground">Review the proposed customer website and tenant-admin experience.</p>
+        <p className="mt-1 text-sm text-muted-foreground">Review the saved tenant configuration and open its protected website or admin panel.</p>
       </div>
       <div role="tablist" aria-label="Preview experience" className="inline-flex w-fit rounded-xl border border-border bg-card/70 p-1">
         {([
@@ -137,7 +139,7 @@ function ProductDemo({ convert = false }: { convert?: boolean }) {
         <SampleAsset symbol={convert ? 'ETH' : 'USD'} name={convert ? 'Ether' : 'Fiat currency'} note={convert ? 'Ethereum · Arbitrum' : 'Fiat destination sample'} />
       </div>
       <p className="mt-4 border-t border-white/10 pt-3 text-[11px] leading-relaxed text-white/50">
-        No amount, rate, quote, or transaction is shown or available in this preview.
+        Visual example only. The protected website action above opens the real saved tenant website.
       </p>
     </section>
   );
@@ -154,7 +156,7 @@ function WebsiteExperience() {
         <nav aria-label="Customer website preview navigation" className="hidden items-center gap-6 text-xs text-[#5d5660] sm:flex">
           <span>Swap</span><span>Convert</span><span>About</span>
         </nav>
-        <span className="rounded-full border border-[#332b37]/15 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#625968]">Website concept</span>
+        <span className="rounded-full border border-[#332b37]/15 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#625968]">Visual concept</span>
       </div>
 
       <div className="relative isolate overflow-hidden px-5 pb-8 pt-10 sm:px-10 sm:pb-12 sm:pt-14">
@@ -167,14 +169,14 @@ function WebsiteExperience() {
               Move between worlds.
             </h2>
             <p className="mt-5 max-w-md text-sm leading-6 text-[#625b63] sm:text-base sm:leading-7">
-              A review of the Abracadabra brand direction and its two proposed Exchange products.
+              A review of the Abracadabra brand direction and its two configured Exchange products.
             </p>
             <div className="mt-7 flex flex-wrap gap-2">
               {products.map(({ name }) => (
                 <span key={name} className="rounded-full border border-[#332b37]/15 bg-white/55 px-3 py-2 text-xs font-medium">{name}</span>
               ))}
             </div>
-            <p className="mt-6 text-xs text-[#766e76]">This card is a visual concept. Use the protected website preview above to open the real NovaX master with Abracadabra&apos;s saved draft settings.</p>
+            <p className="mt-6 text-xs text-[#766e76]">Visual concept only. Use the protected website action above to open the real NovaX master with Abracadabra&apos;s saved draft settings.</p>
           </div>
 
           <div className="relative mx-auto w-full max-w-[430px]">
@@ -268,7 +270,7 @@ function AdminExperience({ tenant }: { tenant: TenantReview }) {
                   <span className="grid h-9 w-9 place-items-center rounded-lg bg-muted/70 text-foreground"><Icon className="h-4 w-4" aria-hidden="true" /></span>
                   <div>
                     <h3 className="text-sm font-semibold">{name}</h3>
-                  <p className="mt-1 text-xs text-muted-foreground">{exchangePlanEnabled ? 'Included in the internal Sandbox plan; no pricing or routes are enabled.' : detail}</p>
+                    <p className="mt-1 text-xs text-muted-foreground">{exchangePlanEnabled ? 'Included for Sandbox review; no live execution is enabled.' : detail}</p>
                   </div>
                 </div>
               </section>
@@ -284,9 +286,9 @@ function AdminExperience({ tenant }: { tenant: TenantReview }) {
               <span className="rounded-full bg-muted px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.13em] text-muted-foreground">Fictional</span>
             </div>
             <div className="mt-2">
-              <ReadOnlyRow icon={WalletCards} label="Selected asset/network pairs" value={`${tenant.assetNetworkIds.length} verified catalog assignment${tenant.assetNetworkIds.length === 1 ? '' : 's'}`} note="Selected from the existing Development Exchange catalog. No provider connection or wallet is configured." />
-              <ReadOnlyRow icon={Network} label="Exchange route configuration" value={tenant.exchangeEnabled ? 'Enabled' : 'Disabled'} note="Exchange operations stay off; no rates, routes, or quotes are configured." />
-              <ReadOnlyRow icon={Globe2} label="Customer domain" value={tenant.domain ?? 'None — not requested'} note="The proposed abracadabra-demo.vynoxlayer.com hostname is not assigned or registered." />
+              <ReadOnlyRow icon={WalletCards} label="Selected asset/network pairs" value={`${tenant.assetNetworkIds.length} verified catalog assignments`} note="Selected from the existing Development Exchange catalog. No provider connection or wallet is configured." />
+              <ReadOnlyRow icon={Network} label="Exchange product configuration" value={tenant.exchangeEnabled ? 'Swap and Convert · Sandbox review' : 'Disabled'} note="Draft-only setup; no live rate source, provider, or quote execution is connected." />
+              <ReadOnlyRow icon={Globe2} label="Customer domain" value={tenant.domain ?? 'None — not requested'} note="No customer hostname is assigned or registered." />
               <ReadOnlyRow icon={WalletCards} label="Payments and guest checkout" value={tenant.paymentsEnabled || tenant.allowGuestCheckout ? 'Enabled' : 'Disabled'} note="No payment methods or customer checkout are available." />
             </div>
           </section>
@@ -294,7 +296,7 @@ function AdminExperience({ tenant }: { tenant: TenantReview }) {
           <div className="mt-5 flex items-start gap-3 rounded-xl border border-border/70 bg-muted/30 p-4">
             <ArrowUpRight className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" aria-hidden="true" />
             <p className="text-xs leading-relaxed text-muted-foreground">
-              This page is read-only. Use the existing tenant settings for a separately approved domain request; this preview never edits DNS or hosting.
+              This view is read-only. Use the protected tenant settings for a separately approved domain request; this preview never edits DNS or hosting.
             </p>
           </div>
         </div>
@@ -377,8 +379,14 @@ function DomainSetupGuide({ tenantId }: { tenantId: string }) {
 }
 
 export default function AbracadabraPreview() {
-  const tenants = useListTenants();
-  const summary = tenants.data?.find((item) => item.slug === 'abracadabra-demo');
+  const tenants = useListTenants({
+    query: {
+      refetchInterval: 15_000,
+      refetchOnWindowFocus: true,
+      staleTime: 0,
+    } as never,
+  });
+  const summary = tenants.data?.find((item) => item.slug === SLUG);
   if (tenants.isLoading) return <div className="mx-auto w-full max-w-6xl space-y-5"><Skeleton className="h-16 w-full" /><Skeleton className="h-[520px] w-full" /></div>;
   if (tenants.isError) return <p role="alert" className="rounded-xl border border-destructive/30 p-4 text-sm text-destructive">Abracadabra Sandbox status could not be loaded. Retry the workspace preview.</p>;
   if (!summary) return <p role="alert" className="rounded-xl border border-amber-700/20 bg-amber-50 p-4 text-sm text-amber-950">The protected Abracadabra tenant has not been provisioned in Development.</p>;
@@ -400,7 +408,12 @@ function TenantExperience({ tenantId }: { tenantId: string }) {
           <p className="text-sm font-medium">{tenant.brandName} · {tenant.environment} · {tenant.status}</p>
           <p className="mt-1 text-xs text-muted-foreground">Private website preview expires after 15 minutes. Tenant configuration remains a draft.</p>
         </div>
-        <WebsitePreviewAction tenantId={tenant.id} />
+        <div className="flex flex-wrap gap-2">
+          <WebsitePreviewAction tenantId={tenant.id} />
+          <Link href={`/clients/${tenant.id}/exchange`} className="inline-flex min-h-10 items-center rounded-lg bg-foreground px-4 text-sm font-medium text-background hover:opacity-90" data-testid="button-open-abracadabra-admin">
+            Open real Tenant Admin Panel
+          </Link>
+        </div>
       </div>
       <div
         id="abracadabra-preview-panel"

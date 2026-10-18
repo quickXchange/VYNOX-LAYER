@@ -23,6 +23,7 @@
 - [Retained customer demos](retained-provisioning-fixture.md) — preserve Asterlane and Solara; official-domain Solara viewing is original-Owner-only, never public access.
 - [Setup website previews](setup-website-preview-policy.md) — shared website previews require live operator authority, tenant isolation and no activation, delivery or mutation.
 - [Development runtime detection](development-runtime-detection.md) — REPLIT_ENVIRONMENT can say production in the workspace; use the service’s explicit run mode for preview guards.
+- [Development Auth origin](development-auth-origin.md) — keep server and client Development Auth origins aligned with the current Replit preview host.
 - [Provider foundation safety](provider-foundation-safety.md) — catalog/configuration is not connectivity; real adapters, vaults, webhooks and idempotent execution require separate approval.
 - [Production readback evidence](production-readback-evidence.md) — empty schema diffs do not prove CHECK parity; SQL success envelopes must contain the expected results.
 - [QA cleanup durability](qa-cleanup-durability.md) — persist exact disposable fixture scope through workspace restarts; /tmp can vanish before database cleanup.

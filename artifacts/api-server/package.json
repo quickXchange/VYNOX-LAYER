@@ -15,6 +15,7 @@
     "verify:customer": "tsx src/verification/customer.ts",
     "verify:master": "tsx src/verification/master-template.ts",
     "provision:master:dev": "tsx src/verification/provision-master-order.ts",
+    "provision:abracadabra:dev": "tsx src/verification/abracadabra-sandbox.ts",
     "verify:authorization": "tsx src/verification/multi-tenant-security.ts",
     "samples:exchange:dev": "tsx src/verification/exchange-sample.ts",
     "samples:plans:dev": "tsx src/verification/sample-sites.ts"

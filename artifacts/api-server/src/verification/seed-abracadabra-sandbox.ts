@@ -122,7 +122,8 @@ async function main() {
       row.live_release_id !== null ||
       row.domain !== null ||
       row.plan_id !== plan.id ||
-      request.rows.length > 0 ||
+      request.rowCount === null ||
+      request.rowCount > 0 ||
       administrators.length > 0
     ) {
       throw new Error(`Refusing to alter tenant "${TENANT_SLUG}" outside its isolated draft setup.`);
@@ -156,7 +157,7 @@ async function main() {
     operator,
     tenant.id,
     websiteSettings(TENANT_NAME, {
-      sandboxLabel: "Sandbox",
+      sandboxLabel: "Protected Sandbox Preview",
       heroTitle: "Move between worlds.",
       heroSubtitle:
         "Review the proposed Crypto / Fiat Swap and Crypto / Crypto Convert experience. No rates, quotes, payments, or orders are configured.",
