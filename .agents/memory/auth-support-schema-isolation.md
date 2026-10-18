@@ -25,3 +25,17 @@ first-install failure; metadata and TypeScript checks alone do not catch it.
 **How to apply:** Export namespace declarations alongside their tables and
 require a clean first-apply rehearsal with private-table access-denial checks
 before accepting generated schema as release-ready.
+
+Pre-authentication administrator eligibility must use a narrowly scoped
+server-only authority projection, not direct public-table grants to private
+Auth or tenant runtime connections.
+
+**Why:** An isolated Auth connection can be healthy while its email flow fails
+before SMTP because it cannot read administrator bindings. Broadening table
+access would undermine the separation that connection was created to enforce.
+
+**How to apply:** Verify the real private Auth login can resolve existing active
+administrator subjects and the tenant login cannot execute that projection.
+Keep user role assignment, passwords, identity links and MFA factors unchanged.
+SMTP management responses may redact passwords; do not test a redacted value or
+misreport its authentication failure as invalid configured credentials.

@@ -56,6 +56,7 @@
 - [Native Publish planner loss](native-publish-planner-loss.md) — correct database metadata can be lost by the native planner; local Drizzle fixes are not platform fixes.
 - [Protected provider configuration](protected-provider-configuration.md) — candidate-only vault custody; preserve Sensitive env types, Preview scope and pooler authentication.
 - [Production Owner continuity](production-owner-continuity.md) — preserve the original Production identity; verified Development Gmail is not automatic migration authority.
+- [Existing Owner finalization](existing-owner-finalization.md) — no more identities; original password/TOTP only; official-domain connection now authorized with available permissions.
 - [Recovery token custody](production-recovery-custody.md) — explicit redemption, protected redirect preservation, recovery-cookie resume and native mail evidence.
 - [Private commerce RLS](private-outbox-rls.md) — conflict and row-lock clauses can require policies beyond an ordinary insert or read.
 - [Supabase Storage missing objects](supabase-storage-not-found.md) — authenticated object-info may use HTTP 400 with structured statusCode 404; never treat all 400s as missing.
