@@ -49,7 +49,11 @@ jobs:
       - name: Install disposable browser
         run: pnpm --filter @workspace/api-server exec playwright install --with-deps chromium
       - name: Eight tenant-release regression categories and public-browser proof
-        run: pnpm --filter @workspace/api-server exec tsx src/verification/site-releases.ts --ci
+        run: |
+          # Fresh signing key for this disposable test process, never a hosted secret.
+          export SESSION_SECRET="$(node -e 'process.stdout.write(require("node:crypto").randomBytes(32).toString("hex"))')"
+          echo "::add-mask::$SESSION_SECRET"
+          pnpm --filter @workspace/api-server exec tsx src/verification/site-releases.ts --ci
       - uses: actions/upload-artifact@v4
         if: always()
         with:
