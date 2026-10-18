@@ -25,6 +25,7 @@ const AccountOrders = lazy(() => import('@/pages/account').then(m => ({ default:
 const AccountWhiteLabels = lazy(() => import('@/pages/account').then(m => ({ default: m.AccountWhiteLabels })));
 const AdminPanels = lazy(() => import('@/pages/account').then(m => ({ default: m.AdminPanels })));
 const ConfigureExchange = lazy(() => import('@/pages/account').then(m => ({ default: m.ConfigureExchange })));
+const AbracadabraPreview = lazy(() => import('@/pages/abracadabra-preview'));
 const AccountProfile = lazy(() => import('@/pages/account').then(m => ({ default: m.AccountProfile })));
 const NotProvisioned = lazy(() => import('@/pages/account').then(m => ({ default: m.NotProvisioned })));
 const WhiteLabelRequests = lazy(() => import('@/pages/white-label-requests'));
@@ -171,7 +172,7 @@ const open = (C: ComponentType) => () => <Protected><C /></Protected>;
 const rTenantInt = () => <Protected><DeliveredOnly><TenantIntegrations /></DeliveredOnly></Protected>;
 const rDelivered = () => <Protected><DeliveredOnly><Exchange /></DeliveredOnly></Protected>;
 const rAdmin = guard(Admin), rClients = guard(Clients), rNew = guard(ClientNew), rDetail = guard(ClientDetail), rModules = guard(Modules), rActivity = guard(Activity), rPlans = guard(Plans), rPlan = guard(PlanDetail), rAddons = guard(Addons), rLanding = guard(LandingProducts), rWL = guard(WhiteLabelRequests), rWLO = guard(WhiteLabelOrder), rWLs = guard(WhiteLabels), rCD = guard(CustomerDomains), rProv = guard(Provisioning), rProviders = guard(Providers), rGCat = guard(GlobalCatalog), rInt = guard(Integrations), rCust = guard(CustomerDetail);
-const rAcc = open(AccountDashboard), rOrd = open(AccountOrders), rWls = open(AccountWhiteLabels), rPanels = open(AdminPanels), rCfg = open(ConfigureExchange), rProf = open(AccountProfile), rOrdD = open(AccountOrderDetail);
+const rAcc = open(AccountDashboard), rOrd = open(AccountOrders), rWls = open(AccountWhiteLabels), rPanels = open(AdminPanels), rCfg = open(ConfigureExchange), rProf = open(AccountProfile), rOrdD = open(AccountOrderDetail), rAbracadabra = guard(AbracadabraPreview);
 
 function RoutedErrorBoundary({ children }: { children: ReactNode }) {
   const [location] = useLocation();
@@ -228,6 +229,7 @@ function AppRoutes() {
               <Route path="/add-ons" component={rAddons} />
               <Route path="/landing-products" component={rLanding} />
               <Route path="/catalog-preview" component={CatalogPreview} />
+              <Route path="/abracadabra-preview" component={rAbracadabra} />
               <Route path="/activity" component={rActivity} />
               <Route component={NotFound} />
             </Switch>
