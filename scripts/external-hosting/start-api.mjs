@@ -2,10 +2,17 @@ import assert from "node:assert/strict";
 import { createServer } from "node:http";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { publicPreparation } from "../../lib/production-access-gate/public-preparation.mjs";
 
 export function startupMode(env) {
   const mode = env.QXLAYER_EXTERNAL_ENVIRONMENT;
   assert(["staging", "production"].includes(mode), "Explicit external environment required");
+  if (publicPreparation(env)) {
+    assert.equal(env.QXLAYER_EXTERNAL_STARTUP_APPROVED, "true");
+    assert.equal(env.QXLAYER_PRODUCTION_SCHEMA_VERIFIED, "true");
+    assert.equal(env.QXLAYER_DATABASE_PROVIDER, "supabase");
+    return "approved";
+  }
   if (env.QXLAYER_EXTERNAL_CANDIDATE === "true") {
     assert.equal(mode, "production", "Production candidate must be explicit");
     if (env.QXLAYER_EXTERNAL_ACCEPTANCE_APPROVED === "true") {

@@ -4,6 +4,7 @@ import { brotliCompressSync, gzipSync, constants } from "node:zlib";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { frontendRoutes } from "./frontend-routes.mjs";
+import { publicPreparation } from "../../lib/production-access-gate/public-preparation.mjs";
 const root = fileURLToPath(new URL("../../", import.meta.url));
 process.chdir(root);
 const api = new URL(process.env.QXLAYER_API_ORIGIN ?? "https://unconfigured.invalid");
@@ -18,7 +19,8 @@ if (process.env.QXLAYER_EXTERNAL_ENVIRONMENT === "production") {
   if (!/^[a-z0-9]{20}$/.test(ref) || ["nktstksmfpcsjnjbeqsk", "muvedavhbpgpdrrnjrih"].includes(ref) ||
       process.env.QXLAYER_PRODUCTION_SUPABASE_AUTH_URL !==
         (process.env.QXLAYER_EXTERNAL_ACCEPTANCE_APPROVED === "true" ?
-          "https://qxlayer-acceptance-vynox3.vercel.app" : "https://www.quicklychan.xyz"))
+          "https://qxlayer-acceptance-vynox3.vercel.app" :
+          publicPreparation(process.env) ? "https://qxlayer-staging.vercel.app" : "https://www.quicklychan.xyz"))
     throw new Error("Production frontend builds require isolated Production Auth metadata.");
 }
 for (const [name, base] of [["private-label-console", "/"], ["private-label-website", "/private-label-website/"]]) {
@@ -26,6 +28,7 @@ for (const [name, base] of [["private-label-console", "/"], ["private-label-webs
     stdio: "inherit", env: { ...process.env, NODE_ENV: "production", PORT: "3000", BASE_PATH: base,
       VITE_EXTERNAL_DEPLOYMENT: "true",
       VITE_QXLAYER_EXTERNAL_ACCEPTANCE_APPROVED: process.env.QXLAYER_EXTERNAL_ACCEPTANCE_APPROVED,
+      VITE_QXLAYER_PUBLIC_PREPARATION_APPROVED: process.env.QXLAYER_PUBLIC_PREPARATION_APPROVED,
       VITE_QXLAYER_AUTH_PROVIDER: authProvider,
       VITE_QXLAYER_PRODUCTION_SUPABASE_AUTH_PROJECT_REF: process.env.QXLAYER_PRODUCTION_SUPABASE_AUTH_PROJECT_REF,
       VITE_QXLAYER_PRODUCTION_SUPABASE_AUTH_URL: process.env.QXLAYER_PRODUCTION_SUPABASE_AUTH_URL,

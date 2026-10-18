@@ -1,5 +1,6 @@
 import type { PoolClient } from "pg";
 import { pool } from "./index";
+import { publicPreparation } from "../../../lib/production-access-gate/public-preparation.mjs";
 import { applicationTableNames } from "./schema-table-names";
 import { runtimeRole } from "./connection-options";
 
@@ -31,11 +32,12 @@ export async function withDatabase<T>(
     const role = runtimeRole();
     if (role === "qxlayer_runtime") {
       await client.query(context.canWrite === true ? "BEGIN" : "BEGIN READ ONLY");
-      const login = await client.query(`SELECT session_user='qxlayer_app' AND NOT r.rolsuper
+      const expectedLogin = publicPreparation() ? "qxlayer_public_app" : "qxlayer_app";
+      const login = await client.query(`SELECT session_user=$1 AND NOT r.rolsuper
         AND NOT r.rolbypassrls AND NOT r.rolinherit AND NOT r.rolcreaterole AND NOT r.rolcreatedb
-        AND NOT EXISTS (SELECT 1 FROM pg_roles p WHERE p.rolname NOT IN ('qxlayer_app','qxlayer_runtime')
+        AND NOT EXISTS (SELECT 1 FROM pg_roles p WHERE p.rolname NOT IN ($1,'qxlayer_runtime')
           AND pg_has_role(r.oid,p.oid,'MEMBER')) AS safe
-        FROM pg_roles r WHERE r.rolname=session_user`);
+        FROM pg_roles r WHERE r.rolname=session_user`, [expectedLogin]);
       if (!login.rows[0]?.safe) throw new Error("External database login is not restricted.");
       await client.query("SET LOCAL ROLE qxlayer_runtime; SET LOCAL search_path=pg_catalog,public; SET LOCAL row_security=on");
     } else {

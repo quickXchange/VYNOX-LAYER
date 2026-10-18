@@ -1,0 +1,74 @@
+name: Approved public Production preparation (no DNS cutover)
+on:
+  workflow_dispatch:
+    inputs:
+      approve_temporary_production:
+        description: Deploy the temporary Production hostname only; no official-domain cutover
+        type: boolean
+        required: true
+        default: false
+permissions:
+  contents: read
+concurrency:
+  group: public-production-preparation
+  cancel-in-progress: false
+jobs:
+  checks:
+    if: inputs.approve_temporary_production && github.ref == 'refs/heads/main'
+    uses: ./.github/workflows/external-checks.yml
+  public-preparation:
+    needs: checks
+    if: inputs.approve_temporary_production && github.ref == 'refs/heads/main'
+    environment: vynox-public-preparation
+    runs-on: ubuntu-latest
+    env:
+      QXLAYER_EXTERNAL_ENVIRONMENT: production
+      QXLAYER_EXTERNAL_CANDIDATE: "false"
+      QXLAYER_EXTERNAL_ACCEPTANCE_APPROVED: "false"
+      QXLAYER_PUBLIC_PREPARATION_APPROVED: "true"
+      QXLAYER_PUBLIC_PRODUCTION_ORIGIN: https://qxlayer-staging.vercel.app
+      QXLAYER_PLATFORM_URL: https://qxlayer-staging.vercel.app
+      QXLAYER_PRODUCTION_SUPABASE_AUTH_CUTOVER_APPROVED: "false"
+      QXLAYER_FINANCIAL_EXECUTION_ENABLED: "false"
+      PRODUCTION_ACCESS_GATE_ENABLED: "false"
+      QXLAYER_AUTH_PROVIDER: supabase
+      QXLAYER_PRODUCTION_SUPABASE_AUTH_PROJECT_REF: qcgvhlphalxqzzsxqjhi
+      QXLAYER_PRODUCTION_SUPABASE_AUTH_URL: https://qxlayer-staging.vercel.app
+      QXLAYER_API_ORIGIN: https://vynox-public-api.onrender.com
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - run: corepack enable
+      - run: pnpm install --frozen-lockfile
+      - name: Validate approved public runtime and preserved acceptance
+        run: node scripts/external-hosting/verify-public-preparation.mjs before
+        env:
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      - name: Deploy isolated public API at the reviewed commit
+        run: node scripts/external-hosting/release-render.mjs
+        env:
+          QXLAYER_EXTERNAL_RELEASES_APPROVED: "true"
+          RENDER_API_SERVICE_ID: srv-dba0q0gm7kps73f1k9fg
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+      - name: Build approved public frontends
+        run: pnpm run external:build:frontend
+      - name: Deploy real Production without assigning official domains
+        id: deployment
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          mkdir -p .vercel
+          node -e 'require("fs").writeFileSync(".vercel/project.json", JSON.stringify({orgId:"team_eoJE6FCcm9esuqnRTUsmopzy",projectId:"prj_MoGcFUBrfUHrmtRjHqNuYIaUbQcx"}))'
+          url=$(pnpm dlx vercel@63.1.2 deploy --prebuilt --prod --skip-domain --yes --token "$VERCEL_TOKEN")
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+      - name: Verify Production identity and bind temporary hostname only
+        run: node scripts/external-hosting/verify-public-preparation.mjs after
+        env:
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          PUBLIC_PREPARATION_DEPLOYMENT: ${{ steps.deployment.outputs.url }}

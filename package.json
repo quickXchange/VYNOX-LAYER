@@ -6,7 +6,7 @@
   "scripts": {
     "external:build:frontend": "node scripts/external-hosting/build-frontends.mjs",
     "external:migrate": "node scripts/external-postgres/migrate.mjs",
-    "external:test": "node --test scripts/external-hosting/*.test.mjs && pnpm --filter @workspace/api-server exec tsx --test src/lib/external-hosting.test.ts src/modules/supabase-auth/*.test.ts",
+    "external:test": "node --test scripts/external-hosting/*.test.mjs lib/production-access-gate/public-preparation.test.mjs && pnpm --filter @workspace/api-server exec tsx --test src/lib/external-hosting.test.ts src/middlewares/preparation-isolation.test.ts src/modules/supabase-auth/*.test.ts",
     "external:test:database": "node scripts/external-postgres/rehearsal.mjs",
     "release:check": "node scripts/release/verify-publish.mjs && pnpm run typecheck",
     "production:prepare:free": "node scripts/external-hosting/prepare-free-production.mjs",

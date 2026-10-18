@@ -1,18 +1,20 @@
 import { readFileSync } from "node:fs";
 import type { PoolConfig } from "pg";
+import { publicPreparation } from "../../../lib/production-access-gate/public-preparation.mjs";
 
 /** Replit defaults stay unchanged. External mode must be explicit and pinned. */
 export function connectionOptions(env = process.env): PoolConfig {
-  return restrictedConnectionOptions(env, "qxlayer_app");
+  return restrictedConnectionOptions(env, publicPreparation(env) ? "qxlayer_public_app" : "qxlayer_app");
 }
 
 export function authConnectionOptions(env = process.env): PoolConfig {
   if (env.QXLAYER_DATABASE_PROVIDER !== "supabase")
     throw new Error("External private Auth support requires the isolated Supabase provider");
-  return restrictedConnectionOptions({ ...env, DATABASE_URL: env.QXLAYER_PRODUCTION_AUTH_DATABASE_URL }, "qxlayer_auth_app");
+  return restrictedConnectionOptions({ ...env, DATABASE_URL: env.QXLAYER_PRODUCTION_AUTH_DATABASE_URL },
+    publicPreparation(env) ? "qxlayer_public_auth" : "qxlayer_auth_app");
 }
 
-function restrictedConnectionOptions(env: NodeJS.ProcessEnv, login: "qxlayer_app" | "qxlayer_auth_app"): PoolConfig {
+function restrictedConnectionOptions(env: NodeJS.ProcessEnv, login: "qxlayer_app" | "qxlayer_auth_app" | "qxlayer_public_app" | "qxlayer_public_auth"): PoolConfig {
   if (!env.DATABASE_URL) throw new Error("DATABASE_URL is required.");
   if (!env.QXLAYER_DATABASE_PROVIDER || env.QXLAYER_DATABASE_PROVIDER === "replit")
     return { connectionString: env.DATABASE_URL };

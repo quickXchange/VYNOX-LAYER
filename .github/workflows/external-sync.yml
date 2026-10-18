@@ -37,7 +37,7 @@ jobs:
           RENDER_API_SERVICE_ID: srv-db5b47qjnfac739s374g
           RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
       - name: Synchronize reviewed global reference additions only
-        if: env.CANDIDATE_AUTH_ENVIRONMENT == 'production' && env.CANDIDATE_ACCEPTANCE_APPROVED == 'true'
+        if: env.CANDIDATE_AUTH_ENVIRONMENT == 'production' && env.CANDIDATE_ACCEPTANCE_APPROVED == 'true' && env.CANDIDATE_REFERENCE_SYNC_ALLOWED == 'true'
         run: node scripts/external-hosting/synchronize-reference-configuration.mjs --apply-approved-reference
         env:
           RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}

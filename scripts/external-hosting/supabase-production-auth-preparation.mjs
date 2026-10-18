@@ -5,12 +5,19 @@ import { pathToFileURL } from "node:url";
 export const PRODUCTION_REF = "qcgvhlphalxqzzsxqjhi";
 const ORGANIZATION = "cvgreqeceunmyluagnud";
 const ORIGIN = "https://www.quicklychan.xyz";
+const mailCallback = path => {
+  const allowed = ["https://qxlayer-staging.vercel.app", "https://qxlayer-acceptance-vynox3.vercel.app", "https://www.quicklychan.xyz"]
+    .map(origin => `(eq .RedirectTo "${origin}/${path}")`).join(" ");
+  // Old clients/providers can supply a bare Site URL as RedirectTo. Preserve
+  // their path fallback while accepting only exact approved callback URLs.
+  return `{{ if or ${allowed} }}{{ .RedirectTo }}{{ else }}{{ .SiteURL }}/${path}{{ end }}`;
+};
 export const MAIL_TEMPLATES = {
   mailer_subjects_confirmation: "Verify your VYNOX LAYER account",
   mailer_subjects_recovery: "Reset your VYNOX LAYER password",
   mailer_subjects_magic_link: "Your VYNOX LAYER sign-in code",
-  mailer_templates_confirmation_content: '<h2>VYNOX LAYER</h2><p>Verify your email address:</p><p><a href="{{ .SiteURL }}/verify-email?token_hash={{ .TokenHash }}&amp;type=signup">Verify email</a></p><p>If you did not request this, ignore this message.</p>',
-  mailer_templates_recovery_content: '<h2>VYNOX LAYER</h2><p><a href="{{ .SiteURL }}/reset-password?token_hash={{ .TokenHash }}&amp;type=recovery">Reset password</a></p><p>Your existing Google Authenticator verification is still required. This request does not remove two-factor authentication.</p><p>If you did not request this, ignore this message.</p>',
+  mailer_templates_confirmation_content: `<h2>VYNOX LAYER</h2><p>Verify your email address:</p><p><a href="${mailCallback("verify-email")}?token_hash={{ .TokenHash }}&amp;type=signup">Verify email</a></p><p>If you did not request this, ignore this message.</p>`,
+  mailer_templates_recovery_content: `<h2>VYNOX LAYER</h2><p><a href="${mailCallback("reset-password")}?token_hash={{ .TokenHash }}&amp;type=recovery">Reset password</a></p><p>Your existing Google Authenticator verification is still required. This request does not remove two-factor authentication.</p><p>If you did not request this, ignore this message.</p>`,
   mailer_templates_magic_link_content: '<h2>VYNOX LAYER</h2><p>Your sign-in code is:</p><p style="font-size:28px;font-weight:bold">{{ .Token }}</p><p>Enter it in the VYNOX LAYER login page within 5 minutes. It is single-use. Google Authenticator verification is required next. Do not share this code.</p><p>If you did not request this, ignore this message. This is not a password reset and does not remove two-factor authentication.</p>',
 };
 const CONFIG_TYPES = {

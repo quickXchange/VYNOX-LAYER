@@ -6,6 +6,7 @@ import { logger } from "./lib/logger";
 import { HttpError } from "./lib/errors";
 import { createAccessGate } from "../../../lib/production-access-gate/index.mjs";
 import { supabaseAuthConfiguration, supabaseDefaultProvider } from "./modules/supabase-auth/config";
+import { preparationIsolation } from "./middlewares/preparation-isolation";
 
 // No silent fallback to a retired provider, including in a future published build.
 if (!supabaseDefaultProvider()) throw new Error("Supabase Auth must be explicitly configured. Legacy authentication is retired; Production migration approval is required before publishing.");
@@ -49,6 +50,7 @@ app.use((req, res, next) => {
 app.use(express.json({ limit: "128kb" }));
 app.use(express.urlencoded({ extended: true, limit: "128kb" }));
 
+app.use(preparationIsolation);
 app.use("/api", router);
 const errorHandler: ErrorRequestHandler = (error, req, res, _next) => {
   if (req.path === "/api/diagnostics/website-errors" && error?.type === "entity.parse.failed") {

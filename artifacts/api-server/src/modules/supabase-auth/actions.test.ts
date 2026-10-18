@@ -42,7 +42,9 @@ test("provider transport is pinned and strips private error content", async () =
     QXLAYER_SUPABASE_AUTH_SERVER_KEY: "synthetic-server-key" });
   try {
     const transport = (async (url: unknown, opts: RequestInit) => {
-      assert.equal(url, "https://muvedavhbpgpdrrnjrih.supabase.co/auth/v1/signup");
+      const target = new URL(String(url));
+      assert.equal(target.origin + target.pathname, "https://muvedavhbpgpdrrnjrih.supabase.co/auth/v1/signup");
+      assert.equal(target.searchParams.get("redirect_to"), "https://stage.example.com/verify-email");
       assert.equal(opts.redirect, "error");
       return new Response(JSON.stringify({ error_code: "invalid_credentials", message: "DO-NOT-EXPOSE-private-value" }), { status: 400 });
     }) as typeof fetch;

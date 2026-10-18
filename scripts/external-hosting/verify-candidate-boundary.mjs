@@ -79,4 +79,5 @@ if (process.env.GITHUB_ENV)
     `CANDIDATE_AUTH_ENVIRONMENT=${productionOnly ? "production" : "staging"}\n` +
     `CANDIDATE_SUPABASE_PROJECT_REF=${productionOnly ? "qcgvhlphalxqzzsxqjhi" : ""}\n` +
     `CANDIDATE_AUTH_ORIGIN=${productionOnly ? env.QXLAYER_PRODUCTION_SUPABASE_AUTH_URL : ""}\n` +
-    `CANDIDATE_ACCEPTANCE_APPROVED=${acceptance ? "true" : "false"}\n`);
+    `CANDIDATE_ACCEPTANCE_APPROVED=${acceptance ? "true" : "false"}\n` +
+    `CANDIDATE_REFERENCE_SYNC_ALLOWED=${env.QXLAYER_PUBLIC_PREPARATION_ACTIVE === "true" ? "false" : "true"}\n`);

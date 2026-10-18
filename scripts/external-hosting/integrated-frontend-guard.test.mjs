@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { runInNewContext } from "node:vm";
+import { publicPreparation } from "../../lib/production-access-gate/public-preparation.mjs";
 
 // Evaluate the actual configuration guard with only its static-serving factory stubbed.
 const source = readFileSync(new URL("../../deploy/vercel/handler.mjs", import.meta.url), "utf8")
@@ -12,7 +13,7 @@ function load(overrides) {
   const env = { PRODUCTION_ACCESS_CODE: "synthetic-test-only", QXLAYER_STAGING_ACCESS_CODE: "s".repeat(43), PRODUCTION_ACCESS_GATE_ENABLED: "true",
     QXLAYER_EXTERNAL_ENVIRONMENT: "staging", VERCEL_ENV: "preview",
     VERCEL_URL: "qxlayer-staging-synthetic-team.vercel.app", ...overrides };
-  runInNewContext(source, { process: { env }, URL, fileURLToPath: () => "/static/",
+  runInNewContext(source, { process: { env }, URL, publicPreparation, fileURLToPath: () => "/static/",
     createStaticHandler: () => () => {} });
   return env;
 }

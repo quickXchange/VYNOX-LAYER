@@ -25,8 +25,11 @@ export async function authRequest<T>(path: string, options: {
   if (!/^\/(?:(?:token|otp|signup|recover|resend|verify|user|logout)(?:\?[a-zA-Z0-9_=&-]+)?|factors(?:\/[a-f0-9-]+(?:\/(?:challenge|verify))?)?)$/.test(path))
     throw new Error("Unsupported Supabase authentication endpoint.");
   let response: Response;
+  const target = new URL(`${cfg.providerOrigin}/auth/v1${path}`);
+  if (["/signup", "/recover", "/resend"].includes(path) || (path === "/user" && options.method === "PUT"))
+    target.searchParams.set("redirect_to", `${cfg.origin}/${path === "/recover" ? "reset-password" : "verify-email"}`);
   try {
-    response = await transport(`${cfg.providerOrigin}/auth/v1${path}`, {
+    response = await transport(target.toString(), {
       method: options.method ?? "GET",
       redirect: "error",
       signal: AbortSignal.timeout(15000),

@@ -9,7 +9,9 @@ if (production && (
     ["nktstksmfpcsjnjbeqsk", "muvedavhbpgpdrrnjrih"].includes(import.meta.env.VITE_QXLAYER_PRODUCTION_SUPABASE_AUTH_PROJECT_REF) ||
     import.meta.env.VITE_QXLAYER_PRODUCTION_SUPABASE_AUTH_URL !==
       (import.meta.env.VITE_QXLAYER_EXTERNAL_ACCEPTANCE_APPROVED === "true" ?
-        "https://qxlayer-acceptance-vynox3.vercel.app" : "https://www.quicklychan.xyz"))) {
+        "https://qxlayer-acceptance-vynox3.vercel.app" :
+        import.meta.env.VITE_QXLAYER_PUBLIC_PREPARATION_APPROVED === "true" ?
+          "https://qxlayer-staging.vercel.app" : "https://www.quicklychan.xyz"))) {
   throw new Error("Production Supabase authentication requires its isolated project and canonical Live origin.");
 }
 if (supabaseDevelopmentAuth && (!import.meta.env.DEV ||

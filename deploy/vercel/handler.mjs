@@ -1,5 +1,6 @@
 import { createStaticHandler } from "./lib/production-access-gate/static-handler.mjs";
 import { fileURLToPath } from "node:url";
+import { publicPreparation } from "./lib/production-access-gate/public-preparation.mjs";
 
 if (process.env.QXLAYER_EXTERNAL_ENVIRONMENT === "staging") {
   if (process.env.VERCEL_ENV !== "preview" ||
@@ -11,7 +12,10 @@ if (process.env.QXLAYER_EXTERNAL_ENVIRONMENT === "staging") {
 }
 const gateCode = process.env.QXLAYER_EXTERNAL_ENVIRONMENT === "staging"
   ? process.env.QXLAYER_STAGING_ACCESS_CODE : process.env.PRODUCTION_ACCESS_CODE;
-if (!gateCode || process.env.PRODUCTION_ACCESS_GATE_ENABLED !== "true" ||
+const preparingPublic = publicPreparation(process.env);
+if (preparingPublic && process.env.VERCEL_ENV !== "production")
+  throw new Error("Public preparation must be a real Vercel Production deployment.");
+if (!preparingPublic && (!gateCode || process.env.PRODUCTION_ACCESS_GATE_ENABLED !== "true" ||
     !process.env.QXLAYER_PLATFORM_URL)
-  throw new Error("Approved platform URL and Private Access configuration are required.");
+  ) throw new Error("Approved platform URL and Private Access configuration are required.");
 export default createStaticHandler(fileURLToPath(new URL("./static/", import.meta.url)));
