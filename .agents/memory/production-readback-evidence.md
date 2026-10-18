@@ -3,6 +3,15 @@ name: Production readback evidence
 description: Why schema-diff and SQL success envelopes are insufficient proof of Production state.
 ---
 
+PostgreSQL `name[]` metadata can arrive from this project's Node PostgreSQL driver
+as an array-literal string, not a JavaScript array.
+
+**Why:** Policy-role checks incorrectly used `.length` and indexed the string
+`{qxlayer_runtime}`, causing preflight failures before any DDL.
+
+**How to apply:** Compare metadata arrays in SQL using typed arrays/cardinality,
+or explicitly decode the database type; never infer the JavaScript representation.
+
 Production SQL tooling already supplies a read-only transaction wrapper.
 Explicit BEGIN/COMMIT and transaction-control or read-only-mode changes are
 rejected rather than providing an additional safety boundary.

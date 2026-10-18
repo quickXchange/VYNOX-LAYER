@@ -3,7 +3,46 @@ name: Commercial pricing safety
 description: Separate unpriced commercial plans from technical Production recovery; never substitute demo or invented free pricing.
 ---
 
-Phase 1 permits suggested EUR default plans and add-ons as **unapproved proposals
+## Approved Acceptance plan definition
+
+The user approved the following White Label plan prices and limits for
+**Acceptance only**, not the official public catalog:
+
+| Tier | EUR monthly / yearly / setup | Assets / networks / payment methods / staff | Monthly simulated orders / EUR volume |
+|---|---|---|---|
+| Starter | 39 / 390 / 149 | 3 / 2 / 2 / 1 | 100 / 10,000 |
+| Business | 99 / 990 / 399 | 10 / 10 / 5 / 5 | 1,000 / 1,000,000 |
+| Professional | 249 / 2,490 / 999 | 25 / 25 / 15 / 15 | 10,000 / 10,000,000 |
+
+Only Website, Exchange, Swap and Convert are included. Buy/Sell and other
+features remain off; API-key and webhook limits are zero. No payment-method
+activation or real financial execution was approved.
+
+**Why:** The user explicitly approved these prices, then these exact tier limits,
+and selected Acceptance rather than Development or official Live.
+
+**How to apply:** This supersedes the earlier unapproved-price status for these
+three plans only. Do not publish them into a shared official catalog under an
+Acceptance-only approval. Add-ons remain unapproved.
+
+## Acceptance is not a separate catalog database
+
+Provider configuration readback confirmed that the separate Acceptance and
+official public API services connect to the same database; pricing publication
+is shared. Acceptance runtime flags and a private hostname do not isolate data.
+
+**Why:** An Acceptance-only pricing request exposed this distinction after an
+additive schema migration. A candidate connection alone cannot prove that a
+catalog or schema write will not affect the public service.
+
+**How to apply:** Before any environment-scoped write, compare effective service
+configuration (including overrides) and database targets for both services.
+Require catalog isolation or explicit public scope before shared pricing writes.
+An Acceptance API restart does not authorize restarting the separate public API.
+
+## Historical provisional baseline
+
+Phase 1 permitted suggested EUR default plans and add-ons as **unapproved proposals
 only**. Proposed amounts are not user-approved real prices. Do not enable purchases
 until the Owner explicitly approves actual prices and a configured payment method.
 

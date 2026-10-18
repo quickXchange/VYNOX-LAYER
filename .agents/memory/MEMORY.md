@@ -29,7 +29,7 @@
 - [QA cleanup durability](qa-cleanup-durability.md) — persist exact disposable fixture scope through workspace restarts; /tmp can vanish before database cleanup.
 - [QA clone integrity](qa-tenant-clone-integrity.md) — settings JSON is insufficient: preserve catalog assignments and remap globally owned method/pricing IDs before write tests.
 - [QA browser credentials](qa-browser-credential-custody.md) — tester subprocesses may lack workspace secrets; validate approved in-memory gate inputs before native journeys.
-- [Commercial pricing safety](commercial-pricing-safety.md) — undecided prices are not zero; separate real commercial configuration from technical recovery.
+- [Commercial pricing safety](commercial-pricing-safety.md) — approved Acceptance tier values; Acceptance and public APIs share a database, so catalog isolation is required.
 - [Public marketing baseline](public-marketing-baseline.md) — presentation-only recovery can ship with code; it is not Production database or owner-access restoration.
 - [Hostname normalization](hostname-normalization.md) — IDN conversion can discard URL syntax; validate customer input before canonicalizing it.
 - [Integration verification boundaries](integration-verification-boundaries.md) — privileged-role RLS queries are not isolation proof; source-schema references need a bounded allowlist.

@@ -26,7 +26,8 @@ export async function verifyTarget(client, { policyRole = "PUBLIC" } = {}) {
   assert.deepEqual(actual.rows, expected.tables, "Exact tables, RLS/FORCE and all predicates must match.");
   assert(["PUBLIC", "qxlayer_runtime"].includes(policyRole));
   const targets = await client.query(`SELECT bool_and(polpermissive AND polroles=ARRAY[
-    CASE WHEN $1='PUBLIC' THEN 0::oid ELSE (SELECT oid FROM pg_roles WHERE rolname=$1) END]) AS safe
+    CASE WHEN $1='PUBLIC' OR c.relname IN ('global_exchange_catalog','global_exchange_catalog_links')
+      THEN 0::oid ELSE (SELECT oid FROM pg_roles WHERE rolname=$1) END]) AS safe
     FROM pg_policy p JOIN pg_class c ON c.oid=p.polrelid JOIN pg_namespace n ON n.oid=c.relnamespace
     WHERE n.nspname='public'`, [policyRole]);
   assert.equal(targets.rows[0]?.safe,true,"Policy role targets/permissiveness must match the source.");
