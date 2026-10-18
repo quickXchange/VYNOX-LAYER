@@ -2,7 +2,8 @@
 import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
 import { mkdirSync, writeFileSync } from "node:fs";
-import { pool } from "@workspace/db";
+import { pool, withDatabase } from "@workspace/db";
+import { challengeHash } from "../modules/domains/approval";
 import { resolvePrincipal, type Principal } from "../modules/authentication/service";
 import { submitRequest, reviewRequest, orderDetail, myAdminPanels } from "../modules/customer/service";
 import { getProvisioning, retryProvisioning } from "../modules/customer/provisioning";
@@ -25,6 +26,8 @@ const other: Principal = { userId: actors[2], role: "unassigned", memberships: [
 const ids: string[] = [];
 let planId: string | undefined;
 const results: { test: string; result: string }[] = [];
+const previousActivation = process.env.QXLAYER_CUSTOM_DOMAIN_ACTIVATION_APPROVED;
+const previousDeployment = process.env.VERCEL_DOMAIN_APPROVED_DEPLOYMENT_ID;
 const pass = (test: string) => { results.push({ test, result: "PASS" }); console.log(`PASS: ${test}`); };
 const reportDir = "reports/white-label-platform-completion";
 mkdirSync(reportDir, { recursive: true });
@@ -118,17 +121,31 @@ try {
   await denied(() => verifyTenantDomain(principal, tenantId, async () => [["wrong-token"]]), 400);
   await verifyTenantDomain(principal, tenantId, async () => [[challenge.txtValue!.slice(0, 10), challenge.txtValue!.slice(10)]]);
   assert.equal((await getDomainVerification(principal, tenantId)).hostingConnected, false);
-  assert.equal((await resolvePublicDomain(domain)).tenantSlug, tenant.slug);
+  await denied(() => resolvePublicDomain(domain), 404);
   pass("DNS token checks and split TXT handling; ownership alone never means connected hosting");
-  await checkHosting(principal, tenantId, async (_domain, nonce) => hostingProof(domain, "wrong-tenant", nonce));
+  process.env.QXLAYER_CUSTOM_DOMAIN_ACTIVATION_APPROVED = "true";
+  process.env.VERCEL_DOMAIN_APPROVED_DEPLOYMENT_ID = "dpl_QAWhiteLabelPlatform";
+  await withDatabase({ actorId: admin.userId, tenantId, isSuperAdmin: true, canWrite: true }, async c => {
+    const hash = challengeHash(challenge.txtValue!);
+    const approvalMetadata = JSON.stringify({ challengeHash: hash, domain, deploymentId: process.env.VERCEL_DOMAIN_APPROVED_DEPLOYMENT_ID });
+    const bindingMetadata = JSON.stringify({ challengeHash: hash, domain, deploymentId: process.env.VERCEL_DOMAIN_APPROVED_DEPLOYMENT_ID, alias: domain, bound: true });
+    await c.query(`INSERT INTO audit_events(tenant_id,actor_id,event_type,description,metadata)
+      VALUES($1,$2,'domain.activation_approved','QA exact-host approval',$3::jsonb),
+        ($1,$2,'domain.provider_bound','QA approved-deployment binding',$4::jsonb)`,
+      [tenantId, admin.userId, approvalMetadata, bindingMetadata]);
+  });
+  assert.equal((await getDomainVerification(principal, tenantId)).providerBindingVerified, true);
+  await checkHosting(principal, tenantId, async (_domain, nonce) => hostingProof(domain, "wrong-tenant", nonce), async () => true);
   assert.equal((await getDomainVerification(principal, tenantId)).hostingConnected, false);
-  await checkHosting(principal, tenantId, async (_domain, nonce) => hostingProof(domain, tenant.slug, nonce));
+  await denied(() => resolvePublicDomain(domain), 404);
+  await checkHosting(principal, tenantId, async (_domain, nonce) => hostingProof(domain, tenant.slug, nonce), async () => true);
   const connected = await getDomainVerification(principal, tenantId);
   assert.equal(connected.hostingConnected, true);
   assert.equal(connected.httpsReady, true);
+  assert.equal((await resolvePublicDomain(domain)).tenantSlug, tenant.slug);
   assert.equal((await orderDetail(principal, order.id)).order.websiteUrl, `https://${domain}`);
   await denied(() => checkHosting(other, tenantId), 403);
-  await checkHosting(principal, tenantId, async () => { throw new Error("fixture connection timeout"); });
+  await checkHosting(principal, tenantId, async () => { throw new Error("fixture connection timeout"); }, async () => true);
   assert.equal((await getDomainVerification(principal, tenantId)).hostingConnected, false);
   assert.match((await orderDetail(principal, order.id)).order.websiteUrl!, /private-label-website/);
   pass("nonce-bound hosting proof, wrong-tenant denial, persisted errors, retry recovery and default URL fallback (injected probe; not real DNS/TLS)");
@@ -151,6 +168,10 @@ try {
   await denied(() => getTenant(principal, secondTenant.id), 403);
   pass("second customer receives distinct master website; no branding/assets/data copied across tenants");
 } finally {
+  if (previousActivation === undefined) delete process.env.QXLAYER_CUSTOM_DOMAIN_ACTIVATION_APPROVED;
+  else process.env.QXLAYER_CUSTOM_DOMAIN_ACTIVATION_APPROVED = previousActivation;
+  if (previousDeployment === undefined) delete process.env.VERCEL_DOMAIN_APPROVED_DEPLOYMENT_ID;
+  else process.env.VERCEL_DOMAIN_APPROVED_DEPLOYMENT_ID = previousDeployment;
   try {
     await cleanupServiceQa({ developmentOnly: true, actors, orderIds: ids, planId });
   }

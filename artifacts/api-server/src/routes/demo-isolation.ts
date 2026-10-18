@@ -102,7 +102,13 @@ router.use(async (req, res, next) => {
   if (path === `${root}/exchange`) { res.json(demoConfiguration); return; }
   if (path === `${root}/domain-verification`) {
     res.json(GetDomainVerificationResponse.parse({ domain: null, status: "unconfigured",
-      txtName: null, txtValue: null, hostingConnected: false })); return;
+      txtName: null, txtValue: null, hostingConnected: false, httpsReady: false,
+      hostingCheckedAt: null, hostingError: null, websiteUrl: null, instructions: [],
+      hostingProvider: "replit", providerManagementAvailable: false,
+      activationAvailable: false, activationApproved: false, approvedDeploymentId: null,
+      activationApprovedAt: null, siteReleased: false, providerBindingVerified: false,
+      providerBindingCheckedAt: null, providerRegistered: false, providerVerified: false,
+      providerCheckedAt: null, providerError: null, dnsRecords: [] })); return;
   }
   if (path === `${root}/exchange/preview-integrations`) {
     res.json(GetExchangePreviewIntegrationsResponse.parse({ sandboxOnly: true, executionStatus: "configuration_only",

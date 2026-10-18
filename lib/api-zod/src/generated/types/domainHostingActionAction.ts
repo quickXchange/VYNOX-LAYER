@@ -10,6 +10,8 @@ export type DomainHostingActionAction = typeof DomainHostingActionAction[keyof t
 
 
 export const DomainHostingActionAction = {
+  approve: 'approve',
   register: 'register',
   refresh: 'refresh',
+  bind: 'bind',
 } as const;

@@ -18,21 +18,31 @@ export interface DomainVerification {
   /** @nullable */
   txtValue: string | null;
   hostingConnected: boolean;
-  httpsReady?: boolean;
+  httpsReady: boolean;
   /** @nullable */
-  hostingCheckedAt?: Date | null;
+  hostingCheckedAt: Date | null;
   /** @nullable */
-  hostingError?: string | null;
+  hostingError: string | null;
   /** @nullable */
-  websiteUrl?: string | null;
-  instructions?: string[];
-  hostingProvider?: DomainVerificationHostingProvider;
-  providerManagementAvailable?: boolean;
-  providerRegistered?: boolean;
-  providerVerified?: boolean;
+  websiteUrl: string | null;
+  instructions: string[];
+  hostingProvider: DomainVerificationHostingProvider;
+  providerManagementAvailable: boolean;
+  activationAvailable: boolean;
+  activationApproved: boolean;
   /** @nullable */
-  providerCheckedAt?: Date | null;
+  approvedDeploymentId: string | null;
   /** @nullable */
-  providerError?: string | null;
-  dnsRecords?: DomainDnsRecord[];
+  activationApprovedAt: Date | null;
+  siteReleased: boolean;
+  providerBindingVerified: boolean;
+  /** @nullable */
+  providerBindingCheckedAt: Date | null;
+  providerRegistered: boolean;
+  providerVerified: boolean;
+  /** @nullable */
+  providerCheckedAt: Date | null;
+  /** @nullable */
+  providerError: string | null;
+  dnsRecords: DomainDnsRecord[];
 }

@@ -2233,8 +2233,10 @@ export type DomainHostingActionAction = typeof DomainHostingActionAction[keyof t
 
 
 export const DomainHostingActionAction = {
+  approve: 'approve',
   register: 'register',
   refresh: 'refresh',
+  bind: 'bind',
 } as const;
 
 export interface DomainHostingAction {
@@ -2287,23 +2289,33 @@ export interface DomainVerification {
   /** @nullable */
   txtValue: string | null;
   hostingConnected: boolean;
-  httpsReady?: boolean;
+  httpsReady: boolean;
   /** @nullable */
-  hostingCheckedAt?: string | null;
+  hostingCheckedAt: string | null;
   /** @nullable */
-  hostingError?: string | null;
+  hostingError: string | null;
   /** @nullable */
-  websiteUrl?: string | null;
-  instructions?: string[];
-  hostingProvider?: DomainVerificationHostingProvider;
-  providerManagementAvailable?: boolean;
-  providerRegistered?: boolean;
-  providerVerified?: boolean;
+  websiteUrl: string | null;
+  instructions: string[];
+  hostingProvider: DomainVerificationHostingProvider;
+  providerManagementAvailable: boolean;
+  activationAvailable: boolean;
+  activationApproved: boolean;
   /** @nullable */
-  providerCheckedAt?: string | null;
+  approvedDeploymentId: string | null;
   /** @nullable */
-  providerError?: string | null;
-  dnsRecords?: DomainDnsRecord[];
+  activationApprovedAt: string | null;
+  siteReleased: boolean;
+  providerBindingVerified: boolean;
+  /** @nullable */
+  providerBindingCheckedAt: string | null;
+  providerRegistered: boolean;
+  providerVerified: boolean;
+  /** @nullable */
+  providerCheckedAt: string | null;
+  /** @nullable */
+  providerError: string | null;
+  dnsRecords: DomainDnsRecord[];
 }
 
 export type WhiteLabelProvisioningStepState = typeof WhiteLabelProvisioningStepState[keyof typeof WhiteLabelProvisioningStepState];

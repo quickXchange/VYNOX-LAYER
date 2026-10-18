@@ -230,7 +230,9 @@ try {
   const domain = await verifyTenantDomain(owner, tenantId, async () => [[challenge.txtValue!]]);
   assert.equal(domain.status, "verified");
   assert.equal(domain.hostingConnected, false, "Synthetic DNS proof never establishes real hosting.");
-  assert.equal((await resolvePublicDomain(challenge.domain!)).tenantSlug, slug, "Verified hostname maps only to its delivered tenant; DNS/HTTPS is independently unconnected.");
+  await denied(() => resolvePublicDomain(challenge.domain!), 404);
+  assert.equal((await getDomainVerification(owner, tenantId)).httpsReady, false,
+    "TXT ownership alone leaves the custom hostname preview-only until exact deployment binding and HTTPS are proven.");
   await denied(() => getTenant(b, tenantId), 403);
   // Raw SQL bypasses the service-level fence: the restricted DB role must still
   // hide foreign rows and deny cross-tenant writes.

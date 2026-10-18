@@ -65,7 +65,7 @@ export async function verifyCore(f: { admin: Principal; clientAdmin: Principal; 
     await denied(() => resolvePublicDomain(challenge.domain!), 404);
     await denied(() => verifyTenantDomain(clientAdmin, aId, async () => [["wrong"]] ), 400);
     await verifyTenantDomain(clientAdmin, aId, async () => [[challenge.txtValue!]]);
-    assert.equal((await resolvePublicDomain(challenge.domain!)).tenantSlug, t.slug);
+    await denied(() => resolvePublicDomain(challenge.domain!), 404);
     await setTenantSuspension(admin, aId, true, "Verify public isolation");
     await denied(() => resolvePublicDomain(challenge.domain!), 404);
     await setTenantSuspension(admin, aId, false, "Restore fixture");

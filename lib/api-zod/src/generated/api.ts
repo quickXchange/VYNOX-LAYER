@@ -7782,7 +7782,7 @@ export const ManageTenantDomainHostingParams = zod.object({
 })
 
 export const ManageTenantDomainHostingBody = zod.object({
-  "action": zod.enum(['register', 'refresh'])
+  "action": zod.enum(['approve', 'register', 'refresh', 'bind'])
 })
 
 export const ManageTenantDomainHostingResponse = zod.object({
@@ -7791,23 +7791,30 @@ export const ManageTenantDomainHostingResponse = zod.object({
   "txtName": zod.string().nullable(),
   "txtValue": zod.string().nullable(),
   "hostingConnected": zod.boolean(),
-  "httpsReady": zod.boolean().optional(),
-  "hostingCheckedAt": zod.coerce.date().nullish(),
-  "hostingError": zod.string().nullish(),
-  "websiteUrl": zod.string().nullish(),
-  "instructions": zod.array(zod.string()).optional(),
-  "hostingProvider": zod.enum(['vercel', 'replit']).optional(),
-  "providerManagementAvailable": zod.boolean().optional(),
-  "providerRegistered": zod.boolean().optional(),
-  "providerVerified": zod.boolean().optional(),
-  "providerCheckedAt": zod.coerce.date().nullish(),
-  "providerError": zod.string().nullish(),
+  "httpsReady": zod.boolean(),
+  "hostingCheckedAt": zod.coerce.date().nullable(),
+  "hostingError": zod.string().nullable(),
+  "websiteUrl": zod.string().nullable(),
+  "instructions": zod.array(zod.string()),
+  "hostingProvider": zod.enum(['vercel', 'replit']),
+  "providerManagementAvailable": zod.boolean(),
+  "activationAvailable": zod.boolean(),
+  "activationApproved": zod.boolean(),
+  "approvedDeploymentId": zod.string().nullable(),
+  "activationApprovedAt": zod.coerce.date().nullable(),
+  "siteReleased": zod.boolean(),
+  "providerBindingVerified": zod.boolean(),
+  "providerBindingCheckedAt": zod.coerce.date().nullable(),
+  "providerRegistered": zod.boolean(),
+  "providerVerified": zod.boolean(),
+  "providerCheckedAt": zod.coerce.date().nullable(),
+  "providerError": zod.string().nullable(),
   "dnsRecords": zod.array(zod.object({
   "type": zod.string(),
   "name": zod.string(),
   "value": zod.string(),
   "purpose": zod.string()
-})).optional()
+}))
 })
 
 
@@ -7821,23 +7828,30 @@ export const GetDomainVerificationResponse = zod.object({
   "txtName": zod.string().nullable(),
   "txtValue": zod.string().nullable(),
   "hostingConnected": zod.boolean(),
-  "httpsReady": zod.boolean().optional(),
-  "hostingCheckedAt": zod.coerce.date().nullish(),
-  "hostingError": zod.string().nullish(),
-  "websiteUrl": zod.string().nullish(),
-  "instructions": zod.array(zod.string()).optional(),
-  "hostingProvider": zod.enum(['vercel', 'replit']).optional(),
-  "providerManagementAvailable": zod.boolean().optional(),
-  "providerRegistered": zod.boolean().optional(),
-  "providerVerified": zod.boolean().optional(),
-  "providerCheckedAt": zod.coerce.date().nullish(),
-  "providerError": zod.string().nullish(),
+  "httpsReady": zod.boolean(),
+  "hostingCheckedAt": zod.coerce.date().nullable(),
+  "hostingError": zod.string().nullable(),
+  "websiteUrl": zod.string().nullable(),
+  "instructions": zod.array(zod.string()),
+  "hostingProvider": zod.enum(['vercel', 'replit']),
+  "providerManagementAvailable": zod.boolean(),
+  "activationAvailable": zod.boolean(),
+  "activationApproved": zod.boolean(),
+  "approvedDeploymentId": zod.string().nullable(),
+  "activationApprovedAt": zod.coerce.date().nullable(),
+  "siteReleased": zod.boolean(),
+  "providerBindingVerified": zod.boolean(),
+  "providerBindingCheckedAt": zod.coerce.date().nullable(),
+  "providerRegistered": zod.boolean(),
+  "providerVerified": zod.boolean(),
+  "providerCheckedAt": zod.coerce.date().nullable(),
+  "providerError": zod.string().nullable(),
   "dnsRecords": zod.array(zod.object({
   "type": zod.string(),
   "name": zod.string(),
   "value": zod.string(),
   "purpose": zod.string()
-})).optional()
+}))
 })
 
 
@@ -7851,23 +7865,30 @@ export const VerifyTenantDomainResponse = zod.object({
   "txtName": zod.string().nullable(),
   "txtValue": zod.string().nullable(),
   "hostingConnected": zod.boolean(),
-  "httpsReady": zod.boolean().optional(),
-  "hostingCheckedAt": zod.coerce.date().nullish(),
-  "hostingError": zod.string().nullish(),
-  "websiteUrl": zod.string().nullish(),
-  "instructions": zod.array(zod.string()).optional(),
-  "hostingProvider": zod.enum(['vercel', 'replit']).optional(),
-  "providerManagementAvailable": zod.boolean().optional(),
-  "providerRegistered": zod.boolean().optional(),
-  "providerVerified": zod.boolean().optional(),
-  "providerCheckedAt": zod.coerce.date().nullish(),
-  "providerError": zod.string().nullish(),
+  "httpsReady": zod.boolean(),
+  "hostingCheckedAt": zod.coerce.date().nullable(),
+  "hostingError": zod.string().nullable(),
+  "websiteUrl": zod.string().nullable(),
+  "instructions": zod.array(zod.string()),
+  "hostingProvider": zod.enum(['vercel', 'replit']),
+  "providerManagementAvailable": zod.boolean(),
+  "activationAvailable": zod.boolean(),
+  "activationApproved": zod.boolean(),
+  "approvedDeploymentId": zod.string().nullable(),
+  "activationApprovedAt": zod.coerce.date().nullable(),
+  "siteReleased": zod.boolean(),
+  "providerBindingVerified": zod.boolean(),
+  "providerBindingCheckedAt": zod.coerce.date().nullable(),
+  "providerRegistered": zod.boolean(),
+  "providerVerified": zod.boolean(),
+  "providerCheckedAt": zod.coerce.date().nullable(),
+  "providerError": zod.string().nullable(),
   "dnsRecords": zod.array(zod.object({
   "type": zod.string(),
   "name": zod.string(),
   "value": zod.string(),
   "purpose": zod.string()
-})).optional()
+}))
 })
 
 
@@ -7881,23 +7902,30 @@ export const CheckTenantDomainHostingResponse = zod.object({
   "txtName": zod.string().nullable(),
   "txtValue": zod.string().nullable(),
   "hostingConnected": zod.boolean(),
-  "httpsReady": zod.boolean().optional(),
-  "hostingCheckedAt": zod.coerce.date().nullish(),
-  "hostingError": zod.string().nullish(),
-  "websiteUrl": zod.string().nullish(),
-  "instructions": zod.array(zod.string()).optional(),
-  "hostingProvider": zod.enum(['vercel', 'replit']).optional(),
-  "providerManagementAvailable": zod.boolean().optional(),
-  "providerRegistered": zod.boolean().optional(),
-  "providerVerified": zod.boolean().optional(),
-  "providerCheckedAt": zod.coerce.date().nullish(),
-  "providerError": zod.string().nullish(),
+  "httpsReady": zod.boolean(),
+  "hostingCheckedAt": zod.coerce.date().nullable(),
+  "hostingError": zod.string().nullable(),
+  "websiteUrl": zod.string().nullable(),
+  "instructions": zod.array(zod.string()),
+  "hostingProvider": zod.enum(['vercel', 'replit']),
+  "providerManagementAvailable": zod.boolean(),
+  "activationAvailable": zod.boolean(),
+  "activationApproved": zod.boolean(),
+  "approvedDeploymentId": zod.string().nullable(),
+  "activationApprovedAt": zod.coerce.date().nullable(),
+  "siteReleased": zod.boolean(),
+  "providerBindingVerified": zod.boolean(),
+  "providerBindingCheckedAt": zod.coerce.date().nullable(),
+  "providerRegistered": zod.boolean(),
+  "providerVerified": zod.boolean(),
+  "providerCheckedAt": zod.coerce.date().nullable(),
+  "providerError": zod.string().nullable(),
   "dnsRecords": zod.array(zod.object({
   "type": zod.string(),
   "name": zod.string(),
   "value": zod.string(),
   "purpose": zod.string()
-})).optional()
+}))
 })
 
 

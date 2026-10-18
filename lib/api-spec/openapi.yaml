@@ -2502,7 +2502,7 @@ components:
       type: object
       required: [action]
       properties:
-        action: {type: string, enum: [register, refresh]}
+        action: {type: string, enum: [approve, register, refresh, bind]}
     CustomerDomain:
       type: object
       required: [tenantId, name, slug, tenantStatus, domain, status, deliveryStatus, requestId]
@@ -2538,12 +2538,19 @@ components:
         instructions: {type: array, items: {type: string}}
         hostingProvider: {type: string, enum: [vercel, replit]}
         providerManagementAvailable: {type: boolean}
+        activationAvailable: {type: boolean}
+        activationApproved: {type: boolean}
+        approvedDeploymentId: {type: ["string", "null"]}
+        activationApprovedAt: {type: ["string", "null"], format: date-time}
+        siteReleased: {type: boolean}
+        providerBindingVerified: {type: boolean}
+        providerBindingCheckedAt: {type: ["string", "null"], format: date-time}
         providerRegistered: {type: boolean}
         providerVerified: {type: boolean}
         providerCheckedAt: {type: ["string", "null"], format: date-time}
         providerError: {type: ["string", "null"]}
         dnsRecords: {type: array, items: {$ref: "#/components/schemas/DomainDnsRecord"}}
-      required: [domain, status, txtName, txtValue, hostingConnected]
+      required: [domain, status, txtName, txtValue, hostingConnected, httpsReady, hostingCheckedAt, hostingError, websiteUrl, instructions, hostingProvider, providerManagementAvailable, activationAvailable, activationApproved, approvedDeploymentId, activationApprovedAt, siteReleased, providerBindingVerified, providerBindingCheckedAt, providerRegistered, providerVerified, providerCheckedAt, providerError, dnsRecords]
     WhiteLabelProvisioning:
       type: object
       required: [requestId, tenantId, completedCount, totalCount, steps, blockers, canRetry, lastError, websiteUrl, adminPanelUrl]
