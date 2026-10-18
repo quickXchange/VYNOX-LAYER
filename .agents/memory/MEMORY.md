@@ -10,7 +10,7 @@
 - [Account and owner access](customer-account-workflow.md) — one login, permanent owner access, and operator-controlled customer/Admin Panel delivery.
 - [Artifact build context](artifact-build-context.md) — standalone shell builds do not inherit managed workflow service variables.
 - [GitHub publishing](github-publishing.md) — native Git and GitHub App authentication differ; API history exports must preserve exact commit bytes.
-- [Publishing domain](publishing-domain.md) — quicklychan.xyz is the user's intended custom domain for this project's published app.
+- [Publishing domain](publishing-domain.md) — vynoxlayer.com is primary; preserve legacy/acceptance, use approved Actions, and verify browser origin guards.
 - [Workspace package installer](workspace-package-installer.md) — root refreshes need a temporary pnpm root-check setting; the package callback rejects CLI flags and empty lists.
 - [Dependency security review](dependency-security-review-policy.md) — no unsupported major overrides to clear scanners; distinguish bounded non-exploitability from an upstream fix.
 - [Public Exchange demo](public-exchange-demo.md) — public credentials use read-only expiring sessions, not editable Clerk accounts; preserve delivered customer assignments.

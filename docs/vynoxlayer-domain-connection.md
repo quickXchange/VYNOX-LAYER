@@ -1,6 +1,71 @@
-# Official domain connection — DNS ready, HTTPS pending
+# Official domain connection — activated and verified
 
-## Latest readback — 2026-10-18
+## Final verification — 2026-10-18
+
+- Primary: `https://vynoxlayer.com`, serving the main VYNOX LAYER website.
+- `https://www.vynoxlayer.com` redirects with HTTP 308 to the primary,
+  preserving path and query, including the sign-in route.
+- Valid independent Let's Encrypt certificates are present for both hosts;
+  Vercel reports automatic renewal enabled. No SSL blocker remains.
+- Both aliases use the existing `qxlayer-staging` Production project
+  `prj_MoGcFUBrfUHrmtRjHqNuYIaUbQcx`, READY Production deployment
+  `dpl_7wahxuNYMXgzSFx9vedBE6UVaBCz`.
+- Frontend and Render API are at source
+  `0088940d6c35231bdeff6531abaa93eba1129675`.
+- Existing GitHub Actions Production workflow completed successfully:
+  https://github.com/quickXchange/VYNOX-LAYER/actions/runs/39136004507
+- The release is based on verified Live, with only domain/authentication-origin,
+  packaging, workflow and verification changes. Unrelated pending Exchange and
+  schema changes were not included. Normal push candidate automation was
+  suppressed to preserve the exact acceptance deployment.
+
+### Diagnosed and resolved
+
+Certificate issuance completed after DNS became accepted. The missing deployment
+aliases were assigned to the verified Production deployment without editing DNS.
+The existing project-level www redirect remained HTTP 308.
+
+Browser verification then found an independent rendering blocker: the browser
+authentication guard still pinned previous origins and aborted before React
+mounted. The browser and packaging now share an explicit approved-origin
+validator, with regression coverage. The corrected public bundle renders.
+
+### Authentication and preservation evidence
+
+- Production frontend, API and authentication configuration now use
+  `https://vynoxlayer.com`; the HTML includes the canonical and Open Graph URL.
+- Supabase Site URL is primary. Its exact verification/recovery callback URLs
+  were added without removing legacy or protected acceptance callbacks.
+  Existing mail text, policy, credentials and unrelated provider fields were
+  verified unchanged.
+- The same-origin `/api` proxy reaches the existing Render Public API.
+  Health is ready, database/private Auth connected, schema verified and the
+  reviewed source commit matches.
+- Canonical authentication requests pass the origin guard; unapproved and
+  cross-site origins return 403. CORS was not widened.
+- Fresh anonymous `/api/auth/session` and `/api/me` return 401.
+  Anonymous logout clears the original host-only Production cookie with
+  Secure, HttpOnly, SameSite=Lax and Path=/; no Domain attribute was added.
+- Browser checks pass on desktop and mobile, including the native password
+  sign-in form and anonymous `/admin` redirect to `/sign-in`. No page errors,
+  console errors or failed requests were observed in the corrected flow.
+- Protected acceptance remains Vercel SSO-protected at its exact existing
+  deployment `dpl_9tzDi1xCmKpVdFWT6hJecU5X1HDR`.
+- quicklychan.xyz project records and alias assignments remain unchanged.
+  The existing `www.quicklychan.xyz` private-gate 403 is unchanged from baseline;
+  this release does not claim to restore or alter that legacy site's access.
+- No DNS edits, customer/business-data migrations, new identities, password/MFA
+  resets, or financial activation occurred. Financial execution and the internal
+  public-Live business activation flag remain false.
+- **Pending personal confirmation only:** the original Owner must sign in on
+  the primary domain with their existing password and Google Authenticator,
+  confirm Super Admin access and reload to verify their authenticated session.
+  Positive Owner access is not inferred from anonymous checks.
+
+Machine-readable HTTPS/API/origin/cookie evidence is retained in the ignored
+`generated-artifacts/official-domain/https-api-auth-readback.json`.
+
+## Earlier DNS-ready readback (superseded by final verification)
 
 - Both apex and www now resolve to `64.29.17.1` and `216.198.79.1`.
 - Vercel reports both domains verified, `misconfigured: false`, with no conflicts.
