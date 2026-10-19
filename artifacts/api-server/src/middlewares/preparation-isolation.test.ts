@@ -2,7 +2,8 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {createHash} from "node:crypto";
 import type {RequestHandler} from "express";
-import {createPreparationIsolation, publicPlanManagementWriteRoute} from "./preparation-isolation";
+import {createPreparationIsolation, publicPlanManagementWriteRoute, publicOrderReviewWriteRoute} from "./preparation-isolation";
+import {assertReviewPreparationStatus} from "../modules/customer/service";
 import {requireAuthentication} from "./authentication";
 const preparationIsolation = createPreparationIsolation(() => { throw new Error("Unexpected authentication"); });
 const publicEnv={QXLAYER_PUBLIC_PREPARATION_APPROVED:"true",QXLAYER_EXTERNAL_ENVIRONMENT:"production",
@@ -13,12 +14,13 @@ const publicEnv={QXLAYER_PUBLIC_PREPARATION_APPROVED:"true",QXLAYER_EXTERNAL_ENV
  QXLAYER_FINANCIAL_EXECUTION_ENABLED:"false",
  QXLAYER_PREPARATION_WRITE_TENANTS:"qa-tenant",QXLAYER_PREPARATION_WRITE_SLUGS:"qa-site",
  QXLAYER_PUBLIC_EXCLUDED_TENANTS:"solara-tenant",QXLAYER_PUBLIC_EXCLUDED_SLUGS:"solara-site"};
-test("verified public preparation admits only native-authenticated Super Admin plan management, not commerce execution", async () => {
+test("verified public preparation admits native-authenticated Super Admin plans, review and notes, not execution", async () => {
  const before={...process.env};Object.assign(process.env,publicEnv);
  try {
   const id="a4000000-0000-4000-8000-000000000001";
   const allowed=[["POST","/api/plans"],["PUT",`/api/plans/${id}`],["DELETE",`/api/plans/${id}`],
-   ["PUT",`/api/plans/${id}/status`],["POST",`/api/plans/${id}/duplicate`],["POST","/api/commerce/pricing-publication"]];
+   ["PUT",`/api/plans/${id}/status`],["POST",`/api/plans/${id}/duplicate`],["POST","/api/commerce/pricing-publication"],
+   ["PUT",`/api/operator/white-label-requests/${id}/review`],["POST",`/api/operator/white-label-requests/${id}/notes`]];
   const probe=async(method:string,path:string,principal:unknown,authError?:unknown)=>{
    let code=0,continued=false,authCalls=0,nextError:any;
    const res={locals:{principal:null as unknown},status:(n:number)=>{code=n;return{json:()=>{}}}};
@@ -29,7 +31,7 @@ test("verified public preparation admits only native-authenticated Super Admin p
    return {code,continued,authCalls,nextError};
   };
   for(const [method,path] of allowed) {
-   assert.equal(publicPlanManagementWriteRoute(method,path),true);
+   assert.equal(publicPlanManagementWriteRoute(method,path)||publicOrderReviewWriteRoute(method,path),true);
    const ok=await probe(method,path,{role:"super_admin"});
    assert.equal(ok.continued,true);assert.equal(ok.authCalls,1);
    for(const role of ["unassigned","client_admin","staff"]) {
@@ -48,6 +50,11 @@ test("verified public preparation admits only native-authenticated Super Admin p
    ["PUT","/api/commerce/pricing-publication"],["POST",`/api/plans/${id}/status`],
    ["PATCH",`/api/plans/${id}`],["POST",`/api/plans/${id}/duplicate/extra`],
    ["POST","/api/platform/settings"],["POST",`/api/tenants/${id}/exchange/withdrawals`],
+   ["POST",`/api/operator/white-label-requests/${id}/review`],
+   ["PUT",`/api/operator/white-label-requests/${id}/notes`],
+   ["POST",`/api/operator/white-label-requests/${id}/notes/extra`],
+   ["POST",`/api/operator/white-label-requests/${id}/provision`],
+   ["POST",`/api/operator/white-label-requests/${id}/provisioning`],
   ]) {
    assert.equal(publicPlanManagementWriteRoute(method,path),false);
    const denied=await probe(method,path,{role:"super_admin"});
@@ -65,6 +72,15 @@ test("verified public preparation admits only native-authenticated Super Admin p
  } finally {
   for(const key of Object.keys(process.env))if(!(key in before))delete process.env[key];Object.assign(process.env,before);
  }
+});
+test("review-only public approval cannot trigger payment-dependent setup or delivery",()=>{
+ const before={...process.env};Object.assign(process.env,publicEnv);
+ try {
+  for(const status of ["new","reviewing","waiting_for_client","quote_ready","rejected","cancelled"])
+   assert.doesNotThrow(()=>assertReviewPreparationStatus(status));
+  for(const status of ["approved","in_setup","customization","ready","delivered","unknown"])
+   assert.throws(()=>assertReviewPreparationStatus(status),(e:any)=>e.status===403);
+ }finally{for(const key of Object.keys(process.env))if(!(key in before))delete process.env[key];Object.assign(process.env,before);}
 });
 test("public request intake requires a customer session and does not open payment, review or delivery writes",async ()=>{
  const before={...process.env};Object.assign(process.env,publicEnv);
@@ -115,7 +131,9 @@ test("Acceptance approval cannot authorize shared global writes even without the
   QXLAYER_EXTERNAL_ACCEPTANCE_APPROVED:"true",QXLAYER_ACCEPTANCE_PREPARATION_ISOLATION:"false"});
  try {
   for(const path of ["/api/commerce/pricing-publication","/api/commerce/plans","/api/commerce/addons",
-   "/api/platform/settings","/api/commerce/%70ricing-publication"]) {
+   "/api/platform/settings","/api/commerce/%70ricing-publication",
+   "/api/operator/white-label-requests/a4000000-0000-4000-8000-000000000001/review",
+   "/api/operator/white-label-requests/a4000000-0000-4000-8000-000000000001/notes"]) {
    for(const method of ["POST","PUT","PATCH","DELETE"]) {
     let code=0,continued=false,nextError:any;
     await preparationIsolation({method,path} as any,{
