@@ -55,8 +55,45 @@ test("exact external policy targets and least privilege in disposable PostgreSQL
         try {
           await client.query(sql);
           await assert.rejects(verify, message);
-        } finally { await client.query("ROLLBACK"); }
+        } finally {
+          await client.query("ROLLBACK");
+          await verify();
+        }
       });
+    }
+    for (const role of ["qxlayer_app", "qxlayer_runtime"]) {
+      for (const flag of ["SUPERUSER", "BYPASSRLS", "INHERIT", "CREATEDB", "CREATEROLE", "REPLICATION"]) {
+        const column = flag === "SUPERUSER" ? "rolsuper" : `rol${flag.toLowerCase()}`;
+        await rejectsDrift(`restricted ${role} rejects ${flag}`,
+          `ALTER ROLE ${quote(role)} ${flag}`, new RegExp(`Restricted ${role} ${column}`));
+      }
+      await rejectsDrift(`unexpected membership for ${role}`,
+        `GRANT fixture_extra TO ${quote(role)}`, assert.AssertionError);
+      // Keep effective table grants identical to the baseline so ownership,
+      // rather than the earlier excess-grant check, causes this rejection.
+      await rejectsDrift(`application table owned by ${role}`,
+        `ALTER TABLE tenants OWNER TO ${quote(role)};
+         REVOKE ALL ON tenants FROM ${quote(role)};
+         GRANT SELECT,INSERT,UPDATE,DELETE ON tenants TO qxlayer_runtime`,
+        error => {
+          assert.ok(error instanceof assert.AssertionError);
+          assert.equal(error.actual, true);
+          assert.equal(error.expected, false);
+          assert.equal(error.message.includes("Application login"), false);
+          return true;
+        });
+    }
+    await rejectsDrift("required runtime membership is missing",
+      "REVOKE qxlayer_runtime FROM qxlayer_app", assert.AssertionError);
+    await rejectsDrift("runtime membership must not inherit privileges",
+      "GRANT qxlayer_runtime TO qxlayer_app WITH INHERIT TRUE", assert.AssertionError);
+    await rejectsDrift("runtime membership must permit explicit SET ROLE",
+      "GRANT qxlayer_runtime TO qxlayer_app WITH SET FALSE", assert.AssertionError);
+    for (const table of ["tenants", "tenant_releases"]) {
+      await rejectsDrift(`disabled RLS on ${table}`,
+        `ALTER TABLE ${quote(table)} DISABLE ROW LEVEL SECURITY`, /Exact tables, RLS\/FORCE/);
+      await rejectsDrift(`disabled FORCE RLS on ${table}`,
+        `ALTER TABLE ${quote(table)} NO FORCE ROW LEVEL SECURITY`, /Exact tables, RLS\/FORCE/);
     }
     const targetError = /Policy role targets\/permissiveness/;
     for (const table of ["tenants", "tenant_releases"]) {
