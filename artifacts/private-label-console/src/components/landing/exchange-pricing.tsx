@@ -24,7 +24,7 @@ export function ExchangePricing({ tiers }: { tiers?: { label: string; planId: st
   // Published snapshot always wins; proposals are never shown once a publication exists.
   const referenced = (tiers ?? []).flatMap(t => {
     const p = publishedPlans.find(p => p.id === t.planId);
-    return p ? [{ ...p, name: t.label }] : [];
+    return p ? [p] : [];
   });
   const orderedPublished = [...referenced, ...publishedPlans.filter(p => !referenced.some(t => t.id === p.id))];
   const readFailed = pub.isError || (!hasPublished && prop.isError);
