@@ -3,6 +3,7 @@ import {createHash} from "node:crypto";
 import {publicPreparation} from "../../../../lib/production-access-gate/public-preparation.mjs";
 import {acceptanceCatalog, privateCatalogWriteRoute} from "../lib/catalog-scope";
 import {requireSuperAdmin} from "../modules/authentication/service";
+import {HttpError} from "../lib/errors";
 
 /** Display catalog management only. No add-ons, payment methods or execution. */
 export function publicPlanManagementWriteRoute(method: string, path: string): boolean {
@@ -106,6 +107,24 @@ export function createPreparationIsolation(
   }
   if (["GET","HEAD","OPTIONS"].includes(req.method) || path.startsWith("/api/supabase-auth/") ||
       path === "/api/diagnostics/website-errors") { next(); return; }
+  // Approved public request intake only: retain ordinary session/MFA, CSRF,
+  // ownership, upload validation and idempotency checks in the customer routes.
+  // Never mark Live requests as Acceptance sandbox records.
+  if (publicMode && !acceptanceRestricted && req.method === "POST" &&
+      ["/api/customer/order-attachments", "/api/customer/white-label-requests"].includes(path)) {
+    let authenticated = false;
+    try {
+      await authenticate(req, res, error => {
+        if (error) throw error;
+        authenticated = true;
+      });
+      if (!authenticated || !res.locals.principal) return;
+      const p = res.locals.principal;
+      if (p.demo || p.role === "super_admin")
+        throw new HttpError(403, "Use a signed-in customer account to submit a White Label request.");
+      next(); return;
+    } catch (error) { next(error); return; }
+  }
   if (publicMode && publicPlanManagementWriteRoute(req.method, path)) {
     // This exception removes only the preparation barrier. Authenticate through
     // the native session/MFA service, and keep route-level auth/CSRF checks too.

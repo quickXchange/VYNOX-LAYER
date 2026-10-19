@@ -44,7 +44,7 @@ test("verified public preparation admits only native-authenticated Super Admin p
   }
   for(const [method,path] of [
    ["POST","/api/add-ons"],["PUT",`/api/add-ons/${id}`],["POST","/api/operator/phase1/methods"],
-   ["POST","/api/customer/phase1/orders/id/checkout"],["POST","/api/customer/white-label-requests"],
+   ["POST","/api/customer/phase1/orders/id/checkout"],
    ["PUT","/api/commerce/pricing-publication"],["POST",`/api/plans/${id}/status`],
    ["PATCH",`/api/plans/${id}`],["POST",`/api/plans/${id}/duplicate/extra`],
    ["POST","/api/platform/settings"],["POST",`/api/tenants/${id}/exchange/withdrawals`],
@@ -65,6 +65,49 @@ test("verified public preparation admits only native-authenticated Super Admin p
  } finally {
   for(const key of Object.keys(process.env))if(!(key in before))delete process.env[key];Object.assign(process.env,before);
  }
+});
+test("public request intake requires a customer session and does not open payment, review or delivery writes",async ()=>{
+ const before={...process.env};Object.assign(process.env,publicEnv);
+ try {
+  const probe=async(method:string,path:string,principal:unknown,authError?:unknown)=>{
+   let code=0,continued=false,nextError:any,authCalls=0;
+   const res={locals:{principal:null as unknown,preparationSandboxWrite:undefined},
+    status:(n:number)=>{code=n;return{json:()=>{}}}};
+   const auth:RequestHandler=async(_req,response,done)=>{
+    authCalls++;if(authError)throw authError;response.locals.principal=principal;done();
+   };
+   await createPreparationIsolation(auth)({method,path} as any,res as any,error=>{if(error)nextError=error;else continued=true;});
+   return {code,continued,nextError,authCalls,sandbox:res.locals.preparationSandboxWrite};
+  };
+  for(const path of ["/api/customer/order-attachments","/api/customer/white-label-requests"]) {
+   for(const role of ["unassigned","client_admin","staff"]) {
+    const ok=await probe("POST",path,{role});
+    assert.equal(ok.continued,true);assert.equal(ok.authCalls,1);assert.equal(ok.sandbox,undefined);
+   }
+   for(const principal of [{role:"super_admin"},{role:"client_admin",demo:true}]) {
+    const denied=await probe("POST",path,principal);
+    assert.equal(denied.continued,false);assert.equal(denied.nextError.status,403);
+   }
+   for(const status of [401,428]) {
+    const denied=await probe("POST",path,null,{status});
+    assert.equal(denied.continued,false);assert.equal(denied.nextError.status,status);
+   }
+   assert.equal((await probe("POST",path,null)).continued,false);
+   assert.equal((await probe("PUT",path,{role:"client_admin"})).code,403);
+   assert.equal((await probe("POST",path+"/extra",{role:"client_admin"})).code,403);
+  }
+  for(const [method,path] of [
+   ["POST","/api/customer/phase1/orders/id/checkout"],
+   ["PUT","/api/operator/white-label-requests/id/review"],
+   ["POST","/api/operator/white-label-requests/id/provision"],
+   ["POST","/api/operator/white-label-requests/id/provisioning"],
+   ["POST","/api/operator/white-label-requests/id/notes"],
+   ["POST","/api/tenants/real-tenant/exchange/withdrawals"],
+  ]) {
+   const denied=await probe(method,path,{role:"super_admin"});
+   assert.equal(denied.code,403);assert.equal(denied.continued,false);assert.equal(denied.authCalls,0);
+  }
+ }finally{for(const key of Object.keys(process.env))if(!(key in before))delete process.env[key];Object.assign(process.env,before);}
 });
 test("Acceptance approval cannot authorize shared global writes even without the preparation isolation flag",async ()=>{
  const before={...process.env};
