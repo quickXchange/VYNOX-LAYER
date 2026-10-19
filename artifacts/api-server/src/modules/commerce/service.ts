@@ -1,8 +1,9 @@
 import { withDatabase, type DatabaseClient } from "@workspace/db";
 import { publishedOffers } from "./pricing-publication";
+import { acceptanceCatalog, assertCatalogOperationAllowed, catalogTable } from "../../lib/catalog-scope";
 import { z } from "zod";
 import { requireSuperAdmin, type Principal } from "../authentication/service";
-import { requestContext, event } from "../customer/order-model";
+import { requestContext, event, isSandboxRequest } from "../customer/order-model";
 import { catalogSelection, whiteLabelCatalog } from "../customer/order-catalog";
 import { HttpError } from "../../lib/errors";
 import { audit } from "../../lib/audit";
@@ -18,6 +19,7 @@ export function methods(p: Principal) {
   return withDatabase(requestContext(p), async c => (await c.query(`SELECT ${methodColumns} FROM qxlayer_commerce.methods ORDER BY created_at,id`)).rows);
 }
 export function saveMethod(p: Principal, id: string | undefined, raw: unknown) {
+  assertCatalogOperationAllowed("shared payment method changes");
   requireSuperAdmin(p); const v = methodInput.parse(raw);
   return withDatabase(requestContext(p, true), async c => {
     if (id) await catalogLock(c, `commerce-method:${id}`, true);
@@ -30,6 +32,7 @@ export function saveMethod(p: Principal, id: string | undefined, raw: unknown) {
   });
 }
 export function deleteMethod(p: Principal, id: string) {
+  assertCatalogOperationAllowed("shared payment method deletion");
   requireSuperAdmin(p);
   return withDatabase(requestContext(p, true), async c => {
     await catalogLock(c, `commerce-method:${id}`, true);
@@ -44,16 +47,18 @@ async function owned(c: DatabaseClient, p: Principal, id: string) {
   const q = await c.query(`SELECT id,customer_user_id,configuration,status,monthly_price,setup_price,currency,customization_price,custom_design_decision,approved_configuration FROM white_label_requests
     WHERE id=$1 AND (customer_user_id=$2 OR $3) FOR UPDATE`, [id, p.userId, p.role === "super_admin"]);
   if (!q.rowCount) throw new HttpError(404, "Order not found.");
+  if (isSandboxRequest(q.rows[0].configuration)) throw new HttpError(404, "Order not found.");
   return q.rows[0];
 }
 async function billing(c: DatabaseClient, row: any) {
+  if (acceptanceCatalog()) return { invoice: null, methods: [], purchasable: false, blockedReason: "Acceptance catalog isolation: checkout is unavailable." };
   const invoice = (await c.query(`SELECT ${invoiceColumns} FROM qxlayer_commerce.invoices WHERE order_id=$1`, [row.id])).rows[0] ?? null;
   if (invoice) return { invoice, methods: [], purchasable: false, blockedReason: null };
   const available = (await c.query(`SELECT ${methodColumns} FROM qxlayer_commerce.methods WHERE enabled AND approved ORDER BY name,id`)).rows;
   let price: ReturnType<typeof invoicePricing> | null = null, blockedReason: string | null = null;
   try {
     price = (await livePricing(c, row)).price;
-    const period = (await c.query("SELECT monthly,yearly FROM qxlayer_commerce.offer_settings WHERE plan_id=$1",
+    const period = (await c.query(`SELECT monthly,yearly FROM ${catalogTable("offer_settings")} WHERE plan_id=$1`,
       [row.approved_configuration?.plan?.id ?? row.configuration.requestedPlanId])).rows[0];
     if (period && !period[price.billingPeriod]) blockedReason = "This billing period is disabled for the plan.";
   } catch (error) { if (!(error instanceof HttpError)) throw error; blockedReason = error.message; }
@@ -75,6 +80,7 @@ export function orderBilling(p: Principal, id: string) {
   return withDatabase(requestContext(p, true), async c => billing(c, await owned(c, p, id)));
 }
 export function checkout(p: Principal, id: string, methodId: string) {
+  assertCatalogOperationAllowed("checkout");
   return withDatabase(requestContext(p, true), async c => {
     const row = await owned(c, p, id);
     if (row.customer_user_id !== p.userId) throw new HttpError(403, "Only the customer can initiate this invoice.");
@@ -82,7 +88,7 @@ export function checkout(p: Principal, id: string, methodId: string) {
     if (before.invoice) return before;
     // Revalidate live approval/availability; never reprice an existing invoice.
     const { selection, price } = await livePricing(c, row);
-    const periods = (await c.query("SELECT monthly,yearly FROM qxlayer_commerce.offer_settings WHERE plan_id=$1", [selection.plan!.id])).rows[0];
+    const periods = (await c.query(`SELECT monthly,yearly FROM ${catalogTable("offer_settings")} WHERE plan_id=$1`, [selection.plan!.id])).rows[0];
     if (periods && !periods[price.billingPeriod]) throw new HttpError(409, "This billing period is disabled for the plan.");
     // Row-share locks require UPDATE-policy visibility, which customers must not
     // have on operator configuration. Pair this advisory read lock with writes.
@@ -100,6 +106,7 @@ export function checkout(p: Principal, id: string, methodId: string) {
   });
 }
 export function reportPayment(p: Principal, id: string, reference: string) {
+  assertCatalogOperationAllowed("payment reporting");
   return withDatabase(requestContext(p, true), async c => {
     const row = await owned(c, p, id);
     if (row.customer_user_id !== p.userId) throw new HttpError(403, "Only the customer can report payment.");
@@ -112,6 +119,7 @@ export function reportPayment(p: Principal, id: string, reference: string) {
   });
 }
 export function settle(p: Principal, invoiceId: string, raw: unknown, reject = false) {
+  assertCatalogOperationAllowed("payment settlement");
   requireSuperAdmin(p);
   const v = z.object({ receivedAmount: z.string().optional(), currency: z.string().optional(), reference: z.string().trim().max(200).optional(), evidence: z.string().trim().min(10).max(2000) }).parse(raw);
   return withDatabase(requestContext(p, true), async c => {
@@ -135,6 +143,8 @@ export function settle(p: Principal, invoiceId: string, raw: unknown, reject = f
   });
 }
 export async function assertPaid(c: DatabaseClient, orderId: string, quotation?: any, selection?: any) {
+  const request = await c.query("SELECT configuration FROM white_label_requests WHERE id=$1", [orderId]);
+  if (isSandboxRequest(request.rows[0]?.configuration)) throw new HttpError(404, "Order not found.");
   const q = await c.query("SELECT status,pricing_snapshot FROM qxlayer_commerce.invoices WHERE order_id=$1", [orderId]);
   const paid = q.rows[0];
   if (paid?.status !== "paid") throw new HttpError(409, "Verified payment is required before approval, setup or delivery.");

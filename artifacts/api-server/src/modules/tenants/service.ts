@@ -8,6 +8,7 @@ import {
 import type { z } from "zod";
 import { audit } from "../../lib/audit";
 import { readPlan } from "../entitlements/catalog";
+import { assertCatalogOperationAllowed } from "../../lib/catalog-scope";
 import { assertOperational, enforceLimit, requireFeature, resolveEntitlements } from "../entitlements/resolver";
 import { safeHttps, validateSettings, websiteSettings, type WebsiteSettings } from "../website/settings";
 import { readRegistry } from "../product-registry/service";
@@ -74,6 +75,7 @@ export async function listTenants(principal: Principal) {
 }
 
 export async function prepareTenant(client: DatabaseClient, principal: Principal, input: z.infer<typeof CreateTenantBody>, addonIds: string[] = []) {
+  assertCatalogOperationAllowed("tenant preparation");
   requireSuperAdmin(principal);
   if (input.name.trim().length < 2) throw new HttpError(400, "Client name must contain at least two non-whitespace characters.");
   const plan = await readPlan(client, input.planId);
@@ -90,6 +92,7 @@ export async function prepareTenant(client: DatabaseClient, principal: Principal
 }
 
 export async function createTenant(principal: Principal, input: z.infer<typeof CreateTenantBody>) {
+  assertCatalogOperationAllowed("tenant creation");
   requireSuperAdmin(principal);
   return withDatabase(contextFor(principal, undefined, true), client => prepareTenant(client, principal, input));
 }

@@ -1,6 +1,7 @@
 import { withDatabase } from "@workspace/db";
+import { assertCatalogOperationAllowed } from "../../lib/catalog-scope";
 import { contextFor, requireSuperAdmin, type Principal } from "../authentication/service";
-import { requestContext, requestColumns } from "./order-model";
+import { requestContext, requestColumns, isSandboxRequest } from "./order-model";
 import { HttpError } from "../../lib/errors";
 import { audit } from "../../lib/audit";
 import { readTenant, activateTenant } from "../tenants/service";
@@ -15,6 +16,7 @@ export function safeProvisioningError(error: unknown) {
     : "Provisioning could not finish. Retry; if it fails again, the operator must inspect server diagnostics.";
 }
 export async function recordProvisioningFailure(p: Principal, id: string, error: unknown) {
+  assertCatalogOperationAllowed("provisioning failure recording");
   try {
     await withDatabase(requestContext(p, true), c => audit(c, p, null, "white_label.provisioning_failed",
       "Provisioning attempt failed; preparation transaction rolled back", { requestId: id, message: safeProvisioningError(error) }));
@@ -25,7 +27,7 @@ export function getProvisioning(p: Principal, id: string) {
   return withDatabase(contextFor(p), async c => {
     const result = await c.query(`SELECT id,status,tenant_id,configuration FROM white_label_requests WHERE id=$1`, [id]);
     const row = result.rows[0];
-    if (!row) throw new HttpError(404, "White Label order not found.");
+    if (!row || isSandboxRequest(row.configuration)) throw new HttpError(404, "White Label order not found.");
     const tenant = row.tenant_id ? await readTenant(c, row.tenant_id) : null;
     const recent = await c.query(`SELECT event_type,metadata FROM audit_events
       WHERE metadata->>'requestId'=$1 AND event_type IN
@@ -60,12 +62,14 @@ export function getProvisioning(p: Principal, id: string) {
   });
 }
 export async function retryProvisioning(p: Principal, id: string) {
+  assertCatalogOperationAllowed("provisioning");
   requireSuperAdmin(p);
   try {
     const row = await withDatabase(contextFor(p, undefined, true), async c => {
       const r = await c.query(`SELECT ${requestColumns} FROM white_label_requests WHERE id=$1 FOR UPDATE`, [id]);
       if (!r.rowCount) throw new HttpError(404, "White Label order not found.");
       const current = r.rows[0];
+      if (isSandboxRequest(current.configuration)) throw new HttpError(404, "White Label order not found.");
       if (current.status === "delivered") return current;
       if (!eligible.has(current.status)) throw new HttpError(409, "Approve this order before retrying provisioning.");
       if (!current.tenantId) {
@@ -87,7 +91,8 @@ export async function retryProvisioning(p: Principal, id: string) {
       "Resumed provisioning without replacing tenant configuration", { requestId: id }));
     return getProvisioning(p, id);
   } catch (error) {
-    await recordProvisioningFailure(p, id, error);
+    if ((error as {status?: number})?.status !== 404)
+      await recordProvisioningFailure(p, id, error);
     throw error;
   }
 }
