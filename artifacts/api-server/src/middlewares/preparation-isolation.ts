@@ -2,6 +2,16 @@ import type {RequestHandler} from "express";
 import {createHash} from "node:crypto";
 import {publicPreparation} from "../../../../lib/production-access-gate/public-preparation.mjs";
 import {acceptanceCatalog, privateCatalogWriteRoute} from "../lib/catalog-scope";
+import {requireSuperAdmin} from "../modules/authentication/service";
+
+/** Display catalog management only. No add-ons, payment methods or execution. */
+export function publicPlanManagementWriteRoute(method: string, path: string): boolean {
+  const id = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}";
+  return (method === "POST" && ["/api/plans", "/api/commerce/pricing-publication"].includes(path)) ||
+    (["PUT", "DELETE"].includes(method) && new RegExp(`^/api/plans/${id}$`).test(path)) ||
+    (method === "PUT" && new RegExp(`^/api/plans/${id}/status$`).test(path)) ||
+    (method === "POST" && new RegExp(`^/api/plans/${id}/duplicate$`).test(path));
+}
 
 const values = (name: string) => (process.env[name] ?? "").split(",").filter(Boolean);
 interface OwnerAdminPolicy { tenantId: string; ownerBusinessIdSha256: string }
@@ -95,6 +105,20 @@ export function createPreparationIsolation(
   }
   if (["GET","HEAD","OPTIONS"].includes(req.method) || path.startsWith("/api/supabase-auth/") ||
       path === "/api/diagnostics/website-errors") { next(); return; }
+  if (publicMode && publicPlanManagementWriteRoute(req.method, path)) {
+    // This exception removes only the preparation barrier. Authenticate through
+    // the native session/MFA service, and keep route-level auth/CSRF checks too.
+    let authenticated = false;
+    try {
+      await authenticate(req, res, error => {
+        if (error) throw error;
+        authenticated = true;
+      });
+      if (!authenticated || !res.locals.principal) return;
+      requireSuperAdmin(res.locals.principal);
+      next(); return;
+    } catch (error) { next(error); return; }
+  }
   // Only exact sandbox/QA tenant routes may write while the public-domain hold
   // remains in force. Global operations, real-customer changes and provisioning
   // are deliberately unavailable, including to an acceptance Super Admin.

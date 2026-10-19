@@ -6,6 +6,7 @@ type PPlan = { id: string; name: string; description?: string; monthlyPrice: str
 type PAddon = { id: string; name: string; description?: string; monthlyPrice: string | null; yearlyPrice: string | null; setupFee: string | null; currency: string; discountPercent?: string | null; entitlements?: Ent[] };
 type Catalog = { plans: PPlan[]; addons: PAddon[]; methods: unknown[]; purchaseAvailable: boolean };
 const LABELS: Record<string, string> = { crypto_exchange: 'Crypto exchange', swap: 'Swap', convert: 'Convert', telegram_bot: 'Telegram bot', telegram_mini_app: 'Telegram mini app', quickex: 'Quickex provider', whitebit: 'WhiteBIT provider', quickex_customer_credentials: 'Own Quickex credentials', whitebit_customer_credentials: 'Own WhiteBIT credentials', api_keys: 'API keys', website: 'Website', max_staff: 'Staff seats' };
+import { readFeatureRows } from '@/lib/feature-rows';
 export const PUBLISHED_PLANS_KEY = ['public', 'published-plans'];
 
 const money = (v: string, cur: string) => { try { return new Intl.NumberFormat(undefined, { style: 'currency', currency: cur }).format(Number(v)); } catch { return `${v} ${cur}`; } };
@@ -49,6 +50,7 @@ export function PublishedPlans() {
                 <header><h3 className="text-xl font-semibold">{p.name}</h3>{p.description && <p className="s-muted mt-1 text-sm">{p.description}</p>}</header>
                 <Prices x={p} periods={p.billingPeriods} />
                 {p.billingPeriods && p.billingPeriods.length > 0 && <p className="s-muted text-xs">Billing: {p.billingPeriods.join(' or ')}</p>}
+                {readFeatureRows(p).length > 0 && <dl className="space-y-1 text-sm" data-testid={`list-plan-feature-rows-${p.id}`}>{readFeatureRows(p).map((r, i) => <div key={i} className="flex justify-between gap-3"><dt className="s-muted">{r.label}</dt><dd className="text-right break-words">{r.value}</dd></div>)}</dl>}
                 {feats(p.entitlements).length > 0 && <ul className="space-y-1 text-sm" aria-label={`${p.name} included`}>
                   {feats(p.entitlements).map((e) => <li key={e.key} className="flex justify-between gap-3"><span>{label(e.key)}</span>{e.value !== true && <span className="s-mono shrink-0">{String(e.value)}</span>}</li>)}
                 </ul>}

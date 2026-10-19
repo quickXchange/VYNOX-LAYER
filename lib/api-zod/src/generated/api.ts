@@ -2013,6 +2013,15 @@ export const getWhiteLabelCatalogResponsePlansItemOneEntitlementsItemValueTwoMax
 export const getWhiteLabelCatalogResponsePlansItemOneEntitlementsItemValueTwoRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,18})?$');
 export const getWhiteLabelCatalogResponsePlansItemOneEntitlementsMax = 200;
 
+export const getWhiteLabelCatalogResponsePlansItemOneFeatureRowsItemLabelMax = 120;
+
+export const getWhiteLabelCatalogResponsePlansItemOneFeatureRowsItemValueMax = 500;
+
+export const getWhiteLabelCatalogResponsePlansItemTwoFeatureRowsItemLabelMax = 120;
+
+export const getWhiteLabelCatalogResponsePlansItemTwoFeatureRowsItemValueMax = 500;
+
+export const getWhiteLabelCatalogResponsePlansItemTwoFeatureRowsDefault = [];
 export const getWhiteLabelCatalogResponseAddonsItemOneMonthlyPriceRegExp = new RegExp('^\\d{1,12}(\\.\\d{1,2})?$');
 export const getWhiteLabelCatalogResponseAddonsItemOneYearlyPriceRegExp = new RegExp('^\\d{1,12}(\\.\\d{1,2})?$');
 export const getWhiteLabelCatalogResponseAddonsItemOneSetupFeeRegExp = new RegExp('^\\d{1,12}(\\.\\d{1,2})?$');
@@ -2053,13 +2062,21 @@ export const GetWhiteLabelCatalogResponse = zod.object({
   "entitlements": zod.array(zod.object({
   "key": zod.string().max(getWhiteLabelCatalogResponsePlansItemOneEntitlementsItemKeyMax).regex(getWhiteLabelCatalogResponsePlansItemOneEntitlementsItemKeyRegExp),
   "value": zod.union([zod.boolean(),zod.string().max(getWhiteLabelCatalogResponsePlansItemOneEntitlementsItemValueTwoMax).regex(getWhiteLabelCatalogResponsePlansItemOneEntitlementsItemValueTwoRegExp)])
-})).max(getWhiteLabelCatalogResponsePlansItemOneEntitlementsMax)
+})).max(getWhiteLabelCatalogResponsePlansItemOneEntitlementsMax),
+  "featureRows": zod.array(zod.object({
+  "label": zod.string().min(1).max(getWhiteLabelCatalogResponsePlansItemOneFeatureRowsItemLabelMax),
+  "value": zod.string().min(1).max(getWhiteLabelCatalogResponsePlansItemOneFeatureRowsItemValueMax)
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.')
 }).and(zod.object({
   "id": zod.string().uuid(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date(),
   "pricingConfigured": zod.boolean().optional(),
-  "billingPeriods": zod.array(zod.enum(['monthly', 'yearly'])).optional()
+  "billingPeriods": zod.array(zod.enum(['monthly', 'yearly'])).optional(),
+  "featureRows": zod.array(zod.object({
+  "label": zod.string().min(1).max(getWhiteLabelCatalogResponsePlansItemTwoFeatureRowsItemLabelMax),
+  "value": zod.string().min(1).max(getWhiteLabelCatalogResponsePlansItemTwoFeatureRowsItemValueMax)
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(getWhiteLabelCatalogResponsePlansItemTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.')
 }))),
   "addons": zod.array(zod.object({
   "monthlyPrice": zod.string().regex(getWhiteLabelCatalogResponseAddonsItemOneMonthlyPriceRegExp).nullish(),
@@ -2140,6 +2157,15 @@ export const getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneEntitlementsI
 export const getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneEntitlementsItemValueTwoRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,18})?$');
 export const getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneEntitlementsMax = 200;
 
+export const getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneFeatureRowsItemLabelMax = 120;
+
+export const getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneFeatureRowsItemValueMax = 500;
+
+export const getMyWhiteLabelRequestResponseOrderRequestedPlanOneTwoFeatureRowsItemLabelMax = 120;
+
+export const getMyWhiteLabelRequestResponseOrderRequestedPlanOneTwoFeatureRowsItemValueMax = 500;
+
+export const getMyWhiteLabelRequestResponseOrderRequestedPlanOneTwoFeatureRowsDefault = [];
 export const getMyWhiteLabelRequestResponseOrderRequestedAddonsItemOneMonthlyPriceRegExp = new RegExp('^\\d{1,12}(\\.\\d{1,2})?$');
 export const getMyWhiteLabelRequestResponseOrderRequestedAddonsItemOneYearlyPriceRegExp = new RegExp('^\\d{1,12}(\\.\\d{1,2})?$');
 export const getMyWhiteLabelRequestResponseOrderRequestedAddonsItemOneSetupFeeRegExp = new RegExp('^\\d{1,12}(\\.\\d{1,2})?$');
@@ -2200,6 +2226,15 @@ export const getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneEntitlementsIt
 export const getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneEntitlementsItemValueTwoRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,18})?$');
 export const getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneEntitlementsMax = 200;
 
+export const getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneFeatureRowsItemLabelMax = 120;
+
+export const getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneFeatureRowsItemValueMax = 500;
+
+export const getMyWhiteLabelRequestResponseOrderApprovedPlanOneTwoFeatureRowsItemLabelMax = 120;
+
+export const getMyWhiteLabelRequestResponseOrderApprovedPlanOneTwoFeatureRowsItemValueMax = 500;
+
+export const getMyWhiteLabelRequestResponseOrderApprovedPlanOneTwoFeatureRowsDefault = [];
 export const getMyWhiteLabelRequestResponseOrderApprovedAddonsItemOneMonthlyPriceRegExp = new RegExp('^\\d{1,12}(\\.\\d{1,2})?$');
 export const getMyWhiteLabelRequestResponseOrderApprovedAddonsItemOneYearlyPriceRegExp = new RegExp('^\\d{1,12}(\\.\\d{1,2})?$');
 export const getMyWhiteLabelRequestResponseOrderApprovedAddonsItemOneSetupFeeRegExp = new RegExp('^\\d{1,12}(\\.\\d{1,2})?$');
@@ -2268,13 +2303,21 @@ export const GetMyWhiteLabelRequestResponse = zod.object({
   "entitlements": zod.array(zod.object({
   "key": zod.string().max(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneEntitlementsItemKeyMax).regex(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneEntitlementsItemKeyRegExp),
   "value": zod.union([zod.boolean(),zod.string().max(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneEntitlementsItemValueTwoMax).regex(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneEntitlementsItemValueTwoRegExp)])
-})).max(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneEntitlementsMax)
+})).max(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneEntitlementsMax),
+  "featureRows": zod.array(zod.object({
+  "label": zod.string().min(1).max(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneFeatureRowsItemLabelMax),
+  "value": zod.string().min(1).max(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneFeatureRowsItemValueMax)
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.')
 }).and(zod.object({
   "id": zod.string().uuid(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date(),
   "pricingConfigured": zod.boolean().optional(),
-  "billingPeriods": zod.array(zod.enum(['monthly', 'yearly'])).optional()
+  "billingPeriods": zod.array(zod.enum(['monthly', 'yearly'])).optional(),
+  "featureRows": zod.array(zod.object({
+  "label": zod.string().min(1).max(getMyWhiteLabelRequestResponseOrderRequestedPlanOneTwoFeatureRowsItemLabelMax),
+  "value": zod.string().min(1).max(getMyWhiteLabelRequestResponseOrderRequestedPlanOneTwoFeatureRowsItemValueMax)
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(getMyWhiteLabelRequestResponseOrderRequestedPlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.')
 })),zod.null()]).optional(),
   "requestedAddons": zod.array(zod.object({
   "monthlyPrice": zod.string().regex(getMyWhiteLabelRequestResponseOrderRequestedAddonsItemOneMonthlyPriceRegExp).nullish(),
@@ -2307,13 +2350,21 @@ export const GetMyWhiteLabelRequestResponse = zod.object({
   "entitlements": zod.array(zod.object({
   "key": zod.string().max(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneEntitlementsItemKeyMax).regex(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneEntitlementsItemKeyRegExp),
   "value": zod.union([zod.boolean(),zod.string().max(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneEntitlementsItemValueTwoMax).regex(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneEntitlementsItemValueTwoRegExp)])
-})).max(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneEntitlementsMax)
+})).max(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneEntitlementsMax),
+  "featureRows": zod.array(zod.object({
+  "label": zod.string().min(1).max(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneFeatureRowsItemLabelMax),
+  "value": zod.string().min(1).max(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneFeatureRowsItemValueMax)
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.')
 }).and(zod.object({
   "id": zod.string().uuid(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date(),
   "pricingConfigured": zod.boolean().optional(),
-  "billingPeriods": zod.array(zod.enum(['monthly', 'yearly'])).optional()
+  "billingPeriods": zod.array(zod.enum(['monthly', 'yearly'])).optional(),
+  "featureRows": zod.array(zod.object({
+  "label": zod.string().min(1).max(getMyWhiteLabelRequestResponseOrderApprovedPlanOneTwoFeatureRowsItemLabelMax),
+  "value": zod.string().min(1).max(getMyWhiteLabelRequestResponseOrderApprovedPlanOneTwoFeatureRowsItemValueMax)
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(getMyWhiteLabelRequestResponseOrderApprovedPlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.')
 })),zod.null()]).optional(),
   "approvedAddons": zod.array(zod.object({
   "monthlyPrice": zod.string().regex(getMyWhiteLabelRequestResponseOrderApprovedAddonsItemOneMonthlyPriceRegExp).nullish(),
@@ -2415,6 +2466,15 @@ export const getWhiteLabelRequestResponseOrderRequestedPlanOneOneEntitlementsIte
 export const getWhiteLabelRequestResponseOrderRequestedPlanOneOneEntitlementsItemValueTwoRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,18})?$');
 export const getWhiteLabelRequestResponseOrderRequestedPlanOneOneEntitlementsMax = 200;
 
+export const getWhiteLabelRequestResponseOrderRequestedPlanOneOneFeatureRowsItemLabelMax = 120;
+
+export const getWhiteLabelRequestResponseOrderRequestedPlanOneOneFeatureRowsItemValueMax = 500;
+
+export const getWhiteLabelRequestResponseOrderRequestedPlanOneTwoFeatureRowsItemLabelMax = 120;
+
+export const getWhiteLabelRequestResponseOrderRequestedPlanOneTwoFeatureRowsItemValueMax = 500;
+
+export const getWhiteLabelRequestResponseOrderRequestedPlanOneTwoFeatureRowsDefault = [];
 export const getWhiteLabelRequestResponseOrderRequestedAddonsItemOneMonthlyPriceRegExp = new RegExp('^\\d{1,12}(\\.\\d{1,2})?$');
 export const getWhiteLabelRequestResponseOrderRequestedAddonsItemOneYearlyPriceRegExp = new RegExp('^\\d{1,12}(\\.\\d{1,2})?$');
 export const getWhiteLabelRequestResponseOrderRequestedAddonsItemOneSetupFeeRegExp = new RegExp('^\\d{1,12}(\\.\\d{1,2})?$');
@@ -2475,6 +2535,15 @@ export const getWhiteLabelRequestResponseOrderApprovedPlanOneOneEntitlementsItem
 export const getWhiteLabelRequestResponseOrderApprovedPlanOneOneEntitlementsItemValueTwoRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,18})?$');
 export const getWhiteLabelRequestResponseOrderApprovedPlanOneOneEntitlementsMax = 200;
 
+export const getWhiteLabelRequestResponseOrderApprovedPlanOneOneFeatureRowsItemLabelMax = 120;
+
+export const getWhiteLabelRequestResponseOrderApprovedPlanOneOneFeatureRowsItemValueMax = 500;
+
+export const getWhiteLabelRequestResponseOrderApprovedPlanOneTwoFeatureRowsItemLabelMax = 120;
+
+export const getWhiteLabelRequestResponseOrderApprovedPlanOneTwoFeatureRowsItemValueMax = 500;
+
+export const getWhiteLabelRequestResponseOrderApprovedPlanOneTwoFeatureRowsDefault = [];
 export const getWhiteLabelRequestResponseOrderApprovedAddonsItemOneMonthlyPriceRegExp = new RegExp('^\\d{1,12}(\\.\\d{1,2})?$');
 export const getWhiteLabelRequestResponseOrderApprovedAddonsItemOneYearlyPriceRegExp = new RegExp('^\\d{1,12}(\\.\\d{1,2})?$');
 export const getWhiteLabelRequestResponseOrderApprovedAddonsItemOneSetupFeeRegExp = new RegExp('^\\d{1,12}(\\.\\d{1,2})?$');
@@ -2543,13 +2612,21 @@ export const GetWhiteLabelRequestResponse = zod.object({
   "entitlements": zod.array(zod.object({
   "key": zod.string().max(getWhiteLabelRequestResponseOrderRequestedPlanOneOneEntitlementsItemKeyMax).regex(getWhiteLabelRequestResponseOrderRequestedPlanOneOneEntitlementsItemKeyRegExp),
   "value": zod.union([zod.boolean(),zod.string().max(getWhiteLabelRequestResponseOrderRequestedPlanOneOneEntitlementsItemValueTwoMax).regex(getWhiteLabelRequestResponseOrderRequestedPlanOneOneEntitlementsItemValueTwoRegExp)])
-})).max(getWhiteLabelRequestResponseOrderRequestedPlanOneOneEntitlementsMax)
+})).max(getWhiteLabelRequestResponseOrderRequestedPlanOneOneEntitlementsMax),
+  "featureRows": zod.array(zod.object({
+  "label": zod.string().min(1).max(getWhiteLabelRequestResponseOrderRequestedPlanOneOneFeatureRowsItemLabelMax),
+  "value": zod.string().min(1).max(getWhiteLabelRequestResponseOrderRequestedPlanOneOneFeatureRowsItemValueMax)
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.')
 }).and(zod.object({
   "id": zod.string().uuid(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date(),
   "pricingConfigured": zod.boolean().optional(),
-  "billingPeriods": zod.array(zod.enum(['monthly', 'yearly'])).optional()
+  "billingPeriods": zod.array(zod.enum(['monthly', 'yearly'])).optional(),
+  "featureRows": zod.array(zod.object({
+  "label": zod.string().min(1).max(getWhiteLabelRequestResponseOrderRequestedPlanOneTwoFeatureRowsItemLabelMax),
+  "value": zod.string().min(1).max(getWhiteLabelRequestResponseOrderRequestedPlanOneTwoFeatureRowsItemValueMax)
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(getWhiteLabelRequestResponseOrderRequestedPlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.')
 })),zod.null()]).optional(),
   "requestedAddons": zod.array(zod.object({
   "monthlyPrice": zod.string().regex(getWhiteLabelRequestResponseOrderRequestedAddonsItemOneMonthlyPriceRegExp).nullish(),
@@ -2582,13 +2659,21 @@ export const GetWhiteLabelRequestResponse = zod.object({
   "entitlements": zod.array(zod.object({
   "key": zod.string().max(getWhiteLabelRequestResponseOrderApprovedPlanOneOneEntitlementsItemKeyMax).regex(getWhiteLabelRequestResponseOrderApprovedPlanOneOneEntitlementsItemKeyRegExp),
   "value": zod.union([zod.boolean(),zod.string().max(getWhiteLabelRequestResponseOrderApprovedPlanOneOneEntitlementsItemValueTwoMax).regex(getWhiteLabelRequestResponseOrderApprovedPlanOneOneEntitlementsItemValueTwoRegExp)])
-})).max(getWhiteLabelRequestResponseOrderApprovedPlanOneOneEntitlementsMax)
+})).max(getWhiteLabelRequestResponseOrderApprovedPlanOneOneEntitlementsMax),
+  "featureRows": zod.array(zod.object({
+  "label": zod.string().min(1).max(getWhiteLabelRequestResponseOrderApprovedPlanOneOneFeatureRowsItemLabelMax),
+  "value": zod.string().min(1).max(getWhiteLabelRequestResponseOrderApprovedPlanOneOneFeatureRowsItemValueMax)
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.')
 }).and(zod.object({
   "id": zod.string().uuid(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date(),
   "pricingConfigured": zod.boolean().optional(),
-  "billingPeriods": zod.array(zod.enum(['monthly', 'yearly'])).optional()
+  "billingPeriods": zod.array(zod.enum(['monthly', 'yearly'])).optional(),
+  "featureRows": zod.array(zod.object({
+  "label": zod.string().min(1).max(getWhiteLabelRequestResponseOrderApprovedPlanOneTwoFeatureRowsItemLabelMax),
+  "value": zod.string().min(1).max(getWhiteLabelRequestResponseOrderApprovedPlanOneTwoFeatureRowsItemValueMax)
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(getWhiteLabelRequestResponseOrderApprovedPlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.')
 })),zod.null()]).optional(),
   "approvedAddons": zod.array(zod.object({
   "monthlyPrice": zod.string().regex(getWhiteLabelRequestResponseOrderApprovedAddonsItemOneMonthlyPriceRegExp).nullish(),
@@ -2767,6 +2852,15 @@ export const listMyWhiteLabelRequestsResponseRequestedPlanOneOneEntitlementsItem
 export const listMyWhiteLabelRequestsResponseRequestedPlanOneOneEntitlementsItemValueTwoRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,18})?$');
 export const listMyWhiteLabelRequestsResponseRequestedPlanOneOneEntitlementsMax = 200;
 
+export const listMyWhiteLabelRequestsResponseRequestedPlanOneOneFeatureRowsItemLabelMax = 120;
+
+export const listMyWhiteLabelRequestsResponseRequestedPlanOneOneFeatureRowsItemValueMax = 500;
+
+export const listMyWhiteLabelRequestsResponseRequestedPlanOneTwoFeatureRowsItemLabelMax = 120;
+
+export const listMyWhiteLabelRequestsResponseRequestedPlanOneTwoFeatureRowsItemValueMax = 500;
+
+export const listMyWhiteLabelRequestsResponseRequestedPlanOneTwoFeatureRowsDefault = [];
 export const listMyWhiteLabelRequestsResponseRequestedAddonsItemOneMonthlyPriceRegExp = new RegExp('^\\d{1,12}(\\.\\d{1,2})?$');
 export const listMyWhiteLabelRequestsResponseRequestedAddonsItemOneYearlyPriceRegExp = new RegExp('^\\d{1,12}(\\.\\d{1,2})?$');
 export const listMyWhiteLabelRequestsResponseRequestedAddonsItemOneSetupFeeRegExp = new RegExp('^\\d{1,12}(\\.\\d{1,2})?$');
@@ -2827,6 +2921,15 @@ export const listMyWhiteLabelRequestsResponseApprovedPlanOneOneEntitlementsItemV
 export const listMyWhiteLabelRequestsResponseApprovedPlanOneOneEntitlementsItemValueTwoRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,18})?$');
 export const listMyWhiteLabelRequestsResponseApprovedPlanOneOneEntitlementsMax = 200;
 
+export const listMyWhiteLabelRequestsResponseApprovedPlanOneOneFeatureRowsItemLabelMax = 120;
+
+export const listMyWhiteLabelRequestsResponseApprovedPlanOneOneFeatureRowsItemValueMax = 500;
+
+export const listMyWhiteLabelRequestsResponseApprovedPlanOneTwoFeatureRowsItemLabelMax = 120;
+
+export const listMyWhiteLabelRequestsResponseApprovedPlanOneTwoFeatureRowsItemValueMax = 500;
+
+export const listMyWhiteLabelRequestsResponseApprovedPlanOneTwoFeatureRowsDefault = [];
 export const listMyWhiteLabelRequestsResponseApprovedAddonsItemOneMonthlyPriceRegExp = new RegExp('^\\d{1,12}(\\.\\d{1,2})?$');
 export const listMyWhiteLabelRequestsResponseApprovedAddonsItemOneYearlyPriceRegExp = new RegExp('^\\d{1,12}(\\.\\d{1,2})?$');
 export const listMyWhiteLabelRequestsResponseApprovedAddonsItemOneSetupFeeRegExp = new RegExp('^\\d{1,12}(\\.\\d{1,2})?$');
@@ -2894,13 +2997,21 @@ export const ListMyWhiteLabelRequestsResponseItem = zod.object({
   "entitlements": zod.array(zod.object({
   "key": zod.string().max(listMyWhiteLabelRequestsResponseRequestedPlanOneOneEntitlementsItemKeyMax).regex(listMyWhiteLabelRequestsResponseRequestedPlanOneOneEntitlementsItemKeyRegExp),
   "value": zod.union([zod.boolean(),zod.string().max(listMyWhiteLabelRequestsResponseRequestedPlanOneOneEntitlementsItemValueTwoMax).regex(listMyWhiteLabelRequestsResponseRequestedPlanOneOneEntitlementsItemValueTwoRegExp)])
-})).max(listMyWhiteLabelRequestsResponseRequestedPlanOneOneEntitlementsMax)
+})).max(listMyWhiteLabelRequestsResponseRequestedPlanOneOneEntitlementsMax),
+  "featureRows": zod.array(zod.object({
+  "label": zod.string().min(1).max(listMyWhiteLabelRequestsResponseRequestedPlanOneOneFeatureRowsItemLabelMax),
+  "value": zod.string().min(1).max(listMyWhiteLabelRequestsResponseRequestedPlanOneOneFeatureRowsItemValueMax)
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.')
 }).and(zod.object({
   "id": zod.string().uuid(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date(),
   "pricingConfigured": zod.boolean().optional(),
-  "billingPeriods": zod.array(zod.enum(['monthly', 'yearly'])).optional()
+  "billingPeriods": zod.array(zod.enum(['monthly', 'yearly'])).optional(),
+  "featureRows": zod.array(zod.object({
+  "label": zod.string().min(1).max(listMyWhiteLabelRequestsResponseRequestedPlanOneTwoFeatureRowsItemLabelMax),
+  "value": zod.string().min(1).max(listMyWhiteLabelRequestsResponseRequestedPlanOneTwoFeatureRowsItemValueMax)
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(listMyWhiteLabelRequestsResponseRequestedPlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.')
 })),zod.null()]).optional(),
   "requestedAddons": zod.array(zod.object({
   "monthlyPrice": zod.string().regex(listMyWhiteLabelRequestsResponseRequestedAddonsItemOneMonthlyPriceRegExp).nullish(),
@@ -2933,13 +3044,21 @@ export const ListMyWhiteLabelRequestsResponseItem = zod.object({
   "entitlements": zod.array(zod.object({
   "key": zod.string().max(listMyWhiteLabelRequestsResponseApprovedPlanOneOneEntitlementsItemKeyMax).regex(listMyWhiteLabelRequestsResponseApprovedPlanOneOneEntitlementsItemKeyRegExp),
   "value": zod.union([zod.boolean(),zod.string().max(listMyWhiteLabelRequestsResponseApprovedPlanOneOneEntitlementsItemValueTwoMax).regex(listMyWhiteLabelRequestsResponseApprovedPlanOneOneEntitlementsItemValueTwoRegExp)])
-})).max(listMyWhiteLabelRequestsResponseApprovedPlanOneOneEntitlementsMax)
+})).max(listMyWhiteLabelRequestsResponseApprovedPlanOneOneEntitlementsMax),
+  "featureRows": zod.array(zod.object({
+  "label": zod.string().min(1).max(listMyWhiteLabelRequestsResponseApprovedPlanOneOneFeatureRowsItemLabelMax),
+  "value": zod.string().min(1).max(listMyWhiteLabelRequestsResponseApprovedPlanOneOneFeatureRowsItemValueMax)
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.')
 }).and(zod.object({
   "id": zod.string().uuid(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date(),
   "pricingConfigured": zod.boolean().optional(),
-  "billingPeriods": zod.array(zod.enum(['monthly', 'yearly'])).optional()
+  "billingPeriods": zod.array(zod.enum(['monthly', 'yearly'])).optional(),
+  "featureRows": zod.array(zod.object({
+  "label": zod.string().min(1).max(listMyWhiteLabelRequestsResponseApprovedPlanOneTwoFeatureRowsItemLabelMax),
+  "value": zod.string().min(1).max(listMyWhiteLabelRequestsResponseApprovedPlanOneTwoFeatureRowsItemValueMax)
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(listMyWhiteLabelRequestsResponseApprovedPlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.')
 })),zod.null()]).optional(),
   "approvedAddons": zod.array(zod.object({
   "monthlyPrice": zod.string().regex(listMyWhiteLabelRequestsResponseApprovedAddonsItemOneMonthlyPriceRegExp).nullish(),
@@ -3091,6 +3210,15 @@ export const submitWhiteLabelRequestResponseRequestedPlanOneOneEntitlementsItemV
 export const submitWhiteLabelRequestResponseRequestedPlanOneOneEntitlementsItemValueTwoRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,18})?$');
 export const submitWhiteLabelRequestResponseRequestedPlanOneOneEntitlementsMax = 200;
 
+export const submitWhiteLabelRequestResponseRequestedPlanOneOneFeatureRowsItemLabelMax = 120;
+
+export const submitWhiteLabelRequestResponseRequestedPlanOneOneFeatureRowsItemValueMax = 500;
+
+export const submitWhiteLabelRequestResponseRequestedPlanOneTwoFeatureRowsItemLabelMax = 120;
+
+export const submitWhiteLabelRequestResponseRequestedPlanOneTwoFeatureRowsItemValueMax = 500;
+
+export const submitWhiteLabelRequestResponseRequestedPlanOneTwoFeatureRowsDefault = [];
 export const submitWhiteLabelRequestResponseRequestedAddonsItemOneMonthlyPriceRegExp = new RegExp('^\\d{1,12}(\\.\\d{1,2})?$');
 export const submitWhiteLabelRequestResponseRequestedAddonsItemOneYearlyPriceRegExp = new RegExp('^\\d{1,12}(\\.\\d{1,2})?$');
 export const submitWhiteLabelRequestResponseRequestedAddonsItemOneSetupFeeRegExp = new RegExp('^\\d{1,12}(\\.\\d{1,2})?$');
@@ -3151,6 +3279,15 @@ export const submitWhiteLabelRequestResponseApprovedPlanOneOneEntitlementsItemVa
 export const submitWhiteLabelRequestResponseApprovedPlanOneOneEntitlementsItemValueTwoRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,18})?$');
 export const submitWhiteLabelRequestResponseApprovedPlanOneOneEntitlementsMax = 200;
 
+export const submitWhiteLabelRequestResponseApprovedPlanOneOneFeatureRowsItemLabelMax = 120;
+
+export const submitWhiteLabelRequestResponseApprovedPlanOneOneFeatureRowsItemValueMax = 500;
+
+export const submitWhiteLabelRequestResponseApprovedPlanOneTwoFeatureRowsItemLabelMax = 120;
+
+export const submitWhiteLabelRequestResponseApprovedPlanOneTwoFeatureRowsItemValueMax = 500;
+
+export const submitWhiteLabelRequestResponseApprovedPlanOneTwoFeatureRowsDefault = [];
 export const submitWhiteLabelRequestResponseApprovedAddonsItemOneMonthlyPriceRegExp = new RegExp('^\\d{1,12}(\\.\\d{1,2})?$');
 export const submitWhiteLabelRequestResponseApprovedAddonsItemOneYearlyPriceRegExp = new RegExp('^\\d{1,12}(\\.\\d{1,2})?$');
 export const submitWhiteLabelRequestResponseApprovedAddonsItemOneSetupFeeRegExp = new RegExp('^\\d{1,12}(\\.\\d{1,2})?$');
@@ -3218,13 +3355,21 @@ export const SubmitWhiteLabelRequestResponse = zod.object({
   "entitlements": zod.array(zod.object({
   "key": zod.string().max(submitWhiteLabelRequestResponseRequestedPlanOneOneEntitlementsItemKeyMax).regex(submitWhiteLabelRequestResponseRequestedPlanOneOneEntitlementsItemKeyRegExp),
   "value": zod.union([zod.boolean(),zod.string().max(submitWhiteLabelRequestResponseRequestedPlanOneOneEntitlementsItemValueTwoMax).regex(submitWhiteLabelRequestResponseRequestedPlanOneOneEntitlementsItemValueTwoRegExp)])
-})).max(submitWhiteLabelRequestResponseRequestedPlanOneOneEntitlementsMax)
+})).max(submitWhiteLabelRequestResponseRequestedPlanOneOneEntitlementsMax),
+  "featureRows": zod.array(zod.object({
+  "label": zod.string().min(1).max(submitWhiteLabelRequestResponseRequestedPlanOneOneFeatureRowsItemLabelMax),
+  "value": zod.string().min(1).max(submitWhiteLabelRequestResponseRequestedPlanOneOneFeatureRowsItemValueMax)
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.')
 }).and(zod.object({
   "id": zod.string().uuid(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date(),
   "pricingConfigured": zod.boolean().optional(),
-  "billingPeriods": zod.array(zod.enum(['monthly', 'yearly'])).optional()
+  "billingPeriods": zod.array(zod.enum(['monthly', 'yearly'])).optional(),
+  "featureRows": zod.array(zod.object({
+  "label": zod.string().min(1).max(submitWhiteLabelRequestResponseRequestedPlanOneTwoFeatureRowsItemLabelMax),
+  "value": zod.string().min(1).max(submitWhiteLabelRequestResponseRequestedPlanOneTwoFeatureRowsItemValueMax)
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(submitWhiteLabelRequestResponseRequestedPlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.')
 })),zod.null()]).optional(),
   "requestedAddons": zod.array(zod.object({
   "monthlyPrice": zod.string().regex(submitWhiteLabelRequestResponseRequestedAddonsItemOneMonthlyPriceRegExp).nullish(),
@@ -3257,13 +3402,21 @@ export const SubmitWhiteLabelRequestResponse = zod.object({
   "entitlements": zod.array(zod.object({
   "key": zod.string().max(submitWhiteLabelRequestResponseApprovedPlanOneOneEntitlementsItemKeyMax).regex(submitWhiteLabelRequestResponseApprovedPlanOneOneEntitlementsItemKeyRegExp),
   "value": zod.union([zod.boolean(),zod.string().max(submitWhiteLabelRequestResponseApprovedPlanOneOneEntitlementsItemValueTwoMax).regex(submitWhiteLabelRequestResponseApprovedPlanOneOneEntitlementsItemValueTwoRegExp)])
-})).max(submitWhiteLabelRequestResponseApprovedPlanOneOneEntitlementsMax)
+})).max(submitWhiteLabelRequestResponseApprovedPlanOneOneEntitlementsMax),
+  "featureRows": zod.array(zod.object({
+  "label": zod.string().min(1).max(submitWhiteLabelRequestResponseApprovedPlanOneOneFeatureRowsItemLabelMax),
+  "value": zod.string().min(1).max(submitWhiteLabelRequestResponseApprovedPlanOneOneFeatureRowsItemValueMax)
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.')
 }).and(zod.object({
   "id": zod.string().uuid(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date(),
   "pricingConfigured": zod.boolean().optional(),
-  "billingPeriods": zod.array(zod.enum(['monthly', 'yearly'])).optional()
+  "billingPeriods": zod.array(zod.enum(['monthly', 'yearly'])).optional(),
+  "featureRows": zod.array(zod.object({
+  "label": zod.string().min(1).max(submitWhiteLabelRequestResponseApprovedPlanOneTwoFeatureRowsItemLabelMax),
+  "value": zod.string().min(1).max(submitWhiteLabelRequestResponseApprovedPlanOneTwoFeatureRowsItemValueMax)
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(submitWhiteLabelRequestResponseApprovedPlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.')
 })),zod.null()]).optional(),
   "approvedAddons": zod.array(zod.object({
   "monthlyPrice": zod.string().regex(submitWhiteLabelRequestResponseApprovedAddonsItemOneMonthlyPriceRegExp).nullish(),
@@ -3351,6 +3504,15 @@ export const listWhiteLabelRequestsResponseRequestedPlanOneOneEntitlementsItemVa
 export const listWhiteLabelRequestsResponseRequestedPlanOneOneEntitlementsItemValueTwoRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,18})?$');
 export const listWhiteLabelRequestsResponseRequestedPlanOneOneEntitlementsMax = 200;
 
+export const listWhiteLabelRequestsResponseRequestedPlanOneOneFeatureRowsItemLabelMax = 120;
+
+export const listWhiteLabelRequestsResponseRequestedPlanOneOneFeatureRowsItemValueMax = 500;
+
+export const listWhiteLabelRequestsResponseRequestedPlanOneTwoFeatureRowsItemLabelMax = 120;
+
+export const listWhiteLabelRequestsResponseRequestedPlanOneTwoFeatureRowsItemValueMax = 500;
+
+export const listWhiteLabelRequestsResponseRequestedPlanOneTwoFeatureRowsDefault = [];
 export const listWhiteLabelRequestsResponseRequestedAddonsItemOneMonthlyPriceRegExp = new RegExp('^\\d{1,12}(\\.\\d{1,2})?$');
 export const listWhiteLabelRequestsResponseRequestedAddonsItemOneYearlyPriceRegExp = new RegExp('^\\d{1,12}(\\.\\d{1,2})?$');
 export const listWhiteLabelRequestsResponseRequestedAddonsItemOneSetupFeeRegExp = new RegExp('^\\d{1,12}(\\.\\d{1,2})?$');
@@ -3411,6 +3573,15 @@ export const listWhiteLabelRequestsResponseApprovedPlanOneOneEntitlementsItemVal
 export const listWhiteLabelRequestsResponseApprovedPlanOneOneEntitlementsItemValueTwoRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,18})?$');
 export const listWhiteLabelRequestsResponseApprovedPlanOneOneEntitlementsMax = 200;
 
+export const listWhiteLabelRequestsResponseApprovedPlanOneOneFeatureRowsItemLabelMax = 120;
+
+export const listWhiteLabelRequestsResponseApprovedPlanOneOneFeatureRowsItemValueMax = 500;
+
+export const listWhiteLabelRequestsResponseApprovedPlanOneTwoFeatureRowsItemLabelMax = 120;
+
+export const listWhiteLabelRequestsResponseApprovedPlanOneTwoFeatureRowsItemValueMax = 500;
+
+export const listWhiteLabelRequestsResponseApprovedPlanOneTwoFeatureRowsDefault = [];
 export const listWhiteLabelRequestsResponseApprovedAddonsItemOneMonthlyPriceRegExp = new RegExp('^\\d{1,12}(\\.\\d{1,2})?$');
 export const listWhiteLabelRequestsResponseApprovedAddonsItemOneYearlyPriceRegExp = new RegExp('^\\d{1,12}(\\.\\d{1,2})?$');
 export const listWhiteLabelRequestsResponseApprovedAddonsItemOneSetupFeeRegExp = new RegExp('^\\d{1,12}(\\.\\d{1,2})?$');
@@ -3478,13 +3649,21 @@ export const ListWhiteLabelRequestsResponseItem = zod.object({
   "entitlements": zod.array(zod.object({
   "key": zod.string().max(listWhiteLabelRequestsResponseRequestedPlanOneOneEntitlementsItemKeyMax).regex(listWhiteLabelRequestsResponseRequestedPlanOneOneEntitlementsItemKeyRegExp),
   "value": zod.union([zod.boolean(),zod.string().max(listWhiteLabelRequestsResponseRequestedPlanOneOneEntitlementsItemValueTwoMax).regex(listWhiteLabelRequestsResponseRequestedPlanOneOneEntitlementsItemValueTwoRegExp)])
-})).max(listWhiteLabelRequestsResponseRequestedPlanOneOneEntitlementsMax)
+})).max(listWhiteLabelRequestsResponseRequestedPlanOneOneEntitlementsMax),
+  "featureRows": zod.array(zod.object({
+  "label": zod.string().min(1).max(listWhiteLabelRequestsResponseRequestedPlanOneOneFeatureRowsItemLabelMax),
+  "value": zod.string().min(1).max(listWhiteLabelRequestsResponseRequestedPlanOneOneFeatureRowsItemValueMax)
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.')
 }).and(zod.object({
   "id": zod.string().uuid(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date(),
   "pricingConfigured": zod.boolean().optional(),
-  "billingPeriods": zod.array(zod.enum(['monthly', 'yearly'])).optional()
+  "billingPeriods": zod.array(zod.enum(['monthly', 'yearly'])).optional(),
+  "featureRows": zod.array(zod.object({
+  "label": zod.string().min(1).max(listWhiteLabelRequestsResponseRequestedPlanOneTwoFeatureRowsItemLabelMax),
+  "value": zod.string().min(1).max(listWhiteLabelRequestsResponseRequestedPlanOneTwoFeatureRowsItemValueMax)
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(listWhiteLabelRequestsResponseRequestedPlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.')
 })),zod.null()]).optional(),
   "requestedAddons": zod.array(zod.object({
   "monthlyPrice": zod.string().regex(listWhiteLabelRequestsResponseRequestedAddonsItemOneMonthlyPriceRegExp).nullish(),
@@ -3517,13 +3696,21 @@ export const ListWhiteLabelRequestsResponseItem = zod.object({
   "entitlements": zod.array(zod.object({
   "key": zod.string().max(listWhiteLabelRequestsResponseApprovedPlanOneOneEntitlementsItemKeyMax).regex(listWhiteLabelRequestsResponseApprovedPlanOneOneEntitlementsItemKeyRegExp),
   "value": zod.union([zod.boolean(),zod.string().max(listWhiteLabelRequestsResponseApprovedPlanOneOneEntitlementsItemValueTwoMax).regex(listWhiteLabelRequestsResponseApprovedPlanOneOneEntitlementsItemValueTwoRegExp)])
-})).max(listWhiteLabelRequestsResponseApprovedPlanOneOneEntitlementsMax)
+})).max(listWhiteLabelRequestsResponseApprovedPlanOneOneEntitlementsMax),
+  "featureRows": zod.array(zod.object({
+  "label": zod.string().min(1).max(listWhiteLabelRequestsResponseApprovedPlanOneOneFeatureRowsItemLabelMax),
+  "value": zod.string().min(1).max(listWhiteLabelRequestsResponseApprovedPlanOneOneFeatureRowsItemValueMax)
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.')
 }).and(zod.object({
   "id": zod.string().uuid(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date(),
   "pricingConfigured": zod.boolean().optional(),
-  "billingPeriods": zod.array(zod.enum(['monthly', 'yearly'])).optional()
+  "billingPeriods": zod.array(zod.enum(['monthly', 'yearly'])).optional(),
+  "featureRows": zod.array(zod.object({
+  "label": zod.string().min(1).max(listWhiteLabelRequestsResponseApprovedPlanOneTwoFeatureRowsItemLabelMax),
+  "value": zod.string().min(1).max(listWhiteLabelRequestsResponseApprovedPlanOneTwoFeatureRowsItemValueMax)
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(listWhiteLabelRequestsResponseApprovedPlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.')
 })),zod.null()]).optional(),
   "approvedAddons": zod.array(zod.object({
   "monthlyPrice": zod.string().regex(listWhiteLabelRequestsResponseApprovedAddonsItemOneMonthlyPriceRegExp).nullish(),
@@ -3638,6 +3825,15 @@ export const reviewWhiteLabelRequestResponseRequestedPlanOneOneEntitlementsItemV
 export const reviewWhiteLabelRequestResponseRequestedPlanOneOneEntitlementsItemValueTwoRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,18})?$');
 export const reviewWhiteLabelRequestResponseRequestedPlanOneOneEntitlementsMax = 200;
 
+export const reviewWhiteLabelRequestResponseRequestedPlanOneOneFeatureRowsItemLabelMax = 120;
+
+export const reviewWhiteLabelRequestResponseRequestedPlanOneOneFeatureRowsItemValueMax = 500;
+
+export const reviewWhiteLabelRequestResponseRequestedPlanOneTwoFeatureRowsItemLabelMax = 120;
+
+export const reviewWhiteLabelRequestResponseRequestedPlanOneTwoFeatureRowsItemValueMax = 500;
+
+export const reviewWhiteLabelRequestResponseRequestedPlanOneTwoFeatureRowsDefault = [];
 export const reviewWhiteLabelRequestResponseRequestedAddonsItemOneMonthlyPriceRegExp = new RegExp('^\\d{1,12}(\\.\\d{1,2})?$');
 export const reviewWhiteLabelRequestResponseRequestedAddonsItemOneYearlyPriceRegExp = new RegExp('^\\d{1,12}(\\.\\d{1,2})?$');
 export const reviewWhiteLabelRequestResponseRequestedAddonsItemOneSetupFeeRegExp = new RegExp('^\\d{1,12}(\\.\\d{1,2})?$');
@@ -3698,6 +3894,15 @@ export const reviewWhiteLabelRequestResponseApprovedPlanOneOneEntitlementsItemVa
 export const reviewWhiteLabelRequestResponseApprovedPlanOneOneEntitlementsItemValueTwoRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,18})?$');
 export const reviewWhiteLabelRequestResponseApprovedPlanOneOneEntitlementsMax = 200;
 
+export const reviewWhiteLabelRequestResponseApprovedPlanOneOneFeatureRowsItemLabelMax = 120;
+
+export const reviewWhiteLabelRequestResponseApprovedPlanOneOneFeatureRowsItemValueMax = 500;
+
+export const reviewWhiteLabelRequestResponseApprovedPlanOneTwoFeatureRowsItemLabelMax = 120;
+
+export const reviewWhiteLabelRequestResponseApprovedPlanOneTwoFeatureRowsItemValueMax = 500;
+
+export const reviewWhiteLabelRequestResponseApprovedPlanOneTwoFeatureRowsDefault = [];
 export const reviewWhiteLabelRequestResponseApprovedAddonsItemOneMonthlyPriceRegExp = new RegExp('^\\d{1,12}(\\.\\d{1,2})?$');
 export const reviewWhiteLabelRequestResponseApprovedAddonsItemOneYearlyPriceRegExp = new RegExp('^\\d{1,12}(\\.\\d{1,2})?$');
 export const reviewWhiteLabelRequestResponseApprovedAddonsItemOneSetupFeeRegExp = new RegExp('^\\d{1,12}(\\.\\d{1,2})?$');
@@ -3765,13 +3970,21 @@ export const ReviewWhiteLabelRequestResponse = zod.object({
   "entitlements": zod.array(zod.object({
   "key": zod.string().max(reviewWhiteLabelRequestResponseRequestedPlanOneOneEntitlementsItemKeyMax).regex(reviewWhiteLabelRequestResponseRequestedPlanOneOneEntitlementsItemKeyRegExp),
   "value": zod.union([zod.boolean(),zod.string().max(reviewWhiteLabelRequestResponseRequestedPlanOneOneEntitlementsItemValueTwoMax).regex(reviewWhiteLabelRequestResponseRequestedPlanOneOneEntitlementsItemValueTwoRegExp)])
-})).max(reviewWhiteLabelRequestResponseRequestedPlanOneOneEntitlementsMax)
+})).max(reviewWhiteLabelRequestResponseRequestedPlanOneOneEntitlementsMax),
+  "featureRows": zod.array(zod.object({
+  "label": zod.string().min(1).max(reviewWhiteLabelRequestResponseRequestedPlanOneOneFeatureRowsItemLabelMax),
+  "value": zod.string().min(1).max(reviewWhiteLabelRequestResponseRequestedPlanOneOneFeatureRowsItemValueMax)
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.')
 }).and(zod.object({
   "id": zod.string().uuid(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date(),
   "pricingConfigured": zod.boolean().optional(),
-  "billingPeriods": zod.array(zod.enum(['monthly', 'yearly'])).optional()
+  "billingPeriods": zod.array(zod.enum(['monthly', 'yearly'])).optional(),
+  "featureRows": zod.array(zod.object({
+  "label": zod.string().min(1).max(reviewWhiteLabelRequestResponseRequestedPlanOneTwoFeatureRowsItemLabelMax),
+  "value": zod.string().min(1).max(reviewWhiteLabelRequestResponseRequestedPlanOneTwoFeatureRowsItemValueMax)
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(reviewWhiteLabelRequestResponseRequestedPlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.')
 })),zod.null()]).optional(),
   "requestedAddons": zod.array(zod.object({
   "monthlyPrice": zod.string().regex(reviewWhiteLabelRequestResponseRequestedAddonsItemOneMonthlyPriceRegExp).nullish(),
@@ -3804,13 +4017,21 @@ export const ReviewWhiteLabelRequestResponse = zod.object({
   "entitlements": zod.array(zod.object({
   "key": zod.string().max(reviewWhiteLabelRequestResponseApprovedPlanOneOneEntitlementsItemKeyMax).regex(reviewWhiteLabelRequestResponseApprovedPlanOneOneEntitlementsItemKeyRegExp),
   "value": zod.union([zod.boolean(),zod.string().max(reviewWhiteLabelRequestResponseApprovedPlanOneOneEntitlementsItemValueTwoMax).regex(reviewWhiteLabelRequestResponseApprovedPlanOneOneEntitlementsItemValueTwoRegExp)])
-})).max(reviewWhiteLabelRequestResponseApprovedPlanOneOneEntitlementsMax)
+})).max(reviewWhiteLabelRequestResponseApprovedPlanOneOneEntitlementsMax),
+  "featureRows": zod.array(zod.object({
+  "label": zod.string().min(1).max(reviewWhiteLabelRequestResponseApprovedPlanOneOneFeatureRowsItemLabelMax),
+  "value": zod.string().min(1).max(reviewWhiteLabelRequestResponseApprovedPlanOneOneFeatureRowsItemValueMax)
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.')
 }).and(zod.object({
   "id": zod.string().uuid(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date(),
   "pricingConfigured": zod.boolean().optional(),
-  "billingPeriods": zod.array(zod.enum(['monthly', 'yearly'])).optional()
+  "billingPeriods": zod.array(zod.enum(['monthly', 'yearly'])).optional(),
+  "featureRows": zod.array(zod.object({
+  "label": zod.string().min(1).max(reviewWhiteLabelRequestResponseApprovedPlanOneTwoFeatureRowsItemLabelMax),
+  "value": zod.string().min(1).max(reviewWhiteLabelRequestResponseApprovedPlanOneTwoFeatureRowsItemValueMax)
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(reviewWhiteLabelRequestResponseApprovedPlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.')
 })),zod.null()]).optional(),
   "approvedAddons": zod.array(zod.object({
   "monthlyPrice": zod.string().regex(reviewWhiteLabelRequestResponseApprovedAddonsItemOneMonthlyPriceRegExp).nullish(),
@@ -3906,6 +4127,15 @@ export const provisionWhiteLabelRequestResponseRequestedPlanOneOneEntitlementsIt
 export const provisionWhiteLabelRequestResponseRequestedPlanOneOneEntitlementsItemValueTwoRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,18})?$');
 export const provisionWhiteLabelRequestResponseRequestedPlanOneOneEntitlementsMax = 200;
 
+export const provisionWhiteLabelRequestResponseRequestedPlanOneOneFeatureRowsItemLabelMax = 120;
+
+export const provisionWhiteLabelRequestResponseRequestedPlanOneOneFeatureRowsItemValueMax = 500;
+
+export const provisionWhiteLabelRequestResponseRequestedPlanOneTwoFeatureRowsItemLabelMax = 120;
+
+export const provisionWhiteLabelRequestResponseRequestedPlanOneTwoFeatureRowsItemValueMax = 500;
+
+export const provisionWhiteLabelRequestResponseRequestedPlanOneTwoFeatureRowsDefault = [];
 export const provisionWhiteLabelRequestResponseRequestedAddonsItemOneMonthlyPriceRegExp = new RegExp('^\\d{1,12}(\\.\\d{1,2})?$');
 export const provisionWhiteLabelRequestResponseRequestedAddonsItemOneYearlyPriceRegExp = new RegExp('^\\d{1,12}(\\.\\d{1,2})?$');
 export const provisionWhiteLabelRequestResponseRequestedAddonsItemOneSetupFeeRegExp = new RegExp('^\\d{1,12}(\\.\\d{1,2})?$');
@@ -3966,6 +4196,15 @@ export const provisionWhiteLabelRequestResponseApprovedPlanOneOneEntitlementsIte
 export const provisionWhiteLabelRequestResponseApprovedPlanOneOneEntitlementsItemValueTwoRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,18})?$');
 export const provisionWhiteLabelRequestResponseApprovedPlanOneOneEntitlementsMax = 200;
 
+export const provisionWhiteLabelRequestResponseApprovedPlanOneOneFeatureRowsItemLabelMax = 120;
+
+export const provisionWhiteLabelRequestResponseApprovedPlanOneOneFeatureRowsItemValueMax = 500;
+
+export const provisionWhiteLabelRequestResponseApprovedPlanOneTwoFeatureRowsItemLabelMax = 120;
+
+export const provisionWhiteLabelRequestResponseApprovedPlanOneTwoFeatureRowsItemValueMax = 500;
+
+export const provisionWhiteLabelRequestResponseApprovedPlanOneTwoFeatureRowsDefault = [];
 export const provisionWhiteLabelRequestResponseApprovedAddonsItemOneMonthlyPriceRegExp = new RegExp('^\\d{1,12}(\\.\\d{1,2})?$');
 export const provisionWhiteLabelRequestResponseApprovedAddonsItemOneYearlyPriceRegExp = new RegExp('^\\d{1,12}(\\.\\d{1,2})?$');
 export const provisionWhiteLabelRequestResponseApprovedAddonsItemOneSetupFeeRegExp = new RegExp('^\\d{1,12}(\\.\\d{1,2})?$');
@@ -4033,13 +4272,21 @@ export const ProvisionWhiteLabelRequestResponse = zod.object({
   "entitlements": zod.array(zod.object({
   "key": zod.string().max(provisionWhiteLabelRequestResponseRequestedPlanOneOneEntitlementsItemKeyMax).regex(provisionWhiteLabelRequestResponseRequestedPlanOneOneEntitlementsItemKeyRegExp),
   "value": zod.union([zod.boolean(),zod.string().max(provisionWhiteLabelRequestResponseRequestedPlanOneOneEntitlementsItemValueTwoMax).regex(provisionWhiteLabelRequestResponseRequestedPlanOneOneEntitlementsItemValueTwoRegExp)])
-})).max(provisionWhiteLabelRequestResponseRequestedPlanOneOneEntitlementsMax)
+})).max(provisionWhiteLabelRequestResponseRequestedPlanOneOneEntitlementsMax),
+  "featureRows": zod.array(zod.object({
+  "label": zod.string().min(1).max(provisionWhiteLabelRequestResponseRequestedPlanOneOneFeatureRowsItemLabelMax),
+  "value": zod.string().min(1).max(provisionWhiteLabelRequestResponseRequestedPlanOneOneFeatureRowsItemValueMax)
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.')
 }).and(zod.object({
   "id": zod.string().uuid(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date(),
   "pricingConfigured": zod.boolean().optional(),
-  "billingPeriods": zod.array(zod.enum(['monthly', 'yearly'])).optional()
+  "billingPeriods": zod.array(zod.enum(['monthly', 'yearly'])).optional(),
+  "featureRows": zod.array(zod.object({
+  "label": zod.string().min(1).max(provisionWhiteLabelRequestResponseRequestedPlanOneTwoFeatureRowsItemLabelMax),
+  "value": zod.string().min(1).max(provisionWhiteLabelRequestResponseRequestedPlanOneTwoFeatureRowsItemValueMax)
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(provisionWhiteLabelRequestResponseRequestedPlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.')
 })),zod.null()]).optional(),
   "requestedAddons": zod.array(zod.object({
   "monthlyPrice": zod.string().regex(provisionWhiteLabelRequestResponseRequestedAddonsItemOneMonthlyPriceRegExp).nullish(),
@@ -4072,13 +4319,21 @@ export const ProvisionWhiteLabelRequestResponse = zod.object({
   "entitlements": zod.array(zod.object({
   "key": zod.string().max(provisionWhiteLabelRequestResponseApprovedPlanOneOneEntitlementsItemKeyMax).regex(provisionWhiteLabelRequestResponseApprovedPlanOneOneEntitlementsItemKeyRegExp),
   "value": zod.union([zod.boolean(),zod.string().max(provisionWhiteLabelRequestResponseApprovedPlanOneOneEntitlementsItemValueTwoMax).regex(provisionWhiteLabelRequestResponseApprovedPlanOneOneEntitlementsItemValueTwoRegExp)])
-})).max(provisionWhiteLabelRequestResponseApprovedPlanOneOneEntitlementsMax)
+})).max(provisionWhiteLabelRequestResponseApprovedPlanOneOneEntitlementsMax),
+  "featureRows": zod.array(zod.object({
+  "label": zod.string().min(1).max(provisionWhiteLabelRequestResponseApprovedPlanOneOneFeatureRowsItemLabelMax),
+  "value": zod.string().min(1).max(provisionWhiteLabelRequestResponseApprovedPlanOneOneFeatureRowsItemValueMax)
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.')
 }).and(zod.object({
   "id": zod.string().uuid(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date(),
   "pricingConfigured": zod.boolean().optional(),
-  "billingPeriods": zod.array(zod.enum(['monthly', 'yearly'])).optional()
+  "billingPeriods": zod.array(zod.enum(['monthly', 'yearly'])).optional(),
+  "featureRows": zod.array(zod.object({
+  "label": zod.string().min(1).max(provisionWhiteLabelRequestResponseApprovedPlanOneTwoFeatureRowsItemLabelMax),
+  "value": zod.string().min(1).max(provisionWhiteLabelRequestResponseApprovedPlanOneTwoFeatureRowsItemValueMax)
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(provisionWhiteLabelRequestResponseApprovedPlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.')
 })),zod.null()]).optional(),
   "approvedAddons": zod.array(zod.object({
   "monthlyPrice": zod.string().regex(provisionWhiteLabelRequestResponseApprovedAddonsItemOneMonthlyPriceRegExp).nullish(),
@@ -9293,7 +9548,15 @@ export const listPlansResponseOneEntitlementsItemValueTwoMax = 38;
 export const listPlansResponseOneEntitlementsItemValueTwoRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,18})?$');
 export const listPlansResponseOneEntitlementsMax = 200;
 
+export const listPlansResponseOneFeatureRowsItemLabelMax = 120;
 
+export const listPlansResponseOneFeatureRowsItemValueMax = 500;
+
+export const listPlansResponseTwoFeatureRowsItemLabelMax = 120;
+
+export const listPlansResponseTwoFeatureRowsItemValueMax = 500;
+
+export const listPlansResponseTwoFeatureRowsDefault = [];
 
 export const ListPlansResponseItem = zod.object({
   "name": zod.string().min(listPlansResponseOneNameMin).max(listPlansResponseOneNameMax),
@@ -9309,13 +9572,21 @@ export const ListPlansResponseItem = zod.object({
   "entitlements": zod.array(zod.object({
   "key": zod.string().max(listPlansResponseOneEntitlementsItemKeyMax).regex(listPlansResponseOneEntitlementsItemKeyRegExp),
   "value": zod.union([zod.boolean(),zod.string().max(listPlansResponseOneEntitlementsItemValueTwoMax).regex(listPlansResponseOneEntitlementsItemValueTwoRegExp)])
-})).max(listPlansResponseOneEntitlementsMax)
+})).max(listPlansResponseOneEntitlementsMax),
+  "featureRows": zod.array(zod.object({
+  "label": zod.string().min(1).max(listPlansResponseOneFeatureRowsItemLabelMax),
+  "value": zod.string().min(1).max(listPlansResponseOneFeatureRowsItemValueMax)
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.')
 }).and(zod.object({
   "id": zod.string().uuid(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date(),
   "pricingConfigured": zod.boolean().optional(),
-  "billingPeriods": zod.array(zod.enum(['monthly', 'yearly'])).optional()
+  "billingPeriods": zod.array(zod.enum(['monthly', 'yearly'])).optional(),
+  "featureRows": zod.array(zod.object({
+  "label": zod.string().min(1).max(listPlansResponseTwoFeatureRowsItemLabelMax),
+  "value": zod.string().min(1).max(listPlansResponseTwoFeatureRowsItemValueMax)
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(listPlansResponseTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.')
 }))
 export const ListPlansResponse = zod.array(ListPlansResponseItem)
 
@@ -9357,6 +9628,10 @@ export const createPlanBodyEntitlementsItemValueTwoMax = 38;
 export const createPlanBodyEntitlementsItemValueTwoRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,18})?$');
 export const createPlanBodyEntitlementsMax = 200;
 
+export const createPlanBodyFeatureRowsItemLabelMax = 120;
+
+export const createPlanBodyFeatureRowsItemValueMax = 500;
+
 
 
 export const CreatePlanBody = zod.object({
@@ -9373,7 +9648,11 @@ export const CreatePlanBody = zod.object({
   "entitlements": zod.array(zod.object({
   "key": zod.string().max(createPlanBodyEntitlementsItemKeyMax).regex(createPlanBodyEntitlementsItemKeyRegExp),
   "value": zod.union([zod.boolean(),zod.string().max(createPlanBodyEntitlementsItemValueTwoMax).regex(createPlanBodyEntitlementsItemValueTwoRegExp)])
-})).max(createPlanBodyEntitlementsMax)
+})).max(createPlanBodyEntitlementsMax),
+  "featureRows": zod.array(zod.object({
+  "label": zod.string().min(1).max(createPlanBodyFeatureRowsItemLabelMax),
+  "value": zod.string().min(1).max(createPlanBodyFeatureRowsItemValueMax)
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).optional().describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.')
 })
 
 export const createPlanResponseOneNameMin = 2;
@@ -9413,7 +9692,15 @@ export const createPlanResponseOneEntitlementsItemValueTwoMax = 38;
 export const createPlanResponseOneEntitlementsItemValueTwoRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,18})?$');
 export const createPlanResponseOneEntitlementsMax = 200;
 
+export const createPlanResponseOneFeatureRowsItemLabelMax = 120;
 
+export const createPlanResponseOneFeatureRowsItemValueMax = 500;
+
+export const createPlanResponseTwoFeatureRowsItemLabelMax = 120;
+
+export const createPlanResponseTwoFeatureRowsItemValueMax = 500;
+
+export const createPlanResponseTwoFeatureRowsDefault = [];
 
 export const CreatePlanResponse = zod.object({
   "name": zod.string().min(createPlanResponseOneNameMin).max(createPlanResponseOneNameMax),
@@ -9429,13 +9716,21 @@ export const CreatePlanResponse = zod.object({
   "entitlements": zod.array(zod.object({
   "key": zod.string().max(createPlanResponseOneEntitlementsItemKeyMax).regex(createPlanResponseOneEntitlementsItemKeyRegExp),
   "value": zod.union([zod.boolean(),zod.string().max(createPlanResponseOneEntitlementsItemValueTwoMax).regex(createPlanResponseOneEntitlementsItemValueTwoRegExp)])
-})).max(createPlanResponseOneEntitlementsMax)
+})).max(createPlanResponseOneEntitlementsMax),
+  "featureRows": zod.array(zod.object({
+  "label": zod.string().min(1).max(createPlanResponseOneFeatureRowsItemLabelMax),
+  "value": zod.string().min(1).max(createPlanResponseOneFeatureRowsItemValueMax)
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.')
 }).and(zod.object({
   "id": zod.string().uuid(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date(),
   "pricingConfigured": zod.boolean().optional(),
-  "billingPeriods": zod.array(zod.enum(['monthly', 'yearly'])).optional()
+  "billingPeriods": zod.array(zod.enum(['monthly', 'yearly'])).optional(),
+  "featureRows": zod.array(zod.object({
+  "label": zod.string().min(1).max(createPlanResponseTwoFeatureRowsItemLabelMax),
+  "value": zod.string().min(1).max(createPlanResponseTwoFeatureRowsItemValueMax)
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(createPlanResponseTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.')
 }))
 
 
@@ -9489,7 +9784,15 @@ export const getPlanResponseOneEntitlementsItemValueTwoMax = 38;
 export const getPlanResponseOneEntitlementsItemValueTwoRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,18})?$');
 export const getPlanResponseOneEntitlementsMax = 200;
 
+export const getPlanResponseOneFeatureRowsItemLabelMax = 120;
 
+export const getPlanResponseOneFeatureRowsItemValueMax = 500;
+
+export const getPlanResponseTwoFeatureRowsItemLabelMax = 120;
+
+export const getPlanResponseTwoFeatureRowsItemValueMax = 500;
+
+export const getPlanResponseTwoFeatureRowsDefault = [];
 
 export const GetPlanResponse = zod.object({
   "name": zod.string().min(getPlanResponseOneNameMin).max(getPlanResponseOneNameMax),
@@ -9505,13 +9808,21 @@ export const GetPlanResponse = zod.object({
   "entitlements": zod.array(zod.object({
   "key": zod.string().max(getPlanResponseOneEntitlementsItemKeyMax).regex(getPlanResponseOneEntitlementsItemKeyRegExp),
   "value": zod.union([zod.boolean(),zod.string().max(getPlanResponseOneEntitlementsItemValueTwoMax).regex(getPlanResponseOneEntitlementsItemValueTwoRegExp)])
-})).max(getPlanResponseOneEntitlementsMax)
+})).max(getPlanResponseOneEntitlementsMax),
+  "featureRows": zod.array(zod.object({
+  "label": zod.string().min(1).max(getPlanResponseOneFeatureRowsItemLabelMax),
+  "value": zod.string().min(1).max(getPlanResponseOneFeatureRowsItemValueMax)
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.')
 }).and(zod.object({
   "id": zod.string().uuid(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date(),
   "pricingConfigured": zod.boolean().optional(),
-  "billingPeriods": zod.array(zod.enum(['monthly', 'yearly'])).optional()
+  "billingPeriods": zod.array(zod.enum(['monthly', 'yearly'])).optional(),
+  "featureRows": zod.array(zod.object({
+  "label": zod.string().min(1).max(getPlanResponseTwoFeatureRowsItemLabelMax),
+  "value": zod.string().min(1).max(getPlanResponseTwoFeatureRowsItemValueMax)
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(getPlanResponseTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.')
 }))
 
 
@@ -9556,6 +9867,10 @@ export const updatePlanBodyEntitlementsItemValueTwoMax = 38;
 export const updatePlanBodyEntitlementsItemValueTwoRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,18})?$');
 export const updatePlanBodyEntitlementsMax = 200;
 
+export const updatePlanBodyFeatureRowsItemLabelMax = 120;
+
+export const updatePlanBodyFeatureRowsItemValueMax = 500;
+
 
 
 export const UpdatePlanBody = zod.object({
@@ -9572,7 +9887,11 @@ export const UpdatePlanBody = zod.object({
   "entitlements": zod.array(zod.object({
   "key": zod.string().max(updatePlanBodyEntitlementsItemKeyMax).regex(updatePlanBodyEntitlementsItemKeyRegExp),
   "value": zod.union([zod.boolean(),zod.string().max(updatePlanBodyEntitlementsItemValueTwoMax).regex(updatePlanBodyEntitlementsItemValueTwoRegExp)])
-})).max(updatePlanBodyEntitlementsMax)
+})).max(updatePlanBodyEntitlementsMax),
+  "featureRows": zod.array(zod.object({
+  "label": zod.string().min(1).max(updatePlanBodyFeatureRowsItemLabelMax),
+  "value": zod.string().min(1).max(updatePlanBodyFeatureRowsItemValueMax)
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).optional().describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.')
 })
 
 export const updatePlanResponseOneNameMin = 2;
@@ -9612,7 +9931,15 @@ export const updatePlanResponseOneEntitlementsItemValueTwoMax = 38;
 export const updatePlanResponseOneEntitlementsItemValueTwoRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,18})?$');
 export const updatePlanResponseOneEntitlementsMax = 200;
 
+export const updatePlanResponseOneFeatureRowsItemLabelMax = 120;
 
+export const updatePlanResponseOneFeatureRowsItemValueMax = 500;
+
+export const updatePlanResponseTwoFeatureRowsItemLabelMax = 120;
+
+export const updatePlanResponseTwoFeatureRowsItemValueMax = 500;
+
+export const updatePlanResponseTwoFeatureRowsDefault = [];
 
 export const UpdatePlanResponse = zod.object({
   "name": zod.string().min(updatePlanResponseOneNameMin).max(updatePlanResponseOneNameMax),
@@ -9628,13 +9955,21 @@ export const UpdatePlanResponse = zod.object({
   "entitlements": zod.array(zod.object({
   "key": zod.string().max(updatePlanResponseOneEntitlementsItemKeyMax).regex(updatePlanResponseOneEntitlementsItemKeyRegExp),
   "value": zod.union([zod.boolean(),zod.string().max(updatePlanResponseOneEntitlementsItemValueTwoMax).regex(updatePlanResponseOneEntitlementsItemValueTwoRegExp)])
-})).max(updatePlanResponseOneEntitlementsMax)
+})).max(updatePlanResponseOneEntitlementsMax),
+  "featureRows": zod.array(zod.object({
+  "label": zod.string().min(1).max(updatePlanResponseOneFeatureRowsItemLabelMax),
+  "value": zod.string().min(1).max(updatePlanResponseOneFeatureRowsItemValueMax)
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.')
 }).and(zod.object({
   "id": zod.string().uuid(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date(),
   "pricingConfigured": zod.boolean().optional(),
-  "billingPeriods": zod.array(zod.enum(['monthly', 'yearly'])).optional()
+  "billingPeriods": zod.array(zod.enum(['monthly', 'yearly'])).optional(),
+  "featureRows": zod.array(zod.object({
+  "label": zod.string().min(1).max(updatePlanResponseTwoFeatureRowsItemLabelMax),
+  "value": zod.string().min(1).max(updatePlanResponseTwoFeatureRowsItemValueMax)
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(updatePlanResponseTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.')
 }))
 
 
@@ -9679,7 +10014,15 @@ export const duplicatePlanResponseOneEntitlementsItemValueTwoMax = 38;
 export const duplicatePlanResponseOneEntitlementsItemValueTwoRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,18})?$');
 export const duplicatePlanResponseOneEntitlementsMax = 200;
 
+export const duplicatePlanResponseOneFeatureRowsItemLabelMax = 120;
 
+export const duplicatePlanResponseOneFeatureRowsItemValueMax = 500;
+
+export const duplicatePlanResponseTwoFeatureRowsItemLabelMax = 120;
+
+export const duplicatePlanResponseTwoFeatureRowsItemValueMax = 500;
+
+export const duplicatePlanResponseTwoFeatureRowsDefault = [];
 
 export const DuplicatePlanResponse = zod.object({
   "name": zod.string().min(duplicatePlanResponseOneNameMin).max(duplicatePlanResponseOneNameMax),
@@ -9695,13 +10038,21 @@ export const DuplicatePlanResponse = zod.object({
   "entitlements": zod.array(zod.object({
   "key": zod.string().max(duplicatePlanResponseOneEntitlementsItemKeyMax).regex(duplicatePlanResponseOneEntitlementsItemKeyRegExp),
   "value": zod.union([zod.boolean(),zod.string().max(duplicatePlanResponseOneEntitlementsItemValueTwoMax).regex(duplicatePlanResponseOneEntitlementsItemValueTwoRegExp)])
-})).max(duplicatePlanResponseOneEntitlementsMax)
+})).max(duplicatePlanResponseOneEntitlementsMax),
+  "featureRows": zod.array(zod.object({
+  "label": zod.string().min(1).max(duplicatePlanResponseOneFeatureRowsItemLabelMax),
+  "value": zod.string().min(1).max(duplicatePlanResponseOneFeatureRowsItemValueMax)
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.')
 }).and(zod.object({
   "id": zod.string().uuid(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date(),
   "pricingConfigured": zod.boolean().optional(),
-  "billingPeriods": zod.array(zod.enum(['monthly', 'yearly'])).optional()
+  "billingPeriods": zod.array(zod.enum(['monthly', 'yearly'])).optional(),
+  "featureRows": zod.array(zod.object({
+  "label": zod.string().min(1).max(duplicatePlanResponseTwoFeatureRowsItemLabelMax),
+  "value": zod.string().min(1).max(duplicatePlanResponseTwoFeatureRowsItemValueMax)
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(duplicatePlanResponseTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.')
 }))
 
 
@@ -9750,7 +10101,15 @@ export const setPlanStatusResponseOneEntitlementsItemValueTwoMax = 38;
 export const setPlanStatusResponseOneEntitlementsItemValueTwoRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,18})?$');
 export const setPlanStatusResponseOneEntitlementsMax = 200;
 
+export const setPlanStatusResponseOneFeatureRowsItemLabelMax = 120;
 
+export const setPlanStatusResponseOneFeatureRowsItemValueMax = 500;
+
+export const setPlanStatusResponseTwoFeatureRowsItemLabelMax = 120;
+
+export const setPlanStatusResponseTwoFeatureRowsItemValueMax = 500;
+
+export const setPlanStatusResponseTwoFeatureRowsDefault = [];
 
 export const SetPlanStatusResponse = zod.object({
   "name": zod.string().min(setPlanStatusResponseOneNameMin).max(setPlanStatusResponseOneNameMax),
@@ -9766,13 +10125,21 @@ export const SetPlanStatusResponse = zod.object({
   "entitlements": zod.array(zod.object({
   "key": zod.string().max(setPlanStatusResponseOneEntitlementsItemKeyMax).regex(setPlanStatusResponseOneEntitlementsItemKeyRegExp),
   "value": zod.union([zod.boolean(),zod.string().max(setPlanStatusResponseOneEntitlementsItemValueTwoMax).regex(setPlanStatusResponseOneEntitlementsItemValueTwoRegExp)])
-})).max(setPlanStatusResponseOneEntitlementsMax)
+})).max(setPlanStatusResponseOneEntitlementsMax),
+  "featureRows": zod.array(zod.object({
+  "label": zod.string().min(1).max(setPlanStatusResponseOneFeatureRowsItemLabelMax),
+  "value": zod.string().min(1).max(setPlanStatusResponseOneFeatureRowsItemValueMax)
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.')
 }).and(zod.object({
   "id": zod.string().uuid(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date(),
   "pricingConfigured": zod.boolean().optional(),
-  "billingPeriods": zod.array(zod.enum(['monthly', 'yearly'])).optional()
+  "billingPeriods": zod.array(zod.enum(['monthly', 'yearly'])).optional(),
+  "featureRows": zod.array(zod.object({
+  "label": zod.string().min(1).max(setPlanStatusResponseTwoFeatureRowsItemLabelMax),
+  "value": zod.string().min(1).max(setPlanStatusResponseTwoFeatureRowsItemValueMax)
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(setPlanStatusResponseTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.')
 }))
 
 
@@ -10043,6 +10410,15 @@ export const getTenantSubscriptionResponsePlanOneOneEntitlementsItemValueTwoMax 
 export const getTenantSubscriptionResponsePlanOneOneEntitlementsItemValueTwoRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,18})?$');
 export const getTenantSubscriptionResponsePlanOneOneEntitlementsMax = 200;
 
+export const getTenantSubscriptionResponsePlanOneOneFeatureRowsItemLabelMax = 120;
+
+export const getTenantSubscriptionResponsePlanOneOneFeatureRowsItemValueMax = 500;
+
+export const getTenantSubscriptionResponsePlanOneTwoFeatureRowsItemLabelMax = 120;
+
+export const getTenantSubscriptionResponsePlanOneTwoFeatureRowsItemValueMax = 500;
+
+export const getTenantSubscriptionResponsePlanOneTwoFeatureRowsDefault = [];
 export const getTenantSubscriptionResponseAddonsItemOneMonthlyPriceRegExp = new RegExp('^\\d{1,12}(\\.\\d{1,2})?$');
 export const getTenantSubscriptionResponseAddonsItemOneYearlyPriceRegExp = new RegExp('^\\d{1,12}(\\.\\d{1,2})?$');
 export const getTenantSubscriptionResponseAddonsItemOneSetupFeeRegExp = new RegExp('^\\d{1,12}(\\.\\d{1,2})?$');
@@ -10103,13 +10479,21 @@ export const GetTenantSubscriptionResponse = zod.object({
   "entitlements": zod.array(zod.object({
   "key": zod.string().max(getTenantSubscriptionResponsePlanOneOneEntitlementsItemKeyMax).regex(getTenantSubscriptionResponsePlanOneOneEntitlementsItemKeyRegExp),
   "value": zod.union([zod.boolean(),zod.string().max(getTenantSubscriptionResponsePlanOneOneEntitlementsItemValueTwoMax).regex(getTenantSubscriptionResponsePlanOneOneEntitlementsItemValueTwoRegExp)])
-})).max(getTenantSubscriptionResponsePlanOneOneEntitlementsMax)
+})).max(getTenantSubscriptionResponsePlanOneOneEntitlementsMax),
+  "featureRows": zod.array(zod.object({
+  "label": zod.string().min(1).max(getTenantSubscriptionResponsePlanOneOneFeatureRowsItemLabelMax),
+  "value": zod.string().min(1).max(getTenantSubscriptionResponsePlanOneOneFeatureRowsItemValueMax)
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.')
 }).and(zod.object({
   "id": zod.string().uuid(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date(),
   "pricingConfigured": zod.boolean().optional(),
-  "billingPeriods": zod.array(zod.enum(['monthly', 'yearly'])).optional()
+  "billingPeriods": zod.array(zod.enum(['monthly', 'yearly'])).optional(),
+  "featureRows": zod.array(zod.object({
+  "label": zod.string().min(1).max(getTenantSubscriptionResponsePlanOneTwoFeatureRowsItemLabelMax),
+  "value": zod.string().min(1).max(getTenantSubscriptionResponsePlanOneTwoFeatureRowsItemValueMax)
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(getTenantSubscriptionResponsePlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.')
 })),zod.null()]),
   "addons": zod.array(zod.object({
   "monthlyPrice": zod.string().regex(getTenantSubscriptionResponseAddonsItemOneMonthlyPriceRegExp).nullish(),
@@ -10194,6 +10578,15 @@ export const changeTenantPlanResponsePlanOneOneEntitlementsItemValueTwoMax = 38;
 export const changeTenantPlanResponsePlanOneOneEntitlementsItemValueTwoRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,18})?$');
 export const changeTenantPlanResponsePlanOneOneEntitlementsMax = 200;
 
+export const changeTenantPlanResponsePlanOneOneFeatureRowsItemLabelMax = 120;
+
+export const changeTenantPlanResponsePlanOneOneFeatureRowsItemValueMax = 500;
+
+export const changeTenantPlanResponsePlanOneTwoFeatureRowsItemLabelMax = 120;
+
+export const changeTenantPlanResponsePlanOneTwoFeatureRowsItemValueMax = 500;
+
+export const changeTenantPlanResponsePlanOneTwoFeatureRowsDefault = [];
 export const changeTenantPlanResponseAddonsItemOneMonthlyPriceRegExp = new RegExp('^\\d{1,12}(\\.\\d{1,2})?$');
 export const changeTenantPlanResponseAddonsItemOneYearlyPriceRegExp = new RegExp('^\\d{1,12}(\\.\\d{1,2})?$');
 export const changeTenantPlanResponseAddonsItemOneSetupFeeRegExp = new RegExp('^\\d{1,12}(\\.\\d{1,2})?$');
@@ -10254,13 +10647,21 @@ export const ChangeTenantPlanResponse = zod.object({
   "entitlements": zod.array(zod.object({
   "key": zod.string().max(changeTenantPlanResponsePlanOneOneEntitlementsItemKeyMax).regex(changeTenantPlanResponsePlanOneOneEntitlementsItemKeyRegExp),
   "value": zod.union([zod.boolean(),zod.string().max(changeTenantPlanResponsePlanOneOneEntitlementsItemValueTwoMax).regex(changeTenantPlanResponsePlanOneOneEntitlementsItemValueTwoRegExp)])
-})).max(changeTenantPlanResponsePlanOneOneEntitlementsMax)
+})).max(changeTenantPlanResponsePlanOneOneEntitlementsMax),
+  "featureRows": zod.array(zod.object({
+  "label": zod.string().min(1).max(changeTenantPlanResponsePlanOneOneFeatureRowsItemLabelMax),
+  "value": zod.string().min(1).max(changeTenantPlanResponsePlanOneOneFeatureRowsItemValueMax)
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.')
 }).and(zod.object({
   "id": zod.string().uuid(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date(),
   "pricingConfigured": zod.boolean().optional(),
-  "billingPeriods": zod.array(zod.enum(['monthly', 'yearly'])).optional()
+  "billingPeriods": zod.array(zod.enum(['monthly', 'yearly'])).optional(),
+  "featureRows": zod.array(zod.object({
+  "label": zod.string().min(1).max(changeTenantPlanResponsePlanOneTwoFeatureRowsItemLabelMax),
+  "value": zod.string().min(1).max(changeTenantPlanResponsePlanOneTwoFeatureRowsItemValueMax)
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(changeTenantPlanResponsePlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.')
 })),zod.null()]),
   "addons": zod.array(zod.object({
   "monthlyPrice": zod.string().regex(changeTenantPlanResponseAddonsItemOneMonthlyPriceRegExp).nullish(),
@@ -10360,6 +10761,15 @@ export const updateSubscriptionCommercialResponsePlanOneOneEntitlementsItemValue
 export const updateSubscriptionCommercialResponsePlanOneOneEntitlementsItemValueTwoRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,18})?$');
 export const updateSubscriptionCommercialResponsePlanOneOneEntitlementsMax = 200;
 
+export const updateSubscriptionCommercialResponsePlanOneOneFeatureRowsItemLabelMax = 120;
+
+export const updateSubscriptionCommercialResponsePlanOneOneFeatureRowsItemValueMax = 500;
+
+export const updateSubscriptionCommercialResponsePlanOneTwoFeatureRowsItemLabelMax = 120;
+
+export const updateSubscriptionCommercialResponsePlanOneTwoFeatureRowsItemValueMax = 500;
+
+export const updateSubscriptionCommercialResponsePlanOneTwoFeatureRowsDefault = [];
 export const updateSubscriptionCommercialResponseAddonsItemOneMonthlyPriceRegExp = new RegExp('^\\d{1,12}(\\.\\d{1,2})?$');
 export const updateSubscriptionCommercialResponseAddonsItemOneYearlyPriceRegExp = new RegExp('^\\d{1,12}(\\.\\d{1,2})?$');
 export const updateSubscriptionCommercialResponseAddonsItemOneSetupFeeRegExp = new RegExp('^\\d{1,12}(\\.\\d{1,2})?$');
@@ -10420,13 +10830,21 @@ export const UpdateSubscriptionCommercialResponse = zod.object({
   "entitlements": zod.array(zod.object({
   "key": zod.string().max(updateSubscriptionCommercialResponsePlanOneOneEntitlementsItemKeyMax).regex(updateSubscriptionCommercialResponsePlanOneOneEntitlementsItemKeyRegExp),
   "value": zod.union([zod.boolean(),zod.string().max(updateSubscriptionCommercialResponsePlanOneOneEntitlementsItemValueTwoMax).regex(updateSubscriptionCommercialResponsePlanOneOneEntitlementsItemValueTwoRegExp)])
-})).max(updateSubscriptionCommercialResponsePlanOneOneEntitlementsMax)
+})).max(updateSubscriptionCommercialResponsePlanOneOneEntitlementsMax),
+  "featureRows": zod.array(zod.object({
+  "label": zod.string().min(1).max(updateSubscriptionCommercialResponsePlanOneOneFeatureRowsItemLabelMax),
+  "value": zod.string().min(1).max(updateSubscriptionCommercialResponsePlanOneOneFeatureRowsItemValueMax)
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.')
 }).and(zod.object({
   "id": zod.string().uuid(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date(),
   "pricingConfigured": zod.boolean().optional(),
-  "billingPeriods": zod.array(zod.enum(['monthly', 'yearly'])).optional()
+  "billingPeriods": zod.array(zod.enum(['monthly', 'yearly'])).optional(),
+  "featureRows": zod.array(zod.object({
+  "label": zod.string().min(1).max(updateSubscriptionCommercialResponsePlanOneTwoFeatureRowsItemLabelMax),
+  "value": zod.string().min(1).max(updateSubscriptionCommercialResponsePlanOneTwoFeatureRowsItemValueMax)
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(updateSubscriptionCommercialResponsePlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.')
 })),zod.null()]),
   "addons": zod.array(zod.object({
   "monthlyPrice": zod.string().regex(updateSubscriptionCommercialResponseAddonsItemOneMonthlyPriceRegExp).nullish(),
@@ -10543,6 +10961,15 @@ export const setTenantAddonsResponsePlanOneOneEntitlementsItemValueTwoMax = 38;
 export const setTenantAddonsResponsePlanOneOneEntitlementsItemValueTwoRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,18})?$');
 export const setTenantAddonsResponsePlanOneOneEntitlementsMax = 200;
 
+export const setTenantAddonsResponsePlanOneOneFeatureRowsItemLabelMax = 120;
+
+export const setTenantAddonsResponsePlanOneOneFeatureRowsItemValueMax = 500;
+
+export const setTenantAddonsResponsePlanOneTwoFeatureRowsItemLabelMax = 120;
+
+export const setTenantAddonsResponsePlanOneTwoFeatureRowsItemValueMax = 500;
+
+export const setTenantAddonsResponsePlanOneTwoFeatureRowsDefault = [];
 export const setTenantAddonsResponseAddonsItemOneMonthlyPriceRegExp = new RegExp('^\\d{1,12}(\\.\\d{1,2})?$');
 export const setTenantAddonsResponseAddonsItemOneYearlyPriceRegExp = new RegExp('^\\d{1,12}(\\.\\d{1,2})?$');
 export const setTenantAddonsResponseAddonsItemOneSetupFeeRegExp = new RegExp('^\\d{1,12}(\\.\\d{1,2})?$');
@@ -10603,13 +11030,21 @@ export const SetTenantAddonsResponse = zod.object({
   "entitlements": zod.array(zod.object({
   "key": zod.string().max(setTenantAddonsResponsePlanOneOneEntitlementsItemKeyMax).regex(setTenantAddonsResponsePlanOneOneEntitlementsItemKeyRegExp),
   "value": zod.union([zod.boolean(),zod.string().max(setTenantAddonsResponsePlanOneOneEntitlementsItemValueTwoMax).regex(setTenantAddonsResponsePlanOneOneEntitlementsItemValueTwoRegExp)])
-})).max(setTenantAddonsResponsePlanOneOneEntitlementsMax)
+})).max(setTenantAddonsResponsePlanOneOneEntitlementsMax),
+  "featureRows": zod.array(zod.object({
+  "label": zod.string().min(1).max(setTenantAddonsResponsePlanOneOneFeatureRowsItemLabelMax),
+  "value": zod.string().min(1).max(setTenantAddonsResponsePlanOneOneFeatureRowsItemValueMax)
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.')
 }).and(zod.object({
   "id": zod.string().uuid(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date(),
   "pricingConfigured": zod.boolean().optional(),
-  "billingPeriods": zod.array(zod.enum(['monthly', 'yearly'])).optional()
+  "billingPeriods": zod.array(zod.enum(['monthly', 'yearly'])).optional(),
+  "featureRows": zod.array(zod.object({
+  "label": zod.string().min(1).max(setTenantAddonsResponsePlanOneTwoFeatureRowsItemLabelMax),
+  "value": zod.string().min(1).max(setTenantAddonsResponsePlanOneTwoFeatureRowsItemValueMax)
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(setTenantAddonsResponsePlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.')
 })),zod.null()]),
   "addons": zod.array(zod.object({
   "monthlyPrice": zod.string().regex(setTenantAddonsResponseAddonsItemOneMonthlyPriceRegExp).nullish(),
@@ -10714,6 +11149,15 @@ export const setTenantOverridesResponsePlanOneOneEntitlementsItemValueTwoMax = 3
 export const setTenantOverridesResponsePlanOneOneEntitlementsItemValueTwoRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,18})?$');
 export const setTenantOverridesResponsePlanOneOneEntitlementsMax = 200;
 
+export const setTenantOverridesResponsePlanOneOneFeatureRowsItemLabelMax = 120;
+
+export const setTenantOverridesResponsePlanOneOneFeatureRowsItemValueMax = 500;
+
+export const setTenantOverridesResponsePlanOneTwoFeatureRowsItemLabelMax = 120;
+
+export const setTenantOverridesResponsePlanOneTwoFeatureRowsItemValueMax = 500;
+
+export const setTenantOverridesResponsePlanOneTwoFeatureRowsDefault = [];
 export const setTenantOverridesResponseAddonsItemOneMonthlyPriceRegExp = new RegExp('^\\d{1,12}(\\.\\d{1,2})?$');
 export const setTenantOverridesResponseAddonsItemOneYearlyPriceRegExp = new RegExp('^\\d{1,12}(\\.\\d{1,2})?$');
 export const setTenantOverridesResponseAddonsItemOneSetupFeeRegExp = new RegExp('^\\d{1,12}(\\.\\d{1,2})?$');
@@ -10774,13 +11218,21 @@ export const SetTenantOverridesResponse = zod.object({
   "entitlements": zod.array(zod.object({
   "key": zod.string().max(setTenantOverridesResponsePlanOneOneEntitlementsItemKeyMax).regex(setTenantOverridesResponsePlanOneOneEntitlementsItemKeyRegExp),
   "value": zod.union([zod.boolean(),zod.string().max(setTenantOverridesResponsePlanOneOneEntitlementsItemValueTwoMax).regex(setTenantOverridesResponsePlanOneOneEntitlementsItemValueTwoRegExp)])
-})).max(setTenantOverridesResponsePlanOneOneEntitlementsMax)
+})).max(setTenantOverridesResponsePlanOneOneEntitlementsMax),
+  "featureRows": zod.array(zod.object({
+  "label": zod.string().min(1).max(setTenantOverridesResponsePlanOneOneFeatureRowsItemLabelMax),
+  "value": zod.string().min(1).max(setTenantOverridesResponsePlanOneOneFeatureRowsItemValueMax)
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.')
 }).and(zod.object({
   "id": zod.string().uuid(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date(),
   "pricingConfigured": zod.boolean().optional(),
-  "billingPeriods": zod.array(zod.enum(['monthly', 'yearly'])).optional()
+  "billingPeriods": zod.array(zod.enum(['monthly', 'yearly'])).optional(),
+  "featureRows": zod.array(zod.object({
+  "label": zod.string().min(1).max(setTenantOverridesResponsePlanOneTwoFeatureRowsItemLabelMax),
+  "value": zod.string().min(1).max(setTenantOverridesResponsePlanOneTwoFeatureRowsItemValueMax)
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(setTenantOverridesResponsePlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.')
 })),zod.null()]),
   "addons": zod.array(zod.object({
   "monthlyPrice": zod.string().regex(setTenantOverridesResponseAddonsItemOneMonthlyPriceRegExp).nullish(),
@@ -10871,6 +11323,15 @@ export const setTenantSuspensionResponsePlanOneOneEntitlementsItemValueTwoMax = 
 export const setTenantSuspensionResponsePlanOneOneEntitlementsItemValueTwoRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,18})?$');
 export const setTenantSuspensionResponsePlanOneOneEntitlementsMax = 200;
 
+export const setTenantSuspensionResponsePlanOneOneFeatureRowsItemLabelMax = 120;
+
+export const setTenantSuspensionResponsePlanOneOneFeatureRowsItemValueMax = 500;
+
+export const setTenantSuspensionResponsePlanOneTwoFeatureRowsItemLabelMax = 120;
+
+export const setTenantSuspensionResponsePlanOneTwoFeatureRowsItemValueMax = 500;
+
+export const setTenantSuspensionResponsePlanOneTwoFeatureRowsDefault = [];
 export const setTenantSuspensionResponseAddonsItemOneMonthlyPriceRegExp = new RegExp('^\\d{1,12}(\\.\\d{1,2})?$');
 export const setTenantSuspensionResponseAddonsItemOneYearlyPriceRegExp = new RegExp('^\\d{1,12}(\\.\\d{1,2})?$');
 export const setTenantSuspensionResponseAddonsItemOneSetupFeeRegExp = new RegExp('^\\d{1,12}(\\.\\d{1,2})?$');
@@ -10931,13 +11392,21 @@ export const SetTenantSuspensionResponse = zod.object({
   "entitlements": zod.array(zod.object({
   "key": zod.string().max(setTenantSuspensionResponsePlanOneOneEntitlementsItemKeyMax).regex(setTenantSuspensionResponsePlanOneOneEntitlementsItemKeyRegExp),
   "value": zod.union([zod.boolean(),zod.string().max(setTenantSuspensionResponsePlanOneOneEntitlementsItemValueTwoMax).regex(setTenantSuspensionResponsePlanOneOneEntitlementsItemValueTwoRegExp)])
-})).max(setTenantSuspensionResponsePlanOneOneEntitlementsMax)
+})).max(setTenantSuspensionResponsePlanOneOneEntitlementsMax),
+  "featureRows": zod.array(zod.object({
+  "label": zod.string().min(1).max(setTenantSuspensionResponsePlanOneOneFeatureRowsItemLabelMax),
+  "value": zod.string().min(1).max(setTenantSuspensionResponsePlanOneOneFeatureRowsItemValueMax)
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.')
 }).and(zod.object({
   "id": zod.string().uuid(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date(),
   "pricingConfigured": zod.boolean().optional(),
-  "billingPeriods": zod.array(zod.enum(['monthly', 'yearly'])).optional()
+  "billingPeriods": zod.array(zod.enum(['monthly', 'yearly'])).optional(),
+  "featureRows": zod.array(zod.object({
+  "label": zod.string().min(1).max(setTenantSuspensionResponsePlanOneTwoFeatureRowsItemLabelMax),
+  "value": zod.string().min(1).max(setTenantSuspensionResponsePlanOneTwoFeatureRowsItemValueMax)
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(setTenantSuspensionResponsePlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.')
 })),zod.null()]),
   "addons": zod.array(zod.object({
   "monthlyPrice": zod.string().regex(setTenantSuspensionResponseAddonsItemOneMonthlyPriceRegExp).nullish(),

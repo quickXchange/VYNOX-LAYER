@@ -33,7 +33,7 @@ export async function encryptedSnapshot(ctx){
  const caFile=new URL("operator-ca.pem",REPORT);
  await writeFile(caFile,ctx.ca,{mode:0o600});
  const child=spawn(`/nix/store/${tool}/bin/pg_dump`,["-Fc","--no-password","--no-owner","--no-acl",
-   "--schema=public","--schema=auth","--schema=vynox_supabase_auth","--schema=qxlayer_migrations","--schema=qxlayer_commerce"],{
+   "--schema=public","--schema=auth","--schema=vynox_supabase_auth","--schema=qxlayer_migrations","--schema=qxlayer_commerce","--schema=qxlayer_acceptance_catalog"],{
   env:{PATH:`/nix/store/${tool}/bin`,LANG:"C",LC_ALL:"C",PGHOST:ctx.url.hostname,PGPORT:"5432",PGDATABASE:"postgres",
    PGUSER:decodeURIComponent(ctx.url.username),PGPASSWORD:decodeURIComponent(ctx.url.password),PGSSLMODE:"verify-full",
    PGSSLROOTCERT:caFile.pathname,PGCHANNELBINDING:"prefer",PGCONNECT_TIMEOUT:"20"},stdio:["ignore","pipe","pipe"]});

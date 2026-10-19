@@ -2778,6 +2778,13 @@ components:
         kind: {type: string, enum: [feature, limit]}
         valueType: {type: string, enum: [boolean, integer, decimal]}
       required: [key, label, kind, valueType]
+    PlanFeatureRow:
+      type: object
+      description: Ordered marketing display text only, never an entitlement, permission or HTML.
+      properties:
+        label: {type: string, minLength: 1, maxLength: 120}
+        value: {type: string, minLength: 1, maxLength: 500}
+      required: [label, value]
     PlanInput:
       type: object
       properties:
@@ -2792,6 +2799,10 @@ components:
         displayOrder: {type: integer, minimum: 0, maximum: 100000}
         status: {type: string, enum: [enabled, disabled, archived]}
         entitlements: {type: array, maxItems: 200, items: {$ref: "#/components/schemas/EntitlementEntry"}}
+        featureRows:
+          type: array
+          description: Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.
+          items: {$ref: "#/components/schemas/PlanFeatureRow"}
       required: [name, description, monthlyPrice, yearlyPrice, setupFee, currency, billingLabel, displayOrder, status, entitlements]
     Plan:
       allOf:
@@ -2803,7 +2814,12 @@ components:
             updatedAt: {type: string, format: date-time}
             pricingConfigured: {type: boolean}
             billingPeriods: {type: array, items: {type: string, enum: [monthly, yearly]}}
-          required: [id, createdAt, updatedAt]
+            featureRows:
+              type: array
+              default: []
+              description: Ordered plain-text marketing rows only; legacy published snapshots return an empty array.
+              items: {$ref: "#/components/schemas/PlanFeatureRow"}
+          required: [id, createdAt, updatedAt, featureRows]
     PlanStatusInput:
       type: object
       properties: {status: {type: string, enum: [enabled, disabled, archived]}}

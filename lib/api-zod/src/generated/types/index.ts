@@ -158,6 +158,7 @@ export * from './mutationStatus';
 export * from './notificationReadInput';
 export * from './plan';
 export * from './planBillingPeriodsItem';
+export * from './planFeatureRow';
 export * from './planInput';
 export * from './planInputStatus';
 export * from './planProposal';

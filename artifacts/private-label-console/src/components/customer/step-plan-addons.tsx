@@ -2,6 +2,8 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { ErrorState, ListSkeleton, EmptyState } from '@/components/app/bits';
 import type { Catalog } from '@/lib/wl';
 import { ACTS, type StepProps } from './configure-state';
+import { FeatureRowList } from '@/components/commerce/feature-rows-editor';
+import { readFeatureRows } from '@/lib/feature-rows';
 import { Entitlements, PriceLine, planPeriods } from './plan-bits';
 
 type Q = { data?: Catalog; isLoading: boolean; isError: boolean; refetch: () => unknown };
@@ -31,6 +33,7 @@ export function PlanStep({ cfg, set, cat }: StepProps & { cat: Q }) {
             <PriceLine x={p} period={cfg.period} />
             {p.billingLabel && <p className="text-xs text-muted-foreground">{p.billingLabel}</p>}
             {p.description && <p className="mt-2 text-sm text-muted-foreground">{p.description}</p>}
+            <FeatureRowList rows={readFeatureRows(p)} testid={`list-plan-features-${p.id}`} />
             <Entitlements items={p.entitlements} defs={definitions} />
           </button>))}
       </div>

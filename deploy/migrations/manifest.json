@@ -18,5 +18,9 @@
   {
     "file": "0008_tenant_site_releases.sql",
     "sha256": "0a5f15c3629574cb287f2bbeafd72a35a15c3c730cd079745064e95177316bd2"
+  },
+  {
+    "file": "0011_plan_feature_rows.sql",
+    "sha256": "963776ab32d0c4260b4ae03e351c4fdf02f7adb8a2c6812c4923b936f85bd06c"
   }
 ]

@@ -1,4 +1,5 @@
 import { Link } from 'wouter';
+import { readFeatureRows } from '@/lib/feature-rows';
 import { useQuery } from '@tanstack/react-query';
 import { ArrowRight, Check } from 'lucide-react';
 import { PUBLISHED_PLANS_KEY } from './published-plans';
@@ -50,6 +51,7 @@ export function ExchangePricing({ tiers }: { tiers?: { label: string; planId: st
               <VxCard key={p?.id ?? i} className={`flex flex-col gap-4 ${i === 1 ? 'hot' : ''}`} testid={`card-exchange-tier-${p?.id ?? names[i]}`}>
                 <div className="flex items-center justify-between gap-2"><h3 className="text-xl font-semibold">{p?.name ?? names[i]}</h3>{proposal && <span className="s-badge">Proposed</span>}</div>
                 {p?.description && <p className="s-muted text-sm">{p.description}</p>}
+                {readFeatureRows(p).length > 0 && <dl className="space-y-1 text-sm" data-testid={`list-tier-feature-rows-${p?.id}`}>{readFeatureRows(p).map((r, j) => <div key={j} className="flex justify-between gap-3"><dt className="s-muted">{r.label}</dt><dd className="text-right break-words">{r.value}</dd></div>)}</dl>}
                 {(configured || proposal) && p && (p.monthlyPrice != null || p.yearlyPrice != null) ? (
                   <div data-testid={`text-tier-price-${p.id}`}>
                     {p.monthlyPrice != null && (!p.billingPeriods || p.billingPeriods.includes('monthly')) && <p className="text-3xl font-semibold tracking-tight">{money(recurringDisplayPrice(p.monthlyPrice, p.discountPercent ?? '0'), p.currency)}<span className="s-muted ml-1 text-xs font-normal">per month</span></p>}
