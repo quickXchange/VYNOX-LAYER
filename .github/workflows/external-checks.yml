@@ -50,6 +50,8 @@ jobs:
           echo "/usr/lib/postgresql/16/bin" >> "$GITHUB_PATH"
       - name: Reject policy and grant drift before candidate acceptance
         run: pnpm run external:test:verifier
+      - name: Reject migration history drift and partial transaction changes
+        run: pnpm run external:test:migrations
       - name: Build shared tenant SPA for release regressions
         run: pnpm --filter @workspace/private-label-website run build
         env:
