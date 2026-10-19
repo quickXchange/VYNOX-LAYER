@@ -1,4 +1,5 @@
 import { withDatabase } from "@workspace/db";
+import { assertCatalogOperationAllowed } from "../../lib/catalog-scope";
 import { contextFor, requireSuperAdmin, type Principal } from "../authentication/service";
 import { requestContext, requestColumns, isSandboxRequest } from "./order-model";
 import { HttpError } from "../../lib/errors";
@@ -15,6 +16,7 @@ export function safeProvisioningError(error: unknown) {
     : "Provisioning could not finish. Retry; if it fails again, the operator must inspect server diagnostics.";
 }
 export async function recordProvisioningFailure(p: Principal, id: string, error: unknown) {
+  assertCatalogOperationAllowed("provisioning failure recording");
   try {
     await withDatabase(requestContext(p, true), c => audit(c, p, null, "white_label.provisioning_failed",
       "Provisioning attempt failed; preparation transaction rolled back", { requestId: id, message: safeProvisioningError(error) }));
@@ -60,6 +62,7 @@ export function getProvisioning(p: Principal, id: string) {
   });
 }
 export async function retryProvisioning(p: Principal, id: string) {
+  assertCatalogOperationAllowed("provisioning");
   requireSuperAdmin(p);
   try {
     const row = await withDatabase(contextFor(p, undefined, true), async c => {

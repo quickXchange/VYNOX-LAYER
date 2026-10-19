@@ -5,6 +5,7 @@ import { HttpError } from "../../lib/errors";
 import { requestContext } from "./order-model";
 import { DEMO_PLAN_NAME } from "../demo/identity";
 import { demoEnabled } from "../demo/session";
+import { catalogTable } from "../../lib/catalog-scope";
 
 export async function catalogSelection(c: DatabaseClient, planId: string | null, addonIds: string[], approvedPrivateOffer=false) {
   const plan = planId ? await readPlan(c, planId) : null;
@@ -37,11 +38,11 @@ export function whiteLabelCatalog(p: Principal) {
   });
 }
 export async function whiteLabelCatalogForClient(c: DatabaseClient) {
-    const ids = await c.query("SELECT id FROM plans WHERE status='enabled' ORDER BY display_order,name,id");
+    const ids = await c.query(`SELECT id FROM ${catalogTable("plans")} WHERE status='enabled' ORDER BY display_order,name,id`);
     const candidates = [];
     for (const r of ids.rows) candidates.push(await readPlan(c, r.id));
     const plans = candidates.filter(p => p.billingPeriods.length && !(demoEnabled() && p.name === DEMO_PLAN_NAME) && ["website", "crypto_exchange"].every(k => p.entitlements.some(e => e.key === k && e.value === true)));
-    const ai = await c.query("SELECT id FROM addons WHERE enabled ORDER BY name,id");
+    const ai = await c.query(`SELECT id FROM ${catalogTable("addons")} WHERE enabled ORDER BY name,id`);
     const addons = [];
     for (const r of ai.rows) addons.push(await readAddon(c, r.id));
     return { plans, addons, definitions: await definitions(c) };

@@ -4,6 +4,7 @@ import { createHash } from "node:crypto";
 import { contextFor, requireSuperAdmin, type Principal } from "../authentication/service";
 import { HttpError } from "../../lib/errors";
 import { audit } from "../../lib/audit";
+import { acceptanceCatalog, assertCatalogOperationAllowed } from "../../lib/catalog-scope";
 import { requireFeature, resolveEntitlements } from "../entitlements/resolver";
 import { requestColumns as columns, orderView, event, eventColumns, requestContext, assertTransition, assertFinalPricing, isSandboxRequest } from "./order-model";
 import { catalogSelection } from "./order-catalog";
@@ -51,6 +52,13 @@ export function listRequests(p: Principal, operator = false) {
   });
 }
 export function submitRequest(p: Principal, raw: WhiteLabelRequestInput, sandboxOnly = false) {
+  if (!sandboxOnly) assertCatalogOperationAllowed("customer request submission");
+  else if (acceptanceCatalog()) {
+    const expected = (process.env.QXLAYER_ACCEPTANCE_SANDBOX_REQUESTER_EMAIL_SHA256 ?? "").trim().toLowerCase();
+    if (!/^[a-f0-9]{64}$/.test(expected) || p.authenticationProvider !== "supabase" ||
+        p.demo === true || p.verifiedEmailSha256 !== expected)
+      throw new HttpError(403, "Preparation mode: this request is not authorized.");
+  }
   if (p.role === "super_admin") throw new HttpError(403, "Super Admin reviews customer requests; use a customer account to submit.");
   const input = SubmitWhiteLabelRequestBody.parse(raw);
   if(input.actions.some(action=>!["swap","convert"].includes(action)))
@@ -107,6 +115,7 @@ export function submitRequest(p: Principal, raw: WhiteLabelRequestInput, sandbox
   });
 }
 export function reviewRequest(p: Principal, id: string, raw: WhiteLabelReviewInput) {
+  assertCatalogOperationAllowed("request review");
   requireSuperAdmin(p);
   const input = ReviewWhiteLabelRequestBody.parse(raw);
   return withDatabase(requestContext(p, true), async c => {
@@ -155,6 +164,7 @@ export function reviewRequest(p: Principal, id: string, raw: WhiteLabelReviewInp
   });
 }
 export async function deliverLinkedRequest(c: DatabaseClient, p: Principal, id: string, tenantId: string) {
+  assertCatalogOperationAllowed("linked request delivery");
     requireSuperAdmin(p);
     const request = await c.query(`SELECT ${columns} FROM white_label_requests WHERE id=$1 FOR UPDATE`, [id]);
     if (!request.rowCount) throw new HttpError(404, "White Label request not found.");
@@ -173,7 +183,7 @@ export async function deliverLinkedRequest(c: DatabaseClient, p: Principal, id: 
     if (effective.overLimit) throw new HttpError(409, "Resolve this Exchange's plan limits before provisioning.");
     const approved = row.approvedConfiguration;
     if (approved?.plan && approved.plan.id !== effective.plan?.id) throw new HttpError(409, "Assign the reviewed plan to the prepared tenant before delivery.");
-    const actualAddons = await c.query("SELECT ta.addon_id FROM tenant_addons ta JOIN addons a ON a.id=ta.addon_id AND a.enabled WHERE ta.tenant_id=$1", [tenantId]);
+    const actualAddons = await c.query("SELECT ta.addon_id FROM tenant_addons ta JOIN public.addons a ON a.id=ta.addon_id AND a.enabled WHERE ta.tenant_id=$1", [tenantId]);
     if (approved?.addons?.some((a: { id: string }) => !actualAddons.rows.some(r => r.addon_id === a.id))) throw new HttpError(409, "Assign the reviewed add-ons to the prepared tenant before delivery.");
     const configured = await c.query("SELECT configuration FROM tenant_product_configuration WHERE tenant_id=$1 AND module_key='crypto_exchange'", [tenantId]);
     const settings = configured.rows[0]?.configuration;
@@ -194,6 +204,7 @@ export async function deliverLinkedRequest(c: DatabaseClient, p: Principal, id: 
     return orderView(c, r.rows[0]);
 }
 export function deliverRequest(p: Principal, id: string, tenantId: string) {
+  assertCatalogOperationAllowed("request delivery");
   requireSuperAdmin(p);
   return withDatabase(contextFor(p, tenantId, true), async c => {
     // Request -> tenant lock order matches review and sandbox activation.

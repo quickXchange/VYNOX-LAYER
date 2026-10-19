@@ -1,4 +1,5 @@
 import { withDatabase } from "@workspace/db";
+import { assertCatalogOperationAllowed } from "../../lib/catalog-scope";
 import { SetTenantOverridesBody, UpdateSubscriptionCommercialBody } from "@workspace/api-zod";
 import type { z } from "zod";
 import { HttpError } from "../../lib/errors";
@@ -9,6 +10,7 @@ import { lockTenant, resolveEntitlements } from "./resolver";
 import { discountBasisPoints } from "./commercial-pricing";
 
 export function changeTenantPlan(principal: Principal, tenantId: string, planId: string) {
+  assertCatalogOperationAllowed("subscription plan assignment");
   requireSuperAdmin(principal);
   return withDatabase(contextFor(principal, tenantId, true), async (client) => {
     await lockTenant(client, tenantId);
@@ -27,6 +29,7 @@ export function changeTenantPlan(principal: Principal, tenantId: string, planId:
   });
 }
 export function setTenantAddons(principal: Principal, tenantId: string, ids: string[]) {
+  assertCatalogOperationAllowed("subscription add-on assignment");
   requireSuperAdmin(principal);
   return withDatabase(contextFor(principal, tenantId, true), async (client) => {
     await lockTenant(client, tenantId);
@@ -46,6 +49,7 @@ export function setTenantAddons(principal: Principal, tenantId: string, ids: str
   });
 }
 export function setTenantOverrides(principal: Principal, tenantId: string, overrides: z.infer<typeof SetTenantOverridesBody>["overrides"]) {
+  assertCatalogOperationAllowed("subscription entitlement changes");
   requireSuperAdmin(principal);
   if (overrides.some((o) => o.reason.trim().length < 2)) throw new HttpError(400, "Every override needs a non-empty reason.");
   return withDatabase(contextFor(principal, tenantId, true), async (client) => {
@@ -64,6 +68,7 @@ export function setTenantOverrides(principal: Principal, tenantId: string, overr
   });
 }
 export function setTenantSuspension(principal: Principal, tenantId: string, suspended: boolean, reason: string) {
+  assertCatalogOperationAllowed("subscription suspension");
   requireSuperAdmin(principal);
   if (reason.trim().length < 2) throw new HttpError(400, "Suspension changes need a non-empty reason.");
   return withDatabase(contextFor(principal, tenantId, true), async (client) => {
@@ -85,6 +90,7 @@ export function setTenantSuspension(principal: Principal, tenantId: string, susp
 }
 
 export function updateSubscriptionCommercial(principal: Principal, tenantId: string, input: z.infer<typeof UpdateSubscriptionCommercialBody>) {
+  assertCatalogOperationAllowed("subscription commercial changes");
   requireSuperAdmin(principal);
   discountBasisPoints(input.discountPercent);
   if (input.reason.trim().length < 2) throw new HttpError(400, "A change reason is required.");

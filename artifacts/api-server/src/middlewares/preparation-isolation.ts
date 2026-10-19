@@ -1,6 +1,7 @@
 import type {RequestHandler} from "express";
 import {createHash} from "node:crypto";
 import {publicPreparation} from "../../../../lib/production-access-gate/public-preparation.mjs";
+import {acceptanceCatalog, privateCatalogWriteRoute} from "../lib/catalog-scope";
 
 const values = (name: string) => (process.env[name] ?? "").split(",").filter(Boolean);
 interface OwnerAdminPolicy { tenantId: string; ownerBusinessIdSha256: string }
@@ -24,6 +25,11 @@ export function createPreparationIsolation(
   let path: string;
   try { path = decodeURIComponent(req.path).toLowerCase(); }
   catch { res.status(400).json({error:"Invalid request path."}); return; }
+  if (acceptanceRestricted && !publicMode && privateCatalogWriteRoute(req.method, path)) {
+    try {
+      if (acceptanceCatalog()) { next(); return; }
+    } catch (error) { next(error); return; }
+  }
   const acceptanceSandboxWrite = acceptanceRestricted && !publicMode && req.method === "POST" &&
     ["/api/customer/order-attachments", "/api/customer/white-label-requests"].includes(path);
   if (acceptanceSandboxWrite) {

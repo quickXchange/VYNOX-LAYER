@@ -28,8 +28,9 @@ Acceptance-only approval. Add-ons remain unapproved.
 ## Acceptance is not a separate catalog database
 
 Provider configuration readback confirmed that the separate Acceptance and
-official public API services connect to the same database; pricing publication
-is shared. Acceptance runtime flags and a private hostname do not isolate data.
+official public API services connect to the same database. The default catalog
+and publication are public-service data, not Acceptance-only data. Acceptance
+runtime flags and a private hostname do not isolate data.
 
 **Why:** An Acceptance-only pricing request exposed this distinction after an
 additive schema migration. A candidate connection alone cannot prove that a
@@ -39,6 +40,21 @@ catalog or schema write will not affect the public service.
 configuration (including overrides) and database targets for both services.
 Require catalog isolation or explicit public scope before shared pricing writes.
 An Acceptance API restart does not authorize restarting the separate public API.
+
+The user explicitly authorized additional Acceptance-only catalog isolation,
+including schema/application work and an Acceptance code release. Catalog
+selection and editing do not authorize checkout, payment activation, provisioning,
+or changes to existing customer subscriptions.
+
+**Why:** The user chose isolation specifically to publish the approved plans
+without changing official public pricing.
+
+**How to apply:** Keep Acceptance catalog/audit writes separate from shared
+operational data. Historical subscriptions must resolve their original public
+catalog even when viewed through Acceptance; retaining identical plan IDs in a
+private copy does not make them interchangeable. Never fall back from a missing
+private catalog/publication to public data. Public API logins must be denied
+private rows even after assuming the common runtime role.
 
 ## Historical provisional baseline
 

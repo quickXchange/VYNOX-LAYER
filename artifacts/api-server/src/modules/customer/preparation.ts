@@ -1,4 +1,5 @@
 import type { DatabaseClient } from "@workspace/db";
+import { assertCatalogOperationAllowed } from "../../lib/catalog-scope";
 import { requireSuperAdmin, type Principal } from "../authentication/service";
 import { HttpError } from "../../lib/errors";
 import { audit } from "../../lib/audit";
@@ -13,6 +14,7 @@ const preparationServices = { prepareTenant, resolveEntitlements, applyOrderBran
 /** Caller holds the request row lock. Tenant + master + linkage commit together. */
 export async function prepareReviewedWebsite(c: DatabaseClient, p: Principal, row: Record<string, any>,
   selection: Awaited<ReturnType<typeof catalogSelection>>, services = preparationServices) {
+  assertCatalogOperationAllowed("website preparation");
   requireSuperAdmin(p);
   assertFinalPricing(row);
   if (!selection.plan) throw new HttpError(409, "Select a White Label Exchange plan before preparing this order.");

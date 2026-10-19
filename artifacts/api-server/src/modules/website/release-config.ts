@@ -26,7 +26,7 @@ export function changedFields(before: unknown, after: unknown, prefix = ""): str
 export async function draftConfig(c: DatabaseClient, tenantId: string): Promise<SiteSnapshotConfig> {
   const t = await readTenant(c, tenantId), e = await resolveEntitlements(c, tenantId);
   const exchange = e.features.crypto_exchange ? GetPublicExchangeResponse.parse(await publicExchangeConfiguration(c, tenantId, e)) : null;
-  const addons = await c.query(`SELECT a.id::text AS key,a.name FROM tenant_addons ta JOIN addons a ON a.id=ta.addon_id WHERE ta.tenant_id=$1 ORDER BY a.id`, [tenantId]);
+  const addons = await c.query(`SELECT a.id::text AS key,a.name FROM tenant_addons ta JOIN public.addons a ON a.id=ta.addon_id WHERE ta.tenant_id=$1 ORDER BY a.id`, [tenantId]);
   const integrations = await c.query("SELECT provider_key,encrypted_credentials,credential_management FROM tenant_integrations WHERE tenant_id=$1 AND enabled=true ORDER BY provider_key", [tenantId]);
   const features = { ...e.features };
   if (exchange) for (const action of ["swap", "convert"]) features[action] = exchange.actions.includes(action as "swap" | "convert");
