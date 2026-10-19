@@ -9,7 +9,7 @@ import { once } from "node:events";
 import { pathToFileURL } from "node:url";
 import { seal, storageCheck } from "../recovery/encrypted_backup.mjs";
 import { migrate } from "./migrate.mjs";
-import { verifyTarget } from "./verify-target.mjs";
+import { verifyCommittedTarget } from "./verify-target.mjs";
 import { readSchema, canonicalSchema } from "./schema-reference.mjs";
 import { verifyProductionPermissions } from "./production-permissions.mjs";
 const { Client } = createRequire(new URL("../../lib/db/package.json", import.meta.url))("pg");
@@ -89,6 +89,7 @@ export async function initializeProduction() {
   const ctx = await productionOperator();
   const scratch = await mkdtemp(join(tmpdir(), "vynox-production-init-"));
   let stage = "target-readonly-preflight";
+  let schemaCommitted = false;
   await ctx.client.connect();
   try {
     assert(ctx.client.connection.stream.authorized);
@@ -129,8 +130,9 @@ export async function initializeProduction() {
     await migrate({ ...process.env, MIGRATION_DATABASE_URL: ctx.url.toString(), MIGRATION_EXPECTED_HOST: ctx.url.hostname,
       DB_TLS_CA_FILE: snapshot.caFile, SUPABASE_PROJECT_REF: PROJECT, QXLAYER_EXTERNAL_ENVIRONMENT: "production",
       QXLAYER_EXTERNAL_MIGRATIONS_APPROVED: "true" });
+    schemaCommitted = true;
     stage = "exact-schema-policy-readback";
-    await verifyTarget(ctx.client, { policyRole: "qxlayer_runtime" });
+    await verifyCommittedTarget(ctx.client, { policyRole: "qxlayer_runtime" });
     assert.deepEqual(await retainedNativeData(ctx.client), before, "Existing native identities, MFA and sessions must be unchanged");
     stage = "restricted-runtime-credentials";
     const appPassword = randomBytes(40).toString("base64url"), authPassword = randomBytes(40).toString("base64url");
@@ -156,7 +158,9 @@ export async function initializeProduction() {
     console.log(JSON.stringify(report));
     return report;
   } catch (error) {
-    console.error(JSON.stringify({ initializationBlockedAt: stage, code: error.code ?? "ASSERTION",
+    console.error(JSON.stringify({ initializationBlockedAt: stage, schemaCommitted,
+      message: schemaCommitted ? "Schema committed; acceptance stopped. Committed migrations were not rolled back." : "Initialization stopped before migration completion was confirmed.",
+      code: error.code ?? "ASSERTION",
       constraint: error.constraint, table: error.table, liveChanged: false, detailsSuppressed: true }));
     throw Error("Isolated Production initialization requires correction; private errors suppressed");
   } finally { await ctx.client.query("ROLLBACK").catch(() => {}); await ctx.client.end(); await rm(scratch, { recursive: true, force: true }); }

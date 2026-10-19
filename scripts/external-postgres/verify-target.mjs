@@ -2,6 +2,18 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { readSchema, canonicalSchema } from "./schema-reference.mjs";
 
+/** Only call after the migration has committed; failed readback cannot undo it. */
+export async function verifyCommittedTarget(client, options) {
+  try {
+    await verifyTarget(client, options);
+  } catch (cause) {
+    const error = new Error("Schema is committed; post-commit verification failed. Acceptance stopped; no rollback was performed.", { cause });
+    error.code = "POST_COMMIT_VERIFICATION_FAILED";
+    error.schemaCommitted = true;
+    throw error;
+  }
+}
+
 /** Read-only schema/security readback, never repairs or silently accepts drift. */
 export async function verifyTarget(client, { policyRole = "PUBLIC" } = {}) {
   const expected = JSON.parse(await readFile(new URL("../../deploy/migrations/rls-reference.json", import.meta.url), "utf8"));

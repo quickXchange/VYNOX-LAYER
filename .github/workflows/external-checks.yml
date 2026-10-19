@@ -41,6 +41,15 @@ jobs:
       - run: pnpm run external:test
       - run: pnpm run release:test
       - run: pnpm run external:test:database
+      - name: Install tools for isolated policy-verifier fixtures
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes postgresql-16
+          test -x /usr/lib/postgresql/16/bin/initdb
+          test -x /usr/lib/postgresql/16/bin/pg_ctl
+          echo "/usr/lib/postgresql/16/bin" >> "$GITHUB_PATH"
+      - name: Reject policy and grant drift before candidate acceptance
+        run: pnpm run external:test:verifier
       - name: Build shared tenant SPA for release regressions
         run: pnpm --filter @workspace/private-label-website run build
         env:

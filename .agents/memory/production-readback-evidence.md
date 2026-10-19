@@ -12,6 +12,15 @@ as an array-literal string, not a JavaScript array.
 **How to apply:** Compare metadata arrays in SQL using typed arrays/cardinality,
 or explicitly decode the database type; never infer the JavaScript representation.
 
+PostgreSQL normalizes a policy target list containing PUBLIC plus named roles
+to PUBLIC alone. Multi-role rejection fixtures must use distinct named roles.
+
+**Why:** Adding a role alongside PUBLIC does not produce extra stored policy-role
+metadata, so expecting the verifier to reject that unchanged state is incorrect.
+
+**How to apply:** Assert exact OID-array equality in SQL; test extra-role drift
+with actual multi-role metadata, not a syntactic list that PostgreSQL collapses.
+
 Production SQL tooling already supplies a read-only transaction wrapper.
 Explicit BEGIN/COMMIT and transaction-control or read-only-mode changes are
 rejected rather than providing an additional safety boundary.
