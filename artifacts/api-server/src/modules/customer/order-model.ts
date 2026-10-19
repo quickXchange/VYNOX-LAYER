@@ -39,7 +39,7 @@ export function assertFinalPricing(row: Record<string, any>) {
   }
 }
 /** Read compatibility for immutable plan snapshots saved before feature rows. */
-export function planSnapshotView(plan: Record<string, any> | null | undefined) {
+export function planSnapshotView(plan: Record<string, any> | null | undefined): Record<string, any> | null {
   return plan == null ? null : { ...plan, featureRows: plan.featureRows ?? [] };
 }
 export async function orderView(c: DatabaseClient, row: Record<string, any>) {
