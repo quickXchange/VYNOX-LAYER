@@ -159,6 +159,8 @@ test("standalone migration preserves shared objects, clones once, uses private F
 });
 
 test("catalog query inventory is scope-resolved, audits are private, historical entitlement callers are pinned", () => {
+  const offers = readFileSync(new URL("../modules/commerce/service.ts", import.meta.url), "utf8");
+  assert.match(offers, /if \(acceptanceCatalog\(\)\) return \{ \.\.\.offer, methods: \[\], purchaseAvailable: false \}/);
   for (const path of ["entitlements/catalog", "commerce/offers", "commerce/pricing-publication",
     "customer/order-catalog", "landing-catalog/plan-proposals", "landing-catalog/service", "commerce/service"]) {
     const source = readFileSync(new URL(`../modules/${path}.ts`, import.meta.url), "utf8");
