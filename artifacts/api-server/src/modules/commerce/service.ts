@@ -162,7 +162,8 @@ export async function assertPaid(c: DatabaseClient, orderId: string, quotation?:
 export async function publicOffers() {
   return withDatabase({actorId:"public:published-offers"}, async c => {
     const offer = await publishedOffers(c);
-    if (acceptanceCatalog() || publicPreparation()) return { ...offer, methods: [], purchaseAvailable: false };
+    if (acceptanceCatalog()) return { ...offer, methods: [], purchaseAvailable: false };
+    if (publicPreparation()) return { ...offer, methods: [], purchaseAvailable: false };
     const methods = (await c.query("SELECT id,name,kind,currency FROM qxlayer_commerce.methods WHERE enabled AND approved ORDER BY name,id")).rows;
     return { ...offer, methods, purchaseAvailable: offer.plans.some((p: any) => methods.some(m => m.currency === p.currency)) };
   });

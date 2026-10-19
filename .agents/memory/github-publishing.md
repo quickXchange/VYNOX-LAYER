@@ -110,3 +110,13 @@ retrying old failed runs. A newer bounded API release may contain isolation
 protections missing from main. Reconcile those protections without discarding
 either history, and use read-only checks against the current database before
 assuming that an old schema-readiness failure still requires a migration.
+
+Keep isolated release Git clones outside the workspace and assert their Git
+top-level directory before committing or cherry-picking.
+
+**Why:** A nested release directory lost its Git metadata between turns, so Git
+silently discovered the parent workspace repository instead.
+
+**How to apply:** Use a temporary external clone and verify `git rev-parse
+--show-toplevel` matches it before each release operation. Never assume that
+changing directories proves which repository a Git command will modify.

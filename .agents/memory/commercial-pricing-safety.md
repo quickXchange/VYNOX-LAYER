@@ -3,7 +3,26 @@ name: Commercial pricing safety
 description: Separate unpriced commercial plans from technical Production recovery; never substitute demo or invented free pricing.
 ---
 
-## Approved Acceptance plan definition
+## Public plan publication and descriptive fields
+
+The user subsequently authorized showing the previously approved plans on
+official Live and named them Starter, Standard (formerly Business), and Premium
+(formerly Professional). Prices and limits below stay the same. This supersedes
+the earlier Acceptance-only publication restriction for these three plans.
+
+The user explicitly chose customer-visible label/value feature rows, not new
+enforced entitlements. Allow repeatable descriptive rows without a small fixed
+count cap; ordinary text-length and request-size limits still apply.
+
+**Why:** The user reported “No plans available” in Live Exchange configuration
+and requested these plans plus Super Admin-editable descriptive fields.
+
+**How to apply:** Keep the catalogs isolated after this deliberate publication.
+Do not continually copy Acceptance edits into Live. Preserve existing subscribers
+and historical quotations. Publishing plans does not authorize payments,
+payment-method activation, customer delivery or real financial execution.
+
+## Earlier approved Acceptance plan definition
 
 The user approved the following White Label plan prices and limits for
 **Acceptance only**, not the official public catalog:
