@@ -14,6 +14,12 @@ export function publicPlanManagementWriteRoute(method: string, path: string): bo
     (method === "POST" && new RegExp(`^/api/plans/${id}/duplicate$`).test(path));
 }
 
+export function publicOrderReviewWriteRoute(method: string, path: string): boolean {
+  const id = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}";
+  return (method === "PUT" && new RegExp(`^/api/operator/white-label-requests/${id}/review$`).test(path)) ||
+    (method === "POST" && new RegExp(`^/api/operator/white-label-requests/${id}/notes$`).test(path));
+}
+
 const values = (name: string) => (process.env[name] ?? "").split(",").filter(Boolean);
 interface OwnerAdminPolicy { tenantId: string; ownerBusinessIdSha256: string }
 // Explicitly approved original Owner and retained demo only. This is not an
@@ -125,7 +131,8 @@ export function createPreparationIsolation(
       next(); return;
     } catch (error) { next(error); return; }
   }
-  if (publicMode && publicPlanManagementWriteRoute(req.method, path)) {
+  if (publicMode && (publicPlanManagementWriteRoute(req.method, path) ||
+      (!acceptanceRestricted && publicOrderReviewWriteRoute(req.method, path)))) {
     // This exception removes only the preparation barrier. Authenticate through
     // the native session/MFA service, and keep route-level auth/CSRF checks too.
     let authenticated = false;

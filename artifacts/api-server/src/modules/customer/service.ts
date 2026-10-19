@@ -11,6 +11,7 @@ import { catalogSelection } from "./order-catalog";
 import { prepareReviewedWebsite } from "./preparation";
 import { assertPaid } from "../commerce/service";
 import { recordProvisioningFailure } from "./provisioning";
+import { publicPreparation } from "../../../../../lib/production-access-gate/public-preparation.mjs";
 function stable(value: unknown): unknown {
   if (Array.isArray(value)) return value.map(stable);
   if (value && typeof value === "object") return Object.fromEntries(Object.entries(value).sort(([a], [b]) => a.localeCompare(b)).map(([k, v]) => [k, stable(v)]));
@@ -114,10 +115,17 @@ export function submitRequest(p: Principal, raw: WhiteLabelRequestInput, sandbox
     return orderView(c, row);
   });
 }
+export function assertReviewPreparationStatus(status: string) {
+  if (publicPreparation() && !["new", "reviewing", "waiting_for_client", "quote_ready", "rejected", "cancelled"].includes(status))
+    throw new HttpError(403, "Review and quotations are available. Approval, setup and delivery remain blocked while payments and provisioning are on hold.");
+}
 export function reviewRequest(p: Principal, id: string, raw: WhiteLabelReviewInput) {
   assertCatalogOperationAllowed("request review");
   requireSuperAdmin(p);
   const input = ReviewWhiteLabelRequestBody.parse(raw);
+  // Approval prepares a website in this service; it is not a review-only action.
+  // Reject before opening a transaction or recording provisioning failure.
+  assertReviewPreparationStatus(input.status);
   return withDatabase(requestContext(p, true), async c => {
     const existing = await c.query(`SELECT ${columns} FROM white_label_requests WHERE id=$1 FOR UPDATE`, [id]);
     if (!existing.rowCount) throw new HttpError(404, "White Label request not found.");
