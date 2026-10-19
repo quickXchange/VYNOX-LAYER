@@ -9,6 +9,7 @@ export interface Membership {
 export interface Principal {
   authenticationProvider?: "supabase";
   demo?: boolean;
+  verifiedEmailSha256?: string;
   userId: string;
   role: "super_admin" | "client_admin" | "staff" | "unassigned";
   memberships: Membership[];

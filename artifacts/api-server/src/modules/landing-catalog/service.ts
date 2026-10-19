@@ -3,6 +3,7 @@ import { UpdateLandingProductBody } from "@workspace/api-zod";
 import type { z } from "zod";
 import { contextFor, requireSuperAdmin, type Principal } from "../authentication/service";
 import { audit } from "../../lib/audit";
+import { assertCatalogOperationAllowed, catalogTable } from "../../lib/catalog-scope";
 import { HttpError } from "../../lib/errors";
 import { discountedRecurring } from "../entitlements/commercial-pricing";
 import { cents } from "../commerce/pricing";
@@ -74,6 +75,7 @@ async function readProduct(client: DatabaseClient, key: string) {
   return withExplore(result.rows[0]);
 }
 export function saveProduct(principal: Principal, key: string, input: LandingProductInput) {
+  assertCatalogOperationAllowed("shared marketing catalog changes");
   requireSuperAdmin(principal);
   const parsed = UpdateLandingProductBody.parse(input);
   const name = parsed.name.trim(), description = parsed.description.trim(), ctaLabel = parsed.ctaLabel.trim();
@@ -91,7 +93,7 @@ export function saveProduct(principal: Principal, key: string, input: LandingPro
     if (new Set(selectedPlans).size !== selectedPlans.length)
       throw new HttpError(400, "Select a different existing plan for each pricing tier.");
     if (selectedPlans.length) {
-      const found = await client.query("SELECT id FROM plans WHERE id=ANY($1::uuid[])", [selectedPlans]);
+      const found = await client.query(`SELECT id FROM ${catalogTable("plans")} WHERE id=ANY($1::uuid[])`, [selectedPlans]);
       if (found.rowCount !== selectedPlans.length) throw new HttpError(400, "One selected pricing plan no longer exists.");
     }
     const samePrice = (a: string | null, b: string | null) => a == null || b == null ? a == null && b == null : cents(a) === cents(b);

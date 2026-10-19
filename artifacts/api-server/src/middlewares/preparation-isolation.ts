@@ -1,6 +1,7 @@
 import type {RequestHandler} from "express";
 import {createHash} from "node:crypto";
 import {publicPreparation} from "../../../../lib/production-access-gate/public-preparation.mjs";
+import {acceptanceCatalog, privateCatalogWriteRoute} from "../lib/catalog-scope";
 
 const values = (name: string) => (process.env[name] ?? "").split(",").filter(Boolean);
 interface OwnerAdminPolicy { tenantId: string; ownerBusinessIdSha256: string }
@@ -24,6 +25,33 @@ export function createPreparationIsolation(
   let path: string;
   try { path = decodeURIComponent(req.path).toLowerCase(); }
   catch { res.status(400).json({error:"Invalid request path."}); return; }
+  if (acceptanceRestricted && !publicMode && privateCatalogWriteRoute(req.method, path)) {
+    try {
+      if (acceptanceCatalog()) { next(); return; }
+    } catch (error) { next(error); return; }
+  }
+  const acceptanceSandboxWrite = acceptanceRestricted && !publicMode && req.method === "POST" &&
+    ["/api/customer/order-attachments", "/api/customer/white-label-requests"].includes(path);
+  if (acceptanceSandboxWrite) {
+    let authenticated = false;
+    try {
+      await authenticate(req, res, error => {
+        if (error) throw error;
+        authenticated = true;
+      });
+    } catch (error) {
+      next(error); return;
+    }
+    const expected = (process.env.QXLAYER_ACCEPTANCE_SANDBOX_REQUESTER_EMAIL_SHA256 ?? "").trim().toLowerCase();
+    const principal = res.locals.principal;
+    if (!authenticated || !/^[a-f0-9]{64}$/.test(expected) ||
+        principal?.authenticationProvider !== "supabase" || principal.demo === true ||
+        principal.verifiedEmailSha256 !== expected) {
+      res.status(403).json({error:"Preparation mode: this request is not authorized."}); return;
+    }
+    res.locals.preparationSandboxWrite = true;
+    next(); return;
+  }
   if (publicMode && /\/(?:execute|broadcast|payouts?|withdrawals?|deposits?)(?:\/|$)/.test(path) &&
       !["GET","HEAD","OPTIONS"].includes(req.method)) {
     res.status(403).json({error:"Financial execution is not authorized."}); return;

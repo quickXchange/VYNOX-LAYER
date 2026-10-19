@@ -24,7 +24,7 @@ export async function platformManagement(principal: Principal) {
         ARRAY(SELECT a.addon_id::text FROM tenant_addons a WHERE a.tenant_id=t.id ORDER BY a.addon_id) AS addon_ids
       FROM tenants t LEFT JOIN tenant_branding b ON b.tenant_id=t.id
       LEFT JOIN tenant_subscriptions s ON s.tenant_id=t.id
-      LEFT JOIN plans p ON p.id=s.plan_id ORDER BY t.created_at DESC`);
+      LEFT JOIN public.plans p ON p.id=s.plan_id ORDER BY t.created_at DESC`);
     const audit = await client.query(`
       SELECT id,tenant_id,actor_id,event_type,description,metadata,created_at
       FROM audit_events ORDER BY created_at DESC,id DESC LIMIT 500`);

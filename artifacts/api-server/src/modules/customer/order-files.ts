@@ -54,7 +54,10 @@ export async function uploadAttachment(p: Principal, fileName: string, contentTy
 }
 export async function attachmentFor(p: Principal, id: string) {
   return withDatabase(requestContext(p), async c => {
-    const r = await c.query("SELECT object_key,file_name,content_type FROM white_label_attachments WHERE id=$1 AND (owner_user_id=$2 OR ($3 AND request_id IS NOT NULL))", [id, p.userId, p.role === "super_admin"]);
+    const r = await c.query(`SELECT object_key,file_name,content_type FROM white_label_attachments a WHERE id=$1 AND
+      (owner_user_id=$2 OR ($3 AND request_id IS NOT NULL AND NOT EXISTS
+        (SELECT 1 FROM white_label_requests w WHERE w.id=a.request_id AND w.configuration->>'sandboxOnly'='true')))`,
+      [id, p.userId, p.role === "super_admin"]);
     if (!r.rowCount) throw new HttpError(404, "Attachment not found.");
     return { row: r.rows[0], file: privateFile(r.rows[0].object_key) };
   });
