@@ -30,7 +30,8 @@ export function createPreparationIsolation(
 ): RequestHandler {
  return async (req,res,next) => {
   const publicMode = publicPreparation();
-  const acceptanceRestricted = process.env.QXLAYER_ACCEPTANCE_PREPARATION_ISOLATION === "true";
+  const acceptanceRestricted = process.env.QXLAYER_ACCEPTANCE_PREPARATION_ISOLATION === "true" ||
+    process.env.QXLAYER_EXTERNAL_ACCEPTANCE_APPROVED === "true";
   if (!publicMode && !acceptanceRestricted) { next(); return; }
   let path: string;
   try { path = decodeURIComponent(req.path).toLowerCase(); }
