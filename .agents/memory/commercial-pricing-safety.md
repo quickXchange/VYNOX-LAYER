@@ -56,6 +56,16 @@ private copy does not make them interchangeable. Never fall back from a missing
 private catalog/publication to public data. Public API logins must be denied
 private rows even after assuming the common runtime role.
 
+Apply the same target-isolation rule to rollback rehearsals as to committed
+global writes, and stop when provider readback is incomplete or conflicting.
+
+**Why:** A rehearsal still takes locks and executes DDL/DML against the actual
+shared database; rollback is not proof that the public service was unaffected.
+
+**How to apply:** Resolve service overrides before inherited group values and
+compare database identity across direct and pooled endpoints, not credentials
+or API hostnames. Public scope needs separate explicit approval.
+
 ## Historical provisional baseline
 
 Phase 1 permitted suggested EUR default plans and add-ons as **unapproved proposals

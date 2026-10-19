@@ -3,6 +3,7 @@ import { readFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import { pathToFileURL } from "node:url";
 import { STAGING_SUPABASE_PROJECT } from "../external-hosting/staging-targets.mjs";
+import { targetScopePreflight } from "../external-hosting/target-scope-preflight.mjs";
 const require = createRequire(new URL("../../lib/db/package.json", import.meta.url));
 const { Client } = require("pg");
 
@@ -30,6 +31,16 @@ export function targetConfiguration(env) {
 }
 export async function migrate(env = process.env) {
   const options = targetConfiguration(env);
+  // Only the validated disposable localhost test target is exempt from provider scope checks.
+  if (!(env.QXLAYER_MIGRATION_TEST === "true" && env.NODE_ENV === "test")) {
+    await targetScopePreflight({
+      connectionString: options.connectionString,
+      serviceId: env.QXLAYER_OPERATOR_SERVICE_ID,
+      scope: env.QXLAYER_OPERATOR_WRITE_SCOPE ?? "acceptance-only",
+      publicWriteApproved: env.QXLAYER_PUBLIC_GLOBAL_WRITES_APPROVED === "true",
+      token: env.RENDER_API_KEY,
+    });
+  }
   if (options.caFile) {
     options.ssl = { rejectUnauthorized: true, ca: await readFile(options.caFile, "utf8"),
       servername: new URL(options.connectionString).hostname };

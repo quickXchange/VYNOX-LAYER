@@ -12,6 +12,27 @@ const publicEnv={QXLAYER_PUBLIC_PREPARATION_APPROVED:"true",QXLAYER_EXTERNAL_ENV
  QXLAYER_FINANCIAL_EXECUTION_ENABLED:"false",
  QXLAYER_PREPARATION_WRITE_TENANTS:"qa-tenant",QXLAYER_PREPARATION_WRITE_SLUGS:"qa-site",
  QXLAYER_PUBLIC_EXCLUDED_TENANTS:"solara-tenant",QXLAYER_PUBLIC_EXCLUDED_SLUGS:"solara-site"};
+test("Acceptance approval cannot authorize shared global writes even without the preparation isolation flag",async ()=>{
+ const before={...process.env};
+ Object.assign(process.env,{...publicEnv,QXLAYER_PUBLIC_PREPARATION_APPROVED:"false",
+  QXLAYER_EXTERNAL_ACCEPTANCE_APPROVED:"true",QXLAYER_ACCEPTANCE_PREPARATION_ISOLATION:"false"});
+ try {
+  for(const path of ["/api/commerce/pricing-publication","/api/commerce/plans","/api/commerce/addons",
+   "/api/platform/settings","/api/commerce/%70ricing-publication"]) {
+   for(const method of ["POST","PUT","PATCH","DELETE"]) {
+    let code=0,continued=false;
+    await preparationIsolation({method,path} as any,{
+     locals:{principal:{role:"super_admin",authenticationProvider:"supabase"}},
+     status:(n:number)=>{code=n;return{json:()=>{}}}
+    } as any,()=>{continued=true;});
+    assert.equal(code,403);assert.equal(continued,false);
+   }
+  }
+  let continued=false;
+  await preparationIsolation({method:"GET",path:"/api/commerce/pricing-publication"} as any,{} as any,()=>{continued=true;});
+  assert.equal(continued,true,"read-only pricing preview remains available");
+ }finally{for(const key of Object.keys(process.env))if(!(key in before))delete process.env[key];Object.assign(process.env,before);}
+});
 test("public preparation denies demo, real-customer mutations and execution without authorizing ordinary routes",async ()=>{
  const before={...process.env};Object.assign(process.env,publicEnv);
  try{

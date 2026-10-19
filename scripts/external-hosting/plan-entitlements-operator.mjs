@@ -6,19 +6,24 @@ import {spawn} from "node:child_process";
 import {once} from "node:events";
 import {basename} from "node:path";
 import {seal} from "../recovery/encrypted_backup.mjs";
+import {targetScopePreflight} from "./target-scope-preflight.mjs";
 const {Client}=createRequire(new URL("../../lib/db/package.json",import.meta.url))("pg");
 export const REPORT=new URL("../../generated-artifacts/plan-entitlements-release/",import.meta.url);
 export const hash=value=>createHash("sha256").update(typeof value==="string"||Buffer.isBuffer(value)?value:JSON.stringify(value)).digest("hex");
 export async function protectedOperator(){
  const r=await fetch("https://api.render.com/v1/env-groups/evg-db936g3bc2fs73cmm5dg",{headers:{Authorization:`Bearer ${process.env.RENDER_API_KEY}`},signal:AbortSignal.timeout(25000)});
  assert(r.ok,"Protected operator configuration unavailable");
- const group=await r.json(),env=Object.fromEntries(group.envVars.map(v=>[v.key,v.value]));
+ const group=await r.json(),groupEnv=Object.fromEntries(group.envVars.map(v=>[v.key,v.value]));
+ const connectionString=process.env.QXLAYER_PRODUCTION_SUPABASE_DATABASE_URL??groupEnv.QXLAYER_PRODUCTION_SUPABASE_DATABASE_URL;
+ const {env}=await targetScopePreflight({connectionString,
+  scope:process.env.QXLAYER_OPERATOR_WRITE_SCOPE??"acceptance-only",
+  publicWriteApproved:process.env.QXLAYER_PUBLIC_GLOBAL_WRITES_APPROVED==="true"});
  assert(group.serviceLinks.some(x=>x.id==="srv-db5b47qjnfac739s374g"));
  assert.equal(env.QXLAYER_EXTERNAL_ENVIRONMENT,"production");
  assert.equal(env.QXLAYER_PRODUCTION_SUPABASE_AUTH_PROJECT_REF,"qcgvhlphalxqzzsxqjhi");
  assert.equal(env.QXLAYER_PRODUCTION_SUPABASE_AUTH_CUTOVER_APPROVED,"false");
  const url=new URL(process.env.QXLAYER_PRODUCTION_SUPABASE_DATABASE_URL??env.QXLAYER_PRODUCTION_SUPABASE_DATABASE_URL);
- assert.equal(url.toString(),new URL(env.QXLAYER_PRODUCTION_SUPABASE_DATABASE_URL).toString());
+ assert(url.toString()===new URL(env.QXLAYER_PRODUCTION_SUPABASE_DATABASE_URL).toString(),"Operator connection must match effective configuration");
  assert.equal(decodeURIComponent(url.username),"postgres.qcgvhlphalxqzzsxqjhi");
  assert.equal(url.hostname,env.DB_EXPECTED_HOST);assert.equal(url.pathname,"/postgres");url.search="";
  const ca=group.secretFiles.find(f=>f.name==="supabase-ca.crt")?.content;

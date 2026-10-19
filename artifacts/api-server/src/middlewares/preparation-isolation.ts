@@ -20,7 +20,10 @@ export function createPreparationIsolation(
 ): RequestHandler {
  return async (req,res,next) => {
   const publicMode = publicPreparation();
-  const acceptanceRestricted = process.env.QXLAYER_ACCEPTANCE_PREPARATION_ISOLATION === "true";
+  // Acceptance approval is never public-global-write approval. Do not let an
+  // omitted preparation flag reopen shared catalog/publication mutation routes.
+  const acceptanceRestricted = process.env.QXLAYER_ACCEPTANCE_PREPARATION_ISOLATION === "true" ||
+    process.env.QXLAYER_EXTERNAL_ACCEPTANCE_APPROVED === "true";
   if (!publicMode && !acceptanceRestricted) { next(); return; }
   let path: string;
   try { path = decodeURIComponent(req.path).toLowerCase(); }

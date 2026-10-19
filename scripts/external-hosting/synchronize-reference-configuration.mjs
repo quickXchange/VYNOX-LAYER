@@ -4,6 +4,7 @@ import { createRequire } from "node:module";
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { pathToFileURL } from "node:url";
 import { readSchema } from "../external-postgres/schema-reference.mjs";
+import { targetScopePreflight } from "./target-scope-preflight.mjs";
 
 const { Client } = createRequire(new URL("../../lib/db/package.json", import.meta.url))("pg");
 export const TABLES = ["module_catalog", "entitlement_definitions", "asset_catalog", "network_catalog",
@@ -93,12 +94,17 @@ export async function synchronize({ apply = false, rehearse = false } = {}) {
   const response = await fetch(`https://api.render.com/v1/env-groups/${GROUP}`, {
     headers: { Authorization: `Bearer ${process.env.RENDER_API_KEY}` }, signal: AbortSignal.timeout(20000) });
   assert(response.ok); const group = await response.json();
-  const env = Object.fromEntries(group.envVars.map(v => [v.key, v.value]));
+  const groupEnv = Object.fromEntries(group.envVars.map(v => [v.key, v.value]));
+  const { env } = await targetScopePreflight({
+    connectionString: process.env.QXLAYER_PRODUCTION_SUPABASE_DATABASE_URL ?? groupEnv.QXLAYER_PRODUCTION_SUPABASE_DATABASE_URL,
+    scope: process.env.QXLAYER_OPERATOR_WRITE_SCOPE ?? "acceptance-only",
+    publicWriteApproved: process.env.QXLAYER_PUBLIC_GLOBAL_WRITES_APPROVED === "true",
+  });
   assert.equal(env.QXLAYER_PRODUCTION_SUPABASE_AUTH_PROJECT_REF, PROJECT);
   assert.equal(env.QXLAYER_EXTERNAL_ACCEPTANCE_APPROVED, "true");
   assert.equal(env.QXLAYER_PRODUCTION_SUPABASE_AUTH_CUTOVER_APPROVED, "false");
   const u = new URL(process.env.QXLAYER_PRODUCTION_SUPABASE_DATABASE_URL ?? env.QXLAYER_PRODUCTION_SUPABASE_DATABASE_URL);
-  assert.equal(u.toString(), new URL(env.QXLAYER_PRODUCTION_SUPABASE_DATABASE_URL).toString());
+  assert(u.toString() === new URL(env.QXLAYER_PRODUCTION_SUPABASE_DATABASE_URL).toString(), "Operator connection must match effective configuration");
   assert.equal(u.hostname, env.DB_EXPECTED_HOST);
   assert.equal(decodeURIComponent(u.username), `postgres.${PROJECT}`); u.search = "";
   const ca = group.secretFiles.find(f => f.name === "supabase-ca.crt")?.content;

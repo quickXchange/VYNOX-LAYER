@@ -3,6 +3,10 @@
   "teamId": "team_eoJE6FCcm9esuqnRTUsmopzy",
   "temporaryOrigin": "https://qxlayer-staging.vercel.app",
   "renderServiceId": "srv-dba0q0gm7kps73f1k9fg",
+  "operatorTargetScope": {
+    "acceptanceServiceId": "srv-db5b47qjnfac739s374g",
+    "publicServiceIds": ["srv-dba0q0gm7kps73f1k9fg"]
+  },
   "apiOrigin": "https://vynox-public-api.onrender.com",
   "officialDomainCutoverApproved": true,
   "primaryOrigin": "https://vynoxlayer.com",
