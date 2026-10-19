@@ -18,6 +18,8 @@ import { useCan } from '@/lib/principal';
 import { useInvalidateCatalog } from '@/lib/invalidate';
 import { PeriodsEditor } from '@/components/commerce/periods-editor';
 import { useToast } from '@/hooks/use-toast';
+import { FeatureRowsEditor } from '@/components/commerce/feature-rows-editor';
+import { cleanFeatureRows, featureRowsError, readFeatureRows, type FeatureRow } from '@/lib/feature-rows';
 
 const MONEY = /^[0-9]+(?:\.[0-9]{1,2})?$/;
 const blank = { name: '', description: '', monthlyPrice: '', yearlyPrice: '', setupFee: '', discountPercent: '0', currency: 'EUR', billingLabel: '', displayOrder: '0', status: 'disabled' as PlanInput['status'] };
@@ -41,6 +43,7 @@ export default function PlanDetail() {
   const [f, setF] = useState(blank);
   const [ent, setEnt] = useState<EntMap>({});
   const [rev, setRev] = useState(false);
+  const [rows, setRows] = useState<FeatureRow[]>([]);
   const init = useRef('');
   useEffect(() => {
     if (plan.data && init.current !== plan.data.id) {
@@ -48,6 +51,7 @@ export default function PlanDetail() {
       setF({ name: p.name, description: p.description, monthlyPrice: p.monthlyPrice ?? '', yearlyPrice: p.yearlyPrice ?? '', setupFee: p.setupFee ?? '', discountPercent: p.discountPercent ?? '0', currency: p.currency, billingLabel: p.billingLabel, displayOrder: String(p.displayOrder), status: p.status });
       setConfigured(p.pricingConfigured ?? (p.monthlyPrice != null && p.yearlyPrice != null && p.setupFee != null));
       setEnt(toMap(p.entitlements));
+      setRows(readFeatureRows(p));
     }
   }, [plan.data]);
   if (!can.manageCatalog) return <p className="text-sm text-muted-foreground">Only a super admin can manage plans.</p>;
@@ -58,10 +62,10 @@ export default function PlanDetail() {
   const order = Number(f.displayOrder);
   const err = f.name.trim().length < 2 ? 'Name needs 2+ characters' : configured && ![f.monthlyPrice, f.yearlyPrice, f.setupFee].every((x) => MONEY.test(x)) ? 'Configured pricing needs monthly, yearly and setup as decimals with up to 2 places'
     : !/^\d{1,3}(\.\d{1,2})?$/.test(f.discountPercent) || Number(f.discountPercent) > 100 ? 'Discount is a percentage from 0 to 100'
-    : !/^[A-Z]{3}$/.test(f.currency) ? 'Currency is a 3-letter uppercase code' : !Number.isInteger(order) || order < 0 || order > 100000 ? 'Display order 0 - 100000' : entError(d, ent);
+    : !/^[A-Z]{3}$/.test(f.currency) ? 'Currency is a 3-letter uppercase code' : !Number.isInteger(order) || order < 0 || order > 100000 ? 'Display order 0 - 100000' : featureRowsError(rows) || entError(d, ent);
   const submit = (e: React.FormEvent) => { e.preventDefault(); if (!err) setRev(true); };
   const doSave = () => {
-    const data: PlanInput = { name: f.name.trim(), description: f.description, monthlyPrice: configured ? f.monthlyPrice : null, yearlyPrice: configured ? f.yearlyPrice : null, setupFee: configured ? f.setupFee : null, discountPercent: f.discountPercent, currency: f.currency, billingLabel: f.billingLabel, displayOrder: order, status: f.status, entitlements: entriesFrom(d, ent, true) };
+    const data: PlanInput = { name: f.name.trim(), description: f.description, monthlyPrice: configured ? f.monthlyPrice : null, yearlyPrice: configured ? f.yearlyPrice : null, setupFee: configured ? f.setupFee : null, discountPercent: f.discountPercent, currency: f.currency, billingLabel: f.billingLabel, displayOrder: order, status: f.status, entitlements: entriesFrom(d, ent, true), featureRows: cleanFeatureRows(rows) } as PlanInput;
     const fail = (er: unknown) => { setRev(false); toast({ title: 'Save failed', description: (er as Error).message, variant: 'destructive' }); };
     if (id) update.mutate({ planId: id, data }, { onSuccess: (p) => { setRev(false); qc.setQueryData(getGetPlanQueryKey(id), p); inv(); toast({ title: 'Plan saved' }); }, onError: fail });
     else create.mutate({ data }, { onSuccess: (p) => { setRev(false); inv(); toast({ title: 'Plan created' }); nav(`/plans/${p.id}`); }, onError: fail });
@@ -90,6 +94,10 @@ export default function PlanDetail() {
             </div>
             <p className="font-mono text-[11px] uppercase tracking-wider text-muted-foreground">Prices are stored for reference only. No billing is performed. Discounts apply to monthly and yearly prices, never to the setup fee.{configured && MONEY.test(f.monthlyPrice) && MONEY.test(f.yearlyPrice) && !err.startsWith('Discount') ? ` After discount: ${discounted(f.monthlyPrice, f.discountPercent)} / mo, ${discounted(f.yearlyPrice, f.discountPercent)} / yr ${f.currency}.` : ''}</p>
           </section>
+          <section className="space-y-3 rounded-md border bg-card p-5" aria-labelledby="plan-feature-rows-h">
+            <h2 id="plan-feature-rows-h" className="font-display text-2xl">Customer-visible features</h2>
+            <FeatureRowsEditor value={rows} onChange={setRows} />
+          </section>
           <section className="space-y-3 rounded-md border bg-card p-5">
             <h2 className="font-display text-2xl">Entitlements</h2>
             <GroupedEntitlementEditor defs={d} value={ent} onChange={setEnt} />
@@ -105,7 +113,7 @@ export default function PlanDetail() {
         onApply={() => del.mutate({ planId: id }, { onSuccess: () => { setDelOpen(false); qc.removeQueries({ queryKey: getGetPlanQueryKey(id) }); qc.invalidateQueries({ queryKey: getListPlansQueryKey() }); inv(); toast({ title: 'Plan deleted' }); nav('/plans'); }, onError: (e) => setDelErr(`${(e as Error).message}. A plan assigned to a project or referenced by an order cannot be deleted; disable or archive it to stop new offers.`) })}
         rows={[['Plan', f.name], ['Rule', 'Refused if assigned to any project or referenced by any order'], ['Alternative', 'Disable or archive to stop offering it']]} />
       <ReviewDialog open={rev} onClose={() => setRev(false)} title={id ? 'save plan' : 'create plan'} pending={create.isPending || update.isPending} onApply={doSave}
-        rows={[['Name', f.name.trim()], ['Status', f.status], ['Prices', configured ? `${f.monthlyPrice} / mo, ${f.yearlyPrice} / yr, ${f.setupFee} setup ${f.currency}` : 'Unconfigured (Requires review)'], ['Discount (recurring only)', `${f.discountPercent}%`], ['Current subscribers', 'Entitlement edits update their rights now'], ['Entitlements set', String(entriesFrom(d, ent, true).length)]]} />
+        rows={[['Name', f.name.trim()], ['Status', f.status], ['Prices', configured ? `${f.monthlyPrice} / mo, ${f.yearlyPrice} / yr, ${f.setupFee} setup ${f.currency}` : 'Unconfigured (Requires review)'], ['Discount (recurring only)', `${f.discountPercent}%`], ['Current subscribers', 'Entitlement edits update their rights now'], ['Entitlements set', String(entriesFrom(d, ent, true).length)], ['Descriptive feature rows', rows.length ? `${rows.length} (descriptive only, public after next publication)` : 'None']]} />
     </>
   );
 }

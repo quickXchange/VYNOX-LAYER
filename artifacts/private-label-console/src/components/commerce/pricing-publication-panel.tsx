@@ -9,6 +9,7 @@ import { groupOf } from '@/components/app/entitlement-editor';
 import { useInvalidateCatalog } from '@/lib/invalidate';
 import { useToast } from '@/hooks/use-toast';
 import { useCommerceApi } from './api';
+import { readFeatureRows } from '@/lib/feature-rows';
 
 type Snap = { plans: Item[]; addons: Item[]; methods: Item[]; purchaseAvailable: boolean };
 type Item = Record<string, unknown> & { id?: string };
@@ -33,8 +34,10 @@ function Prices({ it }: { it?: Item }) {
 function Feats({ it, label }: { it?: Item; label: (k: string) => string }) {
   const e = Array.isArray(it?.entitlements) ? it!.entitlements as { key: string; value: unknown }[] : [];
   if (!it) return <span className="text-muted-foreground">-</span>;
-  if (e.length === 0) return <span className="text-xs text-muted-foreground">No entitlements</span>;
-  return <ul className="space-y-0.5 text-xs">{e.map((x) => <li key={x.key} data-testid={`feat-${x.key}`} className={x.value === false ? 'text-muted-foreground line-through' : ''}>{label(x.key)}{x.value === true ? ': on' : x.value === false ? ': revoked (off)' : `: limit ${s(x.value)}`}{groupOf(x.key) !== 'General' && <span className="ml-1 font-mono text-[10px] text-copper">{groupOf(x.key)}</span>}</li>)}</ul>;
+  const rows = readFeatureRows(it);
+  const rowsEl = rows.length > 0 && <dl className="mb-1 space-y-0.5 border-l-2 pl-2 text-xs" data-testid="list-pub-feature-rows">{rows.map((r, i) => <div key={i} className="flex gap-2"><dt className="text-muted-foreground">{r.label}</dt><dd className="min-w-0 break-words">{r.value}</dd></div>)}</dl>;
+  if (e.length === 0) return <>{rowsEl}<span className="text-xs text-muted-foreground">No entitlements</span></>;
+  return <>{rowsEl}<ul className="space-y-0.5 text-xs">{e.map((x) => <li key={x.key} data-testid={`feat-${x.key}`} className={x.value === false ? 'text-muted-foreground line-through' : ''}>{label(x.key)}{x.value === true ? ': on' : x.value === false ? ': revoked (off)' : `: limit ${s(x.value)}`}{groupOf(x.key) !== 'General' && <span className="ml-1 font-mono text-[10px] text-copper">{groupOf(x.key)}</span>}</li>)}</ul></>;
 }
 
 function Compare({ title, draft, pub, label }: { title: string; draft: Item[]; pub: Item[] | undefined; label: (k: string) => string }) {

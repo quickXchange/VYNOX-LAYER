@@ -509,6 +509,22 @@ export interface EntitlementEntry {
   value: EntitlementValue;
 }
 
+/**
+ * Ordered marketing display text only, never an entitlement, permission or HTML.
+ */
+export interface PlanFeatureRow {
+  /**
+     * @minLength 1
+     * @maxLength 120
+     */
+  label: string;
+  /**
+     * @minLength 1
+     * @maxLength 500
+     */
+  value: string;
+}
+
 export interface PlanInput {
   /**
      * @minLength 2
@@ -552,6 +568,8 @@ export interface PlanInput {
   status: PlanInputStatus;
   /** @maxItems 200 */
   entitlements: EntitlementEntry[];
+  /** Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap. */
+  featureRows?: PlanFeatureRow[];
 }
 
 export type PlanBillingPeriodsItem = typeof PlanBillingPeriodsItem[keyof typeof PlanBillingPeriodsItem];
@@ -568,6 +586,8 @@ export type Plan = PlanInput & {
   updatedAt: string;
   pricingConfigured?: boolean;
   billingPeriods?: PlanBillingPeriodsItem[];
+  /** Ordered plain-text marketing rows only; legacy published snapshots return an empty array. */
+  featureRows: PlanFeatureRow[];
 };
 
 export interface AddonInput {

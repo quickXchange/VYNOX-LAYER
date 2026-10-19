@@ -855,6 +855,13 @@
       "default_value": "'0'::numeric"
     },
     {
+      "table_name": "plans",
+      "name": "feature_rows",
+      "type": "jsonb",
+      "required": true,
+      "default_value": "'[]'::jsonb"
+    },
+    {
       "table_name": "platform_admins",
       "name": "clerk_user_id",
       "type": "text",
@@ -2443,6 +2450,13 @@
       "name": "plans_discount",
       "type": "c",
       "definition": "CHECK (discount_percent >= 0::numeric AND discount_percent <= 100::numeric)",
+      "validated": true
+    },
+    {
+      "table_name": "plans",
+      "name": "plans_feature_rows_array",
+      "type": "c",
+      "definition": "CHECK (jsonb_typeof(feature_rows) = 'array'::text)",
       "validated": true
     },
     {

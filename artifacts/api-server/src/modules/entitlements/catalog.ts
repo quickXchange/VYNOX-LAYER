@@ -50,6 +50,7 @@ export async function readPlan(client: DatabaseClient, id: string, historical = 
   const period = (await client.query(`SELECT monthly,yearly FROM ${table("offer_settings")} WHERE plan_id=$1`, [id])).rows[0];
   return {
     id: p.id as string, name: p.name as string, description: p.description as string,
+    featureRows: (p.feature_rows ?? []) as NonNullable<PlanInput["featureRows"]>,
     monthlyPrice: p.pricing_configured ? p.monthly_price as string : null, yearlyPrice: p.pricing_configured ? p.yearly_price as string : null,
     setupFee: p.pricing_configured ? p.setup_fee as string : null, pricingConfigured: p.pricing_configured as boolean,
     discountPercent: p.discount_percent as string, currency: p.currency as string, billingLabel: p.billing_label as string,
@@ -101,6 +102,13 @@ export function listAddons(principal: Principal) {
 async function writePlan(client: DatabaseClient, input: PlanInput, id?: string) {
   if (!id && input.currency !== "EUR") throw new HttpError(400, "New plans must be priced in EUR.");
   if (input.name.trim().length < 2) throw new HttpError(400, "Plan name must contain at least two non-whitespace characters.");
+  // Validate direct service callers as well as HTTP requests. Bound the raw
+  // strings first, then normalize display text without interpreting it as HTML.
+  const featureRows = CreatePlanBody.shape.featureRows.parse(input.featureRows)?.map(row => {
+    const label = row.label.trim(), value = row.value.trim();
+    if (!label || !value) throw new HttpError(400, "Plan feature row label and value must contain non-whitespace text.");
+    return { label, value };
+  });
   const entries = await validateEntries(client, input.entitlements);
   const configured = pricingTriple([input.monthlyPrice, input.yearlyPrice, input.setupFee]);
   discountBasisPoints(input.discountPercent);
@@ -109,6 +117,9 @@ async function writePlan(client: DatabaseClient, input: PlanInput, id?: string) 
     ? await client.query(`UPDATE ${catalogTable("plans")} SET name=$1,description=$2,monthly_price=CASE WHEN $11 THEN $3 ELSE monthly_price END,yearly_price=CASE WHEN $11 THEN $4 ELSE yearly_price END,setup_fee=CASE WHEN $11 THEN $5 ELSE setup_fee END,currency=$6,billing_label=$7,display_order=$8,status=$9,updated_at=now() WHERE id=$10 RETURNING id`, [...args, id, configured])
     : await client.query(`INSERT INTO ${catalogTable("plans")} (name,description,monthly_price,yearly_price,setup_fee,currency,billing_label,display_order,status) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING id`, args);
   const planId = r.rows[0].id as string;
+  // Omission preserves rows on updates; [] explicitly clears them. New plans
+  // use the database default. These display strings never enter entitlements.
+  if (featureRows !== undefined) await client.query(`UPDATE ${catalogTable("plans")} SET feature_rows=$2::jsonb WHERE id=$1`, [planId, JSON.stringify(featureRows)]);
   await client.query(`UPDATE ${catalogTable("plans")} SET pricing_configured=$2,discount_percent=COALESCE($3,discount_percent) WHERE id=$1`, [planId, configured, input.discountPercent ?? null]);
   await client.query(`DELETE FROM ${catalogTable("plan_entitlements")} WHERE plan_id=$1`, [planId]);
   for (const e of entries) await client.query(`INSERT INTO ${catalogTable("plan_entitlements")} (plan_id,key,value) VALUES ($1,$2,$3::jsonb)`, [planId, e.key, JSON.stringify(e.value)]);

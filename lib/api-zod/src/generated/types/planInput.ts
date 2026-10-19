@@ -6,6 +6,7 @@
  * OpenAPI spec version: 0.1.0
  */
 import type { EntitlementEntry } from './entitlementEntry';
+import type { PlanFeatureRow } from './planFeatureRow';
 import type { PlanInputStatus } from './planInputStatus';
 
 export interface PlanInput {
@@ -51,4 +52,6 @@ export interface PlanInput {
   status: PlanInputStatus;
   /** @maxItems 200 */
   entitlements: EntitlementEntry[];
+  /** Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap. */
+  featureRows?: PlanFeatureRow[];
 }

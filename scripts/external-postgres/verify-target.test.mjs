@@ -30,7 +30,7 @@ test("exact external policy targets and least privilege in disposable PostgreSQL
       SET qxlayer.external_migration_authorized='yes'`);
     // Load reviewed application DDL, not captured business data or hosted credentials.
     for (const file of ["0001_application_schema.sql", "0002_runtime_security.sql",
-      "0007_global_exchange_catalog.sql", "0008_tenant_site_releases.sql"]) {
+      "0007_global_exchange_catalog.sql", "0008_tenant_site_releases.sql", "0011_plan_feature_rows.sql"]) {
       await client.query(await readFile(new URL(`../../deploy/migrations/${file}`, import.meta.url), "utf8"));
     }
     await client.query("SET search_path=public,pg_catalog");

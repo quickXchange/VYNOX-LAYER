@@ -17,6 +17,8 @@ export const plansTable = pgTable("plans", {
   id: uuid("id").primaryKey().defaultRandom(),
   name: text("name").notNull(),
   description: text("description").notNull().default(""),
+  // Ordered plain-text marketing display; never used by entitlement resolution.
+  featureRows: jsonb("feature_rows").$type<{ label: string; value: string }[]>().notNull().default(sql`'[]'::jsonb`),
   monthlyPrice: numeric("monthly_price", { precision: 22, scale: 2 }).notNull().default("0"),
   yearlyPrice: numeric("yearly_price", { precision: 22, scale: 2 }).notNull().default("0"),
   setupFee: numeric("setup_fee", { precision: 22, scale: 2 }).notNull().default("0"),
@@ -30,6 +32,7 @@ export const plansTable = pgTable("plans", {
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 }, () => [
   check("plans_status", sql`status IN ('enabled','disabled','archived')`),
+  check("plans_feature_rows_array", sql`jsonb_typeof(feature_rows) = 'array'`),
   check("plans_nonnegative_metadata", sql`monthly_price >= 0 AND yearly_price >= 0 AND setup_fee >= 0 AND display_order >= 0`),
   check("plans_currency", sql`currency ~ '^[A-Z]{3}$'`),
   check("plans_discount", sql`discount_percent >= 0 AND discount_percent <= 100`),

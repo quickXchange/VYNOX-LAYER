@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import { publicPreparation } from "../../../../../lib/production-access-gate/public-preparation.mjs";
 import { withDatabase, type DatabaseClient } from "@workspace/db";
 import { contextFor, requireSuperAdmin, type Principal } from "../authentication/service";
 import { HttpError } from "../../lib/errors";
@@ -12,6 +13,10 @@ function stable(value: any): any {
   return value;
 }
 export const pricingRevision = (value: unknown) => createHash("sha256").update(JSON.stringify(stable(value))).digest("hex");
+/** Read compatibility only: never rewrite immutable legacy publication payloads. */
+export function withPlanFeatureRows<T extends { plans: { featureRows?: { label: string; value: string }[] }[] }>(payload: T) {
+  return { ...payload, plans: payload.plans.map(plan => ({ ...plan, featureRows: plan.featureRows ?? [] })) };
+}
 export function assertPublicationRevision(actual: string, expected: string, published: string | null, expectedPublished: string | null) {
   if (actual !== expected || published !== expectedPublished) throw new HttpError(409, "Pricing revision conflict. Refresh the preview and review the new draft before publishing.");
 }
@@ -20,14 +25,14 @@ export async function draftOffers(c: DatabaseClient) {
   const catalog = await whiteLabelCatalogForClient(c);
   const plans = catalog.plans.filter(p => p.pricingConfigured && p.billingPeriods.length);
   const addons = catalog.addons.filter(a => a.pricingConfigured);
-  const methods = acceptanceCatalog() ? [] : (await c.query("SELECT id,name,kind,currency FROM qxlayer_commerce.methods WHERE enabled AND approved ORDER BY name,id")).rows;
+  const methods = acceptanceCatalog() || publicPreparation() ? [] : (await c.query("SELECT id,name,kind,currency FROM qxlayer_commerce.methods WHERE enabled AND approved ORDER BY name,id")).rows;
   return { plans, addons, methods, purchaseAvailable: plans.some(p => methods.some(m => m.currency === p.currency)) };
 }
 export async function publishedOffers(c: DatabaseClient): Promise<Awaited<ReturnType<typeof draftOffers>>> {
   const row = (await c.query<{payload:Awaited<ReturnType<typeof draftOffers>>}>(`SELECT payload FROM ${catalogTable("pricing_publication")} WHERE singleton=true`)).rows[0];
   if (!row && acceptanceCatalog()) throw new HttpError(503, "Acceptance pricing has not been published.");
-  const payload = row?.payload ?? await draftOffers(c);
-  return acceptanceCatalog() ? { ...payload, methods: [], purchaseAvailable: false } : payload;
+  const payload = withPlanFeatureRows(row?.payload ?? await draftOffers(c));
+  return acceptanceCatalog() || publicPreparation() ? { ...payload, methods: [], purchaseAvailable: false } : payload;
 }
 export async function freezePricingBeforeEdit(c: DatabaseClient) {
   await c.query("SELECT pg_advisory_xact_lock(hashtextextended('pricing-publication',0))");
@@ -49,6 +54,6 @@ export function pricingPublication(p: Principal, input?: {expectedRevision: stri
       await audit(c, p, null, "pricing.published", input.reason, { beforeRevision: current?.revision ?? null, revision:draftRevision, paymentsActivated:false });
       return { draftRevision, publishedRevision:draftRevision, publishedAt:new Date().toISOString(), draft, published:draft };
     }
-    return { draftRevision, publishedRevision:current?.revision ?? null, publishedAt:current?.published_at?.toISOString() ?? null, draft, published:current?.payload ?? draft };
+    return { draftRevision, publishedRevision:current?.revision ?? null, publishedAt:current?.published_at?.toISOString() ?? null, draft, published:withPlanFeatureRows(current?.payload ?? draft) };
   });
 }
