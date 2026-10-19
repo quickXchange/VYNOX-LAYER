@@ -94,3 +94,19 @@ while retaining the exact tip, tree and every original commit.
 assert ancestry and exact source preservation, then verify the real configured
 pull and a normal push dry-run. Do not force-push, flatten the merge, reset
 source or resolve this by discarding application code.
+
+## GitHub-to-Vercel repair boundary
+
+The user explicitly chose to retain the existing backend when repairing
+GitHub-to-Vercel synchronization; this is not authorization for a Vercel-only
+backend migration.
+
+**Why:** The initial report described Vercel sync, but the failed step was an
+upstream API deployment. Removing that dependency would not repair API/frontend
+compatibility.
+
+**How to apply:** Compare the deployed API source with GitHub main before
+retrying old failed runs. A newer bounded API release may contain isolation
+protections missing from main. Reconcile those protections without discarding
+either history, and use read-only checks against the current database before
+assuming that an old schema-readiness failure still requires a migration.
