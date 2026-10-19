@@ -22,6 +22,19 @@ Do not continually copy Acceptance edits into Live. Preserve existing subscriber
 and historical quotations. Publishing plans does not authorize payments,
 payment-method activation, customer delivery or real financial execution.
 
+## Historical plan snapshot compatibility
+
+New required plan-response fields need read compatibility in every historical
+snapshot consumer, not only the current catalog and pricing publication.
+Never backfill an old order's agreed pricing or approvals from today's plan.
+
+**Why:** Adding descriptive rows made old requested/approved plan snapshots
+fail response validation and reject the entire Super Admin order queue.
+
+**How to apply:** Preserve immutable saved snapshots; supply only semantically
+empty defaults for newly introduced descriptive fields when reading them.
+Check historical order list and detail responses against their actual schemas.
+
 ## Earlier approved Acceptance plan definition
 
 The user approved the following White Label plan prices and limits for
