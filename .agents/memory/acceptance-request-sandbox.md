@@ -11,6 +11,17 @@ The user subsequently explicitly approved real customer request submissions on v
 
 **How to apply:** Permit only the two public customer intake endpoints through the preparation barrier. Keep Acceptance identity restrictions and sandbox-only records separate from Live customer records and notifications.
 
+The user additionally approved Super Admin review and notes, while retaining the
+payment, provisioning and delivery hold. This supersedes the review-mutation
+restriction above for ordinary Live requests only, not Acceptance sandbox records.
+
+**Why:** The user asked to enable review and notes after being told they were
+separate from the intentionally blocked payment and delivery steps.
+
+**How to apply:** Allow native-authenticated Super Admin review/quotation states
+and notes. Do not treat the “approved” state as review-only: it initiates website
+preparation. Block approval, setup, ready and delivery transitions during the hold.
+
 Requests from this path may persist in the Production-backed Acceptance database, but must be marked as sandbox-only and excluded from operator review, notes, payments, notifications/email, provisioning and delivery. Do not broaden the exception to other identities, write endpoints, Production traffic, or customer records.
 
 **Why:** The user explicitly chose a provider-verified email fingerprint rather than an account ID and separately approved persistent records only for one sandbox requester.
