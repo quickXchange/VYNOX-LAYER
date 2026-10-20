@@ -13,7 +13,7 @@ export function NoteForm({ id, onDone, fixed }: { id: string; onDone: () => void
   const go = () => { setErr(null); add.mutate({ requestId: id, data: { message: msg.trim(), visibility: vis } }, { onSuccess: () => { setMsg(''); setRev(false); toast({ title: 'Note added' }); onDone(); }, onError: (e) => { setErr(errMsg(e)); toast({ title: 'Note failed', description: errMsg(e), variant: 'destructive' }); } }); };
   return (
     <div className="space-y-2">
-      <Textarea data-testid="input-note" aria-label="New note" value={msg} onChange={(e) => setMsg(e.target.value)} maxLength={3000} placeholder="Append a note. Existing notes are never overwritten." />
+      <Textarea data-testid="input-note" aria-label="New note" value={msg} disabled={add.isPending} onChange={(e) => setMsg(e.target.value)} maxLength={3000} placeholder="Append a note. Existing notes are never overwritten." />
       <div className="flex flex-wrap items-center gap-2">
         {fixed ? <span className="text-xs text-muted-foreground">{fixed === 'internal' ? 'Internal only' : 'Visible to customer'}</span> : <select aria-label="Visibility" className="h-9 rounded-md border bg-background px-2 text-sm" value={vis} onChange={(e) => setVis(e.target.value as typeof vis)}><option value="internal">Internal only</option><option value="customer">Visible to customer</option></select>}
         <Button type="button" size="sm" data-testid="button-add-note" disabled={!msg.trim() || add.isPending} onClick={() => { setErr(null); setRev(true); }}>{add.isPending ? 'Adding' : 'Add note'}</Button>

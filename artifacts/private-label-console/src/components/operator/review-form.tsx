@@ -14,7 +14,10 @@ import { useToast } from '@/hooks/use-toast';
 const price = /^\d{1,12}(\.\d{1,2})?$/;
 const sel = 'h-10 w-full rounded-md border bg-background px-2 text-sm';
 
-export function ReviewForm({ o, onDone }: { o: WlOrder; onDone: () => void }) {
+export function ReviewForm({ o, onDone, onReload }: { o: WlOrder; onDone: () => void; onReload: () => void }) {
+  const initialVersion = useRef(String(o.updatedAt));
+  const stale = initialVersion.current !== String(o.updatedAt);
+  const staleMessage = 'This order changed since you opened the review. Your draft is preserved. Copy any edits you need, then load the latest order before saving.';
   const cache = useQueryClient();
   const review = useReviewWhiteLabelRequest(); const plans = useListPlans(); const addons = useListAddons();
   const { toast } = useToast();
@@ -32,12 +35,14 @@ export function ReviewForm({ o, onDone }: { o: WlOrder; onDone: () => void }) {
   const canApprove = !!pid && price.test(m) && price.test(s) && (!custom || (price.test(cust) && dec === 'approved'));
   const addonList = (addons.data ?? []).filter((a) => a.enabled || aids.includes(a.id)).filter((a) => { const c = a.currency; return !planCur || !c || c === planCur; });
   const save = (st: string) => {
+    if (stale || review.isPending) { if (stale) setErr(staleMessage); return; }
     setErr(null);
     const need = st === 'approved' && !canApprove;
     if (need) { setErr('Approval needs an Exchange plan, recurring and setup prices, and—for custom designs—an approved decision and customization price.'); return; }
     setPendingSt(st);
   };
   const apply = (st: string) => {
+    if (stale || review.isPending) { if (stale) setErr(staleMessage); return; }
     review.mutate({ requestId: o.id, data: { status: st as WhiteLabelStatus, monthlyPrice: m === '' ? null : m, setupPrice: s === '' ? null : s, currency: cur.toUpperCase(), operatorNote: '', customizationPrice: cust === '' ? null : cust, approvedPlanId: pid || null, approvedAddonIds: aids, customDesignDecision: dec } }, { onSuccess: async (response) => { applyOrderResponse(cache, o.id, response); setPendingSt(null); await onDone(); toast({ title: 'Order review saved' }); }, onError: (e) => { setErr(errMsg(e)); toast({ title: 'Review failed', description: errMsg(e), variant: 'destructive' }); } });
   };
   if (ro) return <p className="text-sm text-muted-foreground">This order is {statusText(o.status)}. Status and prices are read-only; notes can still be added.</p>;
@@ -45,6 +50,8 @@ export function ReviewForm({ o, onDone }: { o: WlOrder; onDone: () => void }) {
   if (plans.isError || addons.isError) return <ErrorState what="review options" onRetry={() => { plans.refetch(); addons.refetch(); }} />;
   return (
     <form onSubmit={(e) => { e.preventDefault(); save(status); }} className="space-y-4">
+      {stale && <div role="alert" className="space-y-2 rounded-md border p-3 text-sm"><p>{staleMessage}</p><Button type="button" variant="outline" disabled={review.isPending} onClick={onReload}>Discard draft and load latest order</Button></div>}
+      <fieldset disabled={stale || review.isPending} className="space-y-4">
       <div className="grid gap-x-5 gap-y-4 sm:grid-cols-2 [&>label]:block [&>label]:min-w-0 [&>label]:space-y-1.5 [&_select]:w-full">
         <label className="text-sm md:col-span-2">Status<select data-testid="select-status" className={sel} value={status} onChange={(e) => setStatus(e.target.value)}>{[o.status, ...validTargets(o.status)].map((x) => <option key={x} value={x}>{statusText(x)}</option>)}</select></label>
         <label className="text-sm">Currency<Input data-testid="input-currency" value={cur} maxLength={3} onChange={(e) => setCur(e.target.value.toUpperCase())} /></label>
@@ -64,7 +71,8 @@ export function ReviewForm({ o, onDone }: { o: WlOrder; onDone: () => void }) {
         {validTargets(o.status).includes('rejected') && <Button type="button" variant="outline" data-testid="button-reject" disabled={!!formErr || review.isPending} onClick={() => { setStatus('rejected'); save('rejected'); }}>Reject</Button>}
       </div>
       <p className="text-xs text-muted-foreground">Approval creates a linked sandbox draft only. Activate Sandbox and Mark Ready are separate steps and neither delivers. Customer access is granted only by the explicit Deliver action on a Ready order.</p>
-      <ReviewDialog open={!!pendingSt} onClose={() => setPendingSt(null)} title="order review" pending={review.isPending} error={err} destructive={pendingSt === 'rejected'}
+      </fieldset>
+      <ReviewDialog open={!!pendingSt} onClose={() => setPendingSt(null)} title="order review" pending={review.isPending} error={stale ? staleMessage : err} destructive={pendingSt === 'rejected'}
         applyLabel="Confirm and apply" onApply={() => pendingSt && apply(pendingSt)}
         rows={[['Status', `${statusText(o.status)} to ${statusText(pendingSt ?? status)}`], ['Plan', (plans.data ?? []).find((p) => p.id === pid)?.name ?? 'None'], ['Add-ons', aids.length ? String(aids.length) : 'None'], ['Recurring', cash(m, cur)], ['Setup fee', cash(s, cur)], ['Customization', cash(cust, cur)]]} />
     </form>
