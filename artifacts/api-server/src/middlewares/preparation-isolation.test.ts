@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {createHash} from "node:crypto";
 import type {RequestHandler} from "express";
-import {createPreparationIsolation, publicPlanManagementWriteRoute, publicOrderReviewWriteRoute} from "./preparation-isolation";
+import {createPreparationIsolation, publicPlanManagementWriteRoute, publicOrderReviewWriteRoute, publicCustomerCheckoutWriteRoute} from "./preparation-isolation";
 import {assertReviewPreparationStatus} from "../modules/customer/service";
 import {requireAuthentication} from "./authentication";
 const preparationIsolation = createPreparationIsolation(() => { throw new Error("Unexpected authentication"); });
@@ -14,6 +14,19 @@ const publicEnv={QXLAYER_PUBLIC_PREPARATION_APPROVED:"true",QXLAYER_EXTERNAL_ENV
  QXLAYER_FINANCIAL_EXECUTION_ENABLED:"false",
  QXLAYER_PREPARATION_WRITE_TENANTS:"qa-tenant",QXLAYER_PREPARATION_WRITE_SLUGS:"qa-site",
  QXLAYER_PUBLIC_EXCLUDED_TENANTS:"solara-tenant",QXLAYER_PUBLIC_EXCLUDED_SLUGS:"solara-site"};
+test("customer checkout exception matches only exact invoice and unverified report routes", () => {
+  const id = "a4000000-0000-4000-8000-000000000001";
+  for (const action of ["checkout", "report"]) {
+    const path = `/api/customer/phase1/orders/${id}/${action}`;
+    assert.equal(publicCustomerCheckoutWriteRoute("POST", path), true);
+    for (const method of ["GET", "PUT", "DELETE", "PATCH"])
+      assert.equal(publicCustomerCheckoutWriteRoute(method, path), false);
+    assert.equal(publicCustomerCheckoutWriteRoute("POST", path + "/extra"), false);
+    assert.equal(publicCustomerCheckoutWriteRoute("POST", path.replace(id, "invalid")), false);
+  }
+  for (const action of ["confirm", "reject", "provision", "provisioning", "execute"])
+    assert.equal(publicCustomerCheckoutWriteRoute("POST", `/api/customer/phase1/orders/${id}/${action}`), false);
+});
 test("verified public preparation admits native-authenticated Super Admin plans, review and notes, not execution", async () => {
  const before={...process.env};Object.assign(process.env,publicEnv);
  try {
@@ -55,6 +68,8 @@ test("verified public preparation admits native-authenticated Super Admin plans,
    ["POST",`/api/operator/white-label-requests/${id}/notes/extra`],
    ["POST",`/api/operator/white-label-requests/${id}/provision`],
    ["POST",`/api/operator/white-label-requests/${id}/provisioning`],
+    ["POST",`/api/operator/phase1/invoices/${id}/confirm`],
+    ["POST",`/api/operator/phase1/invoices/${id}/reject`],
   ]) {
    assert.equal(publicPlanManagementWriteRoute(method,path),false);
    const denied=await probe(method,path,{role:"super_admin"});
@@ -95,7 +110,9 @@ test("public request intake requires a customer session and does not open paymen
    await createPreparationIsolation(auth)({method,path} as any,res as any,error=>{if(error)nextError=error;else continued=true;});
    return {code,continued,nextError,authCalls,sandbox:res.locals.preparationSandboxWrite};
   };
-  for(const path of ["/api/customer/order-attachments","/api/customer/white-label-requests"]) {
+   for(const path of ["/api/customer/order-attachments","/api/customer/white-label-requests",
+     "/api/customer/phase1/orders/a4000000-0000-4000-8000-000000000001/checkout",
+     "/api/customer/phase1/orders/a4000000-0000-4000-8000-000000000001/report"]) {
    for(const role of ["unassigned","client_admin","staff"]) {
     const ok=await probe("POST",path,{role});
     assert.equal(ok.continued,true);assert.equal(ok.authCalls,1);assert.equal(ok.sandbox,undefined);
@@ -133,7 +150,9 @@ test("Acceptance approval cannot authorize shared global writes even without the
   for(const path of ["/api/commerce/pricing-publication","/api/commerce/plans","/api/commerce/addons",
    "/api/platform/settings","/api/commerce/%70ricing-publication",
    "/api/operator/white-label-requests/a4000000-0000-4000-8000-000000000001/review",
-   "/api/operator/white-label-requests/a4000000-0000-4000-8000-000000000001/notes"]) {
+    "/api/operator/white-label-requests/a4000000-0000-4000-8000-000000000001/notes",
+    "/api/customer/phase1/orders/a4000000-0000-4000-8000-000000000001/checkout",
+    "/api/customer/phase1/orders/a4000000-0000-4000-8000-000000000001/report"]) {
    for(const method of ["POST","PUT","PATCH","DELETE"]) {
     let code=0,continued=false,nextError:any;
     await preparationIsolation({method,path} as any,{

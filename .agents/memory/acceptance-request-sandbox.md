@@ -22,6 +22,18 @@ separate from the intentionally blocked payment and delivery steps.
 and notes. Do not treat the “approved” state as review-only: it initiates website
 preparation. Block approval, setup, ready and delivery transitions during the hold.
 
+The user subsequently explicitly approved “Enable payable invoices and customer
+checkout” for ordinary Live White Label customers. This supersedes the checkout
+hold above, not the Acceptance sandbox restriction or the setup/delivery hold.
+Use existing approved payment methods; customer references remain unverified.
+
+**Why:** The customer-facing Create invoice button was blocked by the preparation
+barrier, and the user chose payable checkout rather than a non-payable quotation.
+
+**How to apply:** Permit only authenticated non-demo customers to create invoices
+for their own orders and report references. Preserve settlement confirmation,
+website preparation, delivery and exchange financial-execution restrictions.
+
 Requests from this path may persist in the Production-backed Acceptance database, but must be marked as sandbox-only and excluded from operator review, notes, payments, notifications/email, provisioning and delivery. Do not broaden the exception to other identities, write endpoints, Production traffic, or customer records.
 
 **Why:** The user explicitly chose a provider-verified email fingerprint rather than an account ID and separately approved persistent records only for one sandbox requester.

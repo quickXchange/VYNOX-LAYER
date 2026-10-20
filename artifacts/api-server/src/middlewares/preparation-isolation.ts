@@ -20,6 +20,11 @@ export function publicOrderReviewWriteRoute(method: string, path: string): boole
     (method === "POST" && new RegExp(`^/api/operator/white-label-requests/${id}/notes$`).test(path));
 }
 
+export function publicCustomerCheckoutWriteRoute(method: string, path: string): boolean {
+  const id = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}";
+  return method === "POST" && new RegExp(`^/api/customer/phase1/orders/${id}/(?:checkout|report)$`).test(path);
+}
+
 const values = (name: string) => (process.env[name] ?? "").split(",").filter(Boolean);
 interface OwnerAdminPolicy { tenantId: string; ownerBusinessIdSha256: string }
 // Explicitly approved original Owner and retained demo only. This is not an
@@ -115,11 +120,12 @@ export function createPreparationIsolation(
   }
   if (["GET","HEAD","OPTIONS"].includes(req.method) || path.startsWith("/api/supabase-auth/") ||
       path === "/api/diagnostics/website-errors") { next(); return; }
-  // Approved public request intake only: retain ordinary session/MFA, CSRF,
-  // ownership, upload validation and idempotency checks in the customer routes.
+   // Approved customer intake, invoice checkout and unverified payment reporting:
+   // retain session/MFA, CSRF, ownership, validation and idempotency checks.
   // Never mark Live requests as Acceptance sandbox records.
-  if (publicMode && !acceptanceRestricted && req.method === "POST" &&
-      ["/api/customer/order-attachments", "/api/customer/white-label-requests"].includes(path)) {
+   if (publicMode && !acceptanceRestricted && (
+       (req.method === "POST" && ["/api/customer/order-attachments", "/api/customer/white-label-requests"].includes(path)) ||
+       publicCustomerCheckoutWriteRoute(req.method, path))) {
     let authenticated = false;
     try {
       await authenticate(req, res, error => {
@@ -129,7 +135,7 @@ export function createPreparationIsolation(
       if (!authenticated || !res.locals.principal) return;
       const p = res.locals.principal;
       if (p.demo || p.role === "super_admin")
-        throw new HttpError(403, "Use a signed-in customer account to submit a White Label request.");
+         throw new HttpError(403, "Use a signed-in customer account for White Label requests and checkout.");
       next(); return;
     } catch (error) { next(error); return; }
   }
