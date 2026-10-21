@@ -1204,3 +1204,17 @@ mtime_ms = 1792319226069
 storage_uri = "gcs://replit-rams-assets-reed/rams/assets/repl:372d2684-97ec-4ce5-b16a-77fb322db72a/0a094207-f14b-4bda-b4f0-aafeecd892cd/dfbe2a3a-5030-4ab4-bbde-f0c7429a666c"
 storage_version_token = "1792319586004961"
 content_type = "image/jpeg"
+
+[[outputs]]
+id = "XDpogaPHLW1gqRqkZMZ8i"
+uri = "file://docs/VYNOX-LAYER-Design.md"
+type = "text"
+title = "VYNOX LAYER — Complete Design Reference"
+description = "Markdown design handoff covering official branding, exact palette, typography, layouts, customer and admin screens, Exchange design, components, responsive behavior, and source references."
+logical_id = "a124968c-cdbe-42ff-8bfc-6ca99807d58d"
+content_hash = "sha256:0941f5e126a7655e706a47a78b8e263e76415ac1a26b075c3a97cd0de8915814"
+size = 31425
+mtime_ms = 1792581346835
+storage_uri = "gcs://replit-rams-assets-reed/rams/assets/repl:372d2684-97ec-4ce5-b16a-77fb322db72a/a124968c-cdbe-42ff-8bfc-6ca99807d58d/9b85eeaa-81ea-4a3f-b167-b6044c8c22fe"
+storage_version_token = "1792581357850717"
+content_type = "text/markdown"
