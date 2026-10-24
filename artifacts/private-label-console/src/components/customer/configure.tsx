@@ -71,7 +71,7 @@ export function ConfigureExchange() {
         const submitter = (e.nativeEvent as SubmitEvent).submitter;
         if (last && submitter?.getAttribute('data-testid') === 'button-submit' && !submit.isPending && busy === 0 && !noPeriods &&
           ![0, 1, 2, 3, 5].some((i) => stepError(i, cfg))) send();
-      }} className="max-w-3xl space-y-6">
+      }} className={`${step === 1 && cfg.designType !== 'custom' ? 'max-w-6xl' : 'max-w-3xl'} space-y-6`}>
         <h2 className="font-display text-3xl">{STEPS[step]}</h2>
         {step === 0 && <ProjectStep cfg={cfg} set={set} onBusy={onBusy} />}
         {step === 1 && <DesignStep cfg={cfg} set={set} onBusy={onBusy} />}

@@ -5,6 +5,8 @@ import type { Caps, ExchangeTab } from '../../lib/capabilities';
 import { AMOUNT } from '../../lib/exchange-model';
 import { AssetPicker, Coin, NetBadge, assetKey } from '../asset-picker';
 import { WidgetShell } from './widget-shell';
+import { SimOrderFlow } from './sim-order-flow';
+import { SAMPLE_DETAILS, amountError as simAmountError, sampleAmount, simQuote, type SimDetails, type SimStage } from '../../lib/sim-order';
 
 const LABEL: Record<ExchangeTab, string> = { swap: 'Swap', convert: 'Convert' };
 const NOQ = 'No pricing source is connected in this sandbox.';
@@ -24,16 +26,23 @@ export function PresentationWidget({ site, caps, allowedActions, simulation: sim
   const [tab, setTab] = useState<ExchangeTab>(tabs[0] ?? 'swap');
   const [fromKey, setFromKey] = useState<string | null>(assets[0] ? assetKey(assets[0]) : null);
   const [toKey, setToKey] = useState<string | null>(() => { const o = assets.find((a) => a.assetId !== assets[0]?.assetId); return o ? assetKey(o) : null; });
-  const [amount, setAmount] = useState('');
+  const [amount, setAmount] = useState(() => (simulation ? sampleAmount((tabs[0] ?? 'swap') !== 'convert', assets[0] ? simulation.price(assets[0].assetId) : NaN) : ''));
   const [picker, setPicker] = useState<null | 'from' | 'to'>(null);
   const [touched, setTouched] = useState(false);
   const [status, setStatus] = useState<string | null>(null);
   const [fiatTop, setFiatTop] = useState(true);
   const [runs, setRuns] = useState(0);
+  const [stage, setStage] = useState<SimStage>('amount');
+  const [simDetails, setSimDetails] = useState<SimDetails>(SAMPLE_DETAILS);
   const [method, setMethod] = useState(simulation?.paymentMethods[0]?.id ?? '');
   const from = assets.find((a) => assetKey(a) === fromKey) ?? null;
   const to = assets.find((a) => assetKey(a) === toKey) ?? null;
   const convert = tab === 'convert';
+  /** Simulation only: keep the default journey near 250 fiat when the input currency changes. */
+  const resample = (inputFiat: boolean, assetId = from?.assetId) => {
+    if (!simulation) return;
+    setAmount(sampleAmount(inputFiat, assetId ? simulation.price(assetId) : NaN));
+  };
   const distinct = new Set(assets.map((a) => a.assetId)).size;
   const amountError = touched && (amount === '' || Number(amount) <= 0) ? 'Enter an amount greater than zero.' : null;
 
@@ -61,31 +70,46 @@ export function PresentationWidget({ site, caps, allowedActions, simulation: sim
     e.preventDefault(); setTouched(true);
     if (!(convert ? from && to : from)) { setStatus('Choose an asset first.'); return; }
     if (amount === '' || Number(amount) <= 0) { setStatus(null); return; }
-    if (simulation) { const n = runs + 1; setRuns(n); setStatus(`Simulation ${n} complete with synthetic sample data. No quote or order was created and nothing was sent.`); return; }
+    if (simulation) {
+      const err = simAmountError(amount, simQ?.fiatValue ?? null);
+      if (err || !simQ) { setStatus(`${err ?? 'Choose assets first.'} (simulation)`); return; }
+      setStatus(null); setStage('details'); return;
+    }
     setStatus('Sandbox preview only. No order was created and nothing was sent.');
   };
   const pick = (a: NonNullable<typeof from>) => {
     const k = assetKey(a);
-    if (picker === 'from') { setFromKey(k); if (convert && to?.assetId === a.assetId) setToKey(null); }
+    if (picker === 'from') { setFromKey(k); resample(topFiat, a.assetId); if (convert && to?.assetId === a.assetId) setToKey(null); }
     else { setToKey(k); if (convert && from?.assetId === a.assetId) setFromKey(null); }
     setPicker(null);
   };
   const blocked = convert ? (picker === 'from' ? to?.assetId : from?.assetId) : null;
   const amt = Number(amount);
   const simRate = simulation && from && (convert ? to : true) ? (convert ? simulation.price(from.assetId) / simulation.price(to!.assetId) : simulation.price(from.assetId)) : null;
-  const simOut = simRate && amount !== '' && amt > 0 ? (convert ? amt * simRate : topFiat ? amt / simRate : amt * simRate) : null;
   const simVals: Record<string, string> = simRate && from ? {
     rate: convert ? `1 ${from.symbol} = ${fmt(simRate)} ${to!.symbol}` : `1 ${from.symbol} = ${fmt(simRate)} fiat`,
     min: convert ? `${fmt(25 / simulation!.price(from.assetId))} ${from.symbol}` : '25 fiat', max: convert ? `${fmt(25000 / simulation!.price(from.assetId))} ${from.symbol}` : '25,000 fiat', fee: '0.35%',
   } : {};
+  const simQ = simulation && from && (!convert || to) ? simQuote({ amount: amt, fromPrice: simulation.price(from.assetId), toPrice: to ? simulation.price(to.assetId) : undefined, convert, fiatIn: topFiat }) : null;
   const row = (k: string, l: string) => <div className="flex items-center justify-between gap-3 py-1.5" key={k}><dt>{l}</dt><dd className="s-muted" title={simulation ? 'Synthetic sample value' : NOQ} data-testid={`text-${k}`}>{simVals[k] ? `${simVals[k]} (sample)` : 'Unavailable'}</dd></div>;
+
+  if (simulation && stage !== 'amount' && simQ && from) {
+    const crypto = from.symbol;
+    return (
+      <WidgetShell>
+        <SimOrderFlow key={runs} details={simDetails} setDetails={setSimDetails} stage={stage} setStage={setStage} run={runs + 1}
+          summary={{ action: convert ? 'Convert' : 'Swap', payLabel: topFiat ? 'You pay' : convert ? 'You convert' : 'You send', receiveLabel: 'You receive (sample)', paySymbol: topFiat ? 'fiat' : crypto, receiveSymbol: convert ? to!.symbol : topFiat ? crypto : 'fiat', amount: amt, quote: simQ, method: convert ? null : simulation.paymentMethods.find((m) => m.id === method)?.label ?? null }}
+          onEdit={() => setStage('amount')}
+          onRestart={() => { setSimDetails(SAMPLE_DETAILS); setRuns((n) => n + 1); setStage('amount'); setTouched(false); setStatus(null); }} />
+      </WidgetShell>);
+  }
 
   return (
     <WidgetShell>
       <form onSubmit={submit} noValidate aria-label="Exchange (sandbox)">
         <div className="s-action-header flex items-center justify-between gap-3">
           <div role="tablist" aria-label="Exchange action" className="s-tabs overflow-x-auto">
-            {tabs.map((t) => <button key={t} type="button" role="tab" id={`tab-${t}`} aria-selected={tab === t} className="s-tab" onClick={() => { setTab(t); setTouched(false); setStatus(null); }} data-testid={`tab-${t}`}>{LABEL[t]}</button>)}
+            {tabs.map((t) => <button key={t} type="button" role="tab" id={`tab-${t}`} aria-selected={tab === t} className="s-tab" onClick={() => { setTab(t); setTouched(false); setStatus(null); resample(t !== 'convert' && fiatTop); }} data-testid={`tab-${t}`}>{LABEL[t]}</button>)}
           </div>
           <span className="s-badge shrink-0" data-testid="badge-sandbox">{site.websiteSettings.sandboxLabel ?? 'Sandbox'}</span>
         </div>
@@ -99,11 +123,11 @@ export function PresentationWidget({ site, caps, allowedActions, simulation: sim
             {info(topAsset, topFiat)}
           </div>
           {amountError && <p role="alert" className="mt-1.5 text-xs font-medium" style={{ color: '#e5556b' }}>{amountError}</p>}
-          <button type="button" className="s-swapbtn" onClick={() => { if (convert) { const f = fromKey; setFromKey(toKey); setToKey(f); } else setFiatTop((v) => !v); }} aria-label="Switch direction" data-testid="button-switch-direction"><ArrowDownUp size={17} /></button>
+          <button type="button" className="s-swapbtn" onClick={() => { if (convert) { const f = fromKey; setFromKey(toKey); setToKey(f); const na = assets.find((a) => assetKey(a) === toKey); if (na) resample(false, na.assetId); } else { resample(!fiatTop); setFiatTop((v) => !v); } }} aria-label="Switch direction" data-testid="button-switch-direction"><ArrowDownUp size={17} /></button>
           <div className="s-side s-side-out">
             <label htmlFor="amt-bottom" className="s-lab">You receive</label>
             <div className="mt-1.5 flex items-center gap-3">
-              <input id="amt-bottom" className="s-amount" readOnly placeholder="0.00" value={simOut != null ? fmt(simOut) : ''} data-testid="input-amount-bottom" />
+              <input id="amt-bottom" className="s-amount" readOnly placeholder="0.00" value={simQ ? fmt(simQ.net) : ''} data-testid="input-amount-bottom" />
               {botFiat ? fiatPill('bottom') : cryptoBtn('bottom', 'You receive', botAsset, convert ? 'to' : 'from')}
             </div>
             {info(botAsset, botFiat)}
@@ -120,7 +144,7 @@ export function PresentationWidget({ site, caps, allowedActions, simulation: sim
           {row('rate', 'Rate')}{row('min', 'Minimum')}{row('max', 'Maximum')}{row('fee', 'Source fees')}
           <p className="s-muted pt-2 text-xs">{simulation ? 'Synthetic sample figures for design preview only. Not quotes, not market data.' : `${NOQ} Nothing here is an estimate.`}</p>
         </dl>
-        <button type="submit" className="s-btn s-btn-primary s-cta-xl mt-5 w-full" disabled={!assets.length || (convert && distinct < 2)} data-testid="button-exchange-cta">{simulation ? 'Run simulation' : 'Preview order (sandbox)'}</button>
+        <button type="submit" className="s-btn s-btn-primary s-cta-xl mt-5 w-full" disabled={!assets.length || (convert && distinct < 2)} data-testid="button-exchange-cta">{simulation ? `${LABEL[tab]} (simulation)` : 'Preview order (sandbox)'}</button>
         <div role="status" aria-live="polite" className="mt-3 min-h-[1.25rem]">
           {status && <p className="flex items-start gap-2 text-xs leading-relaxed" data-testid="status-sandbox"><ShieldCheck size={15} className="mt-0.5 shrink-0" style={{ color: 'var(--s-accent-ink)' }} aria-hidden="true" />{status}</p>}
         </div>

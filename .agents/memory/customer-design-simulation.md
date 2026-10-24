@@ -7,3 +7,9 @@ Customers must see the standard Exchange design with their logo and optional col
 **Why:** The user explicitly requested all applicable public page previews and repeatable Swap/Convert simulations with sample payment methods at this stage.
 
 **How to apply:** Reuse the approved shared master. Keep simulations synthetic and local, without quotes, orders, tenant creation or exposing private uploaded attachments. Custom design remains a paid-review request, not an automatically generated design.
+
+The demo should be wide and professional, and Swap/Convert must progress through details and review to a completed simulated order, rather than ending at an initial amount preview.
+
+**Why:** The user explicitly requested a full multi-step simulator comparable to the approved NovaX experience.
+
+**How to apply:** Preserve sample details during back/edit navigation, clearly distinguish simulated completion from a real order, and keep the entire journey local-only.
