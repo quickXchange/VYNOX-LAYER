@@ -40,7 +40,7 @@ export function ConfigureExchange() {
     setErr(null); const c = cfg; const custom = c.designType === 'custom';
     submit.mutate({ data: {
       projectName: c.brandName.trim(), brandName: c.brandName.trim(), preferredDomain: c.domain.trim(), actions: c.acts as ExchangeAction[], details: c.details, idempotencyKey: key.current,
-      design: { type: c.designType, styleName: custom ? c.styleName.trim() : '', primaryColor: c.primary, accentColor: c.accent, themePreference: c.theme, description: custom ? c.description : '', referenceWebsiteUrl: custom && c.refUrl.trim() ? c.refUrl.trim() : null, notes: custom ? c.notes : '', logoAttachmentId: c.logo?.id ?? null, faviconAttachmentId: c.favicon?.id ?? null, referenceAttachmentIds: custom ? c.refs.map((x) => x.id) : [] },
+      design: { type: c.designType, styleName: custom ? c.styleName.trim() : '', primaryColor: c.primary, accentColor: c.accent, themePreference: c.theme, description: custom ? c.description : '', referenceWebsiteUrl: custom && c.refUrl.trim() ? c.refUrl.trim() : null, notes: custom ? c.notes : '', logoAttachmentId: c.logo?.id ?? null, faviconAttachmentId: null, referenceAttachmentIds: custom ? c.refs.map((x) => x.id) : [] },
       requestedPlanId: c.planId, requestedAddonIds: c.addonIds, billingPeriod: c.period, attachmentIds: c.reqFiles.map((x) => x.id),
     } }, {
       onSuccess: (r) => { setDone(r); key.current = crypto.randomUUID(); qc.invalidateQueries({ queryKey: getListMyWhiteLabelRequestsQueryKey() }); },

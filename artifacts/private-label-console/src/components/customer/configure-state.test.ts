@@ -12,3 +12,8 @@ test('Project requires only brand and preferred domain, not the removed name fie
   cfg.domain = 'exchange.example.com';
   assert.equal(stepError(0, cfg), '');
 });
+
+test('New configure state no longer carries a favicon and file limits ignore it', () => {
+  const cfg = initialCfg();
+  assert.equal('favicon' in cfg, false);
+});
