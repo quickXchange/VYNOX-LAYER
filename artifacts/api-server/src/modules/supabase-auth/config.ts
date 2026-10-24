@@ -16,7 +16,7 @@ export function productionSupabaseAuth(env = process.env): boolean {
   return env.QXLAYER_EXTERNAL_ENVIRONMENT === "production" && env.QXLAYER_AUTH_PROVIDER === "supabase";
 }
 
-/** Email first factor is always followed by the existing verified authenticator. */
+/** Email first factor preserves any existing verified authenticator requirement. */
 export function supabaseEmailLoginEnabled(env = process.env): boolean {
   return supabaseAuthEnabled(env);
 }

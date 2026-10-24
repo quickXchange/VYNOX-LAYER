@@ -110,7 +110,7 @@ async function scenario(run: (f: {
     const body = init?.body ? JSON.parse(String(init.body)) : {};
     if (path.endsWith("/otp")) {
       assert.equal(body.create_user, false);
-      assert.equal(body.email, "synthetic@gmail.com");
+      assert.equal(typeof body.email, "string");
       return new globalThis.Response("{}", { status: providerFailure ? 503 : 200 });
     }
     if (path === "/auth/v1/verify") {
@@ -176,18 +176,33 @@ for (const environment of ["staging", "production"] as const) {
     }, environment);
   });
 }
-test("unknown, non-admin, unverified, non-Gmail and missing-TOTP accounts cannot get email login or create accounts", async () => {
-  for (const variant of ["unknown", "non-admin", "unverified", "non-Gmail", "missing-TOTP"]) {
+for (const environment of ["development", "staging", "production"] as const) {
+  for (const totp of [false, true]) {
+    test(`${environment} customers with non-Gmail email can sign in; MFA enabled=${totp}`, async () => {
+      await scenario(async f => {
+        const email = "customer@example.test";
+        f.eligible(false);
+        f.mailbox(email, true, totp);
+        await sendEmailLogin(email, f.req, f.res);
+        const result = await performAction({ action: "login-email-verify", email, code: "246810" }, f.req, f.res);
+        assert.equal(result.mfaRequired, totp);
+        assert.equal(f.payload().emailPrimaryMfaRequired, totp);
+        assert.equal((await readSession(f.req))?.user.email, email);
+        assert(f.requests.some(p => p.endsWith("/otp")));
+        assert(!f.requests.some(p => p.includes("/admin/") || p.includes("/signup")));
+      }, environment);
+    });
+  }
+}
+test("unknown and unverified identities cannot establish sessions", async () => {
+  for (const variant of ["unknown", "unverified"]) {
     await scenario(async f => {
       let email = "synthetic@gmail.com";
       if (variant === "unknown") email = "unknown@gmail.com";
-      if (variant === "non-admin") f.eligible(false);
       if (variant === "unverified") f.mailbox(email, false, true);
-      if (variant === "non-Gmail") { email = "synthetic@example.test"; f.mailbox(email, true, true); }
-      if (variant === "missing-TOTP") f.mailbox(email, true, false);
       await sendEmailLogin(email, f.req, f.res);
       assert(f.cookies.has(EMAIL_LOGIN_COOKIE)); // Same generic presentation, no enumeration.
-      assert(!f.requests.some(p => p.endsWith("/otp")));
+      assert(f.requests.some(p => p.endsWith("/otp")));
       await assert.rejects(verifyEmailLogin(email, "246810", f.req, f.res), { status: 400 });
       assert(!f.cookies.has(SESSION_COOKIE));
     });
@@ -233,12 +248,12 @@ test("passwordless send readback confirms the exact browser cookie and cannot re
     assert.equal(await emailLoginChallengeExpiresAt(f.req), undefined);
   });
 });
-test("unknown-account passwordless challenges have the same readback shape without sending mail", async () => {
+test("customer passwordless challenges retain browser-bound readback", async () => {
   await scenario(async f => {
     f.eligible(false);
     const result = await performAction({ action: "login-email-send", email: "synthetic@gmail.com" }, f.req, f.res);
     assert.equal(await emailLoginChallengeExpiresAt(f.req), result.emailLoginChallengeExpiresAt);
-    assert(!f.requests.some(p => p.endsWith("/otp")));
+    assert(f.requests.some(p => p.endsWith("/otp")));
     f.advance(300000);
     assert.equal(await emailLoginChallengeExpiresAt(f.req), undefined);
   });

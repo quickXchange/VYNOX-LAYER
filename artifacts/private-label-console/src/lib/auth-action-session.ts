@@ -10,7 +10,9 @@ export function authActionSessionError(input: SupabaseActionInput, session: Supa
     if (!session.user || session.recovery ||
         session.user.email.toLowerCase() !== input.email?.trim().toLowerCase())
       return "The sign-in session was not retained in this browser. Open Development in one browser tab and sign in again. Allow its secure cookies.";
-    if (input.action === "login-email-verify" && !session.mfaRequired)
+    if (input.action === "login-email-verify" &&
+        ((session.user.twoFactorEnabled && !session.mfaRequired) ||
+         (typeof result?.mfaRequired === "boolean" && result.mfaRequired !== session.mfaRequired)))
       return "The required authenticator step could not be confirmed. Sign in again.";
   }
   if (input.action === "mfa-verify" || input.action === "mfa-email-verify") {

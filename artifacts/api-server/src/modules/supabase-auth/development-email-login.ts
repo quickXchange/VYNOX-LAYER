@@ -5,8 +5,7 @@ import { HttpError } from "../../lib/errors";
 import { developmentSupabaseAuth, supabaseEmailLoginEnabled, productionSupabaseAuth, supabaseAuthConfiguration, supabaseSessionSecret } from "./config";
 import { sessionCodec } from "./crypto";
 import { authRequest, type SupabaseUser, type SupabaseTokens } from "./provider";
-import { verifiedGmailSuperAdmin } from "./development-email-mfa";
-import { establishSession } from "./session";
+import { establishSession, hasVerifiedFactor } from "./session";
 import { developmentLimit, developmentMailCooldown, privateAuthKey } from "./development-auth-limits";
 
 export const EMAIL_LOGIN_COOKIE = developmentSupabaseAuth() ? "__Host-vynox_dev_email_login" :
@@ -46,48 +45,23 @@ export async function emailLoginChallengeExpiresAt(req: Request): Promise<number
   return r.rowCount ? p.expires : undefined;
 }
 
-/** Locate an EXISTING authorized subject for delivery, not email-based role assignment. */
-export async function eligibleEmailLoginUser(email: string): Promise<SupabaseUser | null> {
-  const cfg = requireDevelopment();
-  const admins = await pool.query(productionSupabaseAuth() ?
-    "SELECT subject::text FROM vynox_supabase_auth.active_admin_subjects()" : `SELECT DISTINCT COALESCE(l.subject::text,
-    CASE WHEN a.clerk_user_id LIKE 'supabase:%' THEN substring(a.clerk_user_id from 10) END) AS subject
-    FROM public.platform_admins a LEFT JOIN vynox_supabase_auth.identity_links l ON l.business_id=a.clerk_user_id
-    WHERE a.active=true LIMIT 51`);
-  if (admins.rows.length > 50) throw new HttpError(503, "Email sign-in is temporarily unavailable.");
-  for (const row of admins.rows) {
-    if (!/^[a-f0-9-]{36}$/i.test(row.subject ?? "")) continue;
-    let response: globalThis.Response;
-    try {
-      response = await fetch(`${cfg.providerOrigin}/auth/v1/admin/users/${row.subject}`, {
-        headers: { apikey: cfg.apiKey }, redirect: "error", signal: AbortSignal.timeout(10000),
-      });
-    } catch { throw new HttpError(503, "Email sign-in is temporarily unavailable."); }
-    if (response.status === 404) continue;
-    if (!response.ok) throw new HttpError(503, "Email sign-in is temporarily unavailable.");
-    const user = await response.json() as SupabaseUser;
-    if (user.id === row.subject && user.email?.toLowerCase() === email && await verifiedGmailSuperAdmin(user))
-      return user;
-  }
-  return null;
-}
-
 export async function sendEmailLogin(email: string, _req: Request, res: Response) {
   const cfg = requireDevelopment();
   if (!cfg.mailReady) throw new HttpError(503, "Email delivery is unavailable.");
   await developmentMailCooldown(email);
   await developmentLimit("email-login-send-hour", email, 3600, 5);
-  const user = await eligibleEmailLoginUser(email);
-  const p: Challenge = { purpose: "email-login", subject: user?.id ?? randomUUID(),
+  // This UUID scopes the browser challenge, not an account. Identity is obtained
+  // only from native OTP verification, without enumerating privileged users.
+  const p: Challenge = { purpose: "email-login", subject: randomUUID(),
     emailHash: privateAuthKey("email-login-address", email),
     nonce: randomBytes(24).toString("base64url"), expires: Date.now() + lifetime };
   // No signup, admin-generated links, password reset or credential replacement.
-  if (user) await authRequest("/otp", { method: "POST", body: { email, create_user: false } });
+  await authRequest("/otp", { method: "POST", body: { email, create_user: false } });
   await pool.query(`INSERT INTO vynox_supabase_auth.rate_limits(key,hits,reset_at) VALUES($1,0,to_timestamp($2))
     ON CONFLICT(key) DO NOTHING`, [challengeKey(p), p.expires / 1000]);
   res.cookie(EMAIL_LOGIN_COOKIE, sessionCodec(supabaseSessionSecret()).seal(p),
     { secure: true, httpOnly: true, sameSite: "lax", path: "/", maxAge: Math.max(0, p.expires - Date.now()) });
-  // Same response/cookie shape for unknown, customer, unverified and non-Gmail accounts.
+  // The provider owns account eligibility; sign-in must never create an account.
   return p.expires;
 }
 
@@ -100,9 +74,6 @@ export async function verifyEmailLogin(email: string, code: string, req: Request
   if (!/^[0-9]{6}$/.test(code)) throw invalid();
   if (p.expires <= Date.now()) throw restart("The five-minute sign-in code request has expired.");
   await developmentLimit("email-login-verify", email, 900, 20);
-  // Resolve authority before holding the challenge lock; do not exhaust the pool
-  // with nested authority queries while parallel verifiers wait for this row.
-  const user = await eligibleEmailLoginUser(email);
   const c = await pool.connect();
   let tokens: SupabaseTokens | undefined;
   let failure: unknown;
@@ -112,9 +83,8 @@ export async function verifyEmailLogin(email: string, code: string, req: Request
       WHERE key=$1 AND reset_at>now() AND hits<5 RETURNING hits`, [challengeKey(p)]);
     if (!state.rowCount) throw restart("The code request is expired, already used or has reached its attempt limit.");
     try {
-      if (!user || user.id !== p.subject) throw invalid();
       tokens = await authRequest<SupabaseTokens>("/verify", { method: "POST", body: { email, token: code, type: "email" } });
-      if (Date.now() >= p.expires || tokens.user.id !== p.subject || tokens.user.email?.toLowerCase() !== email)
+      if (Date.now() >= p.expires || !tokens.user.id || !tokens.user.email_confirmed_at || tokens.user.email?.toLowerCase() !== email)
         throw invalid();
       // Serialize successful consumption even if the provider were to accept a
       // duplicated concurrent verification. Failed attempts also commit.
@@ -127,9 +97,11 @@ export async function verifyEmailLogin(email: string, code: string, req: Request
   } catch (e) { await c.query("ROLLBACK"); throw e; } finally { c.release(); }
   if (failure) throw failure;
   if (!tokens) throw invalid();
+  const verifiedSubject = tokens.user.id;
   tokens.user = await authRequest<SupabaseUser>("/user", { accessToken: tokens.access_token });
-  if (Date.now() >= p.expires || tokens.user.id !== p.subject || tokens.user.email?.toLowerCase() !== email ||
-      !await verifiedGmailSuperAdmin(tokens.user)) throw invalid();
+  if (Date.now() >= p.expires || tokens.user.id !== verifiedSubject || tokens.user.email?.toLowerCase() !== email ||
+      !tokens.user.email_confirmed_at) throw invalid();
   await establishSession(req, res, tokens, false, true);
   res.clearCookie(EMAIL_LOGIN_COOKIE, { secure: true, httpOnly: true, sameSite: "lax", path: "/" });
+  return { mfaRequired: hasVerifiedFactor(tokens.user) };
 }

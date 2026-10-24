@@ -99,8 +99,7 @@ export async function performAction(raw: unknown, req: Request, res: Response) {
     case "login-email-send":
       return { ok: true, emailLoginChallengeExpiresAt: await sendEmailLogin(a.email, req, res) };
     case "login-email-verify":
-      await verifyEmailLogin(a.email, a.code, req, res);
-      return { ok: true, mfaRequired: true };
+      return { ok: true, ...await verifyEmailLogin(a.email, a.code, req, res) };
     case "mfa-email-send":
       await sendEmailChallenge(await needSession(req));
       return { ok: true };
