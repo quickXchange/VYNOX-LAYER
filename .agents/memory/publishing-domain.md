@@ -52,3 +52,15 @@ evaluation before React mounted, while the page assets and API all returned 200.
 **How to apply:** Validate shared origin metadata at packaging time and verify
 the rendered public website and native sign-in route after domain changes.
 Keep positive Owner/MFA proof separate from anonymous rendering evidence.
+
+Normal approved main changes may release Production automatically after their
+candidate deployment and checks succeed, using the same source commit.
+
+**Why:** The user approved preparing a “merge once, release automatically”
+workflow to remove the repeated manual Production dispatch step.
+
+**How to apply:** Preserve existing environment approvals and financial holds;
+do not disable protections to make releases unattended. Keep this preparation
+separate from authorization to merge or trigger a release. A manual candidate
+dispatch alone must not automatically promote Production. The automation's own
+merge can trigger a release, so communicate that consequence before enablement.
