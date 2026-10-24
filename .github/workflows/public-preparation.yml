@@ -1,5 +1,13 @@
 name: Official-domain Production release (financial execution held)
 on:
+  workflow_call:
+    inputs:
+      approve_temporary_production:
+        type: boolean
+        required: true
+      release_after_candidate:
+        type: boolean
+        default: false
   workflow_dispatch:
     inputs:
       approve_temporary_production:
@@ -22,6 +30,7 @@ jobs:
     environment: vynox-public-preparation
     runs-on: ubuntu-latest
     env:
+      QXLAYER_AUTO_RELEASE_AFTER_CANDIDATE: ${{ inputs.release_after_candidate && 'true' || 'false' }}
       QXLAYER_EXTERNAL_ENVIRONMENT: production
       QXLAYER_EXTERNAL_CANDIDATE: "false"
       QXLAYER_EXTERNAL_ACCEPTANCE_APPROVED: "false"
@@ -40,12 +49,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: ${{ github.sha }}
           persist-credentials: false
       - uses: actions/setup-node@v4
         with:
           node-version: "24"
       - run: corepack enable
       - run: pnpm install --frozen-lockfile
+      - name: Reject unapproved triggers and superseded source before any deployment
+        run: node scripts/external-hosting/public-release-source.mjs
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
       - name: Validate approved public runtime and preserved acceptance
         run: node scripts/external-hosting/verify-public-preparation.mjs before
         env:
