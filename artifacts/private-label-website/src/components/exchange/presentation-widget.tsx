@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { createContext, useContext, useState } from 'react';
 import { ArrowDownUp, ChevronDown, ShieldCheck } from 'lucide-react';
 import type { PublicSite } from '@workspace/api-client-react';
 import type { Caps, ExchangeTab } from '../../lib/capabilities';
@@ -10,7 +10,15 @@ const LABEL: Record<ExchangeTab, string> = { swap: 'Swap', convert: 'Convert' };
 const NOQ = 'No pricing source is connected in this sandbox.';
 
 /** Marketing-shell showcase of the exchange. Display only: it never requests quotes or creates orders. */
-export function PresentationWidget({ site, caps, allowedActions }: { site: PublicSite; caps: Caps; allowedActions?: ExchangeTab[] }) {
+export interface WidgetSimulation { price: (assetId: string) => number; paymentMethods: { id: string; label: string; note: string }[] }
+const fmt = (n: number) => (n >= 1 ? n.toLocaleString('en-US', { maximumFractionDigits: 2 }) : n.toPrecision(6));
+
+export const SimulationContext = createContext<WidgetSimulation | undefined>(undefined);
+
+/** `simulation` is used only by the isolated design preview: synthetic local math, never a quote. */
+export function PresentationWidget({ site, caps, allowedActions, simulation: simProp }: { site: PublicSite; caps: Caps; allowedActions?: ExchangeTab[]; simulation?: WidgetSimulation }) {
+  const ctxSim = useContext(SimulationContext);
+  const simulation = simProp ?? ctxSim;
   const assets = site.assets;
   const tabs = allowedActions ? caps.tabs.filter((t) => allowedActions.includes(t)) : caps.tabs;
   const [tab, setTab] = useState<ExchangeTab>(tabs[0] ?? 'swap');
@@ -21,6 +29,8 @@ export function PresentationWidget({ site, caps, allowedActions }: { site: Publi
   const [touched, setTouched] = useState(false);
   const [status, setStatus] = useState<string | null>(null);
   const [fiatTop, setFiatTop] = useState(true);
+  const [runs, setRuns] = useState(0);
+  const [method, setMethod] = useState(simulation?.paymentMethods[0]?.id ?? '');
   const from = assets.find((a) => assetKey(a) === fromKey) ?? null;
   const to = assets.find((a) => assetKey(a) === toKey) ?? null;
   const convert = tab === 'convert';
@@ -51,6 +61,7 @@ export function PresentationWidget({ site, caps, allowedActions }: { site: Publi
     e.preventDefault(); setTouched(true);
     if (!(convert ? from && to : from)) { setStatus('Choose an asset first.'); return; }
     if (amount === '' || Number(amount) <= 0) { setStatus(null); return; }
+    if (simulation) { const n = runs + 1; setRuns(n); setStatus(`Simulation ${n} complete with synthetic sample data. No quote or order was created and nothing was sent.`); return; }
     setStatus('Sandbox preview only. No order was created and nothing was sent.');
   };
   const pick = (a: NonNullable<typeof from>) => {
@@ -60,7 +71,14 @@ export function PresentationWidget({ site, caps, allowedActions }: { site: Publi
     setPicker(null);
   };
   const blocked = convert ? (picker === 'from' ? to?.assetId : from?.assetId) : null;
-  const row = (k: string, l: string) => <div className="flex items-center justify-between gap-3 py-1.5" key={k}><dt>{l}</dt><dd className="s-muted" title={NOQ} data-testid={`text-${k}`}>Unavailable</dd></div>;
+  const amt = Number(amount);
+  const simRate = simulation && from && (convert ? to : true) ? (convert ? simulation.price(from.assetId) / simulation.price(to!.assetId) : simulation.price(from.assetId)) : null;
+  const simOut = simRate && amount !== '' && amt > 0 ? (convert ? amt * simRate : topFiat ? amt / simRate : amt * simRate) : null;
+  const simVals: Record<string, string> = simRate && from ? {
+    rate: convert ? `1 ${from.symbol} = ${fmt(simRate)} ${to!.symbol}` : `1 ${from.symbol} = ${fmt(simRate)} fiat`,
+    min: convert ? `${fmt(25 / simulation!.price(from.assetId))} ${from.symbol}` : '25 fiat', max: convert ? `${fmt(25000 / simulation!.price(from.assetId))} ${from.symbol}` : '25,000 fiat', fee: '0.35%',
+  } : {};
+  const row = (k: string, l: string) => <div className="flex items-center justify-between gap-3 py-1.5" key={k}><dt>{l}</dt><dd className="s-muted" title={simulation ? 'Synthetic sample value' : NOQ} data-testid={`text-${k}`}>{simVals[k] ? `${simVals[k]} (sample)` : 'Unavailable'}</dd></div>;
 
   return (
     <WidgetShell>
@@ -85,18 +103,24 @@ export function PresentationWidget({ site, caps, allowedActions }: { site: Publi
           <div className="s-side s-side-out">
             <label htmlFor="amt-bottom" className="s-lab">You receive</label>
             <div className="mt-1.5 flex items-center gap-3">
-              <input id="amt-bottom" className="s-amount" readOnly placeholder="0.00" value="" data-testid="input-amount-bottom" />
+              <input id="amt-bottom" className="s-amount" readOnly placeholder="0.00" value={simOut != null ? fmt(simOut) : ''} data-testid="input-amount-bottom" />
               {botFiat ? fiatPill('bottom') : cryptoBtn('bottom', 'You receive', botAsset, convert ? 'to' : 'from')}
             </div>
             {info(botAsset, botFiat)}
           </div>
-          <p className="s-muted mt-2 text-xs" data-testid="text-receive-note">Receive amount appears once a quote is available.</p>
+          <p className="s-muted mt-2 text-xs" data-testid="text-receive-note">{simulation ? 'Synthetic sample amount for design preview. Not a quote.' : 'Receive amount appears once a quote is available.'}</p>
+          {simulation && !convert && simulation.paymentMethods.length > 0 && (
+            <fieldset className="mt-4" data-testid="group-sample-payment-methods"><legend className="s-lab">{topFiat ? 'Pay with (sample)' : 'Receive to (sample)'}</legend>
+              <div className="mt-2 grid grid-cols-2 gap-2">{simulation.paymentMethods.map((m) => (
+                <button key={m.id} type="button" aria-pressed={method === m.id} onClick={() => setMethod(m.id)} className="s-tile rounded-[var(--s-r1)] border px-3 py-2 text-left text-sm" style={{ borderColor: method === m.id ? 'var(--s-accent)' : 'var(--s-line)' }} data-testid={`button-sample-method-${m.id}`}>
+                  <span className="block font-medium">{m.label}</span><span className="s-muted block text-[11px]">{m.note}</span></button>))}</div>
+            </fieldset>)}
         </div>
         <dl className="s-ratebox mt-4 divide-y rounded-[var(--s-r2)] border px-4 py-2.5" style={{ borderColor: 'var(--s-line)' }} data-testid="panel-rate">
           {row('rate', 'Rate')}{row('min', 'Minimum')}{row('max', 'Maximum')}{row('fee', 'Source fees')}
-          <p className="s-muted pt-2 text-xs">{NOQ} Nothing here is an estimate.</p>
+          <p className="s-muted pt-2 text-xs">{simulation ? 'Synthetic sample figures for design preview only. Not quotes, not market data.' : `${NOQ} Nothing here is an estimate.`}</p>
         </dl>
-        <button type="submit" className="s-btn s-btn-primary s-cta-xl mt-5 w-full" disabled={!assets.length || (convert && distinct < 2)} data-testid="button-exchange-cta">Preview order (sandbox)</button>
+        <button type="submit" className="s-btn s-btn-primary s-cta-xl mt-5 w-full" disabled={!assets.length || (convert && distinct < 2)} data-testid="button-exchange-cta">{simulation ? 'Run simulation' : 'Preview order (sandbox)'}</button>
         <div role="status" aria-live="polite" className="mt-3 min-h-[1.25rem]">
           {status && <p className="flex items-start gap-2 text-xs leading-relaxed" data-testid="status-sandbox"><ShieldCheck size={15} className="mt-0.5 shrink-0" style={{ color: 'var(--s-accent-ink)' }} aria-hidden="true" />{status}</p>}
         </div>

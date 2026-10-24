@@ -6,6 +6,7 @@ import { TooltipProvider } from '@/components/ui/tooltip';
 import Entry from '@/pages/entry';
 import { SiteHome, FeaturePage, LegalPage } from '@/pages/site';
 import NotFound from '@/pages/not-found';
+import { DesignPreviewHome, DesignPreviewFeature, DesignPreviewLegal } from '@/pages/design-preview';
 const TelegramMini = lazy(() => import('@/pages/telegram-mini'));
 const OrderTracking = lazy(() => import('@/pages/order-tracking'));
 import {
@@ -57,6 +58,10 @@ function Router() {
       <Switch>
         <Route path="/" component={MainPlatformEntry} />
         <Route path="/sandbox/site-finder" component={Entry} />
+        <Route path="/__design-preview" component={DesignPreviewHome} />
+        <Route path="/__design-preview/privacy">{() => <DesignPreviewLegal kind="privacy" />}</Route>
+        <Route path="/__design-preview/terms">{() => <DesignPreviewLegal kind="terms" />}</Route>
+        <Route path="/__design-preview/:feature" component={DesignPreviewFeature} />
         <Route path="/:slug/orders/:orderId">{() => <Suspense fallback={null}><OrderTracking /></Suspense>}</Route>
         <Route path="/:slug" component={SiteHome} />
         <Route path="/:slug/privacy">{() => <LegalPage kind="privacy" />}</Route>
