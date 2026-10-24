@@ -8,11 +8,8 @@ const Field = ({ label, children, hint }: { label: string; children: React.React
 export function ProjectStep({ cfg, set }: StepProps) {
   return (
     <div className="grid gap-4 md:grid-cols-2">
-      <Field label="Project name"><Input data-testid="input-project" value={cfg.projectName} onChange={(e) => set({ projectName: e.target.value })} maxLength={100} /></Field>
-      <Field label="Website name (optional)"><Input data-testid="input-website-name" value={cfg.websiteName ?? ''} onChange={(e) => set({ websiteName: e.target.value })} placeholder="Uses your brand name if empty" minLength={2} maxLength={120} /></Field>
-      <Field label="Brand name"><Input data-testid="input-brand" value={cfg.brandName} onChange={(e) => set({ brandName: e.target.value })} maxLength={100} /></Field>
-      <Field label="Company name (optional)"><Input data-testid="input-company" value={cfg.companyName} onChange={(e) => set({ companyName: e.target.value })} maxLength={150} /></Field>
-      <Field label="Preferred domain (optional)"><Input data-testid="input-domain" value={cfg.domain} onChange={(e) => set({ domain: e.target.value })} maxLength={253} placeholder="exchange.example.com" /></Field>
+      <Field label="Brand name (required)"><Input data-testid="input-brand" required minLength={2} value={cfg.brandName} onChange={(e) => set({ brandName: e.target.value })} maxLength={100} /></Field>
+      <Field label="Preferred domain (required)"><Input data-testid="input-domain" required value={cfg.domain} onChange={(e) => set({ domain: e.target.value })} maxLength={253} placeholder="exchange.example.com" /></Field>
     </div>
   );
 }

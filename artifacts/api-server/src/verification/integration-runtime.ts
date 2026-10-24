@@ -137,7 +137,7 @@ if (process.argv.includes("--cleanup")) {
     await saveIntegration(op, ta.id, "telegram_mini_app", mini);
     checked("Mini branding, original language dictionaries, Sandbox creation/idempotency/private tracking, feature and module disable");
     const request = await submitRequest(a, { projectName: `Runtime approval ${suffix}`, brandName: `Runtime approval ${suffix}`,
-      preferredDomain: null, actions: ["swap"], details: "Disposable Sandbox verification", requestedPlanId: fixture.planId, idempotencyKey: randomUUID() });
+      preferredDomain: "integration.example.test", actions: ["swap"], details: "Disposable Sandbox verification", requestedPlanId: fixture.planId, idempotencyKey: randomUUID() });
     const approved = await reviewRequest(op, request.id, { status: "approved", monthlyPrice: "149", setupPrice: "299", currency: "USD",
       approvedPlanId: fixture.planId, approvedAddonIds: [], operatorNote: "Disposable approval verification" });
     assert.equal(approved.status, "delivered");

@@ -3109,6 +3109,8 @@ export const submitWhiteLabelRequestBodyBrandNameMax = 100;
 
 export const submitWhiteLabelRequestBodyPreferredDomainMax = 253;
 
+
+export const submitWhiteLabelRequestBodyPreferredDomainRegExp = new RegExp('\\S');
 export const submitWhiteLabelRequestBodyActionsMax = 4;
 
 export const submitWhiteLabelRequestBodyDetailsMax = 10000;
@@ -3137,7 +3139,7 @@ export const SubmitWhiteLabelRequestBody = zod.object({
   "projectName": zod.string().min(submitWhiteLabelRequestBodyProjectNameMin).max(submitWhiteLabelRequestBodyProjectNameMax),
   "websiteName": zod.string().min(submitWhiteLabelRequestBodyWebsiteNameMin).max(submitWhiteLabelRequestBodyWebsiteNameMax).optional(),
   "brandName": zod.string().min(submitWhiteLabelRequestBodyBrandNameMin).max(submitWhiteLabelRequestBodyBrandNameMax),
-  "preferredDomain": zod.string().max(submitWhiteLabelRequestBodyPreferredDomainMax).nullish(),
+  "preferredDomain": zod.string().min(1).max(submitWhiteLabelRequestBodyPreferredDomainMax).regex(submitWhiteLabelRequestBodyPreferredDomainRegExp),
   "actions": zod.array(zod.enum(['swap', 'convert', 'buy', 'sell'])).min(1).max(submitWhiteLabelRequestBodyActionsMax),
   "details": zod.string().max(submitWhiteLabelRequestBodyDetailsMax),
   "companyName": zod.string().max(submitWhiteLabelRequestBodyCompanyNameMax).nullish(),

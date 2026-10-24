@@ -17,7 +17,7 @@ try {
   await assert.rejects(() => attachmentFor(op, file.id), (e: any) => e.status === 404);
   await assert.rejects(() => uploadAttachment(owner, "unsafe.svg", "image/svg+xml", "logo", Buffer.from("<svg/>")), (e: any) => e.status === 400);
   await assert.rejects(() => uploadAttachment(owner, "spoofed.png", "image/png", "logo", Buffer.from("<script>alert(1)</script>")), (e: any) => e.status === 400);
-  const input = { projectName: "Private attachment verification", brandName: "Private", preferredDomain: null, actions: ["swap" as const], details: "Protected upload ownership", attachmentIds: [file.id], idempotencyKey: randomUUID() };
+  const input = { projectName: "Private attachment verification", brandName: "Private", preferredDomain: "private.example.test", actions: ["swap" as const], details: "Protected upload ownership", attachmentIds: [file.id], idempotencyKey: randomUUID() };
   const [a, b] = await Promise.all([submitRequest(owner, input), submitRequest(owner, input)]);
   assert.equal(a.id, b.id);
   assert.equal(a.attachments.length, 1);

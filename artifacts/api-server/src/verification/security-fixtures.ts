@@ -49,7 +49,7 @@ export async function prepareSecurityFixtures(actors: string[]) {
         resources[type] = r.item!.id;
       }
       const file = await uploadAttachment(p, `security-${i}.txt`, "text/plain", "requirement", Buffer.from(`Private security audit fixture ${i}.`));
-      const input = { projectName: `Security project ${i}`, brandName: `Security brand ${i}`, preferredDomain: null,
+      const input = { projectName: `Security project ${i}`, brandName: `Security brand ${i}`, preferredDomain: `security-${i}.example.test`,
         actions: ["swap" as const], details: "Disposable security audit", attachmentIds: [file.id], idempotencyKey: randomUUID() };
       const request = await submitRequest(p, input);
       await appendNote(op, request.id, { message: `INTERNAL SECURITY FIXTURE ${i}`, visibility: "internal" });

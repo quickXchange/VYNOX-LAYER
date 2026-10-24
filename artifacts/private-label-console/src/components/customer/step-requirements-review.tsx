@@ -27,7 +27,7 @@ export function ReviewStep({ cfg, cat }: { cfg: Cfg; cat?: Catalog }) {
   const unknown = [...(pp == null ? [plan?.name ?? 'Plan'] : []), ...addons.filter((a) => periodPrice(a, cfg.period) == null).map((a) => `${a.name} recurring`), ...(plan && plan.setupFee == null ? [`${plan.name} setup`] : []), ...addons.filter((a) => a.setupFee == null).map((a) => `${a.name} setup`)];
   return (
     <div className="space-y-4">
-      <Sec t="Project"><dl><Row k="Project" v={cfg.projectName} /><Row k="Website" v={cfg.websiteName || cfg.brandName} /><Row k="Brand" v={cfg.brandName} /><Row k="Company" v={cfg.companyName || '-'} /><Row k="Preferred domain" v={cfg.domain || '-'} /><Row k="Features" v={<span className="capitalize">{cfg.acts.join(', ')}</span>} /></dl></Sec>
+      <Sec t="Project"><dl><Row k="Brand" v={cfg.brandName} /><Row k="Preferred domain" v={cfg.domain} /><Row k="Features" v={<span className="capitalize">{cfg.acts.join(', ')}</span>} /></dl></Sec>
       <Sec t="Design"><dl><Row k="Type" v={custom ? 'Custom design (paid review)' : 'Standard (Exchange master)'} />
         <Row k="Colors" v={<span className="flex flex-wrap justify-end gap-2">{[cfg.primary, cfg.accent].map((color, i) => <span key={i} className="inline-flex items-center gap-1.5"><i className="h-4 w-4 shrink-0 rounded border" style={{ background: color }} />{color}</span>)}</span>} /><Row k="Theme" v={<span className="capitalize">{cfg.theme}</span>} />
         {custom && <><Row k="Style" v={cfg.styleName} /><Row k="Description" v={cfg.description || '-'} /><Row k="Reference site" v={cfg.refUrl || '-'} /><Row k="Notes" v={cfg.notes || '-'} /></>}</dl>

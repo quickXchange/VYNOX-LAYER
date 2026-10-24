@@ -26,10 +26,11 @@ export interface WhiteLabelRequestInput {
      */
   brandName: string;
   /**
+     * @minLength 1
      * @maxLength 253
-     * @nullable
+     * @pattern \S
      */
-  preferredDomain?: string | null;
+  preferredDomain: string;
   /**
      * @minItems 1
      * @maxItems 4

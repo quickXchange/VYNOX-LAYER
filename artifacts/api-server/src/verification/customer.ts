@@ -39,7 +39,7 @@ try {
   const op = await resolvePrincipal(actors[0]), a = await resolvePrincipal(actors[1]), b = await resolvePrincipal(actors[2]);
   assert.equal(a.role, "unassigned");
   assert.deepEqual(await myAdminPanels(a), []);
-  const input = { projectName: "Meridian Exchange QA", brandName: "Meridian Exchange", preferredDomain: null, actions: ["swap", "convert", "buy", "sell"] as ("swap" | "convert" | "buy" | "sell")[], details: "Sandbox only", idempotencyKey: randomUUID() };
+  const input = { projectName: "Meridian Exchange QA", brandName: "Meridian Exchange", preferredDomain: "meridian.example.test", actions: ["swap", "convert", "buy", "sell"] as ("swap" | "convert" | "buy" | "sell")[], details: "Sandbox only", idempotencyKey: randomUUID() };
   const submitted = await submitRequest(a, input);
   assert.match(submitted.orderReference, /^WL-\d{6,}$/);
   assert.equal(submitted.status, "new");
