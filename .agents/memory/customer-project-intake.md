@@ -1,0 +1,10 @@
+---
+name: Customer project intake
+description: Simplified Project step for customer Configure Exchange requests.
+---
+
+The customer Configure Exchange Project step must ask only for Brand name and Preferred domain, both required. Do not reintroduce separate Project name, Company name, or Website name inputs.
+
+**Why:** The user explicitly requested removing those three redundant fields and making both remaining fields mandatory.
+
+**How to apply:** New wizard submissions may derive the internal project name from the brand for compatibility. Do not delete or rewrite existing historical project, company, or independently authored website names. Required preferred-domain intake does not authorize DNS changes, domain ownership claims, or website activation.
