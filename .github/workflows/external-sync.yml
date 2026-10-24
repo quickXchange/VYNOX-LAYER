@@ -9,6 +9,18 @@ concurrency:
   group: external-candidate-main
   cancel-in-progress: false
 jobs:
+  production:
+    needs: [checks, candidate]
+    if: >-
+      github.event_name == 'push' &&
+      github.ref == 'refs/heads/main' &&
+      needs.checks.result == 'success' &&
+      needs.candidate.result == 'success'
+    uses: ./.github/workflows/public-preparation.yml
+    with:
+      approve_temporary_production: true
+      release_after_candidate: true
+    secrets: inherit
   checks:
     uses: ./.github/workflows/external-checks.yml
   candidate:
