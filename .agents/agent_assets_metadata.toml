@@ -1232,3 +1232,17 @@ mtime_ms = 1792847016042
 storage_uri = "gcs://replit-rams-assets-reed/rams/assets/repl:372d2684-97ec-4ce5-b16a-77fb322db72a/921048a9-346b-4490-a558-1147c945974b/b26ad888-d6e9-46cf-978b-257702e455e2"
 storage_version_token = "1792847024613048"
 content_type = "application/pdf"
+
+[[outputs]]
+id = "6aGOVAG5_TbCBZvEMa0KP"
+uri = "file://generated-artifacts/VYNOX-LAYER-GitHub-Beginner-Publishing-Guide.pdf"
+type = "pdf"
+title = "GitHub Publishing — Complete Beginner Guide"
+description = "Six-page click-by-click PDF explaining merge, the exact links and buttons, approval steps, automatic publishing, and how to check the updated customer form."
+logical_id = "c2d00741-4c01-4846-ade8-76a1fc4b5ada"
+content_hash = "sha256:ca7c345bc949eb2a57b063391b0c8986c57801cc7a17168ab68f1cd431dc8367"
+size = 11945
+mtime_ms = 1792861191624
+storage_uri = "gcs://replit-rams-assets-reed/rams/assets/repl:372d2684-97ec-4ce5-b16a-77fb322db72a/c2d00741-4c01-4846-ade8-76a1fc4b5ada/9c932050-aa59-4862-8fd3-792cdaba0bd2"
+storage_version_token = "1792861208628530"
+content_type = "application/pdf"
