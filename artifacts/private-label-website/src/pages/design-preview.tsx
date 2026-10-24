@@ -57,15 +57,15 @@ export function DesignPreviewFeature() {
     if (feature !== caps.exchangeKey && feature !== 'swap' && feature !== 'convert') return (
       <Narrow><p className="s-eyebrow">Not available</p><h1 className="s-h2 mt-3">This service is not part of the preview</h1><p className="s-muted mt-4">{humanize(feature)} is not shown in the standard Exchange design preview.</p><Back /></Narrow>);
     return (
-      <Narrow>
-        <p className="s-eyebrow">Sample</p>
+      <div className="s-wrap s-rise py-12 md:py-20"><div className="mx-auto max-w-6xl">
+        <p className="s-eyebrow">Sample - simulation</p>
         <h1 className="s-h2 mt-3">{humanize(caps.exchangeKey ?? feature)}</h1>
-        <p className="s-muted mt-4 text-lg leading-relaxed">Try Swap between fiat and crypto or Convert between two crypto assets. Every figure is a synthetic sample.</p>
-        <div className="mt-10"><PresentationWidget key={feature} site={site} caps={caps} allowedActions={feature === 'swap' ? ['swap'] : feature === 'convert' ? ['convert'] : undefined} /></div>
-        <div className="mt-10"><PaymentMock site={site} /></div>
+        <p className="s-muted mt-4 text-lg leading-relaxed">Try Swap between fiat and crypto or Convert between two crypto assets. Continue through details, review and confirmation to a completed simulated order. Every figure is a synthetic sample.</p>
+        <div className="mt-10 grid items-start gap-10 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)]"><div><PresentationWidget key={feature} site={site} caps={caps} allowedActions={feature === 'swap' ? ['swap'] : feature === 'convert' ? ['convert'] : undefined} /></div>
+        <div><PaymentMock site={site} /></div></div>
         <p className="s-card mt-8 p-4 text-sm s-muted">This is a design preview. No orders, payments or transfers can be made here.</p>
         <Back />
-      </Narrow>);
+      </div></div>);
   }}</Frame>;
 }
 
