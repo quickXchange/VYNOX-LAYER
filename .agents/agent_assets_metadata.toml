@@ -1218,3 +1218,17 @@ mtime_ms = 1792581346835
 storage_uri = "gcs://replit-rams-assets-reed/rams/assets/repl:372d2684-97ec-4ce5-b16a-77fb322db72a/a124968c-cdbe-42ff-8bfc-6ca99807d58d/9b85eeaa-81ea-4a3f-b167-b6044c8c22fe"
 storage_version_token = "1792581357850717"
 content_type = "text/markdown"
+
+[[outputs]]
+id = "SmC5Q3aj7t_FhvaArN_ik"
+uri = "file://generated-artifacts/VYNOX-LAYER-Sign-in-Fix-Release-Guide.pdf"
+type = "pdf"
+title = "VYNOX LAYER — Step-by-Step Release Guide"
+description = "Three-page beginner guide with clickable GitHub links, exact release options, troubleshooting instructions, and customer sign-in test steps."
+logical_id = "921048a9-346b-4490-a558-1147c945974b"
+content_hash = "sha256:3cd4e248d57313a30c5758806fa985d3dbfbc68e7409e648eb38aeca12fdaf9b"
+size = 6885
+mtime_ms = 1792847016042
+storage_uri = "gcs://replit-rams-assets-reed/rams/assets/repl:372d2684-97ec-4ce5-b16a-77fb322db72a/921048a9-346b-4490-a558-1147c945974b/b26ad888-d6e9-46cf-978b-257702e455e2"
+storage_version_token = "1792847024613048"
+content_type = "application/pdf"
