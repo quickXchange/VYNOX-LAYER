@@ -17,6 +17,7 @@ export interface Payload {
   recovery: boolean;
   created: number;
   emailPrimary?: boolean;
+  emailPrimaryMfaRequired?: boolean;
   emailPrimaryTotpVerified?: boolean;
   emailChallenge?: { hash: string; nonce: string; recipient: string; expires: number; attempts: number };
   emailMfa?: { recipient: string; factorId: string; expires: number };
@@ -56,7 +57,10 @@ export async function establishSession(req: Request, res: Response, tokens: Supa
     throw new HttpError(503, "Authentication provider returned an incomplete session.");
   const value = randomBytes(32).toString("base64url");
   const p = payload(tokens, recovery);
-  if (emailPrimary) p.emailPrimary = true;
+  if (emailPrimary) {
+    p.emailPrimary = true;
+    p.emailPrimaryMfaRequired = hasVerifiedFactor(tokens.user);
+  }
   await revokeLocalSession(req, res);
   await pool.query(`INSERT INTO vynox_supabase_auth.sessions(digest,subject,envelope,expires_at)
     VALUES($1,$2,$3,now()+interval '7 days')`, [cookieDigest(value), p.subject, codec().seal(p)]);
@@ -65,7 +69,8 @@ export async function establishSession(req: Request, res: Response, tokens: Supa
 export async function updateSession(s: AuthSession, tokens: SupabaseTokens) {
   if (tokens.user.id !== s.payload.subject) throw new HttpError(401, "Session identity changed.");
   s.payload = { ...payload(tokens, s.payload.recovery), created: s.payload.created,
-    ...(s.payload.emailPrimary ? { emailPrimary: true, emailPrimaryTotpVerified: s.payload.emailPrimaryTotpVerified === true } : {}) };
+    ...(s.payload.emailPrimary ? { emailPrimary: true, emailPrimaryMfaRequired: s.payload.emailPrimaryMfaRequired,
+      emailPrimaryTotpVerified: s.payload.emailPrimaryTotpVerified === true } : {}) };
   s.user = tokens.user;
   const updated = await pool.query("UPDATE vynox_supabase_auth.sessions SET envelope=$2 WHERE digest=$1",
     [s.digest, codec().seal(s.payload)]);
