@@ -1,9 +1,10 @@
 import assert from "node:assert/strict";
 import {readFile,writeFile} from "node:fs/promises";
 import {publicPreparation} from "../../lib/production-access-gate/public-preparation.mjs";
+import {assertPublicReleaseTrigger} from "./public-release-source.mjs";
 const config=JSON.parse(await readFile("deploy/public-preparation.json","utf8"));
 assert(publicPreparation(process.env));
-assert(process.env.GITHUB_EVENT_NAME==="workflow_dispatch"&&process.env.GITHUB_REF==="refs/heads/main");
+assertPublicReleaseTrigger(process.env, JSON.parse(await readFile(process.env.GITHUB_EVENT_PATH,"utf8")));
 const vr=async(path,method="GET",body)=>{const r=await fetch(`https://api.vercel.com${path}${path.includes("?")?"&":"?"}teamId=${config.teamId}`,{method,headers:{Authorization:`Bearer ${process.env.VERCEL_TOKEN}`,"Content-Type":"application/json"},...(body?{body:JSON.stringify(body)}:{}),signal:AbortSignal.timeout(30000)});assert(r.ok,`Public frontend verification ${r.status}`);return r.json();};
 const rr=async path=>{const r=await fetch("https://api.render.com/v1/"+path,{headers:{Authorization:`Bearer ${process.env.RENDER_API_KEY}`},signal:AbortSignal.timeout(30000)});assert(r.ok,`Public API verification ${r.status}`);return r.json();};
 const legacyDomains=await Promise.all(["quicklychan.xyz","www.quicklychan.xyz"].map(async domain=>{
