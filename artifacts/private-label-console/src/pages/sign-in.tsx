@@ -31,7 +31,7 @@ function SignInForm() {
         return;
       }
       setCode(''); resendWait.start(60);
-      setSent('If this is an eligible Super Admin account with verified Gmail, a 6-digit code is on its way. It expires in 5 minutes and can be used once.');
+      setSent('If an account exists for this email, a 6-digit code is on its way. It expires in 5 minutes and can be used once.');
     } catch (e) { setErr(authErrorText(e as Error)); } finally { setBusy(false); }
   };
   const submit = async () => {
@@ -47,7 +47,7 @@ function SignInForm() {
           if (r.error.status === 429) verifyWait.start(r.error.retryAfterSeconds ?? 60);
           return;
         }
-        setCode(''); nav('/two-factor', { replace: true }); return;
+        setCode(''); nav(r.data?.mfaRequired ? '/two-factor' : '/admin', { replace: true }); return;
       }
       const r = await authClient.signIn.email({ email: email.trim(), password });
       if (r.error) {
@@ -69,7 +69,7 @@ function SignInForm() {
     if (r.error) setErr(authErrorText(r.error)); else setSent('If the account exists, a new verification link is on its way.');
   };
   return (
-    <AuthFrame title="Sign in to VYNOX LAYER" subtitle="Use your existing password, then your existing Google Authenticator." footer={<>New here? <A id="link-sign-up" href="/sign-up">Create an account</A></>}>
+    <AuthFrame title="Sign in to VYNOX LAYER" subtitle="Use your password or an email code. Two-factor verification is required if enabled." footer={<>New here? <A id="link-sign-up" href="/sign-up">Create an account</A></>}>
       <MailNotice status={status} failed={failed} />
       <div className="grid grid-cols-2 gap-2" aria-label="Sign-in method">
         <button type="button" data-testid="button-password-method" aria-pressed={!emailMethod} disabled={busy}
@@ -82,7 +82,7 @@ function SignInForm() {
       <Form onSubmit={submit}>
         <Field id="email" label="Email" type="email" value={email} onChange={setEmail} autoComplete="email" />
         {emailMethod ? <>
-          <p className="text-sm text-muted-foreground">Super Admins only: use your verified Gmail instead of your password. Google Authenticator is still required before Admin access.</p>
+          <p className="text-sm text-muted-foreground">Use an email code instead of your password. If two-factor authentication is enabled, your authenticator code is still required.</p>
           {supabaseDevelopmentAuth && <p className="text-sm text-muted-foreground">If this preview blocks secure cookies, <a className="font-medium underline" data-testid="link-direct-development-sign-in" href={`${import.meta.env.VITE_QXLAYER_DEVELOPMENT_SUPABASE_AUTH_URL}/sign-in`} target="_blank" rel="noopener noreferrer">open Development sign-in in a new tab</a> and request the code there. Keep that tab open for verification.</p>}
           <button type="button" data-testid="button-send-login-code" disabled={busy || !email || resendWait.remaining > 0} className="text-sm font-medium hover:underline" onClick={() => void sendCode()}>
             {resendWait.remaining ? `Send again in ${resendWait.remaining}s` : 'Send email code'}

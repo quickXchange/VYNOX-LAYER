@@ -29,6 +29,13 @@ test("MFA success must survive the authoritative session readback", () => {
     { ...pending, recovery: true, mfaRequired: false }));
 });
 
+test("customer email login without an enrolled factor accepts matching non-MFA readback", () => {
+  const input = { action: "login-email-verify" as const, email: user.email, code: "123456" };
+  const customer = { ...pending, user: { ...user, twoFactorEnabled: false }, mfaRequired: false };
+  assert.equal(authActionSessionError(input, customer, { ok: true, mfaRequired: false }), null);
+  assert(authActionSessionError(input, customer, { ok: true, mfaRequired: true }));
+});
+
 test("anonymous email sends require their exact new cookie receipt, not an authenticated identity", () => {
   const anonymous = { ...pending, user: null, mfaRequired: false };
   const input = { action: "login-email-send" as const, email: user.email };
