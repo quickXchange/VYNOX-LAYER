@@ -31,7 +31,7 @@ export function ReviewStep({ cfg, cat }: { cfg: Cfg; cat?: Catalog }) {
       <Sec t="Design"><dl><Row k="Type" v={custom ? 'Custom design (paid review)' : 'Standard (Exchange master)'} />
         <Row k="Colors" v={<span className="flex flex-wrap justify-end gap-2">{[cfg.primary, cfg.accent].map((color, i) => <span key={i} className="inline-flex items-center gap-1.5"><i className="h-4 w-4 shrink-0 rounded border" style={{ background: color }} />{color}</span>)}</span>} /><Row k="Theme" v={<span className="capitalize">{cfg.theme}</span>} />
         {custom && <><Row k="Style" v={cfg.styleName} /><Row k="Description" v={cfg.description || '-'} /><Row k="Reference site" v={cfg.refUrl || '-'} /><Row k="Notes" v={cfg.notes || '-'} /></>}</dl>
-        <div className="mt-3 grid gap-2 md:grid-cols-2">{[cfg.logo, cfg.favicon, ...(custom ? cfg.refs : [])].filter((a) => a != null).map((a) => <AttachmentChip key={a.id} a={a} />)}</div></Sec>
+        <div className="mt-3 grid gap-2 md:grid-cols-2">{[cfg.logo, ...(custom ? cfg.refs : [])].filter((a) => a != null).map((a) => <AttachmentChip key={a.id} a={a} />)}</div></Sec>
       <Sec t="Plan and add-ons">
         {plan ? <><Row k={`${plan.name} (${cfg.period})`} v={`${cash(pp, cur)} / ${per}`} /><Entitlements items={plan.entitlements} defs={cat?.definitions ?? []} />
           {addons.map((a) => <Row key={a.id} k={`Add-on: ${a.name}`} v={`${cash(periodPrice(a, cfg.period), a.currency)} / ${per}`} />)}</> : <p className="text-sm">No plan selected</p>}</Sec>
