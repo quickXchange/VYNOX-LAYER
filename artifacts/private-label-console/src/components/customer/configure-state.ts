@@ -12,7 +12,7 @@ export const ACTS = ['swap', 'convert'] as const;
 export type StepProps = { cfg: Cfg; set: (p: Partial<Cfg> | ((c: Cfg) => Partial<Cfg>)) => void; onBusy: (d: number) => void };
 export const stepError = (i: number, c: Cfg): string => {
   if ((i === 1 || i === 5) && fileError(c)) return fileError(c);
-  if (i === 0) return c.projectName.trim().length < 2 ? 'Project name needs 2+ characters' : c.brandName.trim().length < 2 ? 'Brand name needs 2+ characters' : '';
+  if (i === 0) return c.brandName.trim().length < 2 ? 'Brand name needs 2+ characters' : !c.domain.trim() ? 'Preferred domain is required' : '';
   if (i === 1) return c.designType === 'custom' && c.styleName.trim().length < 2 ? 'Give your custom style a name' : c.refUrl.trim() && !/^https?:\/\/\S+$/i.test(c.refUrl.trim()) ? 'Reference website must start with http:// or https://' : '';
   if (i === 2) return c.acts.length === 0 ? 'Choose at least one feature' : '';
   if (i === 3) return c.planId ? '' : 'Select a plan';

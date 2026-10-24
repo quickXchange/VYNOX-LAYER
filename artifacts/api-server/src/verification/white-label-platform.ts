@@ -41,7 +41,7 @@ try {
   planId = plan.id; saveScope();
   const order = await submitRequest(customer, {
     idempotencyKey: randomUUID(), projectName: `QA isolated ${suffix}`, brandName: `QA Alpha ${suffix}`,
-    preferredDomain: null, actions: ["swap"], details: "Disposable Development regression; explicit manual fixture rates only.",
+    preferredDomain: "alpha.example.test", actions: ["swap"], details: "Disposable Development regression; explicit manual fixture rates only.",
     requestedPlanId: plan.id,
   });
   ids.push(order.id); saveScope();
@@ -137,7 +137,7 @@ try {
   await denied(() => resolvePublicDomain(domain), 404);
   pass("domain changes revoke old challenges, hosting observations and public mappings");
   const second = await submitRequest(other, { idempotencyKey: randomUUID(), projectName: `QA second ${suffix}`,
-    brandName: `QA Beta ${suffix}`, preferredDomain: null, actions: ["swap"], details: "Separate customer; no copied settings.",
+    brandName: `QA Beta ${suffix}`, preferredDomain: "beta.example.test", actions: ["swap"], details: "Separate customer; no copied settings.",
     requestedPlanId: plan.id });
   ids.push(second.id); saveScope();
   const secondPrepared = await reviewRequest(admin, second.id, { status: "approved", monthlyPrice: "1", setupPrice: "1",
