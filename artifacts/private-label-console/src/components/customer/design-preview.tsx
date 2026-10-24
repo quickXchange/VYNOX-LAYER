@@ -47,20 +47,27 @@ export function StandardDesignPreview({ brandName, primary, accent, theme, logo 
     return () => window.removeEventListener('message', onMsg);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  useEffect(() => {
+    if (!wide) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setWide(false); };
+    const prev = document.body.style.overflow; document.body.style.overflow = 'hidden';
+    window.addEventListener('keydown', onKey);
+    return () => { window.removeEventListener('keydown', onKey); document.body.style.overflow = prev; };
+  }, [wide]);
   useEffect(() => { if (ready) post(); }, [ready, config.brandName, primary, accent, theme, logoDataUrl]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <section className={`space-y-3 ${wide ? 'fixed inset-3 z-50 flex flex-col rounded-lg border bg-background p-3 shadow-2xl md:inset-6' : ''}`} aria-label="Standard design preview" data-testid="panel-design-preview">
+    <section className={`space-y-3 ${wide ? 'fixed inset-0 z-50 flex flex-col bg-background p-2 shadow-2xl sm:inset-3 sm:rounded-lg sm:border sm:p-3 md:inset-6' : ''}`} aria-label="Standard design preview" role={wide ? 'dialog' : undefined} aria-modal={wide || undefined} data-testid="panel-design-preview">
       <div className="flex flex-wrap items-center gap-3">
         <div className="min-w-0 flex-1">
           <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-copper">Live preview - Exchange master</p>
-          <p className="text-xs text-muted-foreground">The shared Exchange master renderer with your brand, logo and colors. Browse pages and run as many simulations as you like. All data is synthetic; nothing is quoted, ordered or saved.</p>
+          <p className="text-xs text-muted-foreground">The shared Exchange master renderer with your brand, logo and colors. Browse pages and run full simulated Swap and Convert orders from amount to completion. All data is synthetic; nothing is quoted, ordered or saved.</p>
         </div>
         <Button type="button" size="sm" variant="ghost" onClick={() => { setReady(false); setReload((n) => n + 1); }} data-testid="button-preview-reset"><RotateCcw className="mr-1.5 h-4 w-4" />Restart</Button>
-        <Button type="button" size="sm" variant="outline" onClick={() => setWide((w) => !w)} data-testid="button-preview-expand">{wide ? <Minimize2 className="mr-1.5 h-4 w-4" /> : <Maximize2 className="mr-1.5 h-4 w-4" />}{wide ? 'Close full view' : 'Full view'}</Button>
+        <Button type="button" size="sm" variant="outline" onClick={() => setWide((w) => !w)} data-testid="button-preview-expand">{wide ? <Minimize2 className="mr-1.5 h-4 w-4" /> : <Maximize2 className="mr-1.5 h-4 w-4" />}{wide ? 'Close full view (Esc)' : 'Full view'}</Button>
       </div>
       {fail && <p className="text-xs text-destructive" data-testid="text-preview-logo-error">Your logo could not be loaded into the preview. The brand initial is shown instead.</p>}
-      <div className={`relative overflow-hidden rounded-md border bg-muted ${wide ? 'flex-1' : 'h-[620px]'}`}>
+      <div className={`relative overflow-hidden rounded-md border bg-muted ${wide ? 'flex-1' : 'h-[min(80vh,860px)] min-h-[560px]'}`}>
         {!ready && <div className="absolute inset-0 grid place-items-center p-6" aria-busy="true"><div className="w-full max-w-md space-y-3"><div className="h-6 w-1/2 animate-pulse rounded bg-background/70" /><div className="h-40 animate-pulse rounded bg-background/70" /><div className="h-4 w-2/3 animate-pulse rounded bg-background/70" /></div></div>}
         <iframe key={reload} ref={frame} src={SRC} title="Standard Exchange design preview" sandbox="allow-scripts allow-same-origin" referrerPolicy="no-referrer" className={`h-full w-full border-0 transition-opacity ${ready ? 'opacity-100' : 'opacity-0'}`} data-testid="frame-design-preview" />
       </div>
