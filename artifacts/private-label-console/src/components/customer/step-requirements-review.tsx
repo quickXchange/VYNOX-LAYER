@@ -1,14 +1,14 @@
 import { Textarea } from '@/components/ui/textarea';
 import { Uploader, AttachmentChip } from '@/components/customer/attachments';
 import { cash, periodPrice, sumNum, unknownCount, type Catalog } from '@/lib/wl';
-import type { Cfg, StepProps } from './configure-state';
+import { requestDetails, type Cfg, type StepProps } from './configure-state';
 import { Entitlements } from './plan-bits';
 
 export function RequirementsStep({ cfg, set, onBusy }: StepProps) {
   return (
     <div className="space-y-5">
       <label className="block space-y-1 text-sm"><span>Details</span><Textarea data-testid="input-details" className="min-h-40" value={cfg.details} onChange={(e) => set({ details: e.target.value })} />
-        <span className={`block text-right text-xs ${cfg.details.length > 10000 ? 'text-destructive' : 'text-muted-foreground'}`}>{cfg.details.length} / 10000</span></label>
+        <span className={`block text-right text-xs ${requestDetails(cfg).length > 10000 ? 'text-destructive' : 'text-muted-foreground'}`}>{requestDetails(cfg).length} / 10000 (including provider preferences)</span></label>
       <div className="space-y-2"><p className="text-sm">Attachments</p><Uploader category="requirement" label="Upload files" items={cfg.reqFiles} onAdd={(a) => set((c) => ({ reqFiles: [...c.reqFiles, a] }))} onRemove={(id) => set((c) => ({ reqFiles: c.reqFiles.filter((x) => x.id !== id) }))} onBusy={onBusy} /></div>
     </div>
   );
@@ -35,7 +35,7 @@ export function ReviewStep({ cfg, cat }: { cfg: Cfg; cat?: Catalog }) {
       <Sec t="Plan and add-ons">
         {plan ? <><Row k={`${plan.name} (${cfg.period})`} v={`${cash(pp, cur)} / ${per}`} /><Entitlements items={plan.entitlements} defs={cat?.definitions ?? []} />
           {addons.map((a) => <Row key={a.id} k={`Add-on: ${a.name}`} v={`${cash(periodPrice(a, cfg.period), a.currency)} / ${per}`} />)}</> : <p className="text-sm">No plan selected</p>}</Sec>
-      <Sec t="Requirements"><p className="whitespace-pre-wrap text-sm [overflow-wrap:anywhere]">{cfg.details || 'No details provided'}</p>{cfg.reqFiles.length > 0 && <div className="mt-3 grid gap-2 md:grid-cols-2">{cfg.reqFiles.map((a) => <AttachmentChip key={a.id} a={a} />)}</div>}</Sec>
+      <Sec t="Requirements"><p className="whitespace-pre-wrap text-sm [overflow-wrap:anywhere]">{requestDetails(cfg) || 'No details provided'}</p>{cfg.reqFiles.length > 0 && <div className="mt-3 grid gap-2 md:grid-cols-2">{cfg.reqFiles.map((a) => <AttachmentChip key={a.id} a={a} />)}</div>}</Sec>
       <Sec t="Estimated pricing"><dl className="divide-y">
         <Row k={`Base plan recurring / ${per}`} v={cash(pp, cur)} /><Row k={`Add-ons recurring / ${per}`} v={unknownCount(addons.map((a) => periodPrice(a, cfg.period))) ? 'Partly requires review' : cash(sumNum(addons.map((a) => periodPrice(a, cfg.period))), cur)} />
         <Row k="Setup fees (plan and add-ons)" v={cash(setup, cur)} /><Row k="Customization fee" v={custom ? 'Requires review' : 'No customization requested'} />

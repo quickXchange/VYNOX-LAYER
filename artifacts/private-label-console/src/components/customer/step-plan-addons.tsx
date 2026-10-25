@@ -1,7 +1,7 @@
 import { Checkbox } from '@/components/ui/checkbox';
 import { ErrorState, ListSkeleton, EmptyState } from '@/components/app/bits';
 import type { Catalog } from '@/lib/wl';
-import { ACTS, type StepProps } from './configure-state';
+import { CONVERT_PROVIDERS, type StepProps } from './configure-state';
 import { FeatureRowList } from '@/components/commerce/feature-rows-editor';
 import { readFeatureRows } from '@/lib/feature-rows';
 import { Entitlements, PriceLine, planPeriods } from './plan-bits';
@@ -10,9 +10,27 @@ type Q = { data?: Catalog; isLoading: boolean; isError: boolean; refetch: () => 
 
 export function FeaturesStep({ cfg, set }: StepProps) {
   return (
-    <fieldset className="grid gap-3 sm:grid-cols-2"><legend className="sr-only">Exchange features</legend>
-      {ACTS.map((x) => <label key={x} className="flex items-center gap-3 rounded-md border bg-card p-4 capitalize"><Checkbox data-testid={`check-${x}`} checked={cfg.acts.includes(x)} onCheckedChange={(v) => set((c) => ({ acts: v ? [...c.acts, x] : c.acts.filter((y) => y !== x) }))} />{x}</label>)}
-    </fieldset>
+    <div className="space-y-5">
+      <p className="text-sm text-muted-foreground">Choose one or both services for your white-label exchange.</p>
+      <fieldset className="grid gap-3 sm:grid-cols-2"><legend className="sr-only">Exchange features</legend>
+        {[
+          { id: 'swap', title: 'Swap', description: 'Let your customers exchange crypto for fiat currency, or fiat for crypto, using the payment methods configured for your exchange.' },
+          { id: 'convert', title: 'Convert', description: 'Offer automated crypto-to-crypto exchanges through your chosen provider, once the service is connected and approved.' },
+        ].map(x => <label key={x.id} className={`flex cursor-pointer items-start gap-3 rounded-md border p-4 ${cfg.acts.includes(x.id) ? 'border-primary bg-primary/5' : 'bg-card'}`}>
+          <input type="checkbox" className="mt-1 h-5 w-5 shrink-0 accent-primary" data-testid={`check-${x.id}`} checked={cfg.acts.includes(x.id)} onChange={e => { const checked = e.target.checked; set(c => ({ acts: checked ? [...new Set([...c.acts, x.id])] : c.acts.filter(y => y !== x.id) })); }} />
+          <span><span className="block font-medium">{x.title}</span><span className="mt-1 block text-sm leading-relaxed text-muted-foreground">{x.description}</span></span>
+        </label>)}
+      </fieldset>
+      {cfg.acts.includes('convert') && <fieldset className="space-y-3 rounded-md border bg-card p-4">
+        <legend className="px-1 text-sm font-medium">Convert providers</legend>
+        <p className="text-sm text-muted-foreground">Choose Quickex, ChangeNOW, or both. Select at least one.</p>
+        <div className="grid gap-3 sm:grid-cols-2">{CONVERT_PROVIDERS.map(p => <label key={p.id} className="flex cursor-pointer items-center gap-3 rounded-md border p-3">
+          <input type="checkbox" className="h-5 w-5 shrink-0 accent-primary" data-testid={`check-provider-${p.id}`} checked={cfg.convertProviders?.includes(p.id) ?? false} onChange={e => { const checked = e.target.checked; set(c => ({ convertProviders: checked ? [...new Set([...(c.convertProviders ?? []), p.id])] : (c.convertProviders ?? []).filter(id => id !== p.id) })); }} />
+          <span className="text-sm font-medium">{p.label}</span>
+        </label>)}</div>
+        <p className="text-xs text-muted-foreground">These preferences are included in your request for operator review. Availability, connection setup and any provider fees must be confirmed. Selecting both does not enable automatic routing or activate trading.</p>
+      </fieldset>}
+    </div>
   );
 }
 
