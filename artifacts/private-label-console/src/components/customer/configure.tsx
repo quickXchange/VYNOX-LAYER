@@ -6,7 +6,7 @@ import { useGetWhiteLabelCatalog, useSubmitWhiteLabelRequest, getListMyWhiteLabe
 import { PageHeader } from '@/components/app/bits';
 import { Button } from '@/components/ui/button';
 import { errMsg, orderRef, type WlOrder } from '@/lib/wl';
-import { STEPS, initialCfg, stepError, type Cfg } from './configure-state';
+import { STEPS, initialCfg, stepError, requestDetails, type Cfg } from './configure-state';
 import { ProjectStep, DesignStep } from './step-project-design';
 import { planPeriods } from './plan-bits';
 import { FeaturesStep, PlanStep, AddonsStep } from './step-plan-addons';
@@ -38,8 +38,12 @@ export function ConfigureExchange() {
   const go = (i: number) => { setStep(i); setMax((m) => Math.max(m, i)); };
   const send = () => {
     setErr(null); const c = cfg; const custom = c.designType === 'custom';
+    for (let i = 0; i < STEPS.length - 1; i++) {
+      const error = stepError(i, c);
+      if (error) { setErr(error); go(i); return; }
+    }
     submit.mutate({ data: {
-      projectName: c.brandName.trim(), brandName: c.brandName.trim(), preferredDomain: c.domain.trim(), actions: c.acts as ExchangeAction[], details: c.details, idempotencyKey: key.current,
+      projectName: c.brandName.trim(), brandName: c.brandName.trim(), preferredDomain: c.domain.trim(), actions: c.acts as ExchangeAction[], details: requestDetails(c), idempotencyKey: key.current,
       design: { type: c.designType, styleName: custom ? c.styleName.trim() : '', primaryColor: c.primary, accentColor: c.accent, themePreference: c.theme, description: custom ? c.description : '', referenceWebsiteUrl: custom && c.refUrl.trim() ? c.refUrl.trim() : null, notes: custom ? c.notes : '', logoAttachmentId: c.logo?.id ?? null, faviconAttachmentId: null, referenceAttachmentIds: custom ? c.refs.map((x) => x.id) : [] },
       requestedPlanId: c.planId, requestedAddonIds: c.addonIds, billingPeriod: c.period, attachmentIds: c.reqFiles.map((x) => x.id),
     } }, {
