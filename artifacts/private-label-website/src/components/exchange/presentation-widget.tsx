@@ -12,7 +12,12 @@ const LABEL: Record<ExchangeTab, string> = { swap: 'Swap', convert: 'Convert' };
 const NOQ = 'No pricing source is connected in this sandbox.';
 
 /** Marketing-shell showcase of the exchange. Display only: it never requests quotes or creates orders. */
-export interface WidgetSimulation { price: (assetId: string) => number; paymentMethods: { id: string; label: string; note: string }[] }
+export interface WidgetSimulation {
+  price: (assetId: string) => number; paymentMethods: { id: string; label: string; note: string }[];
+  /** Design-preview only: records an amounts-only demo order in memory, returns its sample reference. */
+  onComplete?: (o: SimCompletion) => string | null; adminHref?: (ref: string) => string;
+}
+export interface SimCompletion { clientId: string; action: 'Swap' | 'Convert'; payAmount: number; paySymbol: string; receiveAmount: number; receiveSymbol: string; rate: number; fee: number; method: string | null }
 const fmt = (n: number) => (n >= 1 ? n.toLocaleString('en-US', { maximumFractionDigits: 2 }) : n.toPrecision(6));
 
 export const SimulationContext = createContext<WidgetSimulation | undefined>(undefined);
@@ -71,6 +76,10 @@ export function PresentationWidget({ site, caps, allowedActions, simulation: sim
     if (!(convert ? from && to : from)) { setStatus('Choose an asset first.'); return; }
     if (amount === '' || Number(amount) <= 0) { setStatus(null); return; }
     if (simulation) {
+      if (!convert && !simulation.paymentMethods.some((m) => m.id === method)) {
+        setStatus('Choose an enabled sample payment method. If none are available, enable one in the simulation admin.');
+        return;
+      }
       const err = simAmountError(amount, simQ?.fiatValue ?? null);
       if (err || !simQ) { setStatus(`${err ?? 'Choose assets first.'} (simulation)`); return; }
       setStatus(null); setStage('details'); return;
@@ -95,10 +104,13 @@ export function PresentationWidget({ site, caps, allowedActions, simulation: sim
 
   if (simulation && stage !== 'amount' && simQ && from) {
     const crypto = from.symbol;
+    const summary = { action: convert ? 'Convert' as const : 'Swap' as const, payLabel: topFiat ? 'You pay' : convert ? 'You convert' : 'You send', receiveLabel: 'You receive (sample)', paySymbol: topFiat ? 'fiat' : crypto, receiveSymbol: convert ? to!.symbol : topFiat ? crypto : 'fiat', amount: amt, quote: simQ, method: convert ? null : simulation.paymentMethods.find((m) => m.id === method)?.label ?? null };
+    const sim = simulation;
+    const onComplete = sim.onComplete ? () => sim.onComplete!({ clientId: `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`, action: summary.action, payAmount: amt, paySymbol: summary.paySymbol, receiveAmount: simQ.net, receiveSymbol: summary.receiveSymbol, rate: simQ.rate, fee: simQ.fee, method: summary.method }) : undefined;
     return (
       <WidgetShell>
         <SimOrderFlow key={runs} details={simDetails} setDetails={setSimDetails} stage={stage} setStage={setStage} run={runs + 1}
-          summary={{ action: convert ? 'Convert' : 'Swap', payLabel: topFiat ? 'You pay' : convert ? 'You convert' : 'You send', receiveLabel: 'You receive (sample)', paySymbol: topFiat ? 'fiat' : crypto, receiveSymbol: convert ? to!.symbol : topFiat ? crypto : 'fiat', amount: amt, quote: simQ, method: convert ? null : simulation.paymentMethods.find((m) => m.id === method)?.label ?? null }}
+          summary={summary} onComplete={onComplete} adminHref={sim.adminHref}
           onEdit={() => setStage('amount')}
           onRestart={() => { setSimDetails(SAMPLE_DETAILS); setRuns((n) => n + 1); setStage('amount'); setTouched(false); setStatus(null); }} />
       </WidgetShell>);
