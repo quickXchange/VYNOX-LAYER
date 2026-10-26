@@ -51,7 +51,7 @@ ChangeNOW / SwapSpace / FixedFloat are stored only as requested provider names.
 - Development publication: `CONFIRM_PUBLISH_DEFAULT_TIERS=yes QXLAYER_EXTERNAL_ENVIRONMENT=development tsx src/verification/publish-default-tiers.ts` (idempotent; refuses non-heliumdb, production, acceptance).
 
 ## Production release boundary
-Development schema and publication have been updated, not Production. These code changes require the additive schema before a Production deployment; do not merge into the automatic release chain until a backed-up external-database migration is rehearsed against the actual target's ledger and verified. The Development runner deliberately refuses Production.
+Development schema and publication have been updated. Production has received the additive schema-only migrations after an encrypted affected-data backup, authenticated backup readback, live rollback rehearsal and original-business-field preservation checks. Code deployment and new-catalog publication have NOT occurred. The Development runner deliberately refuses Production.
 
 External manifests now register checksummed schema-only versions 0012 (profiles/contracts/history) and 0013 (add-on agreements/session-bound history). The external runner removes their standalone transaction wrappers so schema and ledger remain in its single atomic transaction. Existing applied migration hashes must never be rewritten to force acceptance.
 

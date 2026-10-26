@@ -35,7 +35,7 @@ test("Versioned SQL has intact checksums, no rows and complete RLS/reference", a
   const dir = new URL("../../deploy/migrations/",import.meta.url);
   const manifest = JSON.parse(await readFile(new URL("manifest.json",dir),"utf8"));
   for (const entry of manifest) {
-    const sql = await readFile(new URL(entry.file,dir),"utf8");
+    const sql = await readFile(new URL(entry.source ?? entry.file,dir),"utf8");
     assert.equal(createHash("sha256").update(sql).digest("hex"),entry.sha256);
     assert.doesNotMatch(sql,/\b(?:INSERT INTO|COPY .* FROM stdin|TRUNCATE|DROP TABLE)\b|(?:ALTER|CREATE)\s+(?:ROLE|USER)[^;]*\bPASSWORD\b/i);
   }

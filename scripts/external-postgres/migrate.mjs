@@ -62,7 +62,7 @@ export async function migrate(env = process.env) {
     if (!/^\d{4}_[a-z_]+\.sql$/.test(entry.file) || entry.file <= previous)
       throw new Error("Invalid/unsorted migration manifest.");
     const planSchemaSource = ["../../lib/db/migrations/plan-management-profiles.sql", "../../lib/db/migrations/plan-management-release-safety.sql"].includes(entry.source);
-    if (entry.source && !planSchemaSource && (!production || ![
+    if (entry.source && !planSchemaSource && entry.source !== "../migrations/0004_phase1_commerce.sql" && (!production || ![
       "../migrations/0001_application_schema.sql", "../migrations/0002_runtime_security.sql",
       "0004_latest-schema-PREPARED.sql", "0005_auth_runtime.sql", "../migrations/0007_global_exchange_catalog.sql",
       "../migrations/0008_tenant_site_releases.sql", "../migrations/0010_acceptance_catalog.sql",

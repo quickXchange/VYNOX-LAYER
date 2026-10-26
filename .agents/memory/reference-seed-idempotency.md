@@ -27,3 +27,13 @@ not record its migration checksum, making the canonical manifest appear pending.
 immutable execution receipt and SQL checksum, verifying exact reviewed schema,
 and proving public records unchanged. Never mark unknown DDL applied or replay
 seed data to repair bookkeeping.
+
+A Production migration ledger can contain both ordered schema versions and
+independent, approved data-release receipts.
+
+**Why:** Comparing every receipt as an ordered schema migration incorrectly
+rejected a structurally verified existing Production target.
+
+**How to apply:** Separate only explicitly recognized, exact-checksum historical
+data receipts before schema-prefix validation. Keep them in the live ledger,
+never replay them, and reject changed receipts or unknown schema entries.
