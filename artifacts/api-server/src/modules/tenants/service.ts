@@ -85,8 +85,10 @@ export async function prepareTenant(client: DatabaseClient, principal: Principal
   const id = result.rows[0].id as string;
   await client.query("INSERT INTO tenant_branding (tenant_id,brand_name) VALUES ($1,$2)", [id, input.name.trim()]);
   await client.query("INSERT INTO tenant_configuration (tenant_id) VALUES ($1)", [id]);
-  await client.query("INSERT INTO tenant_subscriptions (tenant_id,plan_id) VALUES ($1,$2)", [id, plan.id]);
-  await freezeContract(client, id, plan, "tenant-creation");
+  if (!input.prepareTrial) {
+    await client.query("INSERT INTO tenant_subscriptions (tenant_id,plan_id) VALUES ($1,$2)", [id, plan.id]);
+    await freezeContract(client, id, plan, "tenant-creation");
+  } else if (addonIds.length) throw new HttpError(400, "Trial preparation cannot assign paid add-ons.");
   for (const addonId of new Set(addonIds)) await client.query("INSERT INTO tenant_addons (tenant_id,addon_id) VALUES ($1,$2)", [id, addonId]);
   await client.query("UPDATE tenants SET completed_steps=ARRAY['modules']::text[] WHERE id=$1", [id]);
   await audit(client, principal, id, "tenant.created", `Created sandbox client ${input.name.trim()}`, { planId: plan.id });

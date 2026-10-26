@@ -2716,6 +2716,8 @@ export interface TenantInput {
      */
   slug: string;
   planId: string;
+  /** Create an unassigned draft; review and start a published trial separately. */
+  prepareTrial?: boolean;
 }
 
 export type BrandInputThemeMode = typeof BrandInputThemeMode[keyof typeof BrandInputThemeMode];
@@ -3144,6 +3146,75 @@ export interface UsageItem {
   exceeded: boolean;
 }
 
+export type TrialStartInputBillingPeriod = typeof TrialStartInputBillingPeriod[keyof typeof TrialStartInputBillingPeriod];
+
+
+export const TrialStartInputBillingPeriod = {
+  monthly: 'monthly',
+  yearly: 'yearly',
+} as const;
+
+export interface TrialStartInput {
+  planId: string;
+  billingPeriod: TrialStartInputBillingPeriod;
+  /** @minLength 1 */
+  publishedRevision: string;
+  idempotencyKey: string;
+  /**
+     * @minLength 2
+     * @maxLength 500
+     */
+  reason: string;
+}
+
+export type TrialActionInputAction = typeof TrialActionInputAction[keyof typeof TrialActionInputAction];
+
+
+export const TrialActionInputAction = {
+  cancel: 'cancel',
+  request_renewal: 'request_renewal',
+} as const;
+
+export interface TrialActionInput {
+  trialId: string;
+  action: TrialActionInputAction;
+  /**
+     * @minLength 2
+     * @maxLength 500
+     */
+  reason: string;
+}
+
+export type SubscriptionTrialState = typeof SubscriptionTrialState[keyof typeof SubscriptionTrialState];
+
+
+export const SubscriptionTrialState = {
+  active: 'active',
+  cancelled: 'cancelled',
+  expired: 'expired',
+} as const;
+
+export type SubscriptionTrialRenewalRule = typeof SubscriptionTrialRenewalRule[keyof typeof SubscriptionTrialRenewalRule];
+
+
+export const SubscriptionTrialRenewalRule = {
+  manual_agreement_required: 'manual_agreement_required',
+} as const;
+
+export interface SubscriptionTrial {
+  id: string;
+  state: SubscriptionTrialState;
+  startedAt: string;
+  endsAt: string;
+  renewalRule: SubscriptionTrialRenewalRule;
+  /** @nullable */
+  renewalRequestedAt: string | null;
+  /** @nullable */
+  cancelledAt: string | null;
+  publishedRevision: string;
+  agreedRecurringPrice: string;
+}
+
 export type SubscriptionViewStatus = typeof SubscriptionViewStatus[keyof typeof SubscriptionViewStatus];
 
 
@@ -3180,6 +3251,7 @@ export interface SubscriptionView {
   /** @nullable */
   currency?: string | null;
   billingConnected?: boolean;
+  trial?: SubscriptionTrial | null;
   plan: Plan | null;
   addons: Addon[];
   overrides: EntitlementOverride[];

@@ -6,9 +6,18 @@ import * as sub from "../modules/entitlements/subscriptions";
 import * as resource from "../modules/entitlements/resources";
 import { getSubscription } from "../modules/entitlements/resolver";
 import { saveWebsiteSettings } from "../modules/tenants/service";
+import { startTrial, updateTrial } from "../modules/commerce/trials";
 
 const router = Router();
 router.use(requireAuthentication, sameOriginMutation);
+router.post("/tenants/:tenantId/subscription/trial", async (req, res): Promise<void> => {
+  const { tenantId } = v.StartTenantTrialParams.parse(req.params);
+  res.json(v.StartTenantTrialResponse.parse(await startTrial(principalFrom(res), tenantId, v.StartTenantTrialBody.parse(req.body))));
+});
+router.put("/tenants/:tenantId/subscription/trial", async (req, res): Promise<void> => {
+  const { tenantId } = v.UpdateTenantTrialParams.parse(req.params);
+  res.json(v.UpdateTenantTrialResponse.parse(await updateTrial(principalFrom(res), tenantId, v.UpdateTenantTrialBody.parse(req.body))));
+});
 router.get("/entitlement-definitions", async (_req, res) => res.json(v.ListEntitlementDefinitionsResponse.parse(await catalog.listDefinitions(principalFrom(res)))));
 router.get("/plans", async (_req, res) => res.json(v.ListPlansResponse.parse(await catalog.listPlans(principalFrom(res)))));
 router.post("/plans", async (req, res) => res.status(201).json(v.CreatePlanResponse.parse(await catalog.savePlan(principalFrom(res), v.CreatePlanBody.parse(req.body)))));

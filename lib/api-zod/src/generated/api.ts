@@ -10674,7 +10674,8 @@ export const createTenantBodySlugRegExp = new RegExp('^[a-z0-9]+(?:-[a-z0-9]+)*$
 export const CreateTenantBody = zod.object({
   "name": zod.string().min(createTenantBodyNameMin).max(createTenantBodyNameMax),
   "slug": zod.string().min(createTenantBodySlugMin).max(createTenantBodySlugMax).regex(createTenantBodySlugRegExp),
-  "planId": zod.string().uuid()
+  "planId": zod.string().uuid(),
+  "prepareTrial": zod.boolean().optional().describe('Create an unassigned draft; review and start a published trial separately.')
 })
 
 export const createTenantResponseOneEnabledModulesItemMax = 64;
@@ -13921,6 +13922,677 @@ export const UpdateAddonResponse = zod.object({
 }))
 
 
+export const StartTenantTrialParams = zod.object({
+  "tenantId": zod.coerce.string().uuid()
+})
+
+
+export const startTenantTrialBodyReasonMin = 2;
+export const startTenantTrialBodyReasonMax = 500;
+
+
+
+export const StartTenantTrialBody = zod.object({
+  "planId": zod.string().uuid(),
+  "billingPeriod": zod.enum(['monthly', 'yearly']),
+  "publishedRevision": zod.string().min(1),
+  "idempotencyKey": zod.string().uuid(),
+  "reason": zod.string().min(startTenantTrialBodyReasonMin).max(startTenantTrialBodyReasonMax)
+})
+
+export const startTenantTrialResponsePlanOneOneNameMin = 2;
+export const startTenantTrialResponsePlanOneOneNameMax = 120;
+
+export const startTenantTrialResponsePlanOneOneDescriptionMax = 3000;
+
+export const startTenantTrialResponsePlanOneOneMonthlyPriceMax = 18;
+
+
+export const startTenantTrialResponsePlanOneOneMonthlyPriceRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,2})?$');
+export const startTenantTrialResponsePlanOneOneYearlyPriceMax = 18;
+
+
+export const startTenantTrialResponsePlanOneOneYearlyPriceRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,2})?$');
+export const startTenantTrialResponsePlanOneOneSetupFeeMax = 18;
+
+
+export const startTenantTrialResponsePlanOneOneSetupFeeRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,2})?$');
+export const startTenantTrialResponsePlanOneOneDiscountPercentMax = 6;
+
+
+export const startTenantTrialResponsePlanOneOneDiscountPercentRegExp = new RegExp('^\\d{1,3}(\\.\\d{1,2})?$');
+export const startTenantTrialResponsePlanOneOneCurrencyRegExp = new RegExp('^[A-Z]{3}$');
+export const startTenantTrialResponsePlanOneOneBillingLabelMax = 160;
+
+export const startTenantTrialResponsePlanOneOneDisplayOrderMin = 0;
+export const startTenantTrialResponsePlanOneOneDisplayOrderMax = 100000;
+
+export const startTenantTrialResponsePlanOneOneEntitlementsItemKeyMax = 80;
+
+
+export const startTenantTrialResponsePlanOneOneEntitlementsItemKeyRegExp = new RegExp('^[a-z][a-z0-9_]*$');
+export const startTenantTrialResponsePlanOneOneEntitlementsItemValueTwoMax = 38;
+
+
+export const startTenantTrialResponsePlanOneOneEntitlementsItemValueTwoRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,18})?$');
+export const startTenantTrialResponsePlanOneOneEntitlementsMax = 200;
+
+export const startTenantTrialResponsePlanOneOneFeatureRowsItemLabelMax = 120;
+
+export const startTenantTrialResponsePlanOneOneFeatureRowsItemValueMax = 500;
+
+export const startTenantTrialResponsePlanOneOneProfileSlugRegExp = new RegExp('^[a-z0-9](?:[a-z0-9-]{0,62}[a-z0-9])?$');
+export const startTenantTrialResponsePlanOneOneProfileInternalNameMax = 120;
+
+export const startTenantTrialResponsePlanOneOneProfilePublicNameMax = 120;
+
+export const startTenantTrialResponsePlanOneOneProfileTaglineMax = 160;
+
+export const startTenantTrialResponsePlanOneOneProfileShortDescriptionMax = 300;
+
+export const startTenantTrialResponsePlanOneOneProfileFullDescriptionMax = 5000;
+
+export const startTenantTrialResponsePlanOneOneProfileIconUrlMax = 500;
+
+export const startTenantTrialResponsePlanOneOneProfileImageUrlMax = 500;
+
+export const startTenantTrialResponsePlanOneOneProfileBadgeLabelMax = 40;
+
+export const startTenantTrialResponsePlanOneOneProfileFooterTextMax = 300;
+
+export const startTenantTrialResponsePlanOneOneProfilePromoTextMax = 200;
+
+export const startTenantTrialResponsePlanOneOneProfileTermsMax = 5000;
+
+export const startTenantTrialResponsePlanOneOneProfileContactSalesLabelMax = 60;
+
+export const startTenantTrialResponsePlanOneOneProfileCustomPriceTextMax = 80;
+
+export const startTenantTrialResponsePlanOneOneProfileFixedDiscountAmountMax = 18;
+
+
+export const startTenantTrialResponsePlanOneOneProfileFixedDiscountAmountRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,2})?$');
+export const startTenantTrialResponsePlanOneOneProfilePromoPriceMax = 18;
+
+
+export const startTenantTrialResponsePlanOneOneProfilePromoPriceRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,2})?$');
+export const startTenantTrialResponsePlanOneOneProfileTrialDaysMin = 0;
+export const startTenantTrialResponsePlanOneOneProfileTrialDaysMax = 365;
+
+export const startTenantTrialResponsePlanOneOneProfileCtaLabelMax = 60;
+
+export const startTenantTrialResponsePlanOneOneProfileCtaUrlMax = 200;
+
+
+export const startTenantTrialResponsePlanOneOneProfileCtaUrlRegExp = new RegExp('^/(?!/)[A-Za-z0-9/_#?=&.-]*$');
+export const startTenantTrialResponsePlanOneOneProfileAdminSeatsMax = 10000;
+
+export const startTenantTrialResponsePlanOneOneProfileSupportResponseHoursMax = 720;
+
+export const startTenantTrialResponsePlanOneOneProfileLaunchTargetBusinessDaysMax = 365;
+
+export const startTenantTrialResponsePlanOneOneProfileSlaTermsMax = 1000;
+
+export const startTenantTrialResponsePlanOneOneProfileThemeModesMax = 2;
+
+export const startTenantTrialResponsePlanOneOneProfileConvertProviderLimitMin = 0;
+export const startTenantTrialResponsePlanOneOneProfileConvertProviderLimitMax = 100;
+
+export const startTenantTrialResponsePlanOneOneProfileRequestedProvidersItemMax = 60;
+
+export const startTenantTrialResponsePlanOneOneProfileRequestedProvidersMax = 30;
+
+export const startTenantTrialResponsePlanOneOneProfileCapabilitiesItemKeyRegExp = new RegExp('^[a-z][a-z0-9_]{1,63}$');
+export const startTenantTrialResponsePlanOneOneProfileCapabilitiesItemLabelMax = 120;
+
+export const startTenantTrialResponsePlanOneOneProfileCapabilitiesItemDescriptionMax = 600;
+
+export const startTenantTrialResponsePlanOneOneProfileCapabilitiesItemGroupMax = 60;
+
+export const startTenantTrialResponsePlanOneOneProfileCapabilitiesItemLimitValueMin = 0;
+export const startTenantTrialResponsePlanOneOneProfileCapabilitiesItemLimitValueMax = 1000000000000;
+
+export const startTenantTrialResponsePlanOneOneProfileCapabilitiesItemUnitMax = 30;
+
+export const startTenantTrialResponsePlanOneOneProfileCapabilitiesItemTooltipMax = 300;
+
+export const startTenantTrialResponsePlanOneOneProfileCapabilitiesItemBadgeMax = 30;
+
+export const startTenantTrialResponsePlanOneOneProfileCapabilitiesItemDependsOnItemRegExp = new RegExp('^[a-z][a-z0-9_]{1,63}$');
+export const startTenantTrialResponsePlanOneOneProfileCapabilitiesItemDependsOnMax = 20;
+
+export const startTenantTrialResponsePlanOneOneProfileCapabilitiesItemNoteMax = 300;
+
+export const startTenantTrialResponsePlanOneOneProfileCapabilitiesMax = 120;
+
+export const startTenantTrialResponsePlanOneOneProfileInternalNotesMax = 5000;
+
+export const startTenantTrialResponsePlanOneOneExpectedRevisionMin = 0;
+
+export const startTenantTrialResponsePlanOneTwoFeatureRowsItemLabelMax = 120;
+
+export const startTenantTrialResponsePlanOneTwoFeatureRowsItemValueMax = 500;
+
+export const startTenantTrialResponsePlanOneTwoFeatureRowsDefault = [];
+export const startTenantTrialResponseAddonsItemOneMonthlyPriceRegExp = new RegExp('^\\d{1,12}(\\.\\d{1,2})?$');
+export const startTenantTrialResponseAddonsItemOneYearlyPriceRegExp = new RegExp('^\\d{1,12}(\\.\\d{1,2})?$');
+export const startTenantTrialResponseAddonsItemOneSetupFeeRegExp = new RegExp('^\\d{1,12}(\\.\\d{1,2})?$');
+export const startTenantTrialResponseAddonsItemOneCurrencyRegExp = new RegExp('^[A-Z]{3}$');
+export const startTenantTrialResponseAddonsItemOneDiscountPercentMax = 6;
+
+
+export const startTenantTrialResponseAddonsItemOneDiscountPercentRegExp = new RegExp('^\\d{1,3}(\\.\\d{1,2})?$');
+export const startTenantTrialResponseAddonsItemOneNameMin = 2;
+export const startTenantTrialResponseAddonsItemOneNameMax = 120;
+
+export const startTenantTrialResponseAddonsItemOneDescriptionMax = 3000;
+
+export const startTenantTrialResponseAddonsItemOneEntitlementsItemKeyMax = 80;
+
+
+export const startTenantTrialResponseAddonsItemOneEntitlementsItemKeyRegExp = new RegExp('^[a-z][a-z0-9_]*$');
+export const startTenantTrialResponseAddonsItemOneEntitlementsItemValueTwoMax = 38;
+
+
+export const startTenantTrialResponseAddonsItemOneEntitlementsItemValueTwoRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,18})?$');
+export const startTenantTrialResponseAddonsItemOneEntitlementsMax = 200;
+
+export const startTenantTrialResponseOverridesItemOneKeyMax = 80;
+
+
+export const startTenantTrialResponseOverridesItemOneKeyRegExp = new RegExp('^[a-z][a-z0-9_]*$');
+export const startTenantTrialResponseOverridesItemOneValueTwoMax = 38;
+
+
+export const startTenantTrialResponseOverridesItemOneValueTwoRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,18})?$');
+export const startTenantTrialResponseOverridesItemTwoReasonMin = 2;
+export const startTenantTrialResponseOverridesItemTwoReasonMax = 500;
+
+
+
+export const StartTenantTrialResponse = zod.object({
+  "tenantId": zod.string().uuid(),
+  "tenantStatus": zod.string(),
+  "status": zod.enum(['active', 'suspended', 'cancelled', 'unassigned']),
+  "billingPeriod": zod.enum(['monthly', 'yearly']).optional(),
+  "discountPercent": zod.string().optional(),
+  "operatorNote": zod.string().optional(),
+  "recurringEstimate": zod.string().nullish(),
+  "currency": zod.string().nullish(),
+  "billingConnected": zod.boolean().optional(),
+  "trial": zod.union([zod.object({
+  "id": zod.string().uuid(),
+  "state": zod.enum(['active', 'cancelled', 'expired']),
+  "startedAt": zod.string(),
+  "endsAt": zod.string(),
+  "renewalRule": zod.enum(['manual_agreement_required']),
+  "renewalRequestedAt": zod.string().nullable(),
+  "cancelledAt": zod.string().nullable(),
+  "publishedRevision": zod.string(),
+  "agreedRecurringPrice": zod.string()
+}),zod.null()]).optional(),
+  "plan": zod.union([zod.object({
+  "name": zod.string().min(startTenantTrialResponsePlanOneOneNameMin).max(startTenantTrialResponsePlanOneOneNameMax),
+  "description": zod.string().max(startTenantTrialResponsePlanOneOneDescriptionMax),
+  "monthlyPrice": zod.string().max(startTenantTrialResponsePlanOneOneMonthlyPriceMax).regex(startTenantTrialResponsePlanOneOneMonthlyPriceRegExp).nullable(),
+  "yearlyPrice": zod.string().max(startTenantTrialResponsePlanOneOneYearlyPriceMax).regex(startTenantTrialResponsePlanOneOneYearlyPriceRegExp).nullable(),
+  "setupFee": zod.string().max(startTenantTrialResponsePlanOneOneSetupFeeMax).regex(startTenantTrialResponsePlanOneOneSetupFeeRegExp).nullable(),
+  "discountPercent": zod.string().max(startTenantTrialResponsePlanOneOneDiscountPercentMax).regex(startTenantTrialResponsePlanOneOneDiscountPercentRegExp).optional(),
+  "currency": zod.string().regex(startTenantTrialResponsePlanOneOneCurrencyRegExp),
+  "billingLabel": zod.string().max(startTenantTrialResponsePlanOneOneBillingLabelMax),
+  "displayOrder": zod.number().int().min(startTenantTrialResponsePlanOneOneDisplayOrderMin).max(startTenantTrialResponsePlanOneOneDisplayOrderMax),
+  "status": zod.enum(['enabled', 'disabled', 'archived']),
+  "entitlements": zod.array(zod.object({
+  "key": zod.string().max(startTenantTrialResponsePlanOneOneEntitlementsItemKeyMax).regex(startTenantTrialResponsePlanOneOneEntitlementsItemKeyRegExp),
+  "value": zod.union([zod.boolean(),zod.string().max(startTenantTrialResponsePlanOneOneEntitlementsItemValueTwoMax).regex(startTenantTrialResponsePlanOneOneEntitlementsItemValueTwoRegExp)])
+})).max(startTenantTrialResponsePlanOneOneEntitlementsMax),
+  "featureRows": zod.array(zod.object({
+  "label": zod.string().min(1).max(startTenantTrialResponsePlanOneOneFeatureRowsItemLabelMax),
+  "value": zod.string().min(1).max(startTenantTrialResponsePlanOneOneFeatureRowsItemValueMax)
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.'),
+  "profile": zod.object({
+  "slug": zod.string().regex(startTenantTrialResponsePlanOneOneProfileSlugRegExp).optional(),
+  "internalName": zod.string().max(startTenantTrialResponsePlanOneOneProfileInternalNameMax).optional(),
+  "publicName": zod.string().max(startTenantTrialResponsePlanOneOneProfilePublicNameMax).optional(),
+  "tagline": zod.string().max(startTenantTrialResponsePlanOneOneProfileTaglineMax).optional(),
+  "shortDescription": zod.string().max(startTenantTrialResponsePlanOneOneProfileShortDescriptionMax).optional(),
+  "fullDescription": zod.string().max(startTenantTrialResponsePlanOneOneProfileFullDescriptionMax).optional(),
+  "iconUrl": zod.string().max(startTenantTrialResponsePlanOneOneProfileIconUrlMax).optional().describe('Local path or https URL without credentials'),
+  "imageUrl": zod.string().max(startTenantTrialResponsePlanOneOneProfileImageUrlMax).optional().describe('Local path or https URL without credentials'),
+  "badgeType": zod.enum(['none', 'recommended', 'custom']).optional(),
+  "badgeLabel": zod.string().max(startTenantTrialResponsePlanOneOneProfileBadgeLabelMax).optional(),
+  "featured": zod.boolean().optional(),
+  "footerText": zod.string().max(startTenantTrialResponsePlanOneOneProfileFooterTextMax).optional(),
+  "promoText": zod.string().max(startTenantTrialResponsePlanOneOneProfilePromoTextMax).optional(),
+  "terms": zod.string().max(startTenantTrialResponsePlanOneOneProfileTermsMax).optional(),
+  "pricingMode": zod.enum(['paid', 'free', 'custom', 'contact_sales']).optional(),
+  "contactSalesLabel": zod.string().max(startTenantTrialResponsePlanOneOneProfileContactSalesLabelMax).optional(),
+  "customPriceText": zod.string().max(startTenantTrialResponsePlanOneOneProfileCustomPriceTextMax).optional(),
+  "fixedDiscountAmount": zod.string().max(startTenantTrialResponsePlanOneOneProfileFixedDiscountAmountMax).regex(startTenantTrialResponsePlanOneOneProfileFixedDiscountAmountRegExp).nullish(),
+  "promoPrice": zod.string().max(startTenantTrialResponsePlanOneOneProfilePromoPriceMax).regex(startTenantTrialResponsePlanOneOneProfilePromoPriceRegExp).nullish(),
+  "promoStartsAt": zod.coerce.date().nullish(),
+  "promoEndsAt": zod.coerce.date().nullish(),
+  "billingInterval": zod.enum(['monthly', 'yearly', 'monthly_and_yearly', 'custom']).optional(),
+  "trialDays": zod.number().int().min(startTenantTrialResponsePlanOneOneProfileTrialDaysMin).max(startTenantTrialResponsePlanOneOneProfileTrialDaysMax).optional(),
+  "ctaLabel": zod.string().max(startTenantTrialResponsePlanOneOneProfileCtaLabelMax).optional(),
+  "ctaUrl": zod.string().max(startTenantTrialResponsePlanOneOneProfileCtaUrlMax).regex(startTenantTrialResponsePlanOneOneProfileCtaUrlRegExp).optional(),
+  "visibility": zod.enum(['public', 'hidden']).optional(),
+  "adminSeats": zod.number().int().min(1).max(startTenantTrialResponsePlanOneOneProfileAdminSeatsMax).nullish(),
+  "multiAdminRoles": zod.boolean().optional(),
+  "supportLevel": zod.enum(['email', 'priority', 'dedicated']).optional(),
+  "supportResponseHours": zod.number().int().min(1).max(startTenantTrialResponsePlanOneOneProfileSupportResponseHoursMax).nullish(),
+  "launchTargetBusinessDays": zod.number().int().min(1).max(startTenantTrialResponsePlanOneOneProfileLaunchTargetBusinessDaysMax).nullish(),
+  "dedicatedManager": zod.boolean().optional(),
+  "slaEnabled": zod.boolean().optional(),
+  "slaTerms": zod.string().max(startTenantTrialResponsePlanOneOneProfileSlaTermsMax).optional(),
+  "earlyAccess": zod.boolean().optional(),
+  "poweredByFooter": zod.boolean().optional(),
+  "themeModes": zod.array(zod.enum(['light', 'dark'])).max(startTenantTrialResponsePlanOneOneProfileThemeModesMax).optional(),
+  "convertProviderLimit": zod.number().int().min(startTenantTrialResponsePlanOneOneProfileConvertProviderLimitMin).max(startTenantTrialResponsePlanOneOneProfileConvertProviderLimitMax).nullish(),
+  "requestedProviders": zod.array(zod.string().min(1).max(startTenantTrialResponsePlanOneOneProfileRequestedProvidersItemMax)).max(startTenantTrialResponsePlanOneOneProfileRequestedProvidersMax).optional(),
+  "capabilities": zod.array(zod.object({
+  "key": zod.string().regex(startTenantTrialResponsePlanOneOneProfileCapabilitiesItemKeyRegExp),
+  "label": zod.string().min(1).max(startTenantTrialResponsePlanOneOneProfileCapabilitiesItemLabelMax),
+  "description": zod.string().max(startTenantTrialResponsePlanOneOneProfileCapabilitiesItemDescriptionMax).optional(),
+  "group": zod.string().max(startTenantTrialResponsePlanOneOneProfileCapabilitiesItemGroupMax).optional(),
+  "state": zod.enum(['included', 'excluded', 'optional', 'limited', 'unlimited', 'unavailable']).describe('Commercial state. limited requires limitValue.'),
+  "availability": zod.enum(['available', 'requires_configuration', 'unavailable']).describe('Implementation status; unavailable means not implemented and never a working toggle'),
+  "limitValue": zod.number().min(startTenantTrialResponsePlanOneOneProfileCapabilitiesItemLimitValueMin).max(startTenantTrialResponsePlanOneOneProfileCapabilitiesItemLimitValueMax).nullish(),
+  "unit": zod.string().max(startTenantTrialResponsePlanOneOneProfileCapabilitiesItemUnitMax).optional(),
+  "tooltip": zod.string().max(startTenantTrialResponsePlanOneOneProfileCapabilitiesItemTooltipMax).optional(),
+  "highlight": zod.boolean().optional(),
+  "publicVisible": zod.boolean().optional(),
+  "badge": zod.string().max(startTenantTrialResponsePlanOneOneProfileCapabilitiesItemBadgeMax).optional(),
+  "dependsOn": zod.array(zod.string().regex(startTenantTrialResponsePlanOneOneProfileCapabilitiesItemDependsOnItemRegExp)).max(startTenantTrialResponsePlanOneOneProfileCapabilitiesItemDependsOnMax).optional(),
+  "note": zod.string().max(startTenantTrialResponsePlanOneOneProfileCapabilitiesItemNoteMax).optional()
+})).max(startTenantTrialResponsePlanOneOneProfileCapabilitiesMax).optional(),
+  "internalNotes": zod.string().max(startTenantTrialResponsePlanOneOneProfileInternalNotesMax).optional()
+}).optional().describe('Structured plan configuration. internalName and internalNotes are Super Admin only and never published.'),
+  "expectedRevision": zod.number().int().min(startTenantTrialResponsePlanOneOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
+}).and(zod.object({
+  "id": zod.string().uuid(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date(),
+  "pricingConfigured": zod.boolean().optional(),
+  "billingPeriods": zod.array(zod.enum(['monthly', 'yearly'])).optional(),
+  "featureRows": zod.array(zod.object({
+  "label": zod.string().min(1).max(startTenantTrialResponsePlanOneTwoFeatureRowsItemLabelMax),
+  "value": zod.string().min(1).max(startTenantTrialResponsePlanOneTwoFeatureRowsItemValueMax)
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(startTenantTrialResponsePlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.'),
+  "revision": zod.number().int().optional()
+})),zod.null()]),
+  "addons": zod.array(zod.object({
+  "monthlyPrice": zod.string().regex(startTenantTrialResponseAddonsItemOneMonthlyPriceRegExp).nullish(),
+  "yearlyPrice": zod.string().regex(startTenantTrialResponseAddonsItemOneYearlyPriceRegExp).nullish(),
+  "setupFee": zod.string().regex(startTenantTrialResponseAddonsItemOneSetupFeeRegExp).nullish(),
+  "currency": zod.string().regex(startTenantTrialResponseAddonsItemOneCurrencyRegExp).optional(),
+  "discountPercent": zod.string().max(startTenantTrialResponseAddonsItemOneDiscountPercentMax).regex(startTenantTrialResponseAddonsItemOneDiscountPercentRegExp).optional(),
+  "name": zod.string().min(startTenantTrialResponseAddonsItemOneNameMin).max(startTenantTrialResponseAddonsItemOneNameMax),
+  "description": zod.string().max(startTenantTrialResponseAddonsItemOneDescriptionMax),
+  "enabled": zod.boolean(),
+  "entitlements": zod.array(zod.object({
+  "key": zod.string().max(startTenantTrialResponseAddonsItemOneEntitlementsItemKeyMax).regex(startTenantTrialResponseAddonsItemOneEntitlementsItemKeyRegExp),
+  "value": zod.union([zod.boolean(),zod.string().max(startTenantTrialResponseAddonsItemOneEntitlementsItemValueTwoMax).regex(startTenantTrialResponseAddonsItemOneEntitlementsItemValueTwoRegExp)])
+})).max(startTenantTrialResponseAddonsItemOneEntitlementsMax)
+}).and(zod.object({
+  "id": zod.string().uuid(),
+  "pricingConfigured": zod.boolean().optional()
+}))),
+  "overrides": zod.array(zod.object({
+  "key": zod.string().max(startTenantTrialResponseOverridesItemOneKeyMax).regex(startTenantTrialResponseOverridesItemOneKeyRegExp),
+  "value": zod.union([zod.boolean(),zod.string().max(startTenantTrialResponseOverridesItemOneValueTwoMax).regex(startTenantTrialResponseOverridesItemOneValueTwoRegExp)])
+}).and(zod.object({
+  "reason": zod.string().min(startTenantTrialResponseOverridesItemTwoReasonMin).max(startTenantTrialResponseOverridesItemTwoReasonMax)
+}))),
+  "features": zod.record(zod.string(), zod.boolean()),
+  "limits": zod.record(zod.string(), zod.string()),
+  "sources": zod.record(zod.string(), zod.string()),
+  "usage": zod.array(zod.object({
+  "key": zod.string(),
+  "label": zod.string(),
+  "used": zod.string(),
+  "limit": zod.string(),
+  "exceeded": zod.boolean()
+})),
+  "enabledModules": zod.array(zod.string()),
+  "overLimit": zod.boolean()
+})
+
+
+export const UpdateTenantTrialParams = zod.object({
+  "tenantId": zod.coerce.string().uuid()
+})
+
+export const updateTenantTrialBodyReasonMin = 2;
+export const updateTenantTrialBodyReasonMax = 500;
+
+
+
+export const UpdateTenantTrialBody = zod.object({
+  "trialId": zod.string().uuid(),
+  "action": zod.enum(['cancel', 'request_renewal']),
+  "reason": zod.string().min(updateTenantTrialBodyReasonMin).max(updateTenantTrialBodyReasonMax)
+})
+
+export const updateTenantTrialResponsePlanOneOneNameMin = 2;
+export const updateTenantTrialResponsePlanOneOneNameMax = 120;
+
+export const updateTenantTrialResponsePlanOneOneDescriptionMax = 3000;
+
+export const updateTenantTrialResponsePlanOneOneMonthlyPriceMax = 18;
+
+
+export const updateTenantTrialResponsePlanOneOneMonthlyPriceRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,2})?$');
+export const updateTenantTrialResponsePlanOneOneYearlyPriceMax = 18;
+
+
+export const updateTenantTrialResponsePlanOneOneYearlyPriceRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,2})?$');
+export const updateTenantTrialResponsePlanOneOneSetupFeeMax = 18;
+
+
+export const updateTenantTrialResponsePlanOneOneSetupFeeRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,2})?$');
+export const updateTenantTrialResponsePlanOneOneDiscountPercentMax = 6;
+
+
+export const updateTenantTrialResponsePlanOneOneDiscountPercentRegExp = new RegExp('^\\d{1,3}(\\.\\d{1,2})?$');
+export const updateTenantTrialResponsePlanOneOneCurrencyRegExp = new RegExp('^[A-Z]{3}$');
+export const updateTenantTrialResponsePlanOneOneBillingLabelMax = 160;
+
+export const updateTenantTrialResponsePlanOneOneDisplayOrderMin = 0;
+export const updateTenantTrialResponsePlanOneOneDisplayOrderMax = 100000;
+
+export const updateTenantTrialResponsePlanOneOneEntitlementsItemKeyMax = 80;
+
+
+export const updateTenantTrialResponsePlanOneOneEntitlementsItemKeyRegExp = new RegExp('^[a-z][a-z0-9_]*$');
+export const updateTenantTrialResponsePlanOneOneEntitlementsItemValueTwoMax = 38;
+
+
+export const updateTenantTrialResponsePlanOneOneEntitlementsItemValueTwoRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,18})?$');
+export const updateTenantTrialResponsePlanOneOneEntitlementsMax = 200;
+
+export const updateTenantTrialResponsePlanOneOneFeatureRowsItemLabelMax = 120;
+
+export const updateTenantTrialResponsePlanOneOneFeatureRowsItemValueMax = 500;
+
+export const updateTenantTrialResponsePlanOneOneProfileSlugRegExp = new RegExp('^[a-z0-9](?:[a-z0-9-]{0,62}[a-z0-9])?$');
+export const updateTenantTrialResponsePlanOneOneProfileInternalNameMax = 120;
+
+export const updateTenantTrialResponsePlanOneOneProfilePublicNameMax = 120;
+
+export const updateTenantTrialResponsePlanOneOneProfileTaglineMax = 160;
+
+export const updateTenantTrialResponsePlanOneOneProfileShortDescriptionMax = 300;
+
+export const updateTenantTrialResponsePlanOneOneProfileFullDescriptionMax = 5000;
+
+export const updateTenantTrialResponsePlanOneOneProfileIconUrlMax = 500;
+
+export const updateTenantTrialResponsePlanOneOneProfileImageUrlMax = 500;
+
+export const updateTenantTrialResponsePlanOneOneProfileBadgeLabelMax = 40;
+
+export const updateTenantTrialResponsePlanOneOneProfileFooterTextMax = 300;
+
+export const updateTenantTrialResponsePlanOneOneProfilePromoTextMax = 200;
+
+export const updateTenantTrialResponsePlanOneOneProfileTermsMax = 5000;
+
+export const updateTenantTrialResponsePlanOneOneProfileContactSalesLabelMax = 60;
+
+export const updateTenantTrialResponsePlanOneOneProfileCustomPriceTextMax = 80;
+
+export const updateTenantTrialResponsePlanOneOneProfileFixedDiscountAmountMax = 18;
+
+
+export const updateTenantTrialResponsePlanOneOneProfileFixedDiscountAmountRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,2})?$');
+export const updateTenantTrialResponsePlanOneOneProfilePromoPriceMax = 18;
+
+
+export const updateTenantTrialResponsePlanOneOneProfilePromoPriceRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,2})?$');
+export const updateTenantTrialResponsePlanOneOneProfileTrialDaysMin = 0;
+export const updateTenantTrialResponsePlanOneOneProfileTrialDaysMax = 365;
+
+export const updateTenantTrialResponsePlanOneOneProfileCtaLabelMax = 60;
+
+export const updateTenantTrialResponsePlanOneOneProfileCtaUrlMax = 200;
+
+
+export const updateTenantTrialResponsePlanOneOneProfileCtaUrlRegExp = new RegExp('^/(?!/)[A-Za-z0-9/_#?=&.-]*$');
+export const updateTenantTrialResponsePlanOneOneProfileAdminSeatsMax = 10000;
+
+export const updateTenantTrialResponsePlanOneOneProfileSupportResponseHoursMax = 720;
+
+export const updateTenantTrialResponsePlanOneOneProfileLaunchTargetBusinessDaysMax = 365;
+
+export const updateTenantTrialResponsePlanOneOneProfileSlaTermsMax = 1000;
+
+export const updateTenantTrialResponsePlanOneOneProfileThemeModesMax = 2;
+
+export const updateTenantTrialResponsePlanOneOneProfileConvertProviderLimitMin = 0;
+export const updateTenantTrialResponsePlanOneOneProfileConvertProviderLimitMax = 100;
+
+export const updateTenantTrialResponsePlanOneOneProfileRequestedProvidersItemMax = 60;
+
+export const updateTenantTrialResponsePlanOneOneProfileRequestedProvidersMax = 30;
+
+export const updateTenantTrialResponsePlanOneOneProfileCapabilitiesItemKeyRegExp = new RegExp('^[a-z][a-z0-9_]{1,63}$');
+export const updateTenantTrialResponsePlanOneOneProfileCapabilitiesItemLabelMax = 120;
+
+export const updateTenantTrialResponsePlanOneOneProfileCapabilitiesItemDescriptionMax = 600;
+
+export const updateTenantTrialResponsePlanOneOneProfileCapabilitiesItemGroupMax = 60;
+
+export const updateTenantTrialResponsePlanOneOneProfileCapabilitiesItemLimitValueMin = 0;
+export const updateTenantTrialResponsePlanOneOneProfileCapabilitiesItemLimitValueMax = 1000000000000;
+
+export const updateTenantTrialResponsePlanOneOneProfileCapabilitiesItemUnitMax = 30;
+
+export const updateTenantTrialResponsePlanOneOneProfileCapabilitiesItemTooltipMax = 300;
+
+export const updateTenantTrialResponsePlanOneOneProfileCapabilitiesItemBadgeMax = 30;
+
+export const updateTenantTrialResponsePlanOneOneProfileCapabilitiesItemDependsOnItemRegExp = new RegExp('^[a-z][a-z0-9_]{1,63}$');
+export const updateTenantTrialResponsePlanOneOneProfileCapabilitiesItemDependsOnMax = 20;
+
+export const updateTenantTrialResponsePlanOneOneProfileCapabilitiesItemNoteMax = 300;
+
+export const updateTenantTrialResponsePlanOneOneProfileCapabilitiesMax = 120;
+
+export const updateTenantTrialResponsePlanOneOneProfileInternalNotesMax = 5000;
+
+export const updateTenantTrialResponsePlanOneOneExpectedRevisionMin = 0;
+
+export const updateTenantTrialResponsePlanOneTwoFeatureRowsItemLabelMax = 120;
+
+export const updateTenantTrialResponsePlanOneTwoFeatureRowsItemValueMax = 500;
+
+export const updateTenantTrialResponsePlanOneTwoFeatureRowsDefault = [];
+export const updateTenantTrialResponseAddonsItemOneMonthlyPriceRegExp = new RegExp('^\\d{1,12}(\\.\\d{1,2})?$');
+export const updateTenantTrialResponseAddonsItemOneYearlyPriceRegExp = new RegExp('^\\d{1,12}(\\.\\d{1,2})?$');
+export const updateTenantTrialResponseAddonsItemOneSetupFeeRegExp = new RegExp('^\\d{1,12}(\\.\\d{1,2})?$');
+export const updateTenantTrialResponseAddonsItemOneCurrencyRegExp = new RegExp('^[A-Z]{3}$');
+export const updateTenantTrialResponseAddonsItemOneDiscountPercentMax = 6;
+
+
+export const updateTenantTrialResponseAddonsItemOneDiscountPercentRegExp = new RegExp('^\\d{1,3}(\\.\\d{1,2})?$');
+export const updateTenantTrialResponseAddonsItemOneNameMin = 2;
+export const updateTenantTrialResponseAddonsItemOneNameMax = 120;
+
+export const updateTenantTrialResponseAddonsItemOneDescriptionMax = 3000;
+
+export const updateTenantTrialResponseAddonsItemOneEntitlementsItemKeyMax = 80;
+
+
+export const updateTenantTrialResponseAddonsItemOneEntitlementsItemKeyRegExp = new RegExp('^[a-z][a-z0-9_]*$');
+export const updateTenantTrialResponseAddonsItemOneEntitlementsItemValueTwoMax = 38;
+
+
+export const updateTenantTrialResponseAddonsItemOneEntitlementsItemValueTwoRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,18})?$');
+export const updateTenantTrialResponseAddonsItemOneEntitlementsMax = 200;
+
+export const updateTenantTrialResponseOverridesItemOneKeyMax = 80;
+
+
+export const updateTenantTrialResponseOverridesItemOneKeyRegExp = new RegExp('^[a-z][a-z0-9_]*$');
+export const updateTenantTrialResponseOverridesItemOneValueTwoMax = 38;
+
+
+export const updateTenantTrialResponseOverridesItemOneValueTwoRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,18})?$');
+export const updateTenantTrialResponseOverridesItemTwoReasonMin = 2;
+export const updateTenantTrialResponseOverridesItemTwoReasonMax = 500;
+
+
+
+export const UpdateTenantTrialResponse = zod.object({
+  "tenantId": zod.string().uuid(),
+  "tenantStatus": zod.string(),
+  "status": zod.enum(['active', 'suspended', 'cancelled', 'unassigned']),
+  "billingPeriod": zod.enum(['monthly', 'yearly']).optional(),
+  "discountPercent": zod.string().optional(),
+  "operatorNote": zod.string().optional(),
+  "recurringEstimate": zod.string().nullish(),
+  "currency": zod.string().nullish(),
+  "billingConnected": zod.boolean().optional(),
+  "trial": zod.union([zod.object({
+  "id": zod.string().uuid(),
+  "state": zod.enum(['active', 'cancelled', 'expired']),
+  "startedAt": zod.string(),
+  "endsAt": zod.string(),
+  "renewalRule": zod.enum(['manual_agreement_required']),
+  "renewalRequestedAt": zod.string().nullable(),
+  "cancelledAt": zod.string().nullable(),
+  "publishedRevision": zod.string(),
+  "agreedRecurringPrice": zod.string()
+}),zod.null()]).optional(),
+  "plan": zod.union([zod.object({
+  "name": zod.string().min(updateTenantTrialResponsePlanOneOneNameMin).max(updateTenantTrialResponsePlanOneOneNameMax),
+  "description": zod.string().max(updateTenantTrialResponsePlanOneOneDescriptionMax),
+  "monthlyPrice": zod.string().max(updateTenantTrialResponsePlanOneOneMonthlyPriceMax).regex(updateTenantTrialResponsePlanOneOneMonthlyPriceRegExp).nullable(),
+  "yearlyPrice": zod.string().max(updateTenantTrialResponsePlanOneOneYearlyPriceMax).regex(updateTenantTrialResponsePlanOneOneYearlyPriceRegExp).nullable(),
+  "setupFee": zod.string().max(updateTenantTrialResponsePlanOneOneSetupFeeMax).regex(updateTenantTrialResponsePlanOneOneSetupFeeRegExp).nullable(),
+  "discountPercent": zod.string().max(updateTenantTrialResponsePlanOneOneDiscountPercentMax).regex(updateTenantTrialResponsePlanOneOneDiscountPercentRegExp).optional(),
+  "currency": zod.string().regex(updateTenantTrialResponsePlanOneOneCurrencyRegExp),
+  "billingLabel": zod.string().max(updateTenantTrialResponsePlanOneOneBillingLabelMax),
+  "displayOrder": zod.number().int().min(updateTenantTrialResponsePlanOneOneDisplayOrderMin).max(updateTenantTrialResponsePlanOneOneDisplayOrderMax),
+  "status": zod.enum(['enabled', 'disabled', 'archived']),
+  "entitlements": zod.array(zod.object({
+  "key": zod.string().max(updateTenantTrialResponsePlanOneOneEntitlementsItemKeyMax).regex(updateTenantTrialResponsePlanOneOneEntitlementsItemKeyRegExp),
+  "value": zod.union([zod.boolean(),zod.string().max(updateTenantTrialResponsePlanOneOneEntitlementsItemValueTwoMax).regex(updateTenantTrialResponsePlanOneOneEntitlementsItemValueTwoRegExp)])
+})).max(updateTenantTrialResponsePlanOneOneEntitlementsMax),
+  "featureRows": zod.array(zod.object({
+  "label": zod.string().min(1).max(updateTenantTrialResponsePlanOneOneFeatureRowsItemLabelMax),
+  "value": zod.string().min(1).max(updateTenantTrialResponsePlanOneOneFeatureRowsItemValueMax)
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.'),
+  "profile": zod.object({
+  "slug": zod.string().regex(updateTenantTrialResponsePlanOneOneProfileSlugRegExp).optional(),
+  "internalName": zod.string().max(updateTenantTrialResponsePlanOneOneProfileInternalNameMax).optional(),
+  "publicName": zod.string().max(updateTenantTrialResponsePlanOneOneProfilePublicNameMax).optional(),
+  "tagline": zod.string().max(updateTenantTrialResponsePlanOneOneProfileTaglineMax).optional(),
+  "shortDescription": zod.string().max(updateTenantTrialResponsePlanOneOneProfileShortDescriptionMax).optional(),
+  "fullDescription": zod.string().max(updateTenantTrialResponsePlanOneOneProfileFullDescriptionMax).optional(),
+  "iconUrl": zod.string().max(updateTenantTrialResponsePlanOneOneProfileIconUrlMax).optional().describe('Local path or https URL without credentials'),
+  "imageUrl": zod.string().max(updateTenantTrialResponsePlanOneOneProfileImageUrlMax).optional().describe('Local path or https URL without credentials'),
+  "badgeType": zod.enum(['none', 'recommended', 'custom']).optional(),
+  "badgeLabel": zod.string().max(updateTenantTrialResponsePlanOneOneProfileBadgeLabelMax).optional(),
+  "featured": zod.boolean().optional(),
+  "footerText": zod.string().max(updateTenantTrialResponsePlanOneOneProfileFooterTextMax).optional(),
+  "promoText": zod.string().max(updateTenantTrialResponsePlanOneOneProfilePromoTextMax).optional(),
+  "terms": zod.string().max(updateTenantTrialResponsePlanOneOneProfileTermsMax).optional(),
+  "pricingMode": zod.enum(['paid', 'free', 'custom', 'contact_sales']).optional(),
+  "contactSalesLabel": zod.string().max(updateTenantTrialResponsePlanOneOneProfileContactSalesLabelMax).optional(),
+  "customPriceText": zod.string().max(updateTenantTrialResponsePlanOneOneProfileCustomPriceTextMax).optional(),
+  "fixedDiscountAmount": zod.string().max(updateTenantTrialResponsePlanOneOneProfileFixedDiscountAmountMax).regex(updateTenantTrialResponsePlanOneOneProfileFixedDiscountAmountRegExp).nullish(),
+  "promoPrice": zod.string().max(updateTenantTrialResponsePlanOneOneProfilePromoPriceMax).regex(updateTenantTrialResponsePlanOneOneProfilePromoPriceRegExp).nullish(),
+  "promoStartsAt": zod.coerce.date().nullish(),
+  "promoEndsAt": zod.coerce.date().nullish(),
+  "billingInterval": zod.enum(['monthly', 'yearly', 'monthly_and_yearly', 'custom']).optional(),
+  "trialDays": zod.number().int().min(updateTenantTrialResponsePlanOneOneProfileTrialDaysMin).max(updateTenantTrialResponsePlanOneOneProfileTrialDaysMax).optional(),
+  "ctaLabel": zod.string().max(updateTenantTrialResponsePlanOneOneProfileCtaLabelMax).optional(),
+  "ctaUrl": zod.string().max(updateTenantTrialResponsePlanOneOneProfileCtaUrlMax).regex(updateTenantTrialResponsePlanOneOneProfileCtaUrlRegExp).optional(),
+  "visibility": zod.enum(['public', 'hidden']).optional(),
+  "adminSeats": zod.number().int().min(1).max(updateTenantTrialResponsePlanOneOneProfileAdminSeatsMax).nullish(),
+  "multiAdminRoles": zod.boolean().optional(),
+  "supportLevel": zod.enum(['email', 'priority', 'dedicated']).optional(),
+  "supportResponseHours": zod.number().int().min(1).max(updateTenantTrialResponsePlanOneOneProfileSupportResponseHoursMax).nullish(),
+  "launchTargetBusinessDays": zod.number().int().min(1).max(updateTenantTrialResponsePlanOneOneProfileLaunchTargetBusinessDaysMax).nullish(),
+  "dedicatedManager": zod.boolean().optional(),
+  "slaEnabled": zod.boolean().optional(),
+  "slaTerms": zod.string().max(updateTenantTrialResponsePlanOneOneProfileSlaTermsMax).optional(),
+  "earlyAccess": zod.boolean().optional(),
+  "poweredByFooter": zod.boolean().optional(),
+  "themeModes": zod.array(zod.enum(['light', 'dark'])).max(updateTenantTrialResponsePlanOneOneProfileThemeModesMax).optional(),
+  "convertProviderLimit": zod.number().int().min(updateTenantTrialResponsePlanOneOneProfileConvertProviderLimitMin).max(updateTenantTrialResponsePlanOneOneProfileConvertProviderLimitMax).nullish(),
+  "requestedProviders": zod.array(zod.string().min(1).max(updateTenantTrialResponsePlanOneOneProfileRequestedProvidersItemMax)).max(updateTenantTrialResponsePlanOneOneProfileRequestedProvidersMax).optional(),
+  "capabilities": zod.array(zod.object({
+  "key": zod.string().regex(updateTenantTrialResponsePlanOneOneProfileCapabilitiesItemKeyRegExp),
+  "label": zod.string().min(1).max(updateTenantTrialResponsePlanOneOneProfileCapabilitiesItemLabelMax),
+  "description": zod.string().max(updateTenantTrialResponsePlanOneOneProfileCapabilitiesItemDescriptionMax).optional(),
+  "group": zod.string().max(updateTenantTrialResponsePlanOneOneProfileCapabilitiesItemGroupMax).optional(),
+  "state": zod.enum(['included', 'excluded', 'optional', 'limited', 'unlimited', 'unavailable']).describe('Commercial state. limited requires limitValue.'),
+  "availability": zod.enum(['available', 'requires_configuration', 'unavailable']).describe('Implementation status; unavailable means not implemented and never a working toggle'),
+  "limitValue": zod.number().min(updateTenantTrialResponsePlanOneOneProfileCapabilitiesItemLimitValueMin).max(updateTenantTrialResponsePlanOneOneProfileCapabilitiesItemLimitValueMax).nullish(),
+  "unit": zod.string().max(updateTenantTrialResponsePlanOneOneProfileCapabilitiesItemUnitMax).optional(),
+  "tooltip": zod.string().max(updateTenantTrialResponsePlanOneOneProfileCapabilitiesItemTooltipMax).optional(),
+  "highlight": zod.boolean().optional(),
+  "publicVisible": zod.boolean().optional(),
+  "badge": zod.string().max(updateTenantTrialResponsePlanOneOneProfileCapabilitiesItemBadgeMax).optional(),
+  "dependsOn": zod.array(zod.string().regex(updateTenantTrialResponsePlanOneOneProfileCapabilitiesItemDependsOnItemRegExp)).max(updateTenantTrialResponsePlanOneOneProfileCapabilitiesItemDependsOnMax).optional(),
+  "note": zod.string().max(updateTenantTrialResponsePlanOneOneProfileCapabilitiesItemNoteMax).optional()
+})).max(updateTenantTrialResponsePlanOneOneProfileCapabilitiesMax).optional(),
+  "internalNotes": zod.string().max(updateTenantTrialResponsePlanOneOneProfileInternalNotesMax).optional()
+}).optional().describe('Structured plan configuration. internalName and internalNotes are Super Admin only and never published.'),
+  "expectedRevision": zod.number().int().min(updateTenantTrialResponsePlanOneOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
+}).and(zod.object({
+  "id": zod.string().uuid(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date(),
+  "pricingConfigured": zod.boolean().optional(),
+  "billingPeriods": zod.array(zod.enum(['monthly', 'yearly'])).optional(),
+  "featureRows": zod.array(zod.object({
+  "label": zod.string().min(1).max(updateTenantTrialResponsePlanOneTwoFeatureRowsItemLabelMax),
+  "value": zod.string().min(1).max(updateTenantTrialResponsePlanOneTwoFeatureRowsItemValueMax)
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(updateTenantTrialResponsePlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.'),
+  "revision": zod.number().int().optional()
+})),zod.null()]),
+  "addons": zod.array(zod.object({
+  "monthlyPrice": zod.string().regex(updateTenantTrialResponseAddonsItemOneMonthlyPriceRegExp).nullish(),
+  "yearlyPrice": zod.string().regex(updateTenantTrialResponseAddonsItemOneYearlyPriceRegExp).nullish(),
+  "setupFee": zod.string().regex(updateTenantTrialResponseAddonsItemOneSetupFeeRegExp).nullish(),
+  "currency": zod.string().regex(updateTenantTrialResponseAddonsItemOneCurrencyRegExp).optional(),
+  "discountPercent": zod.string().max(updateTenantTrialResponseAddonsItemOneDiscountPercentMax).regex(updateTenantTrialResponseAddonsItemOneDiscountPercentRegExp).optional(),
+  "name": zod.string().min(updateTenantTrialResponseAddonsItemOneNameMin).max(updateTenantTrialResponseAddonsItemOneNameMax),
+  "description": zod.string().max(updateTenantTrialResponseAddonsItemOneDescriptionMax),
+  "enabled": zod.boolean(),
+  "entitlements": zod.array(zod.object({
+  "key": zod.string().max(updateTenantTrialResponseAddonsItemOneEntitlementsItemKeyMax).regex(updateTenantTrialResponseAddonsItemOneEntitlementsItemKeyRegExp),
+  "value": zod.union([zod.boolean(),zod.string().max(updateTenantTrialResponseAddonsItemOneEntitlementsItemValueTwoMax).regex(updateTenantTrialResponseAddonsItemOneEntitlementsItemValueTwoRegExp)])
+})).max(updateTenantTrialResponseAddonsItemOneEntitlementsMax)
+}).and(zod.object({
+  "id": zod.string().uuid(),
+  "pricingConfigured": zod.boolean().optional()
+}))),
+  "overrides": zod.array(zod.object({
+  "key": zod.string().max(updateTenantTrialResponseOverridesItemOneKeyMax).regex(updateTenantTrialResponseOverridesItemOneKeyRegExp),
+  "value": zod.union([zod.boolean(),zod.string().max(updateTenantTrialResponseOverridesItemOneValueTwoMax).regex(updateTenantTrialResponseOverridesItemOneValueTwoRegExp)])
+}).and(zod.object({
+  "reason": zod.string().min(updateTenantTrialResponseOverridesItemTwoReasonMin).max(updateTenantTrialResponseOverridesItemTwoReasonMax)
+}))),
+  "features": zod.record(zod.string(), zod.boolean()),
+  "limits": zod.record(zod.string(), zod.string()),
+  "sources": zod.record(zod.string(), zod.string()),
+  "usage": zod.array(zod.object({
+  "key": zod.string(),
+  "label": zod.string(),
+  "used": zod.string(),
+  "limit": zod.string(),
+  "exceeded": zod.boolean()
+})),
+  "enabledModules": zod.array(zod.string()),
+  "overLimit": zod.boolean()
+})
+
+
 export const GetTenantSubscriptionParams = zod.object({
   "tenantId": zod.coerce.string().uuid()
 })
@@ -14105,6 +14777,17 @@ export const GetTenantSubscriptionResponse = zod.object({
   "recurringEstimate": zod.string().nullish(),
   "currency": zod.string().nullish(),
   "billingConnected": zod.boolean().optional(),
+  "trial": zod.union([zod.object({
+  "id": zod.string().uuid(),
+  "state": zod.enum(['active', 'cancelled', 'expired']),
+  "startedAt": zod.string(),
+  "endsAt": zod.string(),
+  "renewalRule": zod.enum(['manual_agreement_required']),
+  "renewalRequestedAt": zod.string().nullable(),
+  "cancelledAt": zod.string().nullable(),
+  "publishedRevision": zod.string(),
+  "agreedRecurringPrice": zod.string()
+}),zod.null()]).optional(),
   "plan": zod.union([zod.object({
   "name": zod.string().min(getTenantSubscriptionResponsePlanOneOneNameMin).max(getTenantSubscriptionResponsePlanOneOneNameMax),
   "description": zod.string().max(getTenantSubscriptionResponsePlanOneOneDescriptionMax),
@@ -14421,6 +15104,17 @@ export const ChangeTenantPlanResponse = zod.object({
   "recurringEstimate": zod.string().nullish(),
   "currency": zod.string().nullish(),
   "billingConnected": zod.boolean().optional(),
+  "trial": zod.union([zod.object({
+  "id": zod.string().uuid(),
+  "state": zod.enum(['active', 'cancelled', 'expired']),
+  "startedAt": zod.string(),
+  "endsAt": zod.string(),
+  "renewalRule": zod.enum(['manual_agreement_required']),
+  "renewalRequestedAt": zod.string().nullable(),
+  "cancelledAt": zod.string().nullable(),
+  "publishedRevision": zod.string(),
+  "agreedRecurringPrice": zod.string()
+}),zod.null()]).optional(),
   "plan": zod.union([zod.object({
   "name": zod.string().min(changeTenantPlanResponsePlanOneOneNameMin).max(changeTenantPlanResponsePlanOneOneNameMax),
   "description": zod.string().max(changeTenantPlanResponsePlanOneOneDescriptionMax),
@@ -14752,6 +15446,17 @@ export const UpdateSubscriptionCommercialResponse = zod.object({
   "recurringEstimate": zod.string().nullish(),
   "currency": zod.string().nullish(),
   "billingConnected": zod.boolean().optional(),
+  "trial": zod.union([zod.object({
+  "id": zod.string().uuid(),
+  "state": zod.enum(['active', 'cancelled', 'expired']),
+  "startedAt": zod.string(),
+  "endsAt": zod.string(),
+  "renewalRule": zod.enum(['manual_agreement_required']),
+  "renewalRequestedAt": zod.string().nullable(),
+  "cancelledAt": zod.string().nullable(),
+  "publishedRevision": zod.string(),
+  "agreedRecurringPrice": zod.string()
+}),zod.null()]).optional(),
   "plan": zod.union([zod.object({
   "name": zod.string().min(updateSubscriptionCommercialResponsePlanOneOneNameMin).max(updateSubscriptionCommercialResponsePlanOneOneNameMax),
   "description": zod.string().max(updateSubscriptionCommercialResponsePlanOneOneDescriptionMax),
@@ -15100,6 +15805,17 @@ export const SetTenantAddonsResponse = zod.object({
   "recurringEstimate": zod.string().nullish(),
   "currency": zod.string().nullish(),
   "billingConnected": zod.boolean().optional(),
+  "trial": zod.union([zod.object({
+  "id": zod.string().uuid(),
+  "state": zod.enum(['active', 'cancelled', 'expired']),
+  "startedAt": zod.string(),
+  "endsAt": zod.string(),
+  "renewalRule": zod.enum(['manual_agreement_required']),
+  "renewalRequestedAt": zod.string().nullable(),
+  "cancelledAt": zod.string().nullable(),
+  "publishedRevision": zod.string(),
+  "agreedRecurringPrice": zod.string()
+}),zod.null()]).optional(),
   "plan": zod.union([zod.object({
   "name": zod.string().min(setTenantAddonsResponsePlanOneOneNameMin).max(setTenantAddonsResponsePlanOneOneNameMax),
   "description": zod.string().max(setTenantAddonsResponsePlanOneOneDescriptionMax),
@@ -15436,6 +16152,17 @@ export const SetTenantOverridesResponse = zod.object({
   "recurringEstimate": zod.string().nullish(),
   "currency": zod.string().nullish(),
   "billingConnected": zod.boolean().optional(),
+  "trial": zod.union([zod.object({
+  "id": zod.string().uuid(),
+  "state": zod.enum(['active', 'cancelled', 'expired']),
+  "startedAt": zod.string(),
+  "endsAt": zod.string(),
+  "renewalRule": zod.enum(['manual_agreement_required']),
+  "renewalRequestedAt": zod.string().nullable(),
+  "cancelledAt": zod.string().nullable(),
+  "publishedRevision": zod.string(),
+  "agreedRecurringPrice": zod.string()
+}),zod.null()]).optional(),
   "plan": zod.union([zod.object({
   "name": zod.string().min(setTenantOverridesResponsePlanOneOneNameMin).max(setTenantOverridesResponsePlanOneOneNameMax),
   "description": zod.string().max(setTenantOverridesResponsePlanOneOneDescriptionMax),
@@ -15758,6 +16485,17 @@ export const SetTenantSuspensionResponse = zod.object({
   "recurringEstimate": zod.string().nullish(),
   "currency": zod.string().nullish(),
   "billingConnected": zod.boolean().optional(),
+  "trial": zod.union([zod.object({
+  "id": zod.string().uuid(),
+  "state": zod.enum(['active', 'cancelled', 'expired']),
+  "startedAt": zod.string(),
+  "endsAt": zod.string(),
+  "renewalRule": zod.enum(['manual_agreement_required']),
+  "renewalRequestedAt": zod.string().nullable(),
+  "cancelledAt": zod.string().nullable(),
+  "publishedRevision": zod.string(),
+  "agreedRecurringPrice": zod.string()
+}),zod.null()]).optional(),
   "plan": zod.union([zod.object({
   "name": zod.string().min(setTenantSuspensionResponsePlanOneOneNameMin).max(setTenantSuspensionResponsePlanOneOneNameMax),
   "description": zod.string().max(setTenantSuspensionResponsePlanOneOneDescriptionMax),

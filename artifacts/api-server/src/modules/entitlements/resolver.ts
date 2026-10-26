@@ -8,6 +8,7 @@ import { recurringEstimate } from "./commercial-pricing";
 import { applyServiceDependencies } from "./service-policy";
 import { readSnapshot } from "../plan-management/contracts";
 import { applyPlanPolicy } from "../plan-management/effective-policy";
+import { effectiveTrial, trialBlocksAccess } from "../commerce/trial-policy";
 
 export function currentPeriod(now = new Date()) { return now.toISOString().slice(0, 7); }
 export async function lockTenant(client: DatabaseClient, tenantId: string) {
@@ -58,7 +59,8 @@ export async function resolveEntitlements(client: DatabaseClient, tenantId: stri
     for (const addon of addons) await apply(addon.entitlements, `add-on: ${addon.name}`, true);
     await apply(overrides, "super-admin override", false);
   }
-  const status = !plan ? "unassigned" : sub.rows[0].cancelled ? "cancelled" : tenant.rows[0].status === "suspended" || sub.rows[0].status === "suspended" ? "suspended" : "active";
+  const trial = effectiveTrial(sub.rows[0]?.trial);
+  const status = !plan ? "unassigned" : sub.rows[0].cancelled ? "cancelled" : trialBlocksAccess(trial) || tenant.rows[0].status === "suspended" || sub.rows[0].status === "suspended" ? "suspended" : "active";
   applyPlanPolicy(plan?.profile, features, limits, sources);
   if (status !== "active") {
     for (const key of Object.keys(features)) features[key] = false;
@@ -88,8 +90,8 @@ export async function resolveEntitlements(client: DatabaseClient, tenantId: stri
     billingPeriod: (sub.rows[0]?.billing_period ?? "monthly") as "monthly" | "yearly",
     discountPercent: sub.rows[0]?.discount_percent as string ?? "0",
     operatorNote: sub.rows[0]?.operator_note as string ?? "",
-    recurringEstimate: plan ? recurringEstimate([plan, ...addons], sub.rows[0].billing_period, sub.rows[0].discount_percent) : null,
-    currency: plan?.currency ?? null, billingConnected: false,
+    recurringEstimate: trial ? trial.agreedRecurringPrice : plan ? recurringEstimate([plan, ...addons], sub.rows[0].billing_period, sub.rows[0].discount_percent) : null,
+    currency: plan?.currency ?? null, billingConnected: false, trial,
     plan, addons, overrides, features, limits, sources, usage,
     enabledModules: registry.filter((m) => features[m.key]).map((m) => m.key),
     overLimit: usage.some((u) => u.exceeded),
