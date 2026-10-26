@@ -3,6 +3,7 @@ import { logger } from "./lib/logger";
 import { startIntegrationHealthMonitor } from "./modules/integrations/monitor";
 import { pool, authSupportPool, withDatabase } from "@workspace/db";
 import { assertExternalEnvironment } from "./lib/external-environment";
+import { startTrialMonitor } from "./modules/commerce/trial-monitor";
 
 assertExternalEnvironment();
 if (process.env.QXLAYER_DATABASE_PROVIDER === "supabase")
@@ -33,11 +34,12 @@ const server = app.listen(port, "0.0.0.0", (err?: Error) => {
 const stop = process.env.QXLAYER_HEALTH_MONITOR_MODE === "disabled" ? () => {}
   : startIntegrationHealthMonitor();
 let closing = false;
+const stopTrials = startTrialMonitor();
 async function shutdown() {
   if (closing) return;
   closing = true;
   setTimeout(() => process.exit(1), 20_000).unref();
-  await Promise.all([new Promise<void>(resolve => server.close(() => resolve())), stop()]);
+  await Promise.all([new Promise<void>(resolve => server.close(() => resolve())), stop(), stopTrials()]);
   if (authSupportPool !== pool) await authSupportPool.end();
   await pool.end(); process.exit(0);
 }

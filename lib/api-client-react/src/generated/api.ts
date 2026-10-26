@@ -147,6 +147,8 @@ import type {
   TenantReleaseState,
   TenantSummary,
   TestTenantIntegrationInput,
+  TrialActionInput,
+  TrialStartInput,
   UploadTenantDraftAsset201,
   WebsiteErrorDiagnostic,
   WebsitePreview,
@@ -10625,6 +10627,172 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
         TContext
       > => {
       return useMutation(getUpdateAddonMutationOptions(options));
+    }
+
+export const getStartTenantTrialUrl = (tenantId: string,) => {
+
+
+
+
+  return `/api/tenants/${tenantId}/subscription/trial`
+}
+
+export const startTenantTrial = async (tenantId: string,
+    trialStartInput: TrialStartInput, options?: Parameters<typeof customFetch>[1]): Promise<SubscriptionView> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<SubscriptionView>(getStartTenantTrialUrl(tenantId),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(trialStartInput)
+  }
+);}
+
+
+
+
+
+export const getStartTenantTrialMutationKey = () => ['startTenantTrial'] as const;
+
+export const getStartTenantTrialMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof startTenantTrial>>, TError,StartTenantTrialMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof startTenantTrial>>, TError,StartTenantTrialMutationVariables, TContext> => {
+
+const mutationKey = getStartTenantTrialMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof startTenantTrial>>, StartTenantTrialMutationVariables> = (props) => {
+          const {tenantId,data} = props ?? {};
+
+          return  startTenantTrial(tenantId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type StartTenantTrialMutationResult = NonNullable<Awaited<ReturnType<typeof startTenantTrial>>>
+    export type StartTenantTrialMutationBody = BodyType<TrialStartInput>
+    export type StartTenantTrialMutationError = ErrorType<unknown>
+    export type StartTenantTrialMutationVariables = {tenantId: string;data: BodyType<TrialStartInput>}
+
+    export const useStartTenantTrial = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof startTenantTrial>>, TError,StartTenantTrialMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof startTenantTrial>>,
+        TError,
+        StartTenantTrialMutationVariables,
+        TContext
+      > => {
+      return useMutation(getStartTenantTrialMutationOptions(options));
+    }
+
+export const getUpdateTenantTrialUrl = (tenantId: string,) => {
+
+
+
+
+  return `/api/tenants/${tenantId}/subscription/trial`
+}
+
+export const updateTenantTrial = async (tenantId: string,
+    trialActionInput: TrialActionInput, options?: Parameters<typeof customFetch>[1]): Promise<SubscriptionView> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<SubscriptionView>(getUpdateTenantTrialUrl(tenantId),
+  {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(trialActionInput)
+  }
+);}
+
+
+
+
+
+export const getUpdateTenantTrialMutationKey = () => ['updateTenantTrial'] as const;
+
+export const getUpdateTenantTrialMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateTenantTrial>>, TError,UpdateTenantTrialMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateTenantTrial>>, TError,UpdateTenantTrialMutationVariables, TContext> => {
+
+const mutationKey = getUpdateTenantTrialMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateTenantTrial>>, UpdateTenantTrialMutationVariables> = (props) => {
+          const {tenantId,data} = props ?? {};
+
+          return  updateTenantTrial(tenantId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateTenantTrialMutationResult = NonNullable<Awaited<ReturnType<typeof updateTenantTrial>>>
+    export type UpdateTenantTrialMutationBody = BodyType<TrialActionInput>
+    export type UpdateTenantTrialMutationError = ErrorType<unknown>
+    export type UpdateTenantTrialMutationVariables = {tenantId: string;data: BodyType<TrialActionInput>}
+
+    export const useUpdateTenantTrial = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateTenantTrial>>, TError,UpdateTenantTrialMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof updateTenantTrial>>,
+        TError,
+        UpdateTenantTrialMutationVariables,
+        TContext
+      > => {
+      return useMutation(getUpdateTenantTrialMutationOptions(options));
     }
 
 export const getGetTenantSubscriptionUrl = (tenantId: string,) => {

@@ -15,6 +15,7 @@ import { useInvalidateTenant } from '@/lib/invalidate';
 import { ErrorState } from './bits';
 import { Section } from './sections';
 import { OverridesEditor, overrideError } from './entitlement-editor';
+import { SubscriptionTrial } from './subscription-trial';
 
 export function useSubscription(tenantId: string) {
   return useGetTenantSubscription(tenantId, { query: { enabled: !!tenantId, queryKey: getGetTenantSubscriptionQueryKey(tenantId), staleTime: 10000, refetchInterval: 30000, refetchOnWindowFocus: true } });
@@ -216,11 +217,13 @@ export function SubscriptionSections({ tenantId, canManage, show }: { tenantId: 
   const sub = q.data;
   return (
     <div className="space-y-6">
+      {sub && (on('commercial') || on('summary') || on('plan')) && <SubscriptionTrial key={tenantId} sub={sub} canManage={canManage} />}
       {on('capabilities') && <Section n="S1" title={canManage ? 'Subscription' : 'Your capabilities'} note="Effective rights resolved from plan, add-ons and tenant overrides." footer={<span className="font-mono text-[11px] uppercase tracking-wider text-muted-foreground">{canManage ? 'Operator controls below' : 'Managed by your platform operator'}</span>}>
         {q.isLoading ? <Skeleton className="h-48" /> : q.isError || !sub ? <ErrorState what="subscription" onRetry={() => q.refetch()} /> : <Capabilities sub={sub} />}
       </Section>}
       {!canManage && sub && on('summary') && <Section n="S2" title="Plan and pricing" note="Read-only. Changes are made by your platform operator." footer={<span />}><ReadOnlySummary sub={sub} /></Section>}
-      {canManage && sub && (
+      {canManage && sub?.trial && <p className="text-sm text-muted-foreground">Trial terms are frozen. Use the trial controls above; plan, add-on and commercial changes cannot replace the agreement or bypass its deadline.</p>}
+      {canManage && sub && !sub.trial && (
         <>
           {on('plan') && <Section n="S2" title="Plan" note="Disabled or archived plans cannot be newly assigned." footer={<span />}><PlanPanel sub={sub} /></Section>}
           {on('addons') && <Section n="S3" title="Add-ons" note="Feature grants combine with the plan; numeric increments add to it." footer={<span />}><AddonsPanel sub={sub} /></Section>}

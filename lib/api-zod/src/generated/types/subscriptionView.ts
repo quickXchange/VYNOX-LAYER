@@ -8,6 +8,7 @@
 import type { Addon } from './addon';
 import type { EntitlementOverride } from './entitlementOverride';
 import type { Plan } from './plan';
+import type { SubscriptionTrial } from './subscriptionTrial';
 import type { SubscriptionViewBillingPeriod } from './subscriptionViewBillingPeriod';
 import type { SubscriptionViewFeatures } from './subscriptionViewFeatures';
 import type { SubscriptionViewLimits } from './subscriptionViewLimits';
@@ -27,6 +28,7 @@ export interface SubscriptionView {
   /** @nullable */
   currency?: string | null;
   billingConnected?: boolean;
+  trial?: SubscriptionTrial | null;
   plan: Plan | null;
   addons: Addon[];
   overrides: EntitlementOverride[];

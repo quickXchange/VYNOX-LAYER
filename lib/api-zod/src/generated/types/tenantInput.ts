@@ -19,4 +19,6 @@ export interface TenantInput {
      */
   slug: string;
   planId: string;
+  /** Create an unassigned draft; review and start a published trial separately. */
+  prepareTrial?: boolean;
 }
