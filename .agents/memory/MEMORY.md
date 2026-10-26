@@ -67,3 +67,10 @@
 - [Exchange group selectors](exchange-group-selectors.md) — typed Crypto/Fiat groups must survive scope reconciliation and unrelated settings saves, with server-consistent specificity.
 - [Semantic JSONB replay](semantic-jsonb-replay.md) — idempotency compares normalized field values, never JSON object insertion order.
 - [Tenant release boundary](tenant-release-boundary.md) — deliberate immutable data releases; preserve operational/Owner safety and independently authored customer text.
+- [Vercel domain aliases](vercel-domain-alias-safety.md) — assigning a Vercel alias can move it from another deployment; require exact target approval and verify the alias list afterward.
+- [Acceptance request sandbox](acceptance-request-sandbox.md) — one requester is identified by provider-verified email fingerprint; sandbox submissions stay outside email, review, billing and delivery.
+- [Customer sign-in policy](customer-sign-in-policy.md) — customers may use passwords or email codes; preserve enrolled MFA and account permissions.
+- [Customer project intake](customer-project-intake.md) — Configure Exchange asks only for required brand and preferred domain; preserve historical names.
+- [Customer design simulation](customer-design-simulation.md) — preview standard Exchange branding before Features; no new favicon intake, local-only simulations.
+- [Customer feature intake](customer-feature-intake.md) — Swap/Convert are multi-select; Convert provider preferences are review requests, not activation.
+- [Editable subscription plans](editable-subscription-plans.md) — Starter/Standard/Premium replace old offers; preserve contracts, version publication, no invented prices.

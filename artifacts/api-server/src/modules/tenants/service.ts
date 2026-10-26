@@ -1,3 +1,4 @@
+import { freezeContract } from "../plan-management/contracts";
 import { customerHostname } from "../domains/hostname";
 import { withDatabase, type DatabaseClient } from "@workspace/db";
 import { HttpError } from "../../lib/errors";
@@ -85,6 +86,7 @@ export async function prepareTenant(client: DatabaseClient, principal: Principal
   await client.query("INSERT INTO tenant_branding (tenant_id,brand_name) VALUES ($1,$2)", [id, input.name.trim()]);
   await client.query("INSERT INTO tenant_configuration (tenant_id) VALUES ($1)", [id]);
   await client.query("INSERT INTO tenant_subscriptions (tenant_id,plan_id) VALUES ($1,$2)", [id, plan.id]);
+  await freezeContract(client, id, plan, "tenant-creation");
   for (const addonId of new Set(addonIds)) await client.query("INSERT INTO tenant_addons (tenant_id,addon_id) VALUES ($1,$2)", [id, addonId]);
   await client.query("UPDATE tenants SET completed_steps=ARRAY['modules']::text[] WHERE id=$1", [id]);
   await audit(client, principal, id, "tenant.created", `Created sandbox client ${input.name.trim()}`, { planId: plan.id });
@@ -118,6 +120,11 @@ export function saveBrand(principal: Principal, tenantId: string, input: z.infer
   if (!input.supportedLanguages.includes(input.defaultLanguage)) throw new HttpError(400, "Default language must be included in supported languages.");
   safeHttps(input.logoUrl);
   return saveStep(principal, tenantId, "brand", async (client) => {
+    // Plan-contract gates (absent for legacy contracts): theme modes and site languages.
+    const effective = await resolveEntitlements(client, tenantId);
+    const modes = input.themeMode === "system" ? ["light", "dark"] : [input.themeMode];
+    if (effective.status === "active") for (const m of modes) if (effective.features[`theme_${m}`] === false) throw new HttpError(403, `Theme mode '${input.themeMode}' is not included in this tenant's plan.`);
+    if (effective.status === "active" && "max_languages" in effective.limits) enforceLimit(effective, "max_languages", String(new Set(input.supportedLanguages).size));
     await client.query(
       `UPDATE tenant_branding SET brand_name=$2,logo_url=$3,primary_color=$4,accent_color=$5,
        theme_mode=$6,default_language=$7,supported_languages=$8 WHERE tenant_id=$1`,

@@ -5,6 +5,7 @@ import { contextFor, requireSuperAdmin, type Principal } from "../authentication
 import { HttpError } from "../../lib/errors";
 import { audit } from "../../lib/catalog-audit";
 import { acceptanceCatalog, catalogTable } from "../../lib/catalog-scope";
+import { publicProfile } from "../plan-management/profile";
 
 function stable(value: any): any {
   if (value instanceof Date) return value.toISOString();
@@ -15,7 +16,7 @@ function stable(value: any): any {
 export const pricingRevision = (value: unknown) => createHash("sha256").update(JSON.stringify(stable(value))).digest("hex");
 /** Read compatibility only: never rewrite immutable legacy publication payloads. */
 export function withPlanFeatureRows<T extends { plans: { featureRows?: { label: string; value: string }[] }[] }>(payload: T) {
-  return { ...payload, plans: payload.plans.map(plan => ({ ...plan, featureRows: plan.featureRows ?? [] })) };
+  return { ...payload, plans: payload.plans.map(plan => ({ ...plan, featureRows: plan.featureRows ?? [], profile: publicProfile((plan as { profile?: unknown }).profile) })) };
 }
 export function assertPublicationRevision(actual: string, expected: string, published: string | null, expectedPublished: string | null) {
   if (actual !== expected || published !== expectedPublished) throw new HttpError(409, "Pricing revision conflict. Refresh the preview and review the new draft before publishing.");
@@ -23,7 +24,10 @@ export function assertPublicationRevision(actual: string, expected: string, publ
 export async function draftOffers(c: DatabaseClient) {
   const { whiteLabelCatalogForClient } = await import("../customer/order-catalog");
   const catalog = await whiteLabelCatalogForClient(c);
-  const plans = catalog.plans.filter(p => p.pricingConfigured && p.billingPeriods.length);
+  // Contact-sales plans publish without prices; internal notes never publish.
+  const plans = catalog.plans
+    .filter(p => (p.pricingConfigured ? p.profile?.pricingMode !== "custom" && p.profile?.pricingMode !== "contact_sales" : p.profile?.pricingMode === "contact_sales" || p.profile?.pricingMode === "custom") && p.billingPeriods.length && p.profile?.visibility !== "hidden")
+    .map(({ revision: _r, ...p }) => ({ ...p, profile: publicProfile(p.profile) }));
   const addons = catalog.addons.filter(a => a.pricingConfigured);
   const methods = acceptanceCatalog() || publicPreparation() ? [] : (await c.query("SELECT id,name,kind,currency FROM qxlayer_commerce.methods WHERE enabled AND approved ORDER BY name,id")).rows;
   return { plans, addons, methods, purchaseAvailable: plans.some(p => methods.some(m => m.currency === p.currency)) };
@@ -51,6 +55,8 @@ export function pricingPublication(p: Principal, input?: {expectedRevision: stri
       assertPublicationRevision(draftRevision, input.expectedRevision, current?.revision ?? null, input.expectedPublishedRevision);
       await c.query(`INSERT INTO ${catalogTable("pricing_publication")}(singleton,payload,revision) VALUES(true,$1,$2)
         ON CONFLICT(singleton) DO UPDATE SET payload=EXCLUDED.payload,revision=EXCLUDED.revision,published_at=now()`, [JSON.stringify(draft), draftRevision]);
+      const { recordVersion } = await import("../plan-management/service");
+      await recordVersion(c, p, draft, draftRevision, input.reason);
       await audit(c, p, null, "pricing.published", input.reason, { beforeRevision: current?.revision ?? null, revision:draftRevision, paymentsActivated:false });
       return { draftRevision, publishedRevision:draftRevision, publishedAt:new Date().toISOString(), draft, published:draft };
     }

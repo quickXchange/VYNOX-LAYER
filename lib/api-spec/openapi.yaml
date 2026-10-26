@@ -1224,6 +1224,7 @@ paths:
     parameters: [{$ref: "#/components/parameters/PlanId"}]
     delete:
       operationId: deletePlan
+      parameters: [{name: expectedRevision, in: query, required: true, schema: {type: integer, minimum: 0}}]
       tags: [platform]
       responses:
         "200": {description: Unreferenced plan deleted, content: {application/json: {schema: {$ref: "#/components/schemas/MutationStatus"}}}}
@@ -1239,6 +1240,52 @@ paths:
       requestBody: {required: true, content: {application/json: {schema: {$ref: "#/components/schemas/PlanInput"}}}}
       responses:
         "200": {description: Plan updated, content: {application/json: {schema: {$ref: "#/components/schemas/Plan"}}}}
+  /plan-management/versions:
+    get:
+      operationId: listPublicationVersions
+      tags: [platform]
+      responses:
+        "200": {description: Immutable publication history, content: {application/json: {schema: {$ref: "#/components/schemas/PublicationVersionList"}}}}
+  /plan-management/versions/{versionId}/rollback:
+    post:
+      operationId: rollbackPublication
+      tags: [platform]
+      parameters: [{name: versionId, in: path, required: true, schema: {type: string, format: uuid}}]
+      requestBody: {required: true, content: {application/json: {schema: {$ref: "#/components/schemas/PublicationRollbackInput"}}}}
+      responses:
+        "200": {description: Earlier snapshot republished as a new version, content: {application/json: {schema: {$ref: "#/components/schemas/PublicationRollbackResult"}}}}
+        "409": {description: Publication changed since read}
+  /plan-management/order:
+    put:
+      operationId: reorderPlans
+      tags: [platform]
+      requestBody: {required: true, content: {application/json: {schema: {$ref: "#/components/schemas/PlanOrderInput"}}}}
+      responses:
+        "200": {description: Draft order saved, content: {application/json: {schema: {$ref: "#/components/schemas/MutationStatus"}}}}
+        "409": {description: A plan changed since read}
+  /plan-management/plans/{planId}/history:
+    get:
+      operationId: getPlanHistory
+      tags: [platform]
+      parameters: [{$ref: "#/components/parameters/PlanId"}]
+      responses:
+        "200": {description: Audited plan changes, content: {application/json: {schema: {type: array, items: {$ref: "#/components/schemas/PlanHistoryEntry"}}}}}
+  /plan-management/plans/{planId}/migration-preview:
+    get:
+      operationId: getPlanMigrationPreview
+      tags: [platform]
+      parameters: [{$ref: "#/components/parameters/PlanId"}, {name: targetPlanId, in: query, required: true, schema: {type: string, format: uuid}}]
+      responses:
+        "200": {description: Per-customer differences against the PUBLISHED target, content: {application/json: {schema: {$ref: "#/components/schemas/MigrationPreview"}}}}
+  /plan-management/plans/{planId}/migrate:
+    post:
+      operationId: migratePlanSubscriptions
+      tags: [platform]
+      parameters: [{$ref: "#/components/parameters/PlanId"}]
+      requestBody: {required: true, content: {application/json: {schema: {$ref: "#/components/schemas/MigrationInput"}}}}
+      responses:
+        "200": {description: Selected subscriptions moved with new frozen contracts, content: {application/json: {schema: {$ref: "#/components/schemas/MigrationResult"}}}}
+        "409": {description: Preview is stale}
   /plans/{planId}/duplicate:
     post:
       operationId: duplicatePlan
@@ -2803,7 +2850,171 @@ components:
           type: array
           description: Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.
           items: {$ref: "#/components/schemas/PlanFeatureRow"}
+        profile: {$ref: "#/components/schemas/PlanProfile"}
+        expectedRevision: {type: integer, minimum: 0, description: "Optimistic concurrency token from the last read; a mismatch returns 409."}
       required: [name, description, monthlyPrice, yearlyPrice, setupFee, currency, billingLabel, displayOrder, status, entitlements]
+    PlanCapability:
+      type: object
+      additionalProperties: false
+      required: [key, label, state, availability]
+      properties:
+        key: {type: string, pattern: "^[a-z][a-z0-9_]{1,63}$"}
+        label: {type: string, minLength: 1, maxLength: 120}
+        description: {type: string, maxLength: 600}
+        group: {type: string, maxLength: 60}
+        state: {type: string, enum: [included, excluded, optional, limited, unlimited, unavailable], description: "Commercial state. limited requires limitValue."}
+        availability: {type: string, enum: [available, requires_configuration, unavailable], description: "Implementation status; unavailable means not implemented and never a working toggle"}
+        limitValue: {type: ["number", "null"], minimum: 0, maximum: 1000000000000}
+        unit: {type: string, maxLength: 30}
+        tooltip: {type: string, maxLength: 300}
+        highlight: {type: boolean}
+        publicVisible: {type: boolean}
+        badge: {type: string, maxLength: 30}
+        dependsOn: {type: array, maxItems: 20, items: {type: string, pattern: "^[a-z][a-z0-9_]{1,63}$"}}
+        note: {type: string, maxLength: 300}
+    PlanProfile:
+      type: object
+      additionalProperties: false
+      description: Structured plan configuration. internalName and internalNotes are Super Admin only and never published.
+      properties:
+        slug: {type: string, pattern: "^[a-z0-9](?:[a-z0-9-]{0,62}[a-z0-9])?$"}
+        internalName: {type: string, maxLength: 120}
+        publicName: {type: string, maxLength: 120}
+        tagline: {type: string, maxLength: 160}
+        shortDescription: {type: string, maxLength: 300}
+        fullDescription: {type: string, maxLength: 5000}
+        iconUrl: {type: string, maxLength: 500, description: "Local path or https URL without credentials"}
+        imageUrl: {type: string, maxLength: 500, description: "Local path or https URL without credentials"}
+        badgeType: {type: string, enum: [none, recommended, custom]}
+        badgeLabel: {type: string, maxLength: 40}
+        featured: {type: boolean}
+        footerText: {type: string, maxLength: 300}
+        promoText: {type: string, maxLength: 200}
+        terms: {type: string, maxLength: 5000}
+        pricingMode: {type: string, enum: [paid, free, custom, contact_sales]}
+        contactSalesLabel: {type: string, maxLength: 60}
+        customPriceText: {type: string, maxLength: 80}
+        fixedDiscountAmount: {type: ["string", "null"], pattern: "^[0-9]+(?:\\.[0-9]{1,2})?$", maxLength: 18}
+        promoPrice: {type: ["string", "null"], pattern: "^[0-9]+(?:\\.[0-9]{1,2})?$", maxLength: 18}
+        promoStartsAt: {type: ["string", "null"], format: date-time}
+        promoEndsAt: {type: ["string", "null"], format: date-time}
+        billingInterval: {type: string, enum: [monthly, yearly, monthly_and_yearly, custom]}
+        trialDays: {type: integer, minimum: 0, maximum: 365}
+        ctaLabel: {type: string, maxLength: 60}
+        ctaUrl: {type: string, maxLength: 200, pattern: "^/(?!/)[A-Za-z0-9/_#?=&.-]*$"}
+        visibility: {type: string, enum: [public, hidden]}
+        adminSeats: {type: ["integer", "null"], minimum: 1, maximum: 10000}
+        multiAdminRoles: {type: boolean}
+        supportLevel: {type: string, enum: [email, priority, dedicated]}
+        supportResponseHours: {type: ["integer", "null"], minimum: 1, maximum: 720}
+        launchTargetBusinessDays: {type: ["integer", "null"], minimum: 1, maximum: 365}
+        dedicatedManager: {type: boolean}
+        slaEnabled: {type: boolean}
+        slaTerms: {type: string, maxLength: 1000}
+        earlyAccess: {type: boolean}
+        poweredByFooter: {type: boolean}
+        themeModes: {type: array, maxItems: 2, items: {type: string, enum: [light, dark]}}
+        convertProviderLimit: {type: ["integer", "null"], minimum: 0, maximum: 100}
+        requestedProviders: {type: array, maxItems: 30, items: {type: string, minLength: 1, maxLength: 60}}
+        capabilities: {type: array, maxItems: 120, items: {$ref: "#/components/schemas/PlanCapability"}}
+        internalNotes: {type: string, maxLength: 5000}
+    PlanRevisionRef:
+      type: object
+      additionalProperties: false
+      required: [id, revision]
+      properties: {id: {type: string, format: uuid}, revision: {type: integer, minimum: 0}}
+    PlanOrderInput:
+      type: object
+      additionalProperties: false
+      required: [plans]
+      properties: {plans: {type: array, minItems: 1, maxItems: 500, items: {$ref: "#/components/schemas/PlanRevisionRef"}}}
+    PublicationVersion:
+      type: object
+      required: [id, revision, reason, publishedBy, rollbackOf, publishedAt, planCount]
+      properties:
+        id: {type: string, format: uuid}
+        revision: {type: string}
+        reason: {type: string}
+        publishedBy: {type: string}
+        rollbackOf: {type: ["string", "null"]}
+        publishedAt: {type: string, format: date-time}
+        planCount: {type: integer}
+    PublicationVersionList:
+      type: object
+      required: [currentRevision, versions]
+      properties:
+        currentRevision: {type: ["string", "null"]}
+        versions: {type: array, items: {$ref: "#/components/schemas/PublicationVersion"}}
+    PublicationRollbackInput:
+      type: object
+      additionalProperties: false
+      required: [expectedPublishedRevision, reason]
+      properties:
+        expectedPublishedRevision: {type: ["string", "null"], pattern: "^[a-f0-9]{64}$"}
+        reason: {type: string, minLength: 3, maxLength: 500}
+    PublicationRollbackResult:
+      type: object
+      required: [publishedRevision]
+      properties: {publishedRevision: {type: string}}
+    PlanHistoryEntry:
+      type: object
+      required: [id, actorId, eventType, description, metadata, createdAt]
+      properties:
+        id: {type: string, format: uuid}
+        actorId: {type: string}
+        eventType: {type: string}
+        description: {type: string}
+        metadata: {type: object, additionalProperties: true}
+        createdAt: {type: string, format: date-time}
+    MigrationEntitlementChange:
+      type: object
+      required: [key, current, target]
+      properties: {key: {type: string}, current: {}, target: {}}
+    MigrationPrices:
+      type: object
+      required: [monthlyPrice, yearlyPrice, setupFee, currency]
+      properties:
+        monthlyPrice: {type: ["string", "null"]}
+        yearlyPrice: {type: ["string", "null"]}
+        setupFee: {type: ["string", "null"]}
+        currency: {type: string}
+    MigrationSubscriber:
+      type: object
+      required: [tenantId, tenantName, frozen, frozenAt, contractPlanName, currentPrices, priceChanged, entitlementChanges]
+      properties:
+        tenantId: {type: string, format: uuid}
+        tenantName: {type: string}
+        frozen: {type: boolean}
+        frozenAt: {type: ["string", "null"], format: date-time}
+        contractPlanName: {type: ["string", "null"]}
+        currentPrices: {oneOf: [{$ref: "#/components/schemas/MigrationPrices"}, {type: "null"}]}
+        priceChanged: {type: boolean}
+        entitlementChanges: {type: array, items: {$ref: "#/components/schemas/MigrationEntitlementChange"}}
+    MigrationPreview:
+      type: object
+      required: [previewToken, publishedRevision, target, subscribers]
+      properties:
+        previewToken: {type: string, description: "Binds a confirm to this exact published target and these exact current contracts"}
+        publishedRevision: {type: string}
+        target:
+          type: object
+          required: [id, name, prices]
+          properties: {id: {type: string, format: uuid}, name: {type: string}, prices: {$ref: "#/components/schemas/MigrationPrices"}}
+        subscribers: {type: array, items: {$ref: "#/components/schemas/MigrationSubscriber"}}
+    MigrationInput:
+      type: object
+      additionalProperties: false
+      required: [toPlanId, tenantIds, reason, confirmed, previewToken]
+      properties:
+        toPlanId: {type: string, format: uuid}
+        tenantIds: {type: array, minItems: 1, maxItems: 1000, items: {type: string, format: uuid}}
+        reason: {type: string, minLength: 3, maxLength: 500}
+        confirmed: {type: boolean, enum: [true]}
+        previewToken: {type: string, pattern: "^[a-f0-9]{64}$"}
+    MigrationResult:
+      type: object
+      required: [moved]
+      properties: {moved: {type: array, items: {type: string, format: uuid}}}
     Plan:
       allOf:
         - {$ref: "#/components/schemas/PlanInput"}
@@ -2819,11 +3030,12 @@ components:
               default: []
               description: Ordered plain-text marketing rows only; legacy published snapshots return an empty array.
               items: {$ref: "#/components/schemas/PlanFeatureRow"}
+            revision: {type: integer}
           required: [id, createdAt, updatedAt, featureRows]
     PlanStatusInput:
       type: object
-      properties: {status: {type: string, enum: [enabled, disabled, archived]}}
-      required: [status]
+      properties: {status: {type: string, enum: [enabled, disabled, archived]}, expectedRevision: {type: integer, minimum: 0}}
+      required: [status, expectedRevision]
     AddonInput:
       type: object
       properties:

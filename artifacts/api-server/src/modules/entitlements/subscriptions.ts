@@ -8,6 +8,7 @@ import { contextFor, requireSuperAdmin, type Principal } from "../authentication
 import { readAddon, readPlan, validateEntries } from "./catalog";
 import { lockTenant, resolveEntitlements } from "./resolver";
 import { discountBasisPoints } from "./commercial-pricing";
+import { freezeContract } from "../plan-management/contracts";
 
 export function changeTenantPlan(principal: Principal, tenantId: string, planId: string) {
   assertCatalogOperationAllowed("subscription plan assignment");
@@ -22,6 +23,7 @@ export function changeTenantPlan(principal: Principal, tenantId: string, planId:
       "INSERT INTO tenant_subscriptions (tenant_id,plan_id,status) VALUES ($1,$2,$3) ON CONFLICT (tenant_id) DO UPDATE SET plan_id=EXCLUDED.plan_id,updated_at=now()",
       [tenantId, planId, before.tenantStatus === "suspended" ? "suspended" : "active"],
     );
+    if (before.plan?.id !== planId) await freezeContract(client, tenantId, plan, "assignment");
     await client.query("UPDATE tenants SET completed_steps=ARRAY(SELECT DISTINCT unnest(completed_steps || ARRAY['modules']::text[])),updated_at=now() WHERE id=$1", [tenantId]);
     const after = await resolveEntitlements(client, tenantId);
     await audit(client, principal, tenantId, "subscription.plan_changed", `Assigned plan ${plan.name}; no billing performed`, { before: before.plan?.id ?? null, after: planId, overridesRetained: true, overLimit: after.overLimit });

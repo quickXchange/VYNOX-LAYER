@@ -28,6 +28,10 @@ export const plansTable = pgTable("plans", {
   billingLabel: text("billing_label").notNull().default(""),
   displayOrder: integer("display_order").notNull().default(0),
   status: text("status").notNull().default("disabled"),
+  // Structured plan configuration (tagline, CTA, support, capabilities...).
+  profile: jsonb("profile").$type<Record<string, unknown>>().notNull().default(sql`'{}'::jsonb`),
+  revision: integer("revision").notNull().default(0),
+  updatedBy: text("updated_by"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 }, () => [
@@ -78,6 +82,9 @@ export const tenantSubscriptionsTable = pgTable("tenant_subscriptions", {
   discountPercent: numeric("discount_percent", { precision: 5, scale: 2 }).notNull().default("0"),
   cancelled: boolean("cancelled").notNull().default(false),
   operatorNote: text("operator_note").notNull().default(""),
+  // Immutable contract frozen at assignment; catalog edits never rewrite it.
+  contractSnapshot: jsonb("contract_snapshot").$type<Record<string, unknown>>(),
+  contractFrozenAt: timestamp("contract_frozen_at", { withTimezone: true }),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 }, () => [
   check("subscription_status", sql`status IN ('active','suspended')`),

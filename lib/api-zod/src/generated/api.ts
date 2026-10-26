@@ -2017,6 +2017,94 @@ export const getWhiteLabelCatalogResponsePlansItemOneFeatureRowsItemLabelMax = 1
 
 export const getWhiteLabelCatalogResponsePlansItemOneFeatureRowsItemValueMax = 500;
 
+export const getWhiteLabelCatalogResponsePlansItemOneProfileSlugRegExp = new RegExp('^[a-z0-9](?:[a-z0-9-]{0,62}[a-z0-9])?$');
+export const getWhiteLabelCatalogResponsePlansItemOneProfileInternalNameMax = 120;
+
+export const getWhiteLabelCatalogResponsePlansItemOneProfilePublicNameMax = 120;
+
+export const getWhiteLabelCatalogResponsePlansItemOneProfileTaglineMax = 160;
+
+export const getWhiteLabelCatalogResponsePlansItemOneProfileShortDescriptionMax = 300;
+
+export const getWhiteLabelCatalogResponsePlansItemOneProfileFullDescriptionMax = 5000;
+
+export const getWhiteLabelCatalogResponsePlansItemOneProfileIconUrlMax = 500;
+
+export const getWhiteLabelCatalogResponsePlansItemOneProfileImageUrlMax = 500;
+
+export const getWhiteLabelCatalogResponsePlansItemOneProfileBadgeLabelMax = 40;
+
+export const getWhiteLabelCatalogResponsePlansItemOneProfileFooterTextMax = 300;
+
+export const getWhiteLabelCatalogResponsePlansItemOneProfilePromoTextMax = 200;
+
+export const getWhiteLabelCatalogResponsePlansItemOneProfileTermsMax = 5000;
+
+export const getWhiteLabelCatalogResponsePlansItemOneProfileContactSalesLabelMax = 60;
+
+export const getWhiteLabelCatalogResponsePlansItemOneProfileCustomPriceTextMax = 80;
+
+export const getWhiteLabelCatalogResponsePlansItemOneProfileFixedDiscountAmountMax = 18;
+
+
+export const getWhiteLabelCatalogResponsePlansItemOneProfileFixedDiscountAmountRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,2})?$');
+export const getWhiteLabelCatalogResponsePlansItemOneProfilePromoPriceMax = 18;
+
+
+export const getWhiteLabelCatalogResponsePlansItemOneProfilePromoPriceRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,2})?$');
+export const getWhiteLabelCatalogResponsePlansItemOneProfileTrialDaysMin = 0;
+export const getWhiteLabelCatalogResponsePlansItemOneProfileTrialDaysMax = 365;
+
+export const getWhiteLabelCatalogResponsePlansItemOneProfileCtaLabelMax = 60;
+
+export const getWhiteLabelCatalogResponsePlansItemOneProfileCtaUrlMax = 200;
+
+
+export const getWhiteLabelCatalogResponsePlansItemOneProfileCtaUrlRegExp = new RegExp('^/(?!/)[A-Za-z0-9/_#?=&.-]*$');
+export const getWhiteLabelCatalogResponsePlansItemOneProfileAdminSeatsMax = 10000;
+
+export const getWhiteLabelCatalogResponsePlansItemOneProfileSupportResponseHoursMax = 720;
+
+export const getWhiteLabelCatalogResponsePlansItemOneProfileLaunchTargetBusinessDaysMax = 365;
+
+export const getWhiteLabelCatalogResponsePlansItemOneProfileSlaTermsMax = 1000;
+
+export const getWhiteLabelCatalogResponsePlansItemOneProfileThemeModesMax = 2;
+
+export const getWhiteLabelCatalogResponsePlansItemOneProfileConvertProviderLimitMin = 0;
+export const getWhiteLabelCatalogResponsePlansItemOneProfileConvertProviderLimitMax = 100;
+
+export const getWhiteLabelCatalogResponsePlansItemOneProfileRequestedProvidersItemMax = 60;
+
+export const getWhiteLabelCatalogResponsePlansItemOneProfileRequestedProvidersMax = 30;
+
+export const getWhiteLabelCatalogResponsePlansItemOneProfileCapabilitiesItemKeyRegExp = new RegExp('^[a-z][a-z0-9_]{1,63}$');
+export const getWhiteLabelCatalogResponsePlansItemOneProfileCapabilitiesItemLabelMax = 120;
+
+export const getWhiteLabelCatalogResponsePlansItemOneProfileCapabilitiesItemDescriptionMax = 600;
+
+export const getWhiteLabelCatalogResponsePlansItemOneProfileCapabilitiesItemGroupMax = 60;
+
+export const getWhiteLabelCatalogResponsePlansItemOneProfileCapabilitiesItemLimitValueMin = 0;
+export const getWhiteLabelCatalogResponsePlansItemOneProfileCapabilitiesItemLimitValueMax = 1000000000000;
+
+export const getWhiteLabelCatalogResponsePlansItemOneProfileCapabilitiesItemUnitMax = 30;
+
+export const getWhiteLabelCatalogResponsePlansItemOneProfileCapabilitiesItemTooltipMax = 300;
+
+export const getWhiteLabelCatalogResponsePlansItemOneProfileCapabilitiesItemBadgeMax = 30;
+
+export const getWhiteLabelCatalogResponsePlansItemOneProfileCapabilitiesItemDependsOnItemRegExp = new RegExp('^[a-z][a-z0-9_]{1,63}$');
+export const getWhiteLabelCatalogResponsePlansItemOneProfileCapabilitiesItemDependsOnMax = 20;
+
+export const getWhiteLabelCatalogResponsePlansItemOneProfileCapabilitiesItemNoteMax = 300;
+
+export const getWhiteLabelCatalogResponsePlansItemOneProfileCapabilitiesMax = 120;
+
+export const getWhiteLabelCatalogResponsePlansItemOneProfileInternalNotesMax = 5000;
+
+export const getWhiteLabelCatalogResponsePlansItemOneExpectedRevisionMin = 0;
+
 export const getWhiteLabelCatalogResponsePlansItemTwoFeatureRowsItemLabelMax = 120;
 
 export const getWhiteLabelCatalogResponsePlansItemTwoFeatureRowsItemValueMax = 500;
@@ -2066,7 +2154,66 @@ export const GetWhiteLabelCatalogResponse = zod.object({
   "featureRows": zod.array(zod.object({
   "label": zod.string().min(1).max(getWhiteLabelCatalogResponsePlansItemOneFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(getWhiteLabelCatalogResponsePlansItemOneFeatureRowsItemValueMax)
-}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.')
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.'),
+  "profile": zod.object({
+  "slug": zod.string().regex(getWhiteLabelCatalogResponsePlansItemOneProfileSlugRegExp).optional(),
+  "internalName": zod.string().max(getWhiteLabelCatalogResponsePlansItemOneProfileInternalNameMax).optional(),
+  "publicName": zod.string().max(getWhiteLabelCatalogResponsePlansItemOneProfilePublicNameMax).optional(),
+  "tagline": zod.string().max(getWhiteLabelCatalogResponsePlansItemOneProfileTaglineMax).optional(),
+  "shortDescription": zod.string().max(getWhiteLabelCatalogResponsePlansItemOneProfileShortDescriptionMax).optional(),
+  "fullDescription": zod.string().max(getWhiteLabelCatalogResponsePlansItemOneProfileFullDescriptionMax).optional(),
+  "iconUrl": zod.string().max(getWhiteLabelCatalogResponsePlansItemOneProfileIconUrlMax).optional().describe('Local path or https URL without credentials'),
+  "imageUrl": zod.string().max(getWhiteLabelCatalogResponsePlansItemOneProfileImageUrlMax).optional().describe('Local path or https URL without credentials'),
+  "badgeType": zod.enum(['none', 'recommended', 'custom']).optional(),
+  "badgeLabel": zod.string().max(getWhiteLabelCatalogResponsePlansItemOneProfileBadgeLabelMax).optional(),
+  "featured": zod.boolean().optional(),
+  "footerText": zod.string().max(getWhiteLabelCatalogResponsePlansItemOneProfileFooterTextMax).optional(),
+  "promoText": zod.string().max(getWhiteLabelCatalogResponsePlansItemOneProfilePromoTextMax).optional(),
+  "terms": zod.string().max(getWhiteLabelCatalogResponsePlansItemOneProfileTermsMax).optional(),
+  "pricingMode": zod.enum(['paid', 'free', 'custom', 'contact_sales']).optional(),
+  "contactSalesLabel": zod.string().max(getWhiteLabelCatalogResponsePlansItemOneProfileContactSalesLabelMax).optional(),
+  "customPriceText": zod.string().max(getWhiteLabelCatalogResponsePlansItemOneProfileCustomPriceTextMax).optional(),
+  "fixedDiscountAmount": zod.string().max(getWhiteLabelCatalogResponsePlansItemOneProfileFixedDiscountAmountMax).regex(getWhiteLabelCatalogResponsePlansItemOneProfileFixedDiscountAmountRegExp).nullish(),
+  "promoPrice": zod.string().max(getWhiteLabelCatalogResponsePlansItemOneProfilePromoPriceMax).regex(getWhiteLabelCatalogResponsePlansItemOneProfilePromoPriceRegExp).nullish(),
+  "promoStartsAt": zod.coerce.date().nullish(),
+  "promoEndsAt": zod.coerce.date().nullish(),
+  "billingInterval": zod.enum(['monthly', 'yearly', 'monthly_and_yearly', 'custom']).optional(),
+  "trialDays": zod.number().int().min(getWhiteLabelCatalogResponsePlansItemOneProfileTrialDaysMin).max(getWhiteLabelCatalogResponsePlansItemOneProfileTrialDaysMax).optional(),
+  "ctaLabel": zod.string().max(getWhiteLabelCatalogResponsePlansItemOneProfileCtaLabelMax).optional(),
+  "ctaUrl": zod.string().max(getWhiteLabelCatalogResponsePlansItemOneProfileCtaUrlMax).regex(getWhiteLabelCatalogResponsePlansItemOneProfileCtaUrlRegExp).optional(),
+  "visibility": zod.enum(['public', 'hidden']).optional(),
+  "adminSeats": zod.number().int().min(1).max(getWhiteLabelCatalogResponsePlansItemOneProfileAdminSeatsMax).nullish(),
+  "multiAdminRoles": zod.boolean().optional(),
+  "supportLevel": zod.enum(['email', 'priority', 'dedicated']).optional(),
+  "supportResponseHours": zod.number().int().min(1).max(getWhiteLabelCatalogResponsePlansItemOneProfileSupportResponseHoursMax).nullish(),
+  "launchTargetBusinessDays": zod.number().int().min(1).max(getWhiteLabelCatalogResponsePlansItemOneProfileLaunchTargetBusinessDaysMax).nullish(),
+  "dedicatedManager": zod.boolean().optional(),
+  "slaEnabled": zod.boolean().optional(),
+  "slaTerms": zod.string().max(getWhiteLabelCatalogResponsePlansItemOneProfileSlaTermsMax).optional(),
+  "earlyAccess": zod.boolean().optional(),
+  "poweredByFooter": zod.boolean().optional(),
+  "themeModes": zod.array(zod.enum(['light', 'dark'])).max(getWhiteLabelCatalogResponsePlansItemOneProfileThemeModesMax).optional(),
+  "convertProviderLimit": zod.number().int().min(getWhiteLabelCatalogResponsePlansItemOneProfileConvertProviderLimitMin).max(getWhiteLabelCatalogResponsePlansItemOneProfileConvertProviderLimitMax).nullish(),
+  "requestedProviders": zod.array(zod.string().min(1).max(getWhiteLabelCatalogResponsePlansItemOneProfileRequestedProvidersItemMax)).max(getWhiteLabelCatalogResponsePlansItemOneProfileRequestedProvidersMax).optional(),
+  "capabilities": zod.array(zod.object({
+  "key": zod.string().regex(getWhiteLabelCatalogResponsePlansItemOneProfileCapabilitiesItemKeyRegExp),
+  "label": zod.string().min(1).max(getWhiteLabelCatalogResponsePlansItemOneProfileCapabilitiesItemLabelMax),
+  "description": zod.string().max(getWhiteLabelCatalogResponsePlansItemOneProfileCapabilitiesItemDescriptionMax).optional(),
+  "group": zod.string().max(getWhiteLabelCatalogResponsePlansItemOneProfileCapabilitiesItemGroupMax).optional(),
+  "state": zod.enum(['included', 'excluded', 'optional', 'limited', 'unlimited', 'unavailable']).describe('Commercial state. limited requires limitValue.'),
+  "availability": zod.enum(['available', 'requires_configuration', 'unavailable']).describe('Implementation status; unavailable means not implemented and never a working toggle'),
+  "limitValue": zod.number().min(getWhiteLabelCatalogResponsePlansItemOneProfileCapabilitiesItemLimitValueMin).max(getWhiteLabelCatalogResponsePlansItemOneProfileCapabilitiesItemLimitValueMax).nullish(),
+  "unit": zod.string().max(getWhiteLabelCatalogResponsePlansItemOneProfileCapabilitiesItemUnitMax).optional(),
+  "tooltip": zod.string().max(getWhiteLabelCatalogResponsePlansItemOneProfileCapabilitiesItemTooltipMax).optional(),
+  "highlight": zod.boolean().optional(),
+  "publicVisible": zod.boolean().optional(),
+  "badge": zod.string().max(getWhiteLabelCatalogResponsePlansItemOneProfileCapabilitiesItemBadgeMax).optional(),
+  "dependsOn": zod.array(zod.string().regex(getWhiteLabelCatalogResponsePlansItemOneProfileCapabilitiesItemDependsOnItemRegExp)).max(getWhiteLabelCatalogResponsePlansItemOneProfileCapabilitiesItemDependsOnMax).optional(),
+  "note": zod.string().max(getWhiteLabelCatalogResponsePlansItemOneProfileCapabilitiesItemNoteMax).optional()
+})).max(getWhiteLabelCatalogResponsePlansItemOneProfileCapabilitiesMax).optional(),
+  "internalNotes": zod.string().max(getWhiteLabelCatalogResponsePlansItemOneProfileInternalNotesMax).optional()
+}).optional().describe('Structured plan configuration. internalName and internalNotes are Super Admin only and never published.'),
+  "expectedRevision": zod.number().int().min(getWhiteLabelCatalogResponsePlansItemOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
 }).and(zod.object({
   "id": zod.string().uuid(),
   "createdAt": zod.coerce.date(),
@@ -2076,7 +2223,8 @@ export const GetWhiteLabelCatalogResponse = zod.object({
   "featureRows": zod.array(zod.object({
   "label": zod.string().min(1).max(getWhiteLabelCatalogResponsePlansItemTwoFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(getWhiteLabelCatalogResponsePlansItemTwoFeatureRowsItemValueMax)
-}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(getWhiteLabelCatalogResponsePlansItemTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.')
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(getWhiteLabelCatalogResponsePlansItemTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.'),
+  "revision": zod.number().int().optional()
 }))),
   "addons": zod.array(zod.object({
   "monthlyPrice": zod.string().regex(getWhiteLabelCatalogResponseAddonsItemOneMonthlyPriceRegExp).nullish(),
@@ -2161,6 +2309,94 @@ export const getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneFeatureRowsIt
 
 export const getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneFeatureRowsItemValueMax = 500;
 
+export const getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileSlugRegExp = new RegExp('^[a-z0-9](?:[a-z0-9-]{0,62}[a-z0-9])?$');
+export const getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileInternalNameMax = 120;
+
+export const getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfilePublicNameMax = 120;
+
+export const getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileTaglineMax = 160;
+
+export const getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileShortDescriptionMax = 300;
+
+export const getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileFullDescriptionMax = 5000;
+
+export const getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileIconUrlMax = 500;
+
+export const getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileImageUrlMax = 500;
+
+export const getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileBadgeLabelMax = 40;
+
+export const getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileFooterTextMax = 300;
+
+export const getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfilePromoTextMax = 200;
+
+export const getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileTermsMax = 5000;
+
+export const getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileContactSalesLabelMax = 60;
+
+export const getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCustomPriceTextMax = 80;
+
+export const getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileFixedDiscountAmountMax = 18;
+
+
+export const getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileFixedDiscountAmountRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,2})?$');
+export const getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfilePromoPriceMax = 18;
+
+
+export const getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfilePromoPriceRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,2})?$');
+export const getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileTrialDaysMin = 0;
+export const getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileTrialDaysMax = 365;
+
+export const getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCtaLabelMax = 60;
+
+export const getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCtaUrlMax = 200;
+
+
+export const getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCtaUrlRegExp = new RegExp('^/(?!/)[A-Za-z0-9/_#?=&.-]*$');
+export const getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileAdminSeatsMax = 10000;
+
+export const getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileSupportResponseHoursMax = 720;
+
+export const getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileLaunchTargetBusinessDaysMax = 365;
+
+export const getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileSlaTermsMax = 1000;
+
+export const getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileThemeModesMax = 2;
+
+export const getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileConvertProviderLimitMin = 0;
+export const getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileConvertProviderLimitMax = 100;
+
+export const getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileRequestedProvidersItemMax = 60;
+
+export const getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileRequestedProvidersMax = 30;
+
+export const getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCapabilitiesItemKeyRegExp = new RegExp('^[a-z][a-z0-9_]{1,63}$');
+export const getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCapabilitiesItemLabelMax = 120;
+
+export const getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCapabilitiesItemDescriptionMax = 600;
+
+export const getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCapabilitiesItemGroupMax = 60;
+
+export const getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCapabilitiesItemLimitValueMin = 0;
+export const getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCapabilitiesItemLimitValueMax = 1000000000000;
+
+export const getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCapabilitiesItemUnitMax = 30;
+
+export const getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCapabilitiesItemTooltipMax = 300;
+
+export const getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCapabilitiesItemBadgeMax = 30;
+
+export const getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCapabilitiesItemDependsOnItemRegExp = new RegExp('^[a-z][a-z0-9_]{1,63}$');
+export const getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCapabilitiesItemDependsOnMax = 20;
+
+export const getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCapabilitiesItemNoteMax = 300;
+
+export const getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCapabilitiesMax = 120;
+
+export const getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileInternalNotesMax = 5000;
+
+export const getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneExpectedRevisionMin = 0;
+
 export const getMyWhiteLabelRequestResponseOrderRequestedPlanOneTwoFeatureRowsItemLabelMax = 120;
 
 export const getMyWhiteLabelRequestResponseOrderRequestedPlanOneTwoFeatureRowsItemValueMax = 500;
@@ -2229,6 +2465,94 @@ export const getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneEntitlementsMa
 export const getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneFeatureRowsItemLabelMax = 120;
 
 export const getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneFeatureRowsItemValueMax = 500;
+
+export const getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileSlugRegExp = new RegExp('^[a-z0-9](?:[a-z0-9-]{0,62}[a-z0-9])?$');
+export const getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileInternalNameMax = 120;
+
+export const getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfilePublicNameMax = 120;
+
+export const getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileTaglineMax = 160;
+
+export const getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileShortDescriptionMax = 300;
+
+export const getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileFullDescriptionMax = 5000;
+
+export const getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileIconUrlMax = 500;
+
+export const getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileImageUrlMax = 500;
+
+export const getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileBadgeLabelMax = 40;
+
+export const getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileFooterTextMax = 300;
+
+export const getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfilePromoTextMax = 200;
+
+export const getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileTermsMax = 5000;
+
+export const getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileContactSalesLabelMax = 60;
+
+export const getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCustomPriceTextMax = 80;
+
+export const getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileFixedDiscountAmountMax = 18;
+
+
+export const getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileFixedDiscountAmountRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,2})?$');
+export const getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfilePromoPriceMax = 18;
+
+
+export const getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfilePromoPriceRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,2})?$');
+export const getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileTrialDaysMin = 0;
+export const getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileTrialDaysMax = 365;
+
+export const getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCtaLabelMax = 60;
+
+export const getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCtaUrlMax = 200;
+
+
+export const getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCtaUrlRegExp = new RegExp('^/(?!/)[A-Za-z0-9/_#?=&.-]*$');
+export const getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileAdminSeatsMax = 10000;
+
+export const getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileSupportResponseHoursMax = 720;
+
+export const getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileLaunchTargetBusinessDaysMax = 365;
+
+export const getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileSlaTermsMax = 1000;
+
+export const getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileThemeModesMax = 2;
+
+export const getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileConvertProviderLimitMin = 0;
+export const getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileConvertProviderLimitMax = 100;
+
+export const getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileRequestedProvidersItemMax = 60;
+
+export const getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileRequestedProvidersMax = 30;
+
+export const getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCapabilitiesItemKeyRegExp = new RegExp('^[a-z][a-z0-9_]{1,63}$');
+export const getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCapabilitiesItemLabelMax = 120;
+
+export const getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCapabilitiesItemDescriptionMax = 600;
+
+export const getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCapabilitiesItemGroupMax = 60;
+
+export const getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCapabilitiesItemLimitValueMin = 0;
+export const getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCapabilitiesItemLimitValueMax = 1000000000000;
+
+export const getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCapabilitiesItemUnitMax = 30;
+
+export const getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCapabilitiesItemTooltipMax = 300;
+
+export const getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCapabilitiesItemBadgeMax = 30;
+
+export const getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCapabilitiesItemDependsOnItemRegExp = new RegExp('^[a-z][a-z0-9_]{1,63}$');
+export const getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCapabilitiesItemDependsOnMax = 20;
+
+export const getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCapabilitiesItemNoteMax = 300;
+
+export const getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCapabilitiesMax = 120;
+
+export const getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileInternalNotesMax = 5000;
+
+export const getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneExpectedRevisionMin = 0;
 
 export const getMyWhiteLabelRequestResponseOrderApprovedPlanOneTwoFeatureRowsItemLabelMax = 120;
 
@@ -2307,7 +2631,66 @@ export const GetMyWhiteLabelRequestResponse = zod.object({
   "featureRows": zod.array(zod.object({
   "label": zod.string().min(1).max(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneFeatureRowsItemValueMax)
-}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.')
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.'),
+  "profile": zod.object({
+  "slug": zod.string().regex(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileSlugRegExp).optional(),
+  "internalName": zod.string().max(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileInternalNameMax).optional(),
+  "publicName": zod.string().max(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfilePublicNameMax).optional(),
+  "tagline": zod.string().max(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileTaglineMax).optional(),
+  "shortDescription": zod.string().max(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileShortDescriptionMax).optional(),
+  "fullDescription": zod.string().max(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileFullDescriptionMax).optional(),
+  "iconUrl": zod.string().max(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileIconUrlMax).optional().describe('Local path or https URL without credentials'),
+  "imageUrl": zod.string().max(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileImageUrlMax).optional().describe('Local path or https URL without credentials'),
+  "badgeType": zod.enum(['none', 'recommended', 'custom']).optional(),
+  "badgeLabel": zod.string().max(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileBadgeLabelMax).optional(),
+  "featured": zod.boolean().optional(),
+  "footerText": zod.string().max(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileFooterTextMax).optional(),
+  "promoText": zod.string().max(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfilePromoTextMax).optional(),
+  "terms": zod.string().max(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileTermsMax).optional(),
+  "pricingMode": zod.enum(['paid', 'free', 'custom', 'contact_sales']).optional(),
+  "contactSalesLabel": zod.string().max(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileContactSalesLabelMax).optional(),
+  "customPriceText": zod.string().max(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCustomPriceTextMax).optional(),
+  "fixedDiscountAmount": zod.string().max(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileFixedDiscountAmountMax).regex(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileFixedDiscountAmountRegExp).nullish(),
+  "promoPrice": zod.string().max(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfilePromoPriceMax).regex(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfilePromoPriceRegExp).nullish(),
+  "promoStartsAt": zod.coerce.date().nullish(),
+  "promoEndsAt": zod.coerce.date().nullish(),
+  "billingInterval": zod.enum(['monthly', 'yearly', 'monthly_and_yearly', 'custom']).optional(),
+  "trialDays": zod.number().int().min(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileTrialDaysMin).max(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileTrialDaysMax).optional(),
+  "ctaLabel": zod.string().max(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCtaLabelMax).optional(),
+  "ctaUrl": zod.string().max(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCtaUrlMax).regex(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCtaUrlRegExp).optional(),
+  "visibility": zod.enum(['public', 'hidden']).optional(),
+  "adminSeats": zod.number().int().min(1).max(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileAdminSeatsMax).nullish(),
+  "multiAdminRoles": zod.boolean().optional(),
+  "supportLevel": zod.enum(['email', 'priority', 'dedicated']).optional(),
+  "supportResponseHours": zod.number().int().min(1).max(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileSupportResponseHoursMax).nullish(),
+  "launchTargetBusinessDays": zod.number().int().min(1).max(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileLaunchTargetBusinessDaysMax).nullish(),
+  "dedicatedManager": zod.boolean().optional(),
+  "slaEnabled": zod.boolean().optional(),
+  "slaTerms": zod.string().max(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileSlaTermsMax).optional(),
+  "earlyAccess": zod.boolean().optional(),
+  "poweredByFooter": zod.boolean().optional(),
+  "themeModes": zod.array(zod.enum(['light', 'dark'])).max(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileThemeModesMax).optional(),
+  "convertProviderLimit": zod.number().int().min(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileConvertProviderLimitMin).max(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileConvertProviderLimitMax).nullish(),
+  "requestedProviders": zod.array(zod.string().min(1).max(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileRequestedProvidersItemMax)).max(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileRequestedProvidersMax).optional(),
+  "capabilities": zod.array(zod.object({
+  "key": zod.string().regex(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCapabilitiesItemKeyRegExp),
+  "label": zod.string().min(1).max(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCapabilitiesItemLabelMax),
+  "description": zod.string().max(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCapabilitiesItemDescriptionMax).optional(),
+  "group": zod.string().max(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCapabilitiesItemGroupMax).optional(),
+  "state": zod.enum(['included', 'excluded', 'optional', 'limited', 'unlimited', 'unavailable']).describe('Commercial state. limited requires limitValue.'),
+  "availability": zod.enum(['available', 'requires_configuration', 'unavailable']).describe('Implementation status; unavailable means not implemented and never a working toggle'),
+  "limitValue": zod.number().min(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCapabilitiesItemLimitValueMin).max(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCapabilitiesItemLimitValueMax).nullish(),
+  "unit": zod.string().max(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCapabilitiesItemUnitMax).optional(),
+  "tooltip": zod.string().max(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCapabilitiesItemTooltipMax).optional(),
+  "highlight": zod.boolean().optional(),
+  "publicVisible": zod.boolean().optional(),
+  "badge": zod.string().max(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCapabilitiesItemBadgeMax).optional(),
+  "dependsOn": zod.array(zod.string().regex(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCapabilitiesItemDependsOnItemRegExp)).max(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCapabilitiesItemDependsOnMax).optional(),
+  "note": zod.string().max(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCapabilitiesItemNoteMax).optional()
+})).max(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCapabilitiesMax).optional(),
+  "internalNotes": zod.string().max(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileInternalNotesMax).optional()
+}).optional().describe('Structured plan configuration. internalName and internalNotes are Super Admin only and never published.'),
+  "expectedRevision": zod.number().int().min(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
 }).and(zod.object({
   "id": zod.string().uuid(),
   "createdAt": zod.coerce.date(),
@@ -2317,7 +2700,8 @@ export const GetMyWhiteLabelRequestResponse = zod.object({
   "featureRows": zod.array(zod.object({
   "label": zod.string().min(1).max(getMyWhiteLabelRequestResponseOrderRequestedPlanOneTwoFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(getMyWhiteLabelRequestResponseOrderRequestedPlanOneTwoFeatureRowsItemValueMax)
-}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(getMyWhiteLabelRequestResponseOrderRequestedPlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.')
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(getMyWhiteLabelRequestResponseOrderRequestedPlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.'),
+  "revision": zod.number().int().optional()
 })),zod.null()]).optional(),
   "requestedAddons": zod.array(zod.object({
   "monthlyPrice": zod.string().regex(getMyWhiteLabelRequestResponseOrderRequestedAddonsItemOneMonthlyPriceRegExp).nullish(),
@@ -2354,7 +2738,66 @@ export const GetMyWhiteLabelRequestResponse = zod.object({
   "featureRows": zod.array(zod.object({
   "label": zod.string().min(1).max(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneFeatureRowsItemValueMax)
-}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.')
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.'),
+  "profile": zod.object({
+  "slug": zod.string().regex(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileSlugRegExp).optional(),
+  "internalName": zod.string().max(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileInternalNameMax).optional(),
+  "publicName": zod.string().max(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfilePublicNameMax).optional(),
+  "tagline": zod.string().max(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileTaglineMax).optional(),
+  "shortDescription": zod.string().max(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileShortDescriptionMax).optional(),
+  "fullDescription": zod.string().max(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileFullDescriptionMax).optional(),
+  "iconUrl": zod.string().max(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileIconUrlMax).optional().describe('Local path or https URL without credentials'),
+  "imageUrl": zod.string().max(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileImageUrlMax).optional().describe('Local path or https URL without credentials'),
+  "badgeType": zod.enum(['none', 'recommended', 'custom']).optional(),
+  "badgeLabel": zod.string().max(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileBadgeLabelMax).optional(),
+  "featured": zod.boolean().optional(),
+  "footerText": zod.string().max(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileFooterTextMax).optional(),
+  "promoText": zod.string().max(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfilePromoTextMax).optional(),
+  "terms": zod.string().max(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileTermsMax).optional(),
+  "pricingMode": zod.enum(['paid', 'free', 'custom', 'contact_sales']).optional(),
+  "contactSalesLabel": zod.string().max(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileContactSalesLabelMax).optional(),
+  "customPriceText": zod.string().max(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCustomPriceTextMax).optional(),
+  "fixedDiscountAmount": zod.string().max(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileFixedDiscountAmountMax).regex(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileFixedDiscountAmountRegExp).nullish(),
+  "promoPrice": zod.string().max(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfilePromoPriceMax).regex(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfilePromoPriceRegExp).nullish(),
+  "promoStartsAt": zod.coerce.date().nullish(),
+  "promoEndsAt": zod.coerce.date().nullish(),
+  "billingInterval": zod.enum(['monthly', 'yearly', 'monthly_and_yearly', 'custom']).optional(),
+  "trialDays": zod.number().int().min(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileTrialDaysMin).max(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileTrialDaysMax).optional(),
+  "ctaLabel": zod.string().max(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCtaLabelMax).optional(),
+  "ctaUrl": zod.string().max(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCtaUrlMax).regex(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCtaUrlRegExp).optional(),
+  "visibility": zod.enum(['public', 'hidden']).optional(),
+  "adminSeats": zod.number().int().min(1).max(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileAdminSeatsMax).nullish(),
+  "multiAdminRoles": zod.boolean().optional(),
+  "supportLevel": zod.enum(['email', 'priority', 'dedicated']).optional(),
+  "supportResponseHours": zod.number().int().min(1).max(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileSupportResponseHoursMax).nullish(),
+  "launchTargetBusinessDays": zod.number().int().min(1).max(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileLaunchTargetBusinessDaysMax).nullish(),
+  "dedicatedManager": zod.boolean().optional(),
+  "slaEnabled": zod.boolean().optional(),
+  "slaTerms": zod.string().max(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileSlaTermsMax).optional(),
+  "earlyAccess": zod.boolean().optional(),
+  "poweredByFooter": zod.boolean().optional(),
+  "themeModes": zod.array(zod.enum(['light', 'dark'])).max(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileThemeModesMax).optional(),
+  "convertProviderLimit": zod.number().int().min(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileConvertProviderLimitMin).max(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileConvertProviderLimitMax).nullish(),
+  "requestedProviders": zod.array(zod.string().min(1).max(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileRequestedProvidersItemMax)).max(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileRequestedProvidersMax).optional(),
+  "capabilities": zod.array(zod.object({
+  "key": zod.string().regex(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCapabilitiesItemKeyRegExp),
+  "label": zod.string().min(1).max(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCapabilitiesItemLabelMax),
+  "description": zod.string().max(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCapabilitiesItemDescriptionMax).optional(),
+  "group": zod.string().max(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCapabilitiesItemGroupMax).optional(),
+  "state": zod.enum(['included', 'excluded', 'optional', 'limited', 'unlimited', 'unavailable']).describe('Commercial state. limited requires limitValue.'),
+  "availability": zod.enum(['available', 'requires_configuration', 'unavailable']).describe('Implementation status; unavailable means not implemented and never a working toggle'),
+  "limitValue": zod.number().min(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCapabilitiesItemLimitValueMin).max(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCapabilitiesItemLimitValueMax).nullish(),
+  "unit": zod.string().max(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCapabilitiesItemUnitMax).optional(),
+  "tooltip": zod.string().max(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCapabilitiesItemTooltipMax).optional(),
+  "highlight": zod.boolean().optional(),
+  "publicVisible": zod.boolean().optional(),
+  "badge": zod.string().max(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCapabilitiesItemBadgeMax).optional(),
+  "dependsOn": zod.array(zod.string().regex(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCapabilitiesItemDependsOnItemRegExp)).max(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCapabilitiesItemDependsOnMax).optional(),
+  "note": zod.string().max(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCapabilitiesItemNoteMax).optional()
+})).max(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCapabilitiesMax).optional(),
+  "internalNotes": zod.string().max(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileInternalNotesMax).optional()
+}).optional().describe('Structured plan configuration. internalName and internalNotes are Super Admin only and never published.'),
+  "expectedRevision": zod.number().int().min(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
 }).and(zod.object({
   "id": zod.string().uuid(),
   "createdAt": zod.coerce.date(),
@@ -2364,7 +2807,8 @@ export const GetMyWhiteLabelRequestResponse = zod.object({
   "featureRows": zod.array(zod.object({
   "label": zod.string().min(1).max(getMyWhiteLabelRequestResponseOrderApprovedPlanOneTwoFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(getMyWhiteLabelRequestResponseOrderApprovedPlanOneTwoFeatureRowsItemValueMax)
-}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(getMyWhiteLabelRequestResponseOrderApprovedPlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.')
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(getMyWhiteLabelRequestResponseOrderApprovedPlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.'),
+  "revision": zod.number().int().optional()
 })),zod.null()]).optional(),
   "approvedAddons": zod.array(zod.object({
   "monthlyPrice": zod.string().regex(getMyWhiteLabelRequestResponseOrderApprovedAddonsItemOneMonthlyPriceRegExp).nullish(),
@@ -2470,6 +2914,94 @@ export const getWhiteLabelRequestResponseOrderRequestedPlanOneOneFeatureRowsItem
 
 export const getWhiteLabelRequestResponseOrderRequestedPlanOneOneFeatureRowsItemValueMax = 500;
 
+export const getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileSlugRegExp = new RegExp('^[a-z0-9](?:[a-z0-9-]{0,62}[a-z0-9])?$');
+export const getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileInternalNameMax = 120;
+
+export const getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfilePublicNameMax = 120;
+
+export const getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileTaglineMax = 160;
+
+export const getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileShortDescriptionMax = 300;
+
+export const getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileFullDescriptionMax = 5000;
+
+export const getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileIconUrlMax = 500;
+
+export const getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileImageUrlMax = 500;
+
+export const getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileBadgeLabelMax = 40;
+
+export const getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileFooterTextMax = 300;
+
+export const getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfilePromoTextMax = 200;
+
+export const getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileTermsMax = 5000;
+
+export const getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileContactSalesLabelMax = 60;
+
+export const getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCustomPriceTextMax = 80;
+
+export const getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileFixedDiscountAmountMax = 18;
+
+
+export const getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileFixedDiscountAmountRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,2})?$');
+export const getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfilePromoPriceMax = 18;
+
+
+export const getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfilePromoPriceRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,2})?$');
+export const getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileTrialDaysMin = 0;
+export const getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileTrialDaysMax = 365;
+
+export const getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCtaLabelMax = 60;
+
+export const getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCtaUrlMax = 200;
+
+
+export const getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCtaUrlRegExp = new RegExp('^/(?!/)[A-Za-z0-9/_#?=&.-]*$');
+export const getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileAdminSeatsMax = 10000;
+
+export const getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileSupportResponseHoursMax = 720;
+
+export const getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileLaunchTargetBusinessDaysMax = 365;
+
+export const getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileSlaTermsMax = 1000;
+
+export const getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileThemeModesMax = 2;
+
+export const getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileConvertProviderLimitMin = 0;
+export const getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileConvertProviderLimitMax = 100;
+
+export const getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileRequestedProvidersItemMax = 60;
+
+export const getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileRequestedProvidersMax = 30;
+
+export const getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCapabilitiesItemKeyRegExp = new RegExp('^[a-z][a-z0-9_]{1,63}$');
+export const getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCapabilitiesItemLabelMax = 120;
+
+export const getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCapabilitiesItemDescriptionMax = 600;
+
+export const getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCapabilitiesItemGroupMax = 60;
+
+export const getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCapabilitiesItemLimitValueMin = 0;
+export const getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCapabilitiesItemLimitValueMax = 1000000000000;
+
+export const getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCapabilitiesItemUnitMax = 30;
+
+export const getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCapabilitiesItemTooltipMax = 300;
+
+export const getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCapabilitiesItemBadgeMax = 30;
+
+export const getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCapabilitiesItemDependsOnItemRegExp = new RegExp('^[a-z][a-z0-9_]{1,63}$');
+export const getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCapabilitiesItemDependsOnMax = 20;
+
+export const getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCapabilitiesItemNoteMax = 300;
+
+export const getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCapabilitiesMax = 120;
+
+export const getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileInternalNotesMax = 5000;
+
+export const getWhiteLabelRequestResponseOrderRequestedPlanOneOneExpectedRevisionMin = 0;
+
 export const getWhiteLabelRequestResponseOrderRequestedPlanOneTwoFeatureRowsItemLabelMax = 120;
 
 export const getWhiteLabelRequestResponseOrderRequestedPlanOneTwoFeatureRowsItemValueMax = 500;
@@ -2538,6 +3070,94 @@ export const getWhiteLabelRequestResponseOrderApprovedPlanOneOneEntitlementsMax 
 export const getWhiteLabelRequestResponseOrderApprovedPlanOneOneFeatureRowsItemLabelMax = 120;
 
 export const getWhiteLabelRequestResponseOrderApprovedPlanOneOneFeatureRowsItemValueMax = 500;
+
+export const getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileSlugRegExp = new RegExp('^[a-z0-9](?:[a-z0-9-]{0,62}[a-z0-9])?$');
+export const getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileInternalNameMax = 120;
+
+export const getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfilePublicNameMax = 120;
+
+export const getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileTaglineMax = 160;
+
+export const getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileShortDescriptionMax = 300;
+
+export const getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileFullDescriptionMax = 5000;
+
+export const getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileIconUrlMax = 500;
+
+export const getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileImageUrlMax = 500;
+
+export const getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileBadgeLabelMax = 40;
+
+export const getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileFooterTextMax = 300;
+
+export const getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfilePromoTextMax = 200;
+
+export const getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileTermsMax = 5000;
+
+export const getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileContactSalesLabelMax = 60;
+
+export const getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCustomPriceTextMax = 80;
+
+export const getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileFixedDiscountAmountMax = 18;
+
+
+export const getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileFixedDiscountAmountRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,2})?$');
+export const getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfilePromoPriceMax = 18;
+
+
+export const getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfilePromoPriceRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,2})?$');
+export const getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileTrialDaysMin = 0;
+export const getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileTrialDaysMax = 365;
+
+export const getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCtaLabelMax = 60;
+
+export const getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCtaUrlMax = 200;
+
+
+export const getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCtaUrlRegExp = new RegExp('^/(?!/)[A-Za-z0-9/_#?=&.-]*$');
+export const getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileAdminSeatsMax = 10000;
+
+export const getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileSupportResponseHoursMax = 720;
+
+export const getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileLaunchTargetBusinessDaysMax = 365;
+
+export const getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileSlaTermsMax = 1000;
+
+export const getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileThemeModesMax = 2;
+
+export const getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileConvertProviderLimitMin = 0;
+export const getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileConvertProviderLimitMax = 100;
+
+export const getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileRequestedProvidersItemMax = 60;
+
+export const getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileRequestedProvidersMax = 30;
+
+export const getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCapabilitiesItemKeyRegExp = new RegExp('^[a-z][a-z0-9_]{1,63}$');
+export const getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCapabilitiesItemLabelMax = 120;
+
+export const getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCapabilitiesItemDescriptionMax = 600;
+
+export const getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCapabilitiesItemGroupMax = 60;
+
+export const getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCapabilitiesItemLimitValueMin = 0;
+export const getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCapabilitiesItemLimitValueMax = 1000000000000;
+
+export const getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCapabilitiesItemUnitMax = 30;
+
+export const getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCapabilitiesItemTooltipMax = 300;
+
+export const getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCapabilitiesItemBadgeMax = 30;
+
+export const getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCapabilitiesItemDependsOnItemRegExp = new RegExp('^[a-z][a-z0-9_]{1,63}$');
+export const getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCapabilitiesItemDependsOnMax = 20;
+
+export const getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCapabilitiesItemNoteMax = 300;
+
+export const getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCapabilitiesMax = 120;
+
+export const getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileInternalNotesMax = 5000;
+
+export const getWhiteLabelRequestResponseOrderApprovedPlanOneOneExpectedRevisionMin = 0;
 
 export const getWhiteLabelRequestResponseOrderApprovedPlanOneTwoFeatureRowsItemLabelMax = 120;
 
@@ -2616,7 +3236,66 @@ export const GetWhiteLabelRequestResponse = zod.object({
   "featureRows": zod.array(zod.object({
   "label": zod.string().min(1).max(getWhiteLabelRequestResponseOrderRequestedPlanOneOneFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(getWhiteLabelRequestResponseOrderRequestedPlanOneOneFeatureRowsItemValueMax)
-}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.')
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.'),
+  "profile": zod.object({
+  "slug": zod.string().regex(getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileSlugRegExp).optional(),
+  "internalName": zod.string().max(getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileInternalNameMax).optional(),
+  "publicName": zod.string().max(getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfilePublicNameMax).optional(),
+  "tagline": zod.string().max(getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileTaglineMax).optional(),
+  "shortDescription": zod.string().max(getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileShortDescriptionMax).optional(),
+  "fullDescription": zod.string().max(getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileFullDescriptionMax).optional(),
+  "iconUrl": zod.string().max(getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileIconUrlMax).optional().describe('Local path or https URL without credentials'),
+  "imageUrl": zod.string().max(getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileImageUrlMax).optional().describe('Local path or https URL without credentials'),
+  "badgeType": zod.enum(['none', 'recommended', 'custom']).optional(),
+  "badgeLabel": zod.string().max(getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileBadgeLabelMax).optional(),
+  "featured": zod.boolean().optional(),
+  "footerText": zod.string().max(getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileFooterTextMax).optional(),
+  "promoText": zod.string().max(getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfilePromoTextMax).optional(),
+  "terms": zod.string().max(getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileTermsMax).optional(),
+  "pricingMode": zod.enum(['paid', 'free', 'custom', 'contact_sales']).optional(),
+  "contactSalesLabel": zod.string().max(getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileContactSalesLabelMax).optional(),
+  "customPriceText": zod.string().max(getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCustomPriceTextMax).optional(),
+  "fixedDiscountAmount": zod.string().max(getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileFixedDiscountAmountMax).regex(getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileFixedDiscountAmountRegExp).nullish(),
+  "promoPrice": zod.string().max(getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfilePromoPriceMax).regex(getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfilePromoPriceRegExp).nullish(),
+  "promoStartsAt": zod.coerce.date().nullish(),
+  "promoEndsAt": zod.coerce.date().nullish(),
+  "billingInterval": zod.enum(['monthly', 'yearly', 'monthly_and_yearly', 'custom']).optional(),
+  "trialDays": zod.number().int().min(getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileTrialDaysMin).max(getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileTrialDaysMax).optional(),
+  "ctaLabel": zod.string().max(getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCtaLabelMax).optional(),
+  "ctaUrl": zod.string().max(getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCtaUrlMax).regex(getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCtaUrlRegExp).optional(),
+  "visibility": zod.enum(['public', 'hidden']).optional(),
+  "adminSeats": zod.number().int().min(1).max(getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileAdminSeatsMax).nullish(),
+  "multiAdminRoles": zod.boolean().optional(),
+  "supportLevel": zod.enum(['email', 'priority', 'dedicated']).optional(),
+  "supportResponseHours": zod.number().int().min(1).max(getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileSupportResponseHoursMax).nullish(),
+  "launchTargetBusinessDays": zod.number().int().min(1).max(getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileLaunchTargetBusinessDaysMax).nullish(),
+  "dedicatedManager": zod.boolean().optional(),
+  "slaEnabled": zod.boolean().optional(),
+  "slaTerms": zod.string().max(getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileSlaTermsMax).optional(),
+  "earlyAccess": zod.boolean().optional(),
+  "poweredByFooter": zod.boolean().optional(),
+  "themeModes": zod.array(zod.enum(['light', 'dark'])).max(getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileThemeModesMax).optional(),
+  "convertProviderLimit": zod.number().int().min(getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileConvertProviderLimitMin).max(getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileConvertProviderLimitMax).nullish(),
+  "requestedProviders": zod.array(zod.string().min(1).max(getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileRequestedProvidersItemMax)).max(getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileRequestedProvidersMax).optional(),
+  "capabilities": zod.array(zod.object({
+  "key": zod.string().regex(getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCapabilitiesItemKeyRegExp),
+  "label": zod.string().min(1).max(getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCapabilitiesItemLabelMax),
+  "description": zod.string().max(getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCapabilitiesItemDescriptionMax).optional(),
+  "group": zod.string().max(getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCapabilitiesItemGroupMax).optional(),
+  "state": zod.enum(['included', 'excluded', 'optional', 'limited', 'unlimited', 'unavailable']).describe('Commercial state. limited requires limitValue.'),
+  "availability": zod.enum(['available', 'requires_configuration', 'unavailable']).describe('Implementation status; unavailable means not implemented and never a working toggle'),
+  "limitValue": zod.number().min(getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCapabilitiesItemLimitValueMin).max(getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCapabilitiesItemLimitValueMax).nullish(),
+  "unit": zod.string().max(getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCapabilitiesItemUnitMax).optional(),
+  "tooltip": zod.string().max(getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCapabilitiesItemTooltipMax).optional(),
+  "highlight": zod.boolean().optional(),
+  "publicVisible": zod.boolean().optional(),
+  "badge": zod.string().max(getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCapabilitiesItemBadgeMax).optional(),
+  "dependsOn": zod.array(zod.string().regex(getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCapabilitiesItemDependsOnItemRegExp)).max(getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCapabilitiesItemDependsOnMax).optional(),
+  "note": zod.string().max(getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCapabilitiesItemNoteMax).optional()
+})).max(getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCapabilitiesMax).optional(),
+  "internalNotes": zod.string().max(getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileInternalNotesMax).optional()
+}).optional().describe('Structured plan configuration. internalName and internalNotes are Super Admin only and never published.'),
+  "expectedRevision": zod.number().int().min(getWhiteLabelRequestResponseOrderRequestedPlanOneOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
 }).and(zod.object({
   "id": zod.string().uuid(),
   "createdAt": zod.coerce.date(),
@@ -2626,7 +3305,8 @@ export const GetWhiteLabelRequestResponse = zod.object({
   "featureRows": zod.array(zod.object({
   "label": zod.string().min(1).max(getWhiteLabelRequestResponseOrderRequestedPlanOneTwoFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(getWhiteLabelRequestResponseOrderRequestedPlanOneTwoFeatureRowsItemValueMax)
-}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(getWhiteLabelRequestResponseOrderRequestedPlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.')
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(getWhiteLabelRequestResponseOrderRequestedPlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.'),
+  "revision": zod.number().int().optional()
 })),zod.null()]).optional(),
   "requestedAddons": zod.array(zod.object({
   "monthlyPrice": zod.string().regex(getWhiteLabelRequestResponseOrderRequestedAddonsItemOneMonthlyPriceRegExp).nullish(),
@@ -2663,7 +3343,66 @@ export const GetWhiteLabelRequestResponse = zod.object({
   "featureRows": zod.array(zod.object({
   "label": zod.string().min(1).max(getWhiteLabelRequestResponseOrderApprovedPlanOneOneFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(getWhiteLabelRequestResponseOrderApprovedPlanOneOneFeatureRowsItemValueMax)
-}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.')
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.'),
+  "profile": zod.object({
+  "slug": zod.string().regex(getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileSlugRegExp).optional(),
+  "internalName": zod.string().max(getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileInternalNameMax).optional(),
+  "publicName": zod.string().max(getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfilePublicNameMax).optional(),
+  "tagline": zod.string().max(getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileTaglineMax).optional(),
+  "shortDescription": zod.string().max(getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileShortDescriptionMax).optional(),
+  "fullDescription": zod.string().max(getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileFullDescriptionMax).optional(),
+  "iconUrl": zod.string().max(getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileIconUrlMax).optional().describe('Local path or https URL without credentials'),
+  "imageUrl": zod.string().max(getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileImageUrlMax).optional().describe('Local path or https URL without credentials'),
+  "badgeType": zod.enum(['none', 'recommended', 'custom']).optional(),
+  "badgeLabel": zod.string().max(getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileBadgeLabelMax).optional(),
+  "featured": zod.boolean().optional(),
+  "footerText": zod.string().max(getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileFooterTextMax).optional(),
+  "promoText": zod.string().max(getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfilePromoTextMax).optional(),
+  "terms": zod.string().max(getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileTermsMax).optional(),
+  "pricingMode": zod.enum(['paid', 'free', 'custom', 'contact_sales']).optional(),
+  "contactSalesLabel": zod.string().max(getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileContactSalesLabelMax).optional(),
+  "customPriceText": zod.string().max(getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCustomPriceTextMax).optional(),
+  "fixedDiscountAmount": zod.string().max(getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileFixedDiscountAmountMax).regex(getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileFixedDiscountAmountRegExp).nullish(),
+  "promoPrice": zod.string().max(getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfilePromoPriceMax).regex(getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfilePromoPriceRegExp).nullish(),
+  "promoStartsAt": zod.coerce.date().nullish(),
+  "promoEndsAt": zod.coerce.date().nullish(),
+  "billingInterval": zod.enum(['monthly', 'yearly', 'monthly_and_yearly', 'custom']).optional(),
+  "trialDays": zod.number().int().min(getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileTrialDaysMin).max(getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileTrialDaysMax).optional(),
+  "ctaLabel": zod.string().max(getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCtaLabelMax).optional(),
+  "ctaUrl": zod.string().max(getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCtaUrlMax).regex(getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCtaUrlRegExp).optional(),
+  "visibility": zod.enum(['public', 'hidden']).optional(),
+  "adminSeats": zod.number().int().min(1).max(getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileAdminSeatsMax).nullish(),
+  "multiAdminRoles": zod.boolean().optional(),
+  "supportLevel": zod.enum(['email', 'priority', 'dedicated']).optional(),
+  "supportResponseHours": zod.number().int().min(1).max(getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileSupportResponseHoursMax).nullish(),
+  "launchTargetBusinessDays": zod.number().int().min(1).max(getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileLaunchTargetBusinessDaysMax).nullish(),
+  "dedicatedManager": zod.boolean().optional(),
+  "slaEnabled": zod.boolean().optional(),
+  "slaTerms": zod.string().max(getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileSlaTermsMax).optional(),
+  "earlyAccess": zod.boolean().optional(),
+  "poweredByFooter": zod.boolean().optional(),
+  "themeModes": zod.array(zod.enum(['light', 'dark'])).max(getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileThemeModesMax).optional(),
+  "convertProviderLimit": zod.number().int().min(getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileConvertProviderLimitMin).max(getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileConvertProviderLimitMax).nullish(),
+  "requestedProviders": zod.array(zod.string().min(1).max(getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileRequestedProvidersItemMax)).max(getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileRequestedProvidersMax).optional(),
+  "capabilities": zod.array(zod.object({
+  "key": zod.string().regex(getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCapabilitiesItemKeyRegExp),
+  "label": zod.string().min(1).max(getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCapabilitiesItemLabelMax),
+  "description": zod.string().max(getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCapabilitiesItemDescriptionMax).optional(),
+  "group": zod.string().max(getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCapabilitiesItemGroupMax).optional(),
+  "state": zod.enum(['included', 'excluded', 'optional', 'limited', 'unlimited', 'unavailable']).describe('Commercial state. limited requires limitValue.'),
+  "availability": zod.enum(['available', 'requires_configuration', 'unavailable']).describe('Implementation status; unavailable means not implemented and never a working toggle'),
+  "limitValue": zod.number().min(getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCapabilitiesItemLimitValueMin).max(getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCapabilitiesItemLimitValueMax).nullish(),
+  "unit": zod.string().max(getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCapabilitiesItemUnitMax).optional(),
+  "tooltip": zod.string().max(getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCapabilitiesItemTooltipMax).optional(),
+  "highlight": zod.boolean().optional(),
+  "publicVisible": zod.boolean().optional(),
+  "badge": zod.string().max(getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCapabilitiesItemBadgeMax).optional(),
+  "dependsOn": zod.array(zod.string().regex(getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCapabilitiesItemDependsOnItemRegExp)).max(getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCapabilitiesItemDependsOnMax).optional(),
+  "note": zod.string().max(getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCapabilitiesItemNoteMax).optional()
+})).max(getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCapabilitiesMax).optional(),
+  "internalNotes": zod.string().max(getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileInternalNotesMax).optional()
+}).optional().describe('Structured plan configuration. internalName and internalNotes are Super Admin only and never published.'),
+  "expectedRevision": zod.number().int().min(getWhiteLabelRequestResponseOrderApprovedPlanOneOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
 }).and(zod.object({
   "id": zod.string().uuid(),
   "createdAt": zod.coerce.date(),
@@ -2673,7 +3412,8 @@ export const GetWhiteLabelRequestResponse = zod.object({
   "featureRows": zod.array(zod.object({
   "label": zod.string().min(1).max(getWhiteLabelRequestResponseOrderApprovedPlanOneTwoFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(getWhiteLabelRequestResponseOrderApprovedPlanOneTwoFeatureRowsItemValueMax)
-}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(getWhiteLabelRequestResponseOrderApprovedPlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.')
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(getWhiteLabelRequestResponseOrderApprovedPlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.'),
+  "revision": zod.number().int().optional()
 })),zod.null()]).optional(),
   "approvedAddons": zod.array(zod.object({
   "monthlyPrice": zod.string().regex(getWhiteLabelRequestResponseOrderApprovedAddonsItemOneMonthlyPriceRegExp).nullish(),
@@ -2856,6 +3596,94 @@ export const listMyWhiteLabelRequestsResponseRequestedPlanOneOneFeatureRowsItemL
 
 export const listMyWhiteLabelRequestsResponseRequestedPlanOneOneFeatureRowsItemValueMax = 500;
 
+export const listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileSlugRegExp = new RegExp('^[a-z0-9](?:[a-z0-9-]{0,62}[a-z0-9])?$');
+export const listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileInternalNameMax = 120;
+
+export const listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfilePublicNameMax = 120;
+
+export const listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileTaglineMax = 160;
+
+export const listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileShortDescriptionMax = 300;
+
+export const listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileFullDescriptionMax = 5000;
+
+export const listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileIconUrlMax = 500;
+
+export const listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileImageUrlMax = 500;
+
+export const listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileBadgeLabelMax = 40;
+
+export const listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileFooterTextMax = 300;
+
+export const listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfilePromoTextMax = 200;
+
+export const listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileTermsMax = 5000;
+
+export const listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileContactSalesLabelMax = 60;
+
+export const listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileCustomPriceTextMax = 80;
+
+export const listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileFixedDiscountAmountMax = 18;
+
+
+export const listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileFixedDiscountAmountRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,2})?$');
+export const listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfilePromoPriceMax = 18;
+
+
+export const listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfilePromoPriceRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,2})?$');
+export const listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileTrialDaysMin = 0;
+export const listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileTrialDaysMax = 365;
+
+export const listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileCtaLabelMax = 60;
+
+export const listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileCtaUrlMax = 200;
+
+
+export const listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileCtaUrlRegExp = new RegExp('^/(?!/)[A-Za-z0-9/_#?=&.-]*$');
+export const listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileAdminSeatsMax = 10000;
+
+export const listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileSupportResponseHoursMax = 720;
+
+export const listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileLaunchTargetBusinessDaysMax = 365;
+
+export const listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileSlaTermsMax = 1000;
+
+export const listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileThemeModesMax = 2;
+
+export const listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileConvertProviderLimitMin = 0;
+export const listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileConvertProviderLimitMax = 100;
+
+export const listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileRequestedProvidersItemMax = 60;
+
+export const listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileRequestedProvidersMax = 30;
+
+export const listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileCapabilitiesItemKeyRegExp = new RegExp('^[a-z][a-z0-9_]{1,63}$');
+export const listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileCapabilitiesItemLabelMax = 120;
+
+export const listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileCapabilitiesItemDescriptionMax = 600;
+
+export const listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileCapabilitiesItemGroupMax = 60;
+
+export const listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileCapabilitiesItemLimitValueMin = 0;
+export const listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileCapabilitiesItemLimitValueMax = 1000000000000;
+
+export const listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileCapabilitiesItemUnitMax = 30;
+
+export const listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileCapabilitiesItemTooltipMax = 300;
+
+export const listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileCapabilitiesItemBadgeMax = 30;
+
+export const listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileCapabilitiesItemDependsOnItemRegExp = new RegExp('^[a-z][a-z0-9_]{1,63}$');
+export const listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileCapabilitiesItemDependsOnMax = 20;
+
+export const listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileCapabilitiesItemNoteMax = 300;
+
+export const listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileCapabilitiesMax = 120;
+
+export const listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileInternalNotesMax = 5000;
+
+export const listMyWhiteLabelRequestsResponseRequestedPlanOneOneExpectedRevisionMin = 0;
+
 export const listMyWhiteLabelRequestsResponseRequestedPlanOneTwoFeatureRowsItemLabelMax = 120;
 
 export const listMyWhiteLabelRequestsResponseRequestedPlanOneTwoFeatureRowsItemValueMax = 500;
@@ -2924,6 +3752,94 @@ export const listMyWhiteLabelRequestsResponseApprovedPlanOneOneEntitlementsMax =
 export const listMyWhiteLabelRequestsResponseApprovedPlanOneOneFeatureRowsItemLabelMax = 120;
 
 export const listMyWhiteLabelRequestsResponseApprovedPlanOneOneFeatureRowsItemValueMax = 500;
+
+export const listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileSlugRegExp = new RegExp('^[a-z0-9](?:[a-z0-9-]{0,62}[a-z0-9])?$');
+export const listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileInternalNameMax = 120;
+
+export const listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfilePublicNameMax = 120;
+
+export const listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileTaglineMax = 160;
+
+export const listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileShortDescriptionMax = 300;
+
+export const listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileFullDescriptionMax = 5000;
+
+export const listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileIconUrlMax = 500;
+
+export const listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileImageUrlMax = 500;
+
+export const listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileBadgeLabelMax = 40;
+
+export const listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileFooterTextMax = 300;
+
+export const listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfilePromoTextMax = 200;
+
+export const listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileTermsMax = 5000;
+
+export const listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileContactSalesLabelMax = 60;
+
+export const listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileCustomPriceTextMax = 80;
+
+export const listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileFixedDiscountAmountMax = 18;
+
+
+export const listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileFixedDiscountAmountRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,2})?$');
+export const listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfilePromoPriceMax = 18;
+
+
+export const listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfilePromoPriceRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,2})?$');
+export const listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileTrialDaysMin = 0;
+export const listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileTrialDaysMax = 365;
+
+export const listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileCtaLabelMax = 60;
+
+export const listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileCtaUrlMax = 200;
+
+
+export const listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileCtaUrlRegExp = new RegExp('^/(?!/)[A-Za-z0-9/_#?=&.-]*$');
+export const listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileAdminSeatsMax = 10000;
+
+export const listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileSupportResponseHoursMax = 720;
+
+export const listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileLaunchTargetBusinessDaysMax = 365;
+
+export const listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileSlaTermsMax = 1000;
+
+export const listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileThemeModesMax = 2;
+
+export const listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileConvertProviderLimitMin = 0;
+export const listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileConvertProviderLimitMax = 100;
+
+export const listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileRequestedProvidersItemMax = 60;
+
+export const listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileRequestedProvidersMax = 30;
+
+export const listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileCapabilitiesItemKeyRegExp = new RegExp('^[a-z][a-z0-9_]{1,63}$');
+export const listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileCapabilitiesItemLabelMax = 120;
+
+export const listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileCapabilitiesItemDescriptionMax = 600;
+
+export const listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileCapabilitiesItemGroupMax = 60;
+
+export const listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileCapabilitiesItemLimitValueMin = 0;
+export const listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileCapabilitiesItemLimitValueMax = 1000000000000;
+
+export const listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileCapabilitiesItemUnitMax = 30;
+
+export const listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileCapabilitiesItemTooltipMax = 300;
+
+export const listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileCapabilitiesItemBadgeMax = 30;
+
+export const listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileCapabilitiesItemDependsOnItemRegExp = new RegExp('^[a-z][a-z0-9_]{1,63}$');
+export const listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileCapabilitiesItemDependsOnMax = 20;
+
+export const listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileCapabilitiesItemNoteMax = 300;
+
+export const listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileCapabilitiesMax = 120;
+
+export const listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileInternalNotesMax = 5000;
+
+export const listMyWhiteLabelRequestsResponseApprovedPlanOneOneExpectedRevisionMin = 0;
 
 export const listMyWhiteLabelRequestsResponseApprovedPlanOneTwoFeatureRowsItemLabelMax = 120;
 
@@ -3001,7 +3917,66 @@ export const ListMyWhiteLabelRequestsResponseItem = zod.object({
   "featureRows": zod.array(zod.object({
   "label": zod.string().min(1).max(listMyWhiteLabelRequestsResponseRequestedPlanOneOneFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(listMyWhiteLabelRequestsResponseRequestedPlanOneOneFeatureRowsItemValueMax)
-}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.')
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.'),
+  "profile": zod.object({
+  "slug": zod.string().regex(listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileSlugRegExp).optional(),
+  "internalName": zod.string().max(listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileInternalNameMax).optional(),
+  "publicName": zod.string().max(listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfilePublicNameMax).optional(),
+  "tagline": zod.string().max(listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileTaglineMax).optional(),
+  "shortDescription": zod.string().max(listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileShortDescriptionMax).optional(),
+  "fullDescription": zod.string().max(listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileFullDescriptionMax).optional(),
+  "iconUrl": zod.string().max(listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileIconUrlMax).optional().describe('Local path or https URL without credentials'),
+  "imageUrl": zod.string().max(listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileImageUrlMax).optional().describe('Local path or https URL without credentials'),
+  "badgeType": zod.enum(['none', 'recommended', 'custom']).optional(),
+  "badgeLabel": zod.string().max(listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileBadgeLabelMax).optional(),
+  "featured": zod.boolean().optional(),
+  "footerText": zod.string().max(listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileFooterTextMax).optional(),
+  "promoText": zod.string().max(listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfilePromoTextMax).optional(),
+  "terms": zod.string().max(listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileTermsMax).optional(),
+  "pricingMode": zod.enum(['paid', 'free', 'custom', 'contact_sales']).optional(),
+  "contactSalesLabel": zod.string().max(listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileContactSalesLabelMax).optional(),
+  "customPriceText": zod.string().max(listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileCustomPriceTextMax).optional(),
+  "fixedDiscountAmount": zod.string().max(listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileFixedDiscountAmountMax).regex(listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileFixedDiscountAmountRegExp).nullish(),
+  "promoPrice": zod.string().max(listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfilePromoPriceMax).regex(listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfilePromoPriceRegExp).nullish(),
+  "promoStartsAt": zod.coerce.date().nullish(),
+  "promoEndsAt": zod.coerce.date().nullish(),
+  "billingInterval": zod.enum(['monthly', 'yearly', 'monthly_and_yearly', 'custom']).optional(),
+  "trialDays": zod.number().int().min(listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileTrialDaysMin).max(listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileTrialDaysMax).optional(),
+  "ctaLabel": zod.string().max(listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileCtaLabelMax).optional(),
+  "ctaUrl": zod.string().max(listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileCtaUrlMax).regex(listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileCtaUrlRegExp).optional(),
+  "visibility": zod.enum(['public', 'hidden']).optional(),
+  "adminSeats": zod.number().int().min(1).max(listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileAdminSeatsMax).nullish(),
+  "multiAdminRoles": zod.boolean().optional(),
+  "supportLevel": zod.enum(['email', 'priority', 'dedicated']).optional(),
+  "supportResponseHours": zod.number().int().min(1).max(listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileSupportResponseHoursMax).nullish(),
+  "launchTargetBusinessDays": zod.number().int().min(1).max(listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileLaunchTargetBusinessDaysMax).nullish(),
+  "dedicatedManager": zod.boolean().optional(),
+  "slaEnabled": zod.boolean().optional(),
+  "slaTerms": zod.string().max(listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileSlaTermsMax).optional(),
+  "earlyAccess": zod.boolean().optional(),
+  "poweredByFooter": zod.boolean().optional(),
+  "themeModes": zod.array(zod.enum(['light', 'dark'])).max(listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileThemeModesMax).optional(),
+  "convertProviderLimit": zod.number().int().min(listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileConvertProviderLimitMin).max(listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileConvertProviderLimitMax).nullish(),
+  "requestedProviders": zod.array(zod.string().min(1).max(listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileRequestedProvidersItemMax)).max(listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileRequestedProvidersMax).optional(),
+  "capabilities": zod.array(zod.object({
+  "key": zod.string().regex(listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileCapabilitiesItemKeyRegExp),
+  "label": zod.string().min(1).max(listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileCapabilitiesItemLabelMax),
+  "description": zod.string().max(listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileCapabilitiesItemDescriptionMax).optional(),
+  "group": zod.string().max(listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileCapabilitiesItemGroupMax).optional(),
+  "state": zod.enum(['included', 'excluded', 'optional', 'limited', 'unlimited', 'unavailable']).describe('Commercial state. limited requires limitValue.'),
+  "availability": zod.enum(['available', 'requires_configuration', 'unavailable']).describe('Implementation status; unavailable means not implemented and never a working toggle'),
+  "limitValue": zod.number().min(listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileCapabilitiesItemLimitValueMin).max(listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileCapabilitiesItemLimitValueMax).nullish(),
+  "unit": zod.string().max(listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileCapabilitiesItemUnitMax).optional(),
+  "tooltip": zod.string().max(listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileCapabilitiesItemTooltipMax).optional(),
+  "highlight": zod.boolean().optional(),
+  "publicVisible": zod.boolean().optional(),
+  "badge": zod.string().max(listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileCapabilitiesItemBadgeMax).optional(),
+  "dependsOn": zod.array(zod.string().regex(listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileCapabilitiesItemDependsOnItemRegExp)).max(listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileCapabilitiesItemDependsOnMax).optional(),
+  "note": zod.string().max(listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileCapabilitiesItemNoteMax).optional()
+})).max(listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileCapabilitiesMax).optional(),
+  "internalNotes": zod.string().max(listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileInternalNotesMax).optional()
+}).optional().describe('Structured plan configuration. internalName and internalNotes are Super Admin only and never published.'),
+  "expectedRevision": zod.number().int().min(listMyWhiteLabelRequestsResponseRequestedPlanOneOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
 }).and(zod.object({
   "id": zod.string().uuid(),
   "createdAt": zod.coerce.date(),
@@ -3011,7 +3986,8 @@ export const ListMyWhiteLabelRequestsResponseItem = zod.object({
   "featureRows": zod.array(zod.object({
   "label": zod.string().min(1).max(listMyWhiteLabelRequestsResponseRequestedPlanOneTwoFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(listMyWhiteLabelRequestsResponseRequestedPlanOneTwoFeatureRowsItemValueMax)
-}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(listMyWhiteLabelRequestsResponseRequestedPlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.')
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(listMyWhiteLabelRequestsResponseRequestedPlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.'),
+  "revision": zod.number().int().optional()
 })),zod.null()]).optional(),
   "requestedAddons": zod.array(zod.object({
   "monthlyPrice": zod.string().regex(listMyWhiteLabelRequestsResponseRequestedAddonsItemOneMonthlyPriceRegExp).nullish(),
@@ -3048,7 +4024,66 @@ export const ListMyWhiteLabelRequestsResponseItem = zod.object({
   "featureRows": zod.array(zod.object({
   "label": zod.string().min(1).max(listMyWhiteLabelRequestsResponseApprovedPlanOneOneFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(listMyWhiteLabelRequestsResponseApprovedPlanOneOneFeatureRowsItemValueMax)
-}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.')
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.'),
+  "profile": zod.object({
+  "slug": zod.string().regex(listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileSlugRegExp).optional(),
+  "internalName": zod.string().max(listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileInternalNameMax).optional(),
+  "publicName": zod.string().max(listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfilePublicNameMax).optional(),
+  "tagline": zod.string().max(listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileTaglineMax).optional(),
+  "shortDescription": zod.string().max(listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileShortDescriptionMax).optional(),
+  "fullDescription": zod.string().max(listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileFullDescriptionMax).optional(),
+  "iconUrl": zod.string().max(listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileIconUrlMax).optional().describe('Local path or https URL without credentials'),
+  "imageUrl": zod.string().max(listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileImageUrlMax).optional().describe('Local path or https URL without credentials'),
+  "badgeType": zod.enum(['none', 'recommended', 'custom']).optional(),
+  "badgeLabel": zod.string().max(listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileBadgeLabelMax).optional(),
+  "featured": zod.boolean().optional(),
+  "footerText": zod.string().max(listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileFooterTextMax).optional(),
+  "promoText": zod.string().max(listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfilePromoTextMax).optional(),
+  "terms": zod.string().max(listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileTermsMax).optional(),
+  "pricingMode": zod.enum(['paid', 'free', 'custom', 'contact_sales']).optional(),
+  "contactSalesLabel": zod.string().max(listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileContactSalesLabelMax).optional(),
+  "customPriceText": zod.string().max(listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileCustomPriceTextMax).optional(),
+  "fixedDiscountAmount": zod.string().max(listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileFixedDiscountAmountMax).regex(listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileFixedDiscountAmountRegExp).nullish(),
+  "promoPrice": zod.string().max(listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfilePromoPriceMax).regex(listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfilePromoPriceRegExp).nullish(),
+  "promoStartsAt": zod.coerce.date().nullish(),
+  "promoEndsAt": zod.coerce.date().nullish(),
+  "billingInterval": zod.enum(['monthly', 'yearly', 'monthly_and_yearly', 'custom']).optional(),
+  "trialDays": zod.number().int().min(listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileTrialDaysMin).max(listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileTrialDaysMax).optional(),
+  "ctaLabel": zod.string().max(listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileCtaLabelMax).optional(),
+  "ctaUrl": zod.string().max(listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileCtaUrlMax).regex(listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileCtaUrlRegExp).optional(),
+  "visibility": zod.enum(['public', 'hidden']).optional(),
+  "adminSeats": zod.number().int().min(1).max(listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileAdminSeatsMax).nullish(),
+  "multiAdminRoles": zod.boolean().optional(),
+  "supportLevel": zod.enum(['email', 'priority', 'dedicated']).optional(),
+  "supportResponseHours": zod.number().int().min(1).max(listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileSupportResponseHoursMax).nullish(),
+  "launchTargetBusinessDays": zod.number().int().min(1).max(listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileLaunchTargetBusinessDaysMax).nullish(),
+  "dedicatedManager": zod.boolean().optional(),
+  "slaEnabled": zod.boolean().optional(),
+  "slaTerms": zod.string().max(listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileSlaTermsMax).optional(),
+  "earlyAccess": zod.boolean().optional(),
+  "poweredByFooter": zod.boolean().optional(),
+  "themeModes": zod.array(zod.enum(['light', 'dark'])).max(listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileThemeModesMax).optional(),
+  "convertProviderLimit": zod.number().int().min(listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileConvertProviderLimitMin).max(listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileConvertProviderLimitMax).nullish(),
+  "requestedProviders": zod.array(zod.string().min(1).max(listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileRequestedProvidersItemMax)).max(listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileRequestedProvidersMax).optional(),
+  "capabilities": zod.array(zod.object({
+  "key": zod.string().regex(listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileCapabilitiesItemKeyRegExp),
+  "label": zod.string().min(1).max(listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileCapabilitiesItemLabelMax),
+  "description": zod.string().max(listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileCapabilitiesItemDescriptionMax).optional(),
+  "group": zod.string().max(listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileCapabilitiesItemGroupMax).optional(),
+  "state": zod.enum(['included', 'excluded', 'optional', 'limited', 'unlimited', 'unavailable']).describe('Commercial state. limited requires limitValue.'),
+  "availability": zod.enum(['available', 'requires_configuration', 'unavailable']).describe('Implementation status; unavailable means not implemented and never a working toggle'),
+  "limitValue": zod.number().min(listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileCapabilitiesItemLimitValueMin).max(listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileCapabilitiesItemLimitValueMax).nullish(),
+  "unit": zod.string().max(listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileCapabilitiesItemUnitMax).optional(),
+  "tooltip": zod.string().max(listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileCapabilitiesItemTooltipMax).optional(),
+  "highlight": zod.boolean().optional(),
+  "publicVisible": zod.boolean().optional(),
+  "badge": zod.string().max(listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileCapabilitiesItemBadgeMax).optional(),
+  "dependsOn": zod.array(zod.string().regex(listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileCapabilitiesItemDependsOnItemRegExp)).max(listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileCapabilitiesItemDependsOnMax).optional(),
+  "note": zod.string().max(listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileCapabilitiesItemNoteMax).optional()
+})).max(listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileCapabilitiesMax).optional(),
+  "internalNotes": zod.string().max(listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileInternalNotesMax).optional()
+}).optional().describe('Structured plan configuration. internalName and internalNotes are Super Admin only and never published.'),
+  "expectedRevision": zod.number().int().min(listMyWhiteLabelRequestsResponseApprovedPlanOneOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
 }).and(zod.object({
   "id": zod.string().uuid(),
   "createdAt": zod.coerce.date(),
@@ -3058,7 +4093,8 @@ export const ListMyWhiteLabelRequestsResponseItem = zod.object({
   "featureRows": zod.array(zod.object({
   "label": zod.string().min(1).max(listMyWhiteLabelRequestsResponseApprovedPlanOneTwoFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(listMyWhiteLabelRequestsResponseApprovedPlanOneTwoFeatureRowsItemValueMax)
-}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(listMyWhiteLabelRequestsResponseApprovedPlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.')
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(listMyWhiteLabelRequestsResponseApprovedPlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.'),
+  "revision": zod.number().int().optional()
 })),zod.null()]).optional(),
   "approvedAddons": zod.array(zod.object({
   "monthlyPrice": zod.string().regex(listMyWhiteLabelRequestsResponseApprovedAddonsItemOneMonthlyPriceRegExp).nullish(),
@@ -3216,6 +4252,94 @@ export const submitWhiteLabelRequestResponseRequestedPlanOneOneFeatureRowsItemLa
 
 export const submitWhiteLabelRequestResponseRequestedPlanOneOneFeatureRowsItemValueMax = 500;
 
+export const submitWhiteLabelRequestResponseRequestedPlanOneOneProfileSlugRegExp = new RegExp('^[a-z0-9](?:[a-z0-9-]{0,62}[a-z0-9])?$');
+export const submitWhiteLabelRequestResponseRequestedPlanOneOneProfileInternalNameMax = 120;
+
+export const submitWhiteLabelRequestResponseRequestedPlanOneOneProfilePublicNameMax = 120;
+
+export const submitWhiteLabelRequestResponseRequestedPlanOneOneProfileTaglineMax = 160;
+
+export const submitWhiteLabelRequestResponseRequestedPlanOneOneProfileShortDescriptionMax = 300;
+
+export const submitWhiteLabelRequestResponseRequestedPlanOneOneProfileFullDescriptionMax = 5000;
+
+export const submitWhiteLabelRequestResponseRequestedPlanOneOneProfileIconUrlMax = 500;
+
+export const submitWhiteLabelRequestResponseRequestedPlanOneOneProfileImageUrlMax = 500;
+
+export const submitWhiteLabelRequestResponseRequestedPlanOneOneProfileBadgeLabelMax = 40;
+
+export const submitWhiteLabelRequestResponseRequestedPlanOneOneProfileFooterTextMax = 300;
+
+export const submitWhiteLabelRequestResponseRequestedPlanOneOneProfilePromoTextMax = 200;
+
+export const submitWhiteLabelRequestResponseRequestedPlanOneOneProfileTermsMax = 5000;
+
+export const submitWhiteLabelRequestResponseRequestedPlanOneOneProfileContactSalesLabelMax = 60;
+
+export const submitWhiteLabelRequestResponseRequestedPlanOneOneProfileCustomPriceTextMax = 80;
+
+export const submitWhiteLabelRequestResponseRequestedPlanOneOneProfileFixedDiscountAmountMax = 18;
+
+
+export const submitWhiteLabelRequestResponseRequestedPlanOneOneProfileFixedDiscountAmountRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,2})?$');
+export const submitWhiteLabelRequestResponseRequestedPlanOneOneProfilePromoPriceMax = 18;
+
+
+export const submitWhiteLabelRequestResponseRequestedPlanOneOneProfilePromoPriceRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,2})?$');
+export const submitWhiteLabelRequestResponseRequestedPlanOneOneProfileTrialDaysMin = 0;
+export const submitWhiteLabelRequestResponseRequestedPlanOneOneProfileTrialDaysMax = 365;
+
+export const submitWhiteLabelRequestResponseRequestedPlanOneOneProfileCtaLabelMax = 60;
+
+export const submitWhiteLabelRequestResponseRequestedPlanOneOneProfileCtaUrlMax = 200;
+
+
+export const submitWhiteLabelRequestResponseRequestedPlanOneOneProfileCtaUrlRegExp = new RegExp('^/(?!/)[A-Za-z0-9/_#?=&.-]*$');
+export const submitWhiteLabelRequestResponseRequestedPlanOneOneProfileAdminSeatsMax = 10000;
+
+export const submitWhiteLabelRequestResponseRequestedPlanOneOneProfileSupportResponseHoursMax = 720;
+
+export const submitWhiteLabelRequestResponseRequestedPlanOneOneProfileLaunchTargetBusinessDaysMax = 365;
+
+export const submitWhiteLabelRequestResponseRequestedPlanOneOneProfileSlaTermsMax = 1000;
+
+export const submitWhiteLabelRequestResponseRequestedPlanOneOneProfileThemeModesMax = 2;
+
+export const submitWhiteLabelRequestResponseRequestedPlanOneOneProfileConvertProviderLimitMin = 0;
+export const submitWhiteLabelRequestResponseRequestedPlanOneOneProfileConvertProviderLimitMax = 100;
+
+export const submitWhiteLabelRequestResponseRequestedPlanOneOneProfileRequestedProvidersItemMax = 60;
+
+export const submitWhiteLabelRequestResponseRequestedPlanOneOneProfileRequestedProvidersMax = 30;
+
+export const submitWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesItemKeyRegExp = new RegExp('^[a-z][a-z0-9_]{1,63}$');
+export const submitWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesItemLabelMax = 120;
+
+export const submitWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesItemDescriptionMax = 600;
+
+export const submitWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesItemGroupMax = 60;
+
+export const submitWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesItemLimitValueMin = 0;
+export const submitWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesItemLimitValueMax = 1000000000000;
+
+export const submitWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesItemUnitMax = 30;
+
+export const submitWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesItemTooltipMax = 300;
+
+export const submitWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesItemBadgeMax = 30;
+
+export const submitWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesItemDependsOnItemRegExp = new RegExp('^[a-z][a-z0-9_]{1,63}$');
+export const submitWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesItemDependsOnMax = 20;
+
+export const submitWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesItemNoteMax = 300;
+
+export const submitWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesMax = 120;
+
+export const submitWhiteLabelRequestResponseRequestedPlanOneOneProfileInternalNotesMax = 5000;
+
+export const submitWhiteLabelRequestResponseRequestedPlanOneOneExpectedRevisionMin = 0;
+
 export const submitWhiteLabelRequestResponseRequestedPlanOneTwoFeatureRowsItemLabelMax = 120;
 
 export const submitWhiteLabelRequestResponseRequestedPlanOneTwoFeatureRowsItemValueMax = 500;
@@ -3284,6 +4408,94 @@ export const submitWhiteLabelRequestResponseApprovedPlanOneOneEntitlementsMax = 
 export const submitWhiteLabelRequestResponseApprovedPlanOneOneFeatureRowsItemLabelMax = 120;
 
 export const submitWhiteLabelRequestResponseApprovedPlanOneOneFeatureRowsItemValueMax = 500;
+
+export const submitWhiteLabelRequestResponseApprovedPlanOneOneProfileSlugRegExp = new RegExp('^[a-z0-9](?:[a-z0-9-]{0,62}[a-z0-9])?$');
+export const submitWhiteLabelRequestResponseApprovedPlanOneOneProfileInternalNameMax = 120;
+
+export const submitWhiteLabelRequestResponseApprovedPlanOneOneProfilePublicNameMax = 120;
+
+export const submitWhiteLabelRequestResponseApprovedPlanOneOneProfileTaglineMax = 160;
+
+export const submitWhiteLabelRequestResponseApprovedPlanOneOneProfileShortDescriptionMax = 300;
+
+export const submitWhiteLabelRequestResponseApprovedPlanOneOneProfileFullDescriptionMax = 5000;
+
+export const submitWhiteLabelRequestResponseApprovedPlanOneOneProfileIconUrlMax = 500;
+
+export const submitWhiteLabelRequestResponseApprovedPlanOneOneProfileImageUrlMax = 500;
+
+export const submitWhiteLabelRequestResponseApprovedPlanOneOneProfileBadgeLabelMax = 40;
+
+export const submitWhiteLabelRequestResponseApprovedPlanOneOneProfileFooterTextMax = 300;
+
+export const submitWhiteLabelRequestResponseApprovedPlanOneOneProfilePromoTextMax = 200;
+
+export const submitWhiteLabelRequestResponseApprovedPlanOneOneProfileTermsMax = 5000;
+
+export const submitWhiteLabelRequestResponseApprovedPlanOneOneProfileContactSalesLabelMax = 60;
+
+export const submitWhiteLabelRequestResponseApprovedPlanOneOneProfileCustomPriceTextMax = 80;
+
+export const submitWhiteLabelRequestResponseApprovedPlanOneOneProfileFixedDiscountAmountMax = 18;
+
+
+export const submitWhiteLabelRequestResponseApprovedPlanOneOneProfileFixedDiscountAmountRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,2})?$');
+export const submitWhiteLabelRequestResponseApprovedPlanOneOneProfilePromoPriceMax = 18;
+
+
+export const submitWhiteLabelRequestResponseApprovedPlanOneOneProfilePromoPriceRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,2})?$');
+export const submitWhiteLabelRequestResponseApprovedPlanOneOneProfileTrialDaysMin = 0;
+export const submitWhiteLabelRequestResponseApprovedPlanOneOneProfileTrialDaysMax = 365;
+
+export const submitWhiteLabelRequestResponseApprovedPlanOneOneProfileCtaLabelMax = 60;
+
+export const submitWhiteLabelRequestResponseApprovedPlanOneOneProfileCtaUrlMax = 200;
+
+
+export const submitWhiteLabelRequestResponseApprovedPlanOneOneProfileCtaUrlRegExp = new RegExp('^/(?!/)[A-Za-z0-9/_#?=&.-]*$');
+export const submitWhiteLabelRequestResponseApprovedPlanOneOneProfileAdminSeatsMax = 10000;
+
+export const submitWhiteLabelRequestResponseApprovedPlanOneOneProfileSupportResponseHoursMax = 720;
+
+export const submitWhiteLabelRequestResponseApprovedPlanOneOneProfileLaunchTargetBusinessDaysMax = 365;
+
+export const submitWhiteLabelRequestResponseApprovedPlanOneOneProfileSlaTermsMax = 1000;
+
+export const submitWhiteLabelRequestResponseApprovedPlanOneOneProfileThemeModesMax = 2;
+
+export const submitWhiteLabelRequestResponseApprovedPlanOneOneProfileConvertProviderLimitMin = 0;
+export const submitWhiteLabelRequestResponseApprovedPlanOneOneProfileConvertProviderLimitMax = 100;
+
+export const submitWhiteLabelRequestResponseApprovedPlanOneOneProfileRequestedProvidersItemMax = 60;
+
+export const submitWhiteLabelRequestResponseApprovedPlanOneOneProfileRequestedProvidersMax = 30;
+
+export const submitWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesItemKeyRegExp = new RegExp('^[a-z][a-z0-9_]{1,63}$');
+export const submitWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesItemLabelMax = 120;
+
+export const submitWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesItemDescriptionMax = 600;
+
+export const submitWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesItemGroupMax = 60;
+
+export const submitWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesItemLimitValueMin = 0;
+export const submitWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesItemLimitValueMax = 1000000000000;
+
+export const submitWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesItemUnitMax = 30;
+
+export const submitWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesItemTooltipMax = 300;
+
+export const submitWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesItemBadgeMax = 30;
+
+export const submitWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesItemDependsOnItemRegExp = new RegExp('^[a-z][a-z0-9_]{1,63}$');
+export const submitWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesItemDependsOnMax = 20;
+
+export const submitWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesItemNoteMax = 300;
+
+export const submitWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesMax = 120;
+
+export const submitWhiteLabelRequestResponseApprovedPlanOneOneProfileInternalNotesMax = 5000;
+
+export const submitWhiteLabelRequestResponseApprovedPlanOneOneExpectedRevisionMin = 0;
 
 export const submitWhiteLabelRequestResponseApprovedPlanOneTwoFeatureRowsItemLabelMax = 120;
 
@@ -3361,7 +4573,66 @@ export const SubmitWhiteLabelRequestResponse = zod.object({
   "featureRows": zod.array(zod.object({
   "label": zod.string().min(1).max(submitWhiteLabelRequestResponseRequestedPlanOneOneFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(submitWhiteLabelRequestResponseRequestedPlanOneOneFeatureRowsItemValueMax)
-}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.')
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.'),
+  "profile": zod.object({
+  "slug": zod.string().regex(submitWhiteLabelRequestResponseRequestedPlanOneOneProfileSlugRegExp).optional(),
+  "internalName": zod.string().max(submitWhiteLabelRequestResponseRequestedPlanOneOneProfileInternalNameMax).optional(),
+  "publicName": zod.string().max(submitWhiteLabelRequestResponseRequestedPlanOneOneProfilePublicNameMax).optional(),
+  "tagline": zod.string().max(submitWhiteLabelRequestResponseRequestedPlanOneOneProfileTaglineMax).optional(),
+  "shortDescription": zod.string().max(submitWhiteLabelRequestResponseRequestedPlanOneOneProfileShortDescriptionMax).optional(),
+  "fullDescription": zod.string().max(submitWhiteLabelRequestResponseRequestedPlanOneOneProfileFullDescriptionMax).optional(),
+  "iconUrl": zod.string().max(submitWhiteLabelRequestResponseRequestedPlanOneOneProfileIconUrlMax).optional().describe('Local path or https URL without credentials'),
+  "imageUrl": zod.string().max(submitWhiteLabelRequestResponseRequestedPlanOneOneProfileImageUrlMax).optional().describe('Local path or https URL without credentials'),
+  "badgeType": zod.enum(['none', 'recommended', 'custom']).optional(),
+  "badgeLabel": zod.string().max(submitWhiteLabelRequestResponseRequestedPlanOneOneProfileBadgeLabelMax).optional(),
+  "featured": zod.boolean().optional(),
+  "footerText": zod.string().max(submitWhiteLabelRequestResponseRequestedPlanOneOneProfileFooterTextMax).optional(),
+  "promoText": zod.string().max(submitWhiteLabelRequestResponseRequestedPlanOneOneProfilePromoTextMax).optional(),
+  "terms": zod.string().max(submitWhiteLabelRequestResponseRequestedPlanOneOneProfileTermsMax).optional(),
+  "pricingMode": zod.enum(['paid', 'free', 'custom', 'contact_sales']).optional(),
+  "contactSalesLabel": zod.string().max(submitWhiteLabelRequestResponseRequestedPlanOneOneProfileContactSalesLabelMax).optional(),
+  "customPriceText": zod.string().max(submitWhiteLabelRequestResponseRequestedPlanOneOneProfileCustomPriceTextMax).optional(),
+  "fixedDiscountAmount": zod.string().max(submitWhiteLabelRequestResponseRequestedPlanOneOneProfileFixedDiscountAmountMax).regex(submitWhiteLabelRequestResponseRequestedPlanOneOneProfileFixedDiscountAmountRegExp).nullish(),
+  "promoPrice": zod.string().max(submitWhiteLabelRequestResponseRequestedPlanOneOneProfilePromoPriceMax).regex(submitWhiteLabelRequestResponseRequestedPlanOneOneProfilePromoPriceRegExp).nullish(),
+  "promoStartsAt": zod.coerce.date().nullish(),
+  "promoEndsAt": zod.coerce.date().nullish(),
+  "billingInterval": zod.enum(['monthly', 'yearly', 'monthly_and_yearly', 'custom']).optional(),
+  "trialDays": zod.number().int().min(submitWhiteLabelRequestResponseRequestedPlanOneOneProfileTrialDaysMin).max(submitWhiteLabelRequestResponseRequestedPlanOneOneProfileTrialDaysMax).optional(),
+  "ctaLabel": zod.string().max(submitWhiteLabelRequestResponseRequestedPlanOneOneProfileCtaLabelMax).optional(),
+  "ctaUrl": zod.string().max(submitWhiteLabelRequestResponseRequestedPlanOneOneProfileCtaUrlMax).regex(submitWhiteLabelRequestResponseRequestedPlanOneOneProfileCtaUrlRegExp).optional(),
+  "visibility": zod.enum(['public', 'hidden']).optional(),
+  "adminSeats": zod.number().int().min(1).max(submitWhiteLabelRequestResponseRequestedPlanOneOneProfileAdminSeatsMax).nullish(),
+  "multiAdminRoles": zod.boolean().optional(),
+  "supportLevel": zod.enum(['email', 'priority', 'dedicated']).optional(),
+  "supportResponseHours": zod.number().int().min(1).max(submitWhiteLabelRequestResponseRequestedPlanOneOneProfileSupportResponseHoursMax).nullish(),
+  "launchTargetBusinessDays": zod.number().int().min(1).max(submitWhiteLabelRequestResponseRequestedPlanOneOneProfileLaunchTargetBusinessDaysMax).nullish(),
+  "dedicatedManager": zod.boolean().optional(),
+  "slaEnabled": zod.boolean().optional(),
+  "slaTerms": zod.string().max(submitWhiteLabelRequestResponseRequestedPlanOneOneProfileSlaTermsMax).optional(),
+  "earlyAccess": zod.boolean().optional(),
+  "poweredByFooter": zod.boolean().optional(),
+  "themeModes": zod.array(zod.enum(['light', 'dark'])).max(submitWhiteLabelRequestResponseRequestedPlanOneOneProfileThemeModesMax).optional(),
+  "convertProviderLimit": zod.number().int().min(submitWhiteLabelRequestResponseRequestedPlanOneOneProfileConvertProviderLimitMin).max(submitWhiteLabelRequestResponseRequestedPlanOneOneProfileConvertProviderLimitMax).nullish(),
+  "requestedProviders": zod.array(zod.string().min(1).max(submitWhiteLabelRequestResponseRequestedPlanOneOneProfileRequestedProvidersItemMax)).max(submitWhiteLabelRequestResponseRequestedPlanOneOneProfileRequestedProvidersMax).optional(),
+  "capabilities": zod.array(zod.object({
+  "key": zod.string().regex(submitWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesItemKeyRegExp),
+  "label": zod.string().min(1).max(submitWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesItemLabelMax),
+  "description": zod.string().max(submitWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesItemDescriptionMax).optional(),
+  "group": zod.string().max(submitWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesItemGroupMax).optional(),
+  "state": zod.enum(['included', 'excluded', 'optional', 'limited', 'unlimited', 'unavailable']).describe('Commercial state. limited requires limitValue.'),
+  "availability": zod.enum(['available', 'requires_configuration', 'unavailable']).describe('Implementation status; unavailable means not implemented and never a working toggle'),
+  "limitValue": zod.number().min(submitWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesItemLimitValueMin).max(submitWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesItemLimitValueMax).nullish(),
+  "unit": zod.string().max(submitWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesItemUnitMax).optional(),
+  "tooltip": zod.string().max(submitWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesItemTooltipMax).optional(),
+  "highlight": zod.boolean().optional(),
+  "publicVisible": zod.boolean().optional(),
+  "badge": zod.string().max(submitWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesItemBadgeMax).optional(),
+  "dependsOn": zod.array(zod.string().regex(submitWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesItemDependsOnItemRegExp)).max(submitWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesItemDependsOnMax).optional(),
+  "note": zod.string().max(submitWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesItemNoteMax).optional()
+})).max(submitWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesMax).optional(),
+  "internalNotes": zod.string().max(submitWhiteLabelRequestResponseRequestedPlanOneOneProfileInternalNotesMax).optional()
+}).optional().describe('Structured plan configuration. internalName and internalNotes are Super Admin only and never published.'),
+  "expectedRevision": zod.number().int().min(submitWhiteLabelRequestResponseRequestedPlanOneOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
 }).and(zod.object({
   "id": zod.string().uuid(),
   "createdAt": zod.coerce.date(),
@@ -3371,7 +4642,8 @@ export const SubmitWhiteLabelRequestResponse = zod.object({
   "featureRows": zod.array(zod.object({
   "label": zod.string().min(1).max(submitWhiteLabelRequestResponseRequestedPlanOneTwoFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(submitWhiteLabelRequestResponseRequestedPlanOneTwoFeatureRowsItemValueMax)
-}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(submitWhiteLabelRequestResponseRequestedPlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.')
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(submitWhiteLabelRequestResponseRequestedPlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.'),
+  "revision": zod.number().int().optional()
 })),zod.null()]).optional(),
   "requestedAddons": zod.array(zod.object({
   "monthlyPrice": zod.string().regex(submitWhiteLabelRequestResponseRequestedAddonsItemOneMonthlyPriceRegExp).nullish(),
@@ -3408,7 +4680,66 @@ export const SubmitWhiteLabelRequestResponse = zod.object({
   "featureRows": zod.array(zod.object({
   "label": zod.string().min(1).max(submitWhiteLabelRequestResponseApprovedPlanOneOneFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(submitWhiteLabelRequestResponseApprovedPlanOneOneFeatureRowsItemValueMax)
-}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.')
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.'),
+  "profile": zod.object({
+  "slug": zod.string().regex(submitWhiteLabelRequestResponseApprovedPlanOneOneProfileSlugRegExp).optional(),
+  "internalName": zod.string().max(submitWhiteLabelRequestResponseApprovedPlanOneOneProfileInternalNameMax).optional(),
+  "publicName": zod.string().max(submitWhiteLabelRequestResponseApprovedPlanOneOneProfilePublicNameMax).optional(),
+  "tagline": zod.string().max(submitWhiteLabelRequestResponseApprovedPlanOneOneProfileTaglineMax).optional(),
+  "shortDescription": zod.string().max(submitWhiteLabelRequestResponseApprovedPlanOneOneProfileShortDescriptionMax).optional(),
+  "fullDescription": zod.string().max(submitWhiteLabelRequestResponseApprovedPlanOneOneProfileFullDescriptionMax).optional(),
+  "iconUrl": zod.string().max(submitWhiteLabelRequestResponseApprovedPlanOneOneProfileIconUrlMax).optional().describe('Local path or https URL without credentials'),
+  "imageUrl": zod.string().max(submitWhiteLabelRequestResponseApprovedPlanOneOneProfileImageUrlMax).optional().describe('Local path or https URL without credentials'),
+  "badgeType": zod.enum(['none', 'recommended', 'custom']).optional(),
+  "badgeLabel": zod.string().max(submitWhiteLabelRequestResponseApprovedPlanOneOneProfileBadgeLabelMax).optional(),
+  "featured": zod.boolean().optional(),
+  "footerText": zod.string().max(submitWhiteLabelRequestResponseApprovedPlanOneOneProfileFooterTextMax).optional(),
+  "promoText": zod.string().max(submitWhiteLabelRequestResponseApprovedPlanOneOneProfilePromoTextMax).optional(),
+  "terms": zod.string().max(submitWhiteLabelRequestResponseApprovedPlanOneOneProfileTermsMax).optional(),
+  "pricingMode": zod.enum(['paid', 'free', 'custom', 'contact_sales']).optional(),
+  "contactSalesLabel": zod.string().max(submitWhiteLabelRequestResponseApprovedPlanOneOneProfileContactSalesLabelMax).optional(),
+  "customPriceText": zod.string().max(submitWhiteLabelRequestResponseApprovedPlanOneOneProfileCustomPriceTextMax).optional(),
+  "fixedDiscountAmount": zod.string().max(submitWhiteLabelRequestResponseApprovedPlanOneOneProfileFixedDiscountAmountMax).regex(submitWhiteLabelRequestResponseApprovedPlanOneOneProfileFixedDiscountAmountRegExp).nullish(),
+  "promoPrice": zod.string().max(submitWhiteLabelRequestResponseApprovedPlanOneOneProfilePromoPriceMax).regex(submitWhiteLabelRequestResponseApprovedPlanOneOneProfilePromoPriceRegExp).nullish(),
+  "promoStartsAt": zod.coerce.date().nullish(),
+  "promoEndsAt": zod.coerce.date().nullish(),
+  "billingInterval": zod.enum(['monthly', 'yearly', 'monthly_and_yearly', 'custom']).optional(),
+  "trialDays": zod.number().int().min(submitWhiteLabelRequestResponseApprovedPlanOneOneProfileTrialDaysMin).max(submitWhiteLabelRequestResponseApprovedPlanOneOneProfileTrialDaysMax).optional(),
+  "ctaLabel": zod.string().max(submitWhiteLabelRequestResponseApprovedPlanOneOneProfileCtaLabelMax).optional(),
+  "ctaUrl": zod.string().max(submitWhiteLabelRequestResponseApprovedPlanOneOneProfileCtaUrlMax).regex(submitWhiteLabelRequestResponseApprovedPlanOneOneProfileCtaUrlRegExp).optional(),
+  "visibility": zod.enum(['public', 'hidden']).optional(),
+  "adminSeats": zod.number().int().min(1).max(submitWhiteLabelRequestResponseApprovedPlanOneOneProfileAdminSeatsMax).nullish(),
+  "multiAdminRoles": zod.boolean().optional(),
+  "supportLevel": zod.enum(['email', 'priority', 'dedicated']).optional(),
+  "supportResponseHours": zod.number().int().min(1).max(submitWhiteLabelRequestResponseApprovedPlanOneOneProfileSupportResponseHoursMax).nullish(),
+  "launchTargetBusinessDays": zod.number().int().min(1).max(submitWhiteLabelRequestResponseApprovedPlanOneOneProfileLaunchTargetBusinessDaysMax).nullish(),
+  "dedicatedManager": zod.boolean().optional(),
+  "slaEnabled": zod.boolean().optional(),
+  "slaTerms": zod.string().max(submitWhiteLabelRequestResponseApprovedPlanOneOneProfileSlaTermsMax).optional(),
+  "earlyAccess": zod.boolean().optional(),
+  "poweredByFooter": zod.boolean().optional(),
+  "themeModes": zod.array(zod.enum(['light', 'dark'])).max(submitWhiteLabelRequestResponseApprovedPlanOneOneProfileThemeModesMax).optional(),
+  "convertProviderLimit": zod.number().int().min(submitWhiteLabelRequestResponseApprovedPlanOneOneProfileConvertProviderLimitMin).max(submitWhiteLabelRequestResponseApprovedPlanOneOneProfileConvertProviderLimitMax).nullish(),
+  "requestedProviders": zod.array(zod.string().min(1).max(submitWhiteLabelRequestResponseApprovedPlanOneOneProfileRequestedProvidersItemMax)).max(submitWhiteLabelRequestResponseApprovedPlanOneOneProfileRequestedProvidersMax).optional(),
+  "capabilities": zod.array(zod.object({
+  "key": zod.string().regex(submitWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesItemKeyRegExp),
+  "label": zod.string().min(1).max(submitWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesItemLabelMax),
+  "description": zod.string().max(submitWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesItemDescriptionMax).optional(),
+  "group": zod.string().max(submitWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesItemGroupMax).optional(),
+  "state": zod.enum(['included', 'excluded', 'optional', 'limited', 'unlimited', 'unavailable']).describe('Commercial state. limited requires limitValue.'),
+  "availability": zod.enum(['available', 'requires_configuration', 'unavailable']).describe('Implementation status; unavailable means not implemented and never a working toggle'),
+  "limitValue": zod.number().min(submitWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesItemLimitValueMin).max(submitWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesItemLimitValueMax).nullish(),
+  "unit": zod.string().max(submitWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesItemUnitMax).optional(),
+  "tooltip": zod.string().max(submitWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesItemTooltipMax).optional(),
+  "highlight": zod.boolean().optional(),
+  "publicVisible": zod.boolean().optional(),
+  "badge": zod.string().max(submitWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesItemBadgeMax).optional(),
+  "dependsOn": zod.array(zod.string().regex(submitWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesItemDependsOnItemRegExp)).max(submitWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesItemDependsOnMax).optional(),
+  "note": zod.string().max(submitWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesItemNoteMax).optional()
+})).max(submitWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesMax).optional(),
+  "internalNotes": zod.string().max(submitWhiteLabelRequestResponseApprovedPlanOneOneProfileInternalNotesMax).optional()
+}).optional().describe('Structured plan configuration. internalName and internalNotes are Super Admin only and never published.'),
+  "expectedRevision": zod.number().int().min(submitWhiteLabelRequestResponseApprovedPlanOneOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
 }).and(zod.object({
   "id": zod.string().uuid(),
   "createdAt": zod.coerce.date(),
@@ -3418,7 +4749,8 @@ export const SubmitWhiteLabelRequestResponse = zod.object({
   "featureRows": zod.array(zod.object({
   "label": zod.string().min(1).max(submitWhiteLabelRequestResponseApprovedPlanOneTwoFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(submitWhiteLabelRequestResponseApprovedPlanOneTwoFeatureRowsItemValueMax)
-}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(submitWhiteLabelRequestResponseApprovedPlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.')
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(submitWhiteLabelRequestResponseApprovedPlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.'),
+  "revision": zod.number().int().optional()
 })),zod.null()]).optional(),
   "approvedAddons": zod.array(zod.object({
   "monthlyPrice": zod.string().regex(submitWhiteLabelRequestResponseApprovedAddonsItemOneMonthlyPriceRegExp).nullish(),
@@ -3510,6 +4842,94 @@ export const listWhiteLabelRequestsResponseRequestedPlanOneOneFeatureRowsItemLab
 
 export const listWhiteLabelRequestsResponseRequestedPlanOneOneFeatureRowsItemValueMax = 500;
 
+export const listWhiteLabelRequestsResponseRequestedPlanOneOneProfileSlugRegExp = new RegExp('^[a-z0-9](?:[a-z0-9-]{0,62}[a-z0-9])?$');
+export const listWhiteLabelRequestsResponseRequestedPlanOneOneProfileInternalNameMax = 120;
+
+export const listWhiteLabelRequestsResponseRequestedPlanOneOneProfilePublicNameMax = 120;
+
+export const listWhiteLabelRequestsResponseRequestedPlanOneOneProfileTaglineMax = 160;
+
+export const listWhiteLabelRequestsResponseRequestedPlanOneOneProfileShortDescriptionMax = 300;
+
+export const listWhiteLabelRequestsResponseRequestedPlanOneOneProfileFullDescriptionMax = 5000;
+
+export const listWhiteLabelRequestsResponseRequestedPlanOneOneProfileIconUrlMax = 500;
+
+export const listWhiteLabelRequestsResponseRequestedPlanOneOneProfileImageUrlMax = 500;
+
+export const listWhiteLabelRequestsResponseRequestedPlanOneOneProfileBadgeLabelMax = 40;
+
+export const listWhiteLabelRequestsResponseRequestedPlanOneOneProfileFooterTextMax = 300;
+
+export const listWhiteLabelRequestsResponseRequestedPlanOneOneProfilePromoTextMax = 200;
+
+export const listWhiteLabelRequestsResponseRequestedPlanOneOneProfileTermsMax = 5000;
+
+export const listWhiteLabelRequestsResponseRequestedPlanOneOneProfileContactSalesLabelMax = 60;
+
+export const listWhiteLabelRequestsResponseRequestedPlanOneOneProfileCustomPriceTextMax = 80;
+
+export const listWhiteLabelRequestsResponseRequestedPlanOneOneProfileFixedDiscountAmountMax = 18;
+
+
+export const listWhiteLabelRequestsResponseRequestedPlanOneOneProfileFixedDiscountAmountRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,2})?$');
+export const listWhiteLabelRequestsResponseRequestedPlanOneOneProfilePromoPriceMax = 18;
+
+
+export const listWhiteLabelRequestsResponseRequestedPlanOneOneProfilePromoPriceRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,2})?$');
+export const listWhiteLabelRequestsResponseRequestedPlanOneOneProfileTrialDaysMin = 0;
+export const listWhiteLabelRequestsResponseRequestedPlanOneOneProfileTrialDaysMax = 365;
+
+export const listWhiteLabelRequestsResponseRequestedPlanOneOneProfileCtaLabelMax = 60;
+
+export const listWhiteLabelRequestsResponseRequestedPlanOneOneProfileCtaUrlMax = 200;
+
+
+export const listWhiteLabelRequestsResponseRequestedPlanOneOneProfileCtaUrlRegExp = new RegExp('^/(?!/)[A-Za-z0-9/_#?=&.-]*$');
+export const listWhiteLabelRequestsResponseRequestedPlanOneOneProfileAdminSeatsMax = 10000;
+
+export const listWhiteLabelRequestsResponseRequestedPlanOneOneProfileSupportResponseHoursMax = 720;
+
+export const listWhiteLabelRequestsResponseRequestedPlanOneOneProfileLaunchTargetBusinessDaysMax = 365;
+
+export const listWhiteLabelRequestsResponseRequestedPlanOneOneProfileSlaTermsMax = 1000;
+
+export const listWhiteLabelRequestsResponseRequestedPlanOneOneProfileThemeModesMax = 2;
+
+export const listWhiteLabelRequestsResponseRequestedPlanOneOneProfileConvertProviderLimitMin = 0;
+export const listWhiteLabelRequestsResponseRequestedPlanOneOneProfileConvertProviderLimitMax = 100;
+
+export const listWhiteLabelRequestsResponseRequestedPlanOneOneProfileRequestedProvidersItemMax = 60;
+
+export const listWhiteLabelRequestsResponseRequestedPlanOneOneProfileRequestedProvidersMax = 30;
+
+export const listWhiteLabelRequestsResponseRequestedPlanOneOneProfileCapabilitiesItemKeyRegExp = new RegExp('^[a-z][a-z0-9_]{1,63}$');
+export const listWhiteLabelRequestsResponseRequestedPlanOneOneProfileCapabilitiesItemLabelMax = 120;
+
+export const listWhiteLabelRequestsResponseRequestedPlanOneOneProfileCapabilitiesItemDescriptionMax = 600;
+
+export const listWhiteLabelRequestsResponseRequestedPlanOneOneProfileCapabilitiesItemGroupMax = 60;
+
+export const listWhiteLabelRequestsResponseRequestedPlanOneOneProfileCapabilitiesItemLimitValueMin = 0;
+export const listWhiteLabelRequestsResponseRequestedPlanOneOneProfileCapabilitiesItemLimitValueMax = 1000000000000;
+
+export const listWhiteLabelRequestsResponseRequestedPlanOneOneProfileCapabilitiesItemUnitMax = 30;
+
+export const listWhiteLabelRequestsResponseRequestedPlanOneOneProfileCapabilitiesItemTooltipMax = 300;
+
+export const listWhiteLabelRequestsResponseRequestedPlanOneOneProfileCapabilitiesItemBadgeMax = 30;
+
+export const listWhiteLabelRequestsResponseRequestedPlanOneOneProfileCapabilitiesItemDependsOnItemRegExp = new RegExp('^[a-z][a-z0-9_]{1,63}$');
+export const listWhiteLabelRequestsResponseRequestedPlanOneOneProfileCapabilitiesItemDependsOnMax = 20;
+
+export const listWhiteLabelRequestsResponseRequestedPlanOneOneProfileCapabilitiesItemNoteMax = 300;
+
+export const listWhiteLabelRequestsResponseRequestedPlanOneOneProfileCapabilitiesMax = 120;
+
+export const listWhiteLabelRequestsResponseRequestedPlanOneOneProfileInternalNotesMax = 5000;
+
+export const listWhiteLabelRequestsResponseRequestedPlanOneOneExpectedRevisionMin = 0;
+
 export const listWhiteLabelRequestsResponseRequestedPlanOneTwoFeatureRowsItemLabelMax = 120;
 
 export const listWhiteLabelRequestsResponseRequestedPlanOneTwoFeatureRowsItemValueMax = 500;
@@ -3578,6 +4998,94 @@ export const listWhiteLabelRequestsResponseApprovedPlanOneOneEntitlementsMax = 2
 export const listWhiteLabelRequestsResponseApprovedPlanOneOneFeatureRowsItemLabelMax = 120;
 
 export const listWhiteLabelRequestsResponseApprovedPlanOneOneFeatureRowsItemValueMax = 500;
+
+export const listWhiteLabelRequestsResponseApprovedPlanOneOneProfileSlugRegExp = new RegExp('^[a-z0-9](?:[a-z0-9-]{0,62}[a-z0-9])?$');
+export const listWhiteLabelRequestsResponseApprovedPlanOneOneProfileInternalNameMax = 120;
+
+export const listWhiteLabelRequestsResponseApprovedPlanOneOneProfilePublicNameMax = 120;
+
+export const listWhiteLabelRequestsResponseApprovedPlanOneOneProfileTaglineMax = 160;
+
+export const listWhiteLabelRequestsResponseApprovedPlanOneOneProfileShortDescriptionMax = 300;
+
+export const listWhiteLabelRequestsResponseApprovedPlanOneOneProfileFullDescriptionMax = 5000;
+
+export const listWhiteLabelRequestsResponseApprovedPlanOneOneProfileIconUrlMax = 500;
+
+export const listWhiteLabelRequestsResponseApprovedPlanOneOneProfileImageUrlMax = 500;
+
+export const listWhiteLabelRequestsResponseApprovedPlanOneOneProfileBadgeLabelMax = 40;
+
+export const listWhiteLabelRequestsResponseApprovedPlanOneOneProfileFooterTextMax = 300;
+
+export const listWhiteLabelRequestsResponseApprovedPlanOneOneProfilePromoTextMax = 200;
+
+export const listWhiteLabelRequestsResponseApprovedPlanOneOneProfileTermsMax = 5000;
+
+export const listWhiteLabelRequestsResponseApprovedPlanOneOneProfileContactSalesLabelMax = 60;
+
+export const listWhiteLabelRequestsResponseApprovedPlanOneOneProfileCustomPriceTextMax = 80;
+
+export const listWhiteLabelRequestsResponseApprovedPlanOneOneProfileFixedDiscountAmountMax = 18;
+
+
+export const listWhiteLabelRequestsResponseApprovedPlanOneOneProfileFixedDiscountAmountRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,2})?$');
+export const listWhiteLabelRequestsResponseApprovedPlanOneOneProfilePromoPriceMax = 18;
+
+
+export const listWhiteLabelRequestsResponseApprovedPlanOneOneProfilePromoPriceRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,2})?$');
+export const listWhiteLabelRequestsResponseApprovedPlanOneOneProfileTrialDaysMin = 0;
+export const listWhiteLabelRequestsResponseApprovedPlanOneOneProfileTrialDaysMax = 365;
+
+export const listWhiteLabelRequestsResponseApprovedPlanOneOneProfileCtaLabelMax = 60;
+
+export const listWhiteLabelRequestsResponseApprovedPlanOneOneProfileCtaUrlMax = 200;
+
+
+export const listWhiteLabelRequestsResponseApprovedPlanOneOneProfileCtaUrlRegExp = new RegExp('^/(?!/)[A-Za-z0-9/_#?=&.-]*$');
+export const listWhiteLabelRequestsResponseApprovedPlanOneOneProfileAdminSeatsMax = 10000;
+
+export const listWhiteLabelRequestsResponseApprovedPlanOneOneProfileSupportResponseHoursMax = 720;
+
+export const listWhiteLabelRequestsResponseApprovedPlanOneOneProfileLaunchTargetBusinessDaysMax = 365;
+
+export const listWhiteLabelRequestsResponseApprovedPlanOneOneProfileSlaTermsMax = 1000;
+
+export const listWhiteLabelRequestsResponseApprovedPlanOneOneProfileThemeModesMax = 2;
+
+export const listWhiteLabelRequestsResponseApprovedPlanOneOneProfileConvertProviderLimitMin = 0;
+export const listWhiteLabelRequestsResponseApprovedPlanOneOneProfileConvertProviderLimitMax = 100;
+
+export const listWhiteLabelRequestsResponseApprovedPlanOneOneProfileRequestedProvidersItemMax = 60;
+
+export const listWhiteLabelRequestsResponseApprovedPlanOneOneProfileRequestedProvidersMax = 30;
+
+export const listWhiteLabelRequestsResponseApprovedPlanOneOneProfileCapabilitiesItemKeyRegExp = new RegExp('^[a-z][a-z0-9_]{1,63}$');
+export const listWhiteLabelRequestsResponseApprovedPlanOneOneProfileCapabilitiesItemLabelMax = 120;
+
+export const listWhiteLabelRequestsResponseApprovedPlanOneOneProfileCapabilitiesItemDescriptionMax = 600;
+
+export const listWhiteLabelRequestsResponseApprovedPlanOneOneProfileCapabilitiesItemGroupMax = 60;
+
+export const listWhiteLabelRequestsResponseApprovedPlanOneOneProfileCapabilitiesItemLimitValueMin = 0;
+export const listWhiteLabelRequestsResponseApprovedPlanOneOneProfileCapabilitiesItemLimitValueMax = 1000000000000;
+
+export const listWhiteLabelRequestsResponseApprovedPlanOneOneProfileCapabilitiesItemUnitMax = 30;
+
+export const listWhiteLabelRequestsResponseApprovedPlanOneOneProfileCapabilitiesItemTooltipMax = 300;
+
+export const listWhiteLabelRequestsResponseApprovedPlanOneOneProfileCapabilitiesItemBadgeMax = 30;
+
+export const listWhiteLabelRequestsResponseApprovedPlanOneOneProfileCapabilitiesItemDependsOnItemRegExp = new RegExp('^[a-z][a-z0-9_]{1,63}$');
+export const listWhiteLabelRequestsResponseApprovedPlanOneOneProfileCapabilitiesItemDependsOnMax = 20;
+
+export const listWhiteLabelRequestsResponseApprovedPlanOneOneProfileCapabilitiesItemNoteMax = 300;
+
+export const listWhiteLabelRequestsResponseApprovedPlanOneOneProfileCapabilitiesMax = 120;
+
+export const listWhiteLabelRequestsResponseApprovedPlanOneOneProfileInternalNotesMax = 5000;
+
+export const listWhiteLabelRequestsResponseApprovedPlanOneOneExpectedRevisionMin = 0;
 
 export const listWhiteLabelRequestsResponseApprovedPlanOneTwoFeatureRowsItemLabelMax = 120;
 
@@ -3655,7 +5163,66 @@ export const ListWhiteLabelRequestsResponseItem = zod.object({
   "featureRows": zod.array(zod.object({
   "label": zod.string().min(1).max(listWhiteLabelRequestsResponseRequestedPlanOneOneFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(listWhiteLabelRequestsResponseRequestedPlanOneOneFeatureRowsItemValueMax)
-}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.')
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.'),
+  "profile": zod.object({
+  "slug": zod.string().regex(listWhiteLabelRequestsResponseRequestedPlanOneOneProfileSlugRegExp).optional(),
+  "internalName": zod.string().max(listWhiteLabelRequestsResponseRequestedPlanOneOneProfileInternalNameMax).optional(),
+  "publicName": zod.string().max(listWhiteLabelRequestsResponseRequestedPlanOneOneProfilePublicNameMax).optional(),
+  "tagline": zod.string().max(listWhiteLabelRequestsResponseRequestedPlanOneOneProfileTaglineMax).optional(),
+  "shortDescription": zod.string().max(listWhiteLabelRequestsResponseRequestedPlanOneOneProfileShortDescriptionMax).optional(),
+  "fullDescription": zod.string().max(listWhiteLabelRequestsResponseRequestedPlanOneOneProfileFullDescriptionMax).optional(),
+  "iconUrl": zod.string().max(listWhiteLabelRequestsResponseRequestedPlanOneOneProfileIconUrlMax).optional().describe('Local path or https URL without credentials'),
+  "imageUrl": zod.string().max(listWhiteLabelRequestsResponseRequestedPlanOneOneProfileImageUrlMax).optional().describe('Local path or https URL without credentials'),
+  "badgeType": zod.enum(['none', 'recommended', 'custom']).optional(),
+  "badgeLabel": zod.string().max(listWhiteLabelRequestsResponseRequestedPlanOneOneProfileBadgeLabelMax).optional(),
+  "featured": zod.boolean().optional(),
+  "footerText": zod.string().max(listWhiteLabelRequestsResponseRequestedPlanOneOneProfileFooterTextMax).optional(),
+  "promoText": zod.string().max(listWhiteLabelRequestsResponseRequestedPlanOneOneProfilePromoTextMax).optional(),
+  "terms": zod.string().max(listWhiteLabelRequestsResponseRequestedPlanOneOneProfileTermsMax).optional(),
+  "pricingMode": zod.enum(['paid', 'free', 'custom', 'contact_sales']).optional(),
+  "contactSalesLabel": zod.string().max(listWhiteLabelRequestsResponseRequestedPlanOneOneProfileContactSalesLabelMax).optional(),
+  "customPriceText": zod.string().max(listWhiteLabelRequestsResponseRequestedPlanOneOneProfileCustomPriceTextMax).optional(),
+  "fixedDiscountAmount": zod.string().max(listWhiteLabelRequestsResponseRequestedPlanOneOneProfileFixedDiscountAmountMax).regex(listWhiteLabelRequestsResponseRequestedPlanOneOneProfileFixedDiscountAmountRegExp).nullish(),
+  "promoPrice": zod.string().max(listWhiteLabelRequestsResponseRequestedPlanOneOneProfilePromoPriceMax).regex(listWhiteLabelRequestsResponseRequestedPlanOneOneProfilePromoPriceRegExp).nullish(),
+  "promoStartsAt": zod.coerce.date().nullish(),
+  "promoEndsAt": zod.coerce.date().nullish(),
+  "billingInterval": zod.enum(['monthly', 'yearly', 'monthly_and_yearly', 'custom']).optional(),
+  "trialDays": zod.number().int().min(listWhiteLabelRequestsResponseRequestedPlanOneOneProfileTrialDaysMin).max(listWhiteLabelRequestsResponseRequestedPlanOneOneProfileTrialDaysMax).optional(),
+  "ctaLabel": zod.string().max(listWhiteLabelRequestsResponseRequestedPlanOneOneProfileCtaLabelMax).optional(),
+  "ctaUrl": zod.string().max(listWhiteLabelRequestsResponseRequestedPlanOneOneProfileCtaUrlMax).regex(listWhiteLabelRequestsResponseRequestedPlanOneOneProfileCtaUrlRegExp).optional(),
+  "visibility": zod.enum(['public', 'hidden']).optional(),
+  "adminSeats": zod.number().int().min(1).max(listWhiteLabelRequestsResponseRequestedPlanOneOneProfileAdminSeatsMax).nullish(),
+  "multiAdminRoles": zod.boolean().optional(),
+  "supportLevel": zod.enum(['email', 'priority', 'dedicated']).optional(),
+  "supportResponseHours": zod.number().int().min(1).max(listWhiteLabelRequestsResponseRequestedPlanOneOneProfileSupportResponseHoursMax).nullish(),
+  "launchTargetBusinessDays": zod.number().int().min(1).max(listWhiteLabelRequestsResponseRequestedPlanOneOneProfileLaunchTargetBusinessDaysMax).nullish(),
+  "dedicatedManager": zod.boolean().optional(),
+  "slaEnabled": zod.boolean().optional(),
+  "slaTerms": zod.string().max(listWhiteLabelRequestsResponseRequestedPlanOneOneProfileSlaTermsMax).optional(),
+  "earlyAccess": zod.boolean().optional(),
+  "poweredByFooter": zod.boolean().optional(),
+  "themeModes": zod.array(zod.enum(['light', 'dark'])).max(listWhiteLabelRequestsResponseRequestedPlanOneOneProfileThemeModesMax).optional(),
+  "convertProviderLimit": zod.number().int().min(listWhiteLabelRequestsResponseRequestedPlanOneOneProfileConvertProviderLimitMin).max(listWhiteLabelRequestsResponseRequestedPlanOneOneProfileConvertProviderLimitMax).nullish(),
+  "requestedProviders": zod.array(zod.string().min(1).max(listWhiteLabelRequestsResponseRequestedPlanOneOneProfileRequestedProvidersItemMax)).max(listWhiteLabelRequestsResponseRequestedPlanOneOneProfileRequestedProvidersMax).optional(),
+  "capabilities": zod.array(zod.object({
+  "key": zod.string().regex(listWhiteLabelRequestsResponseRequestedPlanOneOneProfileCapabilitiesItemKeyRegExp),
+  "label": zod.string().min(1).max(listWhiteLabelRequestsResponseRequestedPlanOneOneProfileCapabilitiesItemLabelMax),
+  "description": zod.string().max(listWhiteLabelRequestsResponseRequestedPlanOneOneProfileCapabilitiesItemDescriptionMax).optional(),
+  "group": zod.string().max(listWhiteLabelRequestsResponseRequestedPlanOneOneProfileCapabilitiesItemGroupMax).optional(),
+  "state": zod.enum(['included', 'excluded', 'optional', 'limited', 'unlimited', 'unavailable']).describe('Commercial state. limited requires limitValue.'),
+  "availability": zod.enum(['available', 'requires_configuration', 'unavailable']).describe('Implementation status; unavailable means not implemented and never a working toggle'),
+  "limitValue": zod.number().min(listWhiteLabelRequestsResponseRequestedPlanOneOneProfileCapabilitiesItemLimitValueMin).max(listWhiteLabelRequestsResponseRequestedPlanOneOneProfileCapabilitiesItemLimitValueMax).nullish(),
+  "unit": zod.string().max(listWhiteLabelRequestsResponseRequestedPlanOneOneProfileCapabilitiesItemUnitMax).optional(),
+  "tooltip": zod.string().max(listWhiteLabelRequestsResponseRequestedPlanOneOneProfileCapabilitiesItemTooltipMax).optional(),
+  "highlight": zod.boolean().optional(),
+  "publicVisible": zod.boolean().optional(),
+  "badge": zod.string().max(listWhiteLabelRequestsResponseRequestedPlanOneOneProfileCapabilitiesItemBadgeMax).optional(),
+  "dependsOn": zod.array(zod.string().regex(listWhiteLabelRequestsResponseRequestedPlanOneOneProfileCapabilitiesItemDependsOnItemRegExp)).max(listWhiteLabelRequestsResponseRequestedPlanOneOneProfileCapabilitiesItemDependsOnMax).optional(),
+  "note": zod.string().max(listWhiteLabelRequestsResponseRequestedPlanOneOneProfileCapabilitiesItemNoteMax).optional()
+})).max(listWhiteLabelRequestsResponseRequestedPlanOneOneProfileCapabilitiesMax).optional(),
+  "internalNotes": zod.string().max(listWhiteLabelRequestsResponseRequestedPlanOneOneProfileInternalNotesMax).optional()
+}).optional().describe('Structured plan configuration. internalName and internalNotes are Super Admin only and never published.'),
+  "expectedRevision": zod.number().int().min(listWhiteLabelRequestsResponseRequestedPlanOneOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
 }).and(zod.object({
   "id": zod.string().uuid(),
   "createdAt": zod.coerce.date(),
@@ -3665,7 +5232,8 @@ export const ListWhiteLabelRequestsResponseItem = zod.object({
   "featureRows": zod.array(zod.object({
   "label": zod.string().min(1).max(listWhiteLabelRequestsResponseRequestedPlanOneTwoFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(listWhiteLabelRequestsResponseRequestedPlanOneTwoFeatureRowsItemValueMax)
-}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(listWhiteLabelRequestsResponseRequestedPlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.')
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(listWhiteLabelRequestsResponseRequestedPlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.'),
+  "revision": zod.number().int().optional()
 })),zod.null()]).optional(),
   "requestedAddons": zod.array(zod.object({
   "monthlyPrice": zod.string().regex(listWhiteLabelRequestsResponseRequestedAddonsItemOneMonthlyPriceRegExp).nullish(),
@@ -3702,7 +5270,66 @@ export const ListWhiteLabelRequestsResponseItem = zod.object({
   "featureRows": zod.array(zod.object({
   "label": zod.string().min(1).max(listWhiteLabelRequestsResponseApprovedPlanOneOneFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(listWhiteLabelRequestsResponseApprovedPlanOneOneFeatureRowsItemValueMax)
-}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.')
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.'),
+  "profile": zod.object({
+  "slug": zod.string().regex(listWhiteLabelRequestsResponseApprovedPlanOneOneProfileSlugRegExp).optional(),
+  "internalName": zod.string().max(listWhiteLabelRequestsResponseApprovedPlanOneOneProfileInternalNameMax).optional(),
+  "publicName": zod.string().max(listWhiteLabelRequestsResponseApprovedPlanOneOneProfilePublicNameMax).optional(),
+  "tagline": zod.string().max(listWhiteLabelRequestsResponseApprovedPlanOneOneProfileTaglineMax).optional(),
+  "shortDescription": zod.string().max(listWhiteLabelRequestsResponseApprovedPlanOneOneProfileShortDescriptionMax).optional(),
+  "fullDescription": zod.string().max(listWhiteLabelRequestsResponseApprovedPlanOneOneProfileFullDescriptionMax).optional(),
+  "iconUrl": zod.string().max(listWhiteLabelRequestsResponseApprovedPlanOneOneProfileIconUrlMax).optional().describe('Local path or https URL without credentials'),
+  "imageUrl": zod.string().max(listWhiteLabelRequestsResponseApprovedPlanOneOneProfileImageUrlMax).optional().describe('Local path or https URL without credentials'),
+  "badgeType": zod.enum(['none', 'recommended', 'custom']).optional(),
+  "badgeLabel": zod.string().max(listWhiteLabelRequestsResponseApprovedPlanOneOneProfileBadgeLabelMax).optional(),
+  "featured": zod.boolean().optional(),
+  "footerText": zod.string().max(listWhiteLabelRequestsResponseApprovedPlanOneOneProfileFooterTextMax).optional(),
+  "promoText": zod.string().max(listWhiteLabelRequestsResponseApprovedPlanOneOneProfilePromoTextMax).optional(),
+  "terms": zod.string().max(listWhiteLabelRequestsResponseApprovedPlanOneOneProfileTermsMax).optional(),
+  "pricingMode": zod.enum(['paid', 'free', 'custom', 'contact_sales']).optional(),
+  "contactSalesLabel": zod.string().max(listWhiteLabelRequestsResponseApprovedPlanOneOneProfileContactSalesLabelMax).optional(),
+  "customPriceText": zod.string().max(listWhiteLabelRequestsResponseApprovedPlanOneOneProfileCustomPriceTextMax).optional(),
+  "fixedDiscountAmount": zod.string().max(listWhiteLabelRequestsResponseApprovedPlanOneOneProfileFixedDiscountAmountMax).regex(listWhiteLabelRequestsResponseApprovedPlanOneOneProfileFixedDiscountAmountRegExp).nullish(),
+  "promoPrice": zod.string().max(listWhiteLabelRequestsResponseApprovedPlanOneOneProfilePromoPriceMax).regex(listWhiteLabelRequestsResponseApprovedPlanOneOneProfilePromoPriceRegExp).nullish(),
+  "promoStartsAt": zod.coerce.date().nullish(),
+  "promoEndsAt": zod.coerce.date().nullish(),
+  "billingInterval": zod.enum(['monthly', 'yearly', 'monthly_and_yearly', 'custom']).optional(),
+  "trialDays": zod.number().int().min(listWhiteLabelRequestsResponseApprovedPlanOneOneProfileTrialDaysMin).max(listWhiteLabelRequestsResponseApprovedPlanOneOneProfileTrialDaysMax).optional(),
+  "ctaLabel": zod.string().max(listWhiteLabelRequestsResponseApprovedPlanOneOneProfileCtaLabelMax).optional(),
+  "ctaUrl": zod.string().max(listWhiteLabelRequestsResponseApprovedPlanOneOneProfileCtaUrlMax).regex(listWhiteLabelRequestsResponseApprovedPlanOneOneProfileCtaUrlRegExp).optional(),
+  "visibility": zod.enum(['public', 'hidden']).optional(),
+  "adminSeats": zod.number().int().min(1).max(listWhiteLabelRequestsResponseApprovedPlanOneOneProfileAdminSeatsMax).nullish(),
+  "multiAdminRoles": zod.boolean().optional(),
+  "supportLevel": zod.enum(['email', 'priority', 'dedicated']).optional(),
+  "supportResponseHours": zod.number().int().min(1).max(listWhiteLabelRequestsResponseApprovedPlanOneOneProfileSupportResponseHoursMax).nullish(),
+  "launchTargetBusinessDays": zod.number().int().min(1).max(listWhiteLabelRequestsResponseApprovedPlanOneOneProfileLaunchTargetBusinessDaysMax).nullish(),
+  "dedicatedManager": zod.boolean().optional(),
+  "slaEnabled": zod.boolean().optional(),
+  "slaTerms": zod.string().max(listWhiteLabelRequestsResponseApprovedPlanOneOneProfileSlaTermsMax).optional(),
+  "earlyAccess": zod.boolean().optional(),
+  "poweredByFooter": zod.boolean().optional(),
+  "themeModes": zod.array(zod.enum(['light', 'dark'])).max(listWhiteLabelRequestsResponseApprovedPlanOneOneProfileThemeModesMax).optional(),
+  "convertProviderLimit": zod.number().int().min(listWhiteLabelRequestsResponseApprovedPlanOneOneProfileConvertProviderLimitMin).max(listWhiteLabelRequestsResponseApprovedPlanOneOneProfileConvertProviderLimitMax).nullish(),
+  "requestedProviders": zod.array(zod.string().min(1).max(listWhiteLabelRequestsResponseApprovedPlanOneOneProfileRequestedProvidersItemMax)).max(listWhiteLabelRequestsResponseApprovedPlanOneOneProfileRequestedProvidersMax).optional(),
+  "capabilities": zod.array(zod.object({
+  "key": zod.string().regex(listWhiteLabelRequestsResponseApprovedPlanOneOneProfileCapabilitiesItemKeyRegExp),
+  "label": zod.string().min(1).max(listWhiteLabelRequestsResponseApprovedPlanOneOneProfileCapabilitiesItemLabelMax),
+  "description": zod.string().max(listWhiteLabelRequestsResponseApprovedPlanOneOneProfileCapabilitiesItemDescriptionMax).optional(),
+  "group": zod.string().max(listWhiteLabelRequestsResponseApprovedPlanOneOneProfileCapabilitiesItemGroupMax).optional(),
+  "state": zod.enum(['included', 'excluded', 'optional', 'limited', 'unlimited', 'unavailable']).describe('Commercial state. limited requires limitValue.'),
+  "availability": zod.enum(['available', 'requires_configuration', 'unavailable']).describe('Implementation status; unavailable means not implemented and never a working toggle'),
+  "limitValue": zod.number().min(listWhiteLabelRequestsResponseApprovedPlanOneOneProfileCapabilitiesItemLimitValueMin).max(listWhiteLabelRequestsResponseApprovedPlanOneOneProfileCapabilitiesItemLimitValueMax).nullish(),
+  "unit": zod.string().max(listWhiteLabelRequestsResponseApprovedPlanOneOneProfileCapabilitiesItemUnitMax).optional(),
+  "tooltip": zod.string().max(listWhiteLabelRequestsResponseApprovedPlanOneOneProfileCapabilitiesItemTooltipMax).optional(),
+  "highlight": zod.boolean().optional(),
+  "publicVisible": zod.boolean().optional(),
+  "badge": zod.string().max(listWhiteLabelRequestsResponseApprovedPlanOneOneProfileCapabilitiesItemBadgeMax).optional(),
+  "dependsOn": zod.array(zod.string().regex(listWhiteLabelRequestsResponseApprovedPlanOneOneProfileCapabilitiesItemDependsOnItemRegExp)).max(listWhiteLabelRequestsResponseApprovedPlanOneOneProfileCapabilitiesItemDependsOnMax).optional(),
+  "note": zod.string().max(listWhiteLabelRequestsResponseApprovedPlanOneOneProfileCapabilitiesItemNoteMax).optional()
+})).max(listWhiteLabelRequestsResponseApprovedPlanOneOneProfileCapabilitiesMax).optional(),
+  "internalNotes": zod.string().max(listWhiteLabelRequestsResponseApprovedPlanOneOneProfileInternalNotesMax).optional()
+}).optional().describe('Structured plan configuration. internalName and internalNotes are Super Admin only and never published.'),
+  "expectedRevision": zod.number().int().min(listWhiteLabelRequestsResponseApprovedPlanOneOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
 }).and(zod.object({
   "id": zod.string().uuid(),
   "createdAt": zod.coerce.date(),
@@ -3712,7 +5339,8 @@ export const ListWhiteLabelRequestsResponseItem = zod.object({
   "featureRows": zod.array(zod.object({
   "label": zod.string().min(1).max(listWhiteLabelRequestsResponseApprovedPlanOneTwoFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(listWhiteLabelRequestsResponseApprovedPlanOneTwoFeatureRowsItemValueMax)
-}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(listWhiteLabelRequestsResponseApprovedPlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.')
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(listWhiteLabelRequestsResponseApprovedPlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.'),
+  "revision": zod.number().int().optional()
 })),zod.null()]).optional(),
   "approvedAddons": zod.array(zod.object({
   "monthlyPrice": zod.string().regex(listWhiteLabelRequestsResponseApprovedAddonsItemOneMonthlyPriceRegExp).nullish(),
@@ -3831,6 +5459,94 @@ export const reviewWhiteLabelRequestResponseRequestedPlanOneOneFeatureRowsItemLa
 
 export const reviewWhiteLabelRequestResponseRequestedPlanOneOneFeatureRowsItemValueMax = 500;
 
+export const reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileSlugRegExp = new RegExp('^[a-z0-9](?:[a-z0-9-]{0,62}[a-z0-9])?$');
+export const reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileInternalNameMax = 120;
+
+export const reviewWhiteLabelRequestResponseRequestedPlanOneOneProfilePublicNameMax = 120;
+
+export const reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileTaglineMax = 160;
+
+export const reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileShortDescriptionMax = 300;
+
+export const reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileFullDescriptionMax = 5000;
+
+export const reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileIconUrlMax = 500;
+
+export const reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileImageUrlMax = 500;
+
+export const reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileBadgeLabelMax = 40;
+
+export const reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileFooterTextMax = 300;
+
+export const reviewWhiteLabelRequestResponseRequestedPlanOneOneProfilePromoTextMax = 200;
+
+export const reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileTermsMax = 5000;
+
+export const reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileContactSalesLabelMax = 60;
+
+export const reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileCustomPriceTextMax = 80;
+
+export const reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileFixedDiscountAmountMax = 18;
+
+
+export const reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileFixedDiscountAmountRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,2})?$');
+export const reviewWhiteLabelRequestResponseRequestedPlanOneOneProfilePromoPriceMax = 18;
+
+
+export const reviewWhiteLabelRequestResponseRequestedPlanOneOneProfilePromoPriceRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,2})?$');
+export const reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileTrialDaysMin = 0;
+export const reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileTrialDaysMax = 365;
+
+export const reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileCtaLabelMax = 60;
+
+export const reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileCtaUrlMax = 200;
+
+
+export const reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileCtaUrlRegExp = new RegExp('^/(?!/)[A-Za-z0-9/_#?=&.-]*$');
+export const reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileAdminSeatsMax = 10000;
+
+export const reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileSupportResponseHoursMax = 720;
+
+export const reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileLaunchTargetBusinessDaysMax = 365;
+
+export const reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileSlaTermsMax = 1000;
+
+export const reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileThemeModesMax = 2;
+
+export const reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileConvertProviderLimitMin = 0;
+export const reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileConvertProviderLimitMax = 100;
+
+export const reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileRequestedProvidersItemMax = 60;
+
+export const reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileRequestedProvidersMax = 30;
+
+export const reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesItemKeyRegExp = new RegExp('^[a-z][a-z0-9_]{1,63}$');
+export const reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesItemLabelMax = 120;
+
+export const reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesItemDescriptionMax = 600;
+
+export const reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesItemGroupMax = 60;
+
+export const reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesItemLimitValueMin = 0;
+export const reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesItemLimitValueMax = 1000000000000;
+
+export const reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesItemUnitMax = 30;
+
+export const reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesItemTooltipMax = 300;
+
+export const reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesItemBadgeMax = 30;
+
+export const reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesItemDependsOnItemRegExp = new RegExp('^[a-z][a-z0-9_]{1,63}$');
+export const reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesItemDependsOnMax = 20;
+
+export const reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesItemNoteMax = 300;
+
+export const reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesMax = 120;
+
+export const reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileInternalNotesMax = 5000;
+
+export const reviewWhiteLabelRequestResponseRequestedPlanOneOneExpectedRevisionMin = 0;
+
 export const reviewWhiteLabelRequestResponseRequestedPlanOneTwoFeatureRowsItemLabelMax = 120;
 
 export const reviewWhiteLabelRequestResponseRequestedPlanOneTwoFeatureRowsItemValueMax = 500;
@@ -3899,6 +5615,94 @@ export const reviewWhiteLabelRequestResponseApprovedPlanOneOneEntitlementsMax = 
 export const reviewWhiteLabelRequestResponseApprovedPlanOneOneFeatureRowsItemLabelMax = 120;
 
 export const reviewWhiteLabelRequestResponseApprovedPlanOneOneFeatureRowsItemValueMax = 500;
+
+export const reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileSlugRegExp = new RegExp('^[a-z0-9](?:[a-z0-9-]{0,62}[a-z0-9])?$');
+export const reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileInternalNameMax = 120;
+
+export const reviewWhiteLabelRequestResponseApprovedPlanOneOneProfilePublicNameMax = 120;
+
+export const reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileTaglineMax = 160;
+
+export const reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileShortDescriptionMax = 300;
+
+export const reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileFullDescriptionMax = 5000;
+
+export const reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileIconUrlMax = 500;
+
+export const reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileImageUrlMax = 500;
+
+export const reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileBadgeLabelMax = 40;
+
+export const reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileFooterTextMax = 300;
+
+export const reviewWhiteLabelRequestResponseApprovedPlanOneOneProfilePromoTextMax = 200;
+
+export const reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileTermsMax = 5000;
+
+export const reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileContactSalesLabelMax = 60;
+
+export const reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileCustomPriceTextMax = 80;
+
+export const reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileFixedDiscountAmountMax = 18;
+
+
+export const reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileFixedDiscountAmountRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,2})?$');
+export const reviewWhiteLabelRequestResponseApprovedPlanOneOneProfilePromoPriceMax = 18;
+
+
+export const reviewWhiteLabelRequestResponseApprovedPlanOneOneProfilePromoPriceRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,2})?$');
+export const reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileTrialDaysMin = 0;
+export const reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileTrialDaysMax = 365;
+
+export const reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileCtaLabelMax = 60;
+
+export const reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileCtaUrlMax = 200;
+
+
+export const reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileCtaUrlRegExp = new RegExp('^/(?!/)[A-Za-z0-9/_#?=&.-]*$');
+export const reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileAdminSeatsMax = 10000;
+
+export const reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileSupportResponseHoursMax = 720;
+
+export const reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileLaunchTargetBusinessDaysMax = 365;
+
+export const reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileSlaTermsMax = 1000;
+
+export const reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileThemeModesMax = 2;
+
+export const reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileConvertProviderLimitMin = 0;
+export const reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileConvertProviderLimitMax = 100;
+
+export const reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileRequestedProvidersItemMax = 60;
+
+export const reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileRequestedProvidersMax = 30;
+
+export const reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesItemKeyRegExp = new RegExp('^[a-z][a-z0-9_]{1,63}$');
+export const reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesItemLabelMax = 120;
+
+export const reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesItemDescriptionMax = 600;
+
+export const reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesItemGroupMax = 60;
+
+export const reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesItemLimitValueMin = 0;
+export const reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesItemLimitValueMax = 1000000000000;
+
+export const reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesItemUnitMax = 30;
+
+export const reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesItemTooltipMax = 300;
+
+export const reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesItemBadgeMax = 30;
+
+export const reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesItemDependsOnItemRegExp = new RegExp('^[a-z][a-z0-9_]{1,63}$');
+export const reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesItemDependsOnMax = 20;
+
+export const reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesItemNoteMax = 300;
+
+export const reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesMax = 120;
+
+export const reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileInternalNotesMax = 5000;
+
+export const reviewWhiteLabelRequestResponseApprovedPlanOneOneExpectedRevisionMin = 0;
 
 export const reviewWhiteLabelRequestResponseApprovedPlanOneTwoFeatureRowsItemLabelMax = 120;
 
@@ -3976,7 +5780,66 @@ export const ReviewWhiteLabelRequestResponse = zod.object({
   "featureRows": zod.array(zod.object({
   "label": zod.string().min(1).max(reviewWhiteLabelRequestResponseRequestedPlanOneOneFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(reviewWhiteLabelRequestResponseRequestedPlanOneOneFeatureRowsItemValueMax)
-}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.')
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.'),
+  "profile": zod.object({
+  "slug": zod.string().regex(reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileSlugRegExp).optional(),
+  "internalName": zod.string().max(reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileInternalNameMax).optional(),
+  "publicName": zod.string().max(reviewWhiteLabelRequestResponseRequestedPlanOneOneProfilePublicNameMax).optional(),
+  "tagline": zod.string().max(reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileTaglineMax).optional(),
+  "shortDescription": zod.string().max(reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileShortDescriptionMax).optional(),
+  "fullDescription": zod.string().max(reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileFullDescriptionMax).optional(),
+  "iconUrl": zod.string().max(reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileIconUrlMax).optional().describe('Local path or https URL without credentials'),
+  "imageUrl": zod.string().max(reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileImageUrlMax).optional().describe('Local path or https URL without credentials'),
+  "badgeType": zod.enum(['none', 'recommended', 'custom']).optional(),
+  "badgeLabel": zod.string().max(reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileBadgeLabelMax).optional(),
+  "featured": zod.boolean().optional(),
+  "footerText": zod.string().max(reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileFooterTextMax).optional(),
+  "promoText": zod.string().max(reviewWhiteLabelRequestResponseRequestedPlanOneOneProfilePromoTextMax).optional(),
+  "terms": zod.string().max(reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileTermsMax).optional(),
+  "pricingMode": zod.enum(['paid', 'free', 'custom', 'contact_sales']).optional(),
+  "contactSalesLabel": zod.string().max(reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileContactSalesLabelMax).optional(),
+  "customPriceText": zod.string().max(reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileCustomPriceTextMax).optional(),
+  "fixedDiscountAmount": zod.string().max(reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileFixedDiscountAmountMax).regex(reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileFixedDiscountAmountRegExp).nullish(),
+  "promoPrice": zod.string().max(reviewWhiteLabelRequestResponseRequestedPlanOneOneProfilePromoPriceMax).regex(reviewWhiteLabelRequestResponseRequestedPlanOneOneProfilePromoPriceRegExp).nullish(),
+  "promoStartsAt": zod.coerce.date().nullish(),
+  "promoEndsAt": zod.coerce.date().nullish(),
+  "billingInterval": zod.enum(['monthly', 'yearly', 'monthly_and_yearly', 'custom']).optional(),
+  "trialDays": zod.number().int().min(reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileTrialDaysMin).max(reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileTrialDaysMax).optional(),
+  "ctaLabel": zod.string().max(reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileCtaLabelMax).optional(),
+  "ctaUrl": zod.string().max(reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileCtaUrlMax).regex(reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileCtaUrlRegExp).optional(),
+  "visibility": zod.enum(['public', 'hidden']).optional(),
+  "adminSeats": zod.number().int().min(1).max(reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileAdminSeatsMax).nullish(),
+  "multiAdminRoles": zod.boolean().optional(),
+  "supportLevel": zod.enum(['email', 'priority', 'dedicated']).optional(),
+  "supportResponseHours": zod.number().int().min(1).max(reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileSupportResponseHoursMax).nullish(),
+  "launchTargetBusinessDays": zod.number().int().min(1).max(reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileLaunchTargetBusinessDaysMax).nullish(),
+  "dedicatedManager": zod.boolean().optional(),
+  "slaEnabled": zod.boolean().optional(),
+  "slaTerms": zod.string().max(reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileSlaTermsMax).optional(),
+  "earlyAccess": zod.boolean().optional(),
+  "poweredByFooter": zod.boolean().optional(),
+  "themeModes": zod.array(zod.enum(['light', 'dark'])).max(reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileThemeModesMax).optional(),
+  "convertProviderLimit": zod.number().int().min(reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileConvertProviderLimitMin).max(reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileConvertProviderLimitMax).nullish(),
+  "requestedProviders": zod.array(zod.string().min(1).max(reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileRequestedProvidersItemMax)).max(reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileRequestedProvidersMax).optional(),
+  "capabilities": zod.array(zod.object({
+  "key": zod.string().regex(reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesItemKeyRegExp),
+  "label": zod.string().min(1).max(reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesItemLabelMax),
+  "description": zod.string().max(reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesItemDescriptionMax).optional(),
+  "group": zod.string().max(reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesItemGroupMax).optional(),
+  "state": zod.enum(['included', 'excluded', 'optional', 'limited', 'unlimited', 'unavailable']).describe('Commercial state. limited requires limitValue.'),
+  "availability": zod.enum(['available', 'requires_configuration', 'unavailable']).describe('Implementation status; unavailable means not implemented and never a working toggle'),
+  "limitValue": zod.number().min(reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesItemLimitValueMin).max(reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesItemLimitValueMax).nullish(),
+  "unit": zod.string().max(reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesItemUnitMax).optional(),
+  "tooltip": zod.string().max(reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesItemTooltipMax).optional(),
+  "highlight": zod.boolean().optional(),
+  "publicVisible": zod.boolean().optional(),
+  "badge": zod.string().max(reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesItemBadgeMax).optional(),
+  "dependsOn": zod.array(zod.string().regex(reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesItemDependsOnItemRegExp)).max(reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesItemDependsOnMax).optional(),
+  "note": zod.string().max(reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesItemNoteMax).optional()
+})).max(reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesMax).optional(),
+  "internalNotes": zod.string().max(reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileInternalNotesMax).optional()
+}).optional().describe('Structured plan configuration. internalName and internalNotes are Super Admin only and never published.'),
+  "expectedRevision": zod.number().int().min(reviewWhiteLabelRequestResponseRequestedPlanOneOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
 }).and(zod.object({
   "id": zod.string().uuid(),
   "createdAt": zod.coerce.date(),
@@ -3986,7 +5849,8 @@ export const ReviewWhiteLabelRequestResponse = zod.object({
   "featureRows": zod.array(zod.object({
   "label": zod.string().min(1).max(reviewWhiteLabelRequestResponseRequestedPlanOneTwoFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(reviewWhiteLabelRequestResponseRequestedPlanOneTwoFeatureRowsItemValueMax)
-}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(reviewWhiteLabelRequestResponseRequestedPlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.')
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(reviewWhiteLabelRequestResponseRequestedPlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.'),
+  "revision": zod.number().int().optional()
 })),zod.null()]).optional(),
   "requestedAddons": zod.array(zod.object({
   "monthlyPrice": zod.string().regex(reviewWhiteLabelRequestResponseRequestedAddonsItemOneMonthlyPriceRegExp).nullish(),
@@ -4023,7 +5887,66 @@ export const ReviewWhiteLabelRequestResponse = zod.object({
   "featureRows": zod.array(zod.object({
   "label": zod.string().min(1).max(reviewWhiteLabelRequestResponseApprovedPlanOneOneFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(reviewWhiteLabelRequestResponseApprovedPlanOneOneFeatureRowsItemValueMax)
-}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.')
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.'),
+  "profile": zod.object({
+  "slug": zod.string().regex(reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileSlugRegExp).optional(),
+  "internalName": zod.string().max(reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileInternalNameMax).optional(),
+  "publicName": zod.string().max(reviewWhiteLabelRequestResponseApprovedPlanOneOneProfilePublicNameMax).optional(),
+  "tagline": zod.string().max(reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileTaglineMax).optional(),
+  "shortDescription": zod.string().max(reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileShortDescriptionMax).optional(),
+  "fullDescription": zod.string().max(reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileFullDescriptionMax).optional(),
+  "iconUrl": zod.string().max(reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileIconUrlMax).optional().describe('Local path or https URL without credentials'),
+  "imageUrl": zod.string().max(reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileImageUrlMax).optional().describe('Local path or https URL without credentials'),
+  "badgeType": zod.enum(['none', 'recommended', 'custom']).optional(),
+  "badgeLabel": zod.string().max(reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileBadgeLabelMax).optional(),
+  "featured": zod.boolean().optional(),
+  "footerText": zod.string().max(reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileFooterTextMax).optional(),
+  "promoText": zod.string().max(reviewWhiteLabelRequestResponseApprovedPlanOneOneProfilePromoTextMax).optional(),
+  "terms": zod.string().max(reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileTermsMax).optional(),
+  "pricingMode": zod.enum(['paid', 'free', 'custom', 'contact_sales']).optional(),
+  "contactSalesLabel": zod.string().max(reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileContactSalesLabelMax).optional(),
+  "customPriceText": zod.string().max(reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileCustomPriceTextMax).optional(),
+  "fixedDiscountAmount": zod.string().max(reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileFixedDiscountAmountMax).regex(reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileFixedDiscountAmountRegExp).nullish(),
+  "promoPrice": zod.string().max(reviewWhiteLabelRequestResponseApprovedPlanOneOneProfilePromoPriceMax).regex(reviewWhiteLabelRequestResponseApprovedPlanOneOneProfilePromoPriceRegExp).nullish(),
+  "promoStartsAt": zod.coerce.date().nullish(),
+  "promoEndsAt": zod.coerce.date().nullish(),
+  "billingInterval": zod.enum(['monthly', 'yearly', 'monthly_and_yearly', 'custom']).optional(),
+  "trialDays": zod.number().int().min(reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileTrialDaysMin).max(reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileTrialDaysMax).optional(),
+  "ctaLabel": zod.string().max(reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileCtaLabelMax).optional(),
+  "ctaUrl": zod.string().max(reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileCtaUrlMax).regex(reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileCtaUrlRegExp).optional(),
+  "visibility": zod.enum(['public', 'hidden']).optional(),
+  "adminSeats": zod.number().int().min(1).max(reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileAdminSeatsMax).nullish(),
+  "multiAdminRoles": zod.boolean().optional(),
+  "supportLevel": zod.enum(['email', 'priority', 'dedicated']).optional(),
+  "supportResponseHours": zod.number().int().min(1).max(reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileSupportResponseHoursMax).nullish(),
+  "launchTargetBusinessDays": zod.number().int().min(1).max(reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileLaunchTargetBusinessDaysMax).nullish(),
+  "dedicatedManager": zod.boolean().optional(),
+  "slaEnabled": zod.boolean().optional(),
+  "slaTerms": zod.string().max(reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileSlaTermsMax).optional(),
+  "earlyAccess": zod.boolean().optional(),
+  "poweredByFooter": zod.boolean().optional(),
+  "themeModes": zod.array(zod.enum(['light', 'dark'])).max(reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileThemeModesMax).optional(),
+  "convertProviderLimit": zod.number().int().min(reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileConvertProviderLimitMin).max(reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileConvertProviderLimitMax).nullish(),
+  "requestedProviders": zod.array(zod.string().min(1).max(reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileRequestedProvidersItemMax)).max(reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileRequestedProvidersMax).optional(),
+  "capabilities": zod.array(zod.object({
+  "key": zod.string().regex(reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesItemKeyRegExp),
+  "label": zod.string().min(1).max(reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesItemLabelMax),
+  "description": zod.string().max(reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesItemDescriptionMax).optional(),
+  "group": zod.string().max(reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesItemGroupMax).optional(),
+  "state": zod.enum(['included', 'excluded', 'optional', 'limited', 'unlimited', 'unavailable']).describe('Commercial state. limited requires limitValue.'),
+  "availability": zod.enum(['available', 'requires_configuration', 'unavailable']).describe('Implementation status; unavailable means not implemented and never a working toggle'),
+  "limitValue": zod.number().min(reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesItemLimitValueMin).max(reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesItemLimitValueMax).nullish(),
+  "unit": zod.string().max(reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesItemUnitMax).optional(),
+  "tooltip": zod.string().max(reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesItemTooltipMax).optional(),
+  "highlight": zod.boolean().optional(),
+  "publicVisible": zod.boolean().optional(),
+  "badge": zod.string().max(reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesItemBadgeMax).optional(),
+  "dependsOn": zod.array(zod.string().regex(reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesItemDependsOnItemRegExp)).max(reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesItemDependsOnMax).optional(),
+  "note": zod.string().max(reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesItemNoteMax).optional()
+})).max(reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesMax).optional(),
+  "internalNotes": zod.string().max(reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileInternalNotesMax).optional()
+}).optional().describe('Structured plan configuration. internalName and internalNotes are Super Admin only and never published.'),
+  "expectedRevision": zod.number().int().min(reviewWhiteLabelRequestResponseApprovedPlanOneOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
 }).and(zod.object({
   "id": zod.string().uuid(),
   "createdAt": zod.coerce.date(),
@@ -4033,7 +5956,8 @@ export const ReviewWhiteLabelRequestResponse = zod.object({
   "featureRows": zod.array(zod.object({
   "label": zod.string().min(1).max(reviewWhiteLabelRequestResponseApprovedPlanOneTwoFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(reviewWhiteLabelRequestResponseApprovedPlanOneTwoFeatureRowsItemValueMax)
-}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(reviewWhiteLabelRequestResponseApprovedPlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.')
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(reviewWhiteLabelRequestResponseApprovedPlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.'),
+  "revision": zod.number().int().optional()
 })),zod.null()]).optional(),
   "approvedAddons": zod.array(zod.object({
   "monthlyPrice": zod.string().regex(reviewWhiteLabelRequestResponseApprovedAddonsItemOneMonthlyPriceRegExp).nullish(),
@@ -4133,6 +6057,94 @@ export const provisionWhiteLabelRequestResponseRequestedPlanOneOneFeatureRowsIte
 
 export const provisionWhiteLabelRequestResponseRequestedPlanOneOneFeatureRowsItemValueMax = 500;
 
+export const provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileSlugRegExp = new RegExp('^[a-z0-9](?:[a-z0-9-]{0,62}[a-z0-9])?$');
+export const provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileInternalNameMax = 120;
+
+export const provisionWhiteLabelRequestResponseRequestedPlanOneOneProfilePublicNameMax = 120;
+
+export const provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileTaglineMax = 160;
+
+export const provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileShortDescriptionMax = 300;
+
+export const provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileFullDescriptionMax = 5000;
+
+export const provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileIconUrlMax = 500;
+
+export const provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileImageUrlMax = 500;
+
+export const provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileBadgeLabelMax = 40;
+
+export const provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileFooterTextMax = 300;
+
+export const provisionWhiteLabelRequestResponseRequestedPlanOneOneProfilePromoTextMax = 200;
+
+export const provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileTermsMax = 5000;
+
+export const provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileContactSalesLabelMax = 60;
+
+export const provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileCustomPriceTextMax = 80;
+
+export const provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileFixedDiscountAmountMax = 18;
+
+
+export const provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileFixedDiscountAmountRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,2})?$');
+export const provisionWhiteLabelRequestResponseRequestedPlanOneOneProfilePromoPriceMax = 18;
+
+
+export const provisionWhiteLabelRequestResponseRequestedPlanOneOneProfilePromoPriceRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,2})?$');
+export const provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileTrialDaysMin = 0;
+export const provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileTrialDaysMax = 365;
+
+export const provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileCtaLabelMax = 60;
+
+export const provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileCtaUrlMax = 200;
+
+
+export const provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileCtaUrlRegExp = new RegExp('^/(?!/)[A-Za-z0-9/_#?=&.-]*$');
+export const provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileAdminSeatsMax = 10000;
+
+export const provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileSupportResponseHoursMax = 720;
+
+export const provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileLaunchTargetBusinessDaysMax = 365;
+
+export const provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileSlaTermsMax = 1000;
+
+export const provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileThemeModesMax = 2;
+
+export const provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileConvertProviderLimitMin = 0;
+export const provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileConvertProviderLimitMax = 100;
+
+export const provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileRequestedProvidersItemMax = 60;
+
+export const provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileRequestedProvidersMax = 30;
+
+export const provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesItemKeyRegExp = new RegExp('^[a-z][a-z0-9_]{1,63}$');
+export const provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesItemLabelMax = 120;
+
+export const provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesItemDescriptionMax = 600;
+
+export const provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesItemGroupMax = 60;
+
+export const provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesItemLimitValueMin = 0;
+export const provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesItemLimitValueMax = 1000000000000;
+
+export const provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesItemUnitMax = 30;
+
+export const provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesItemTooltipMax = 300;
+
+export const provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesItemBadgeMax = 30;
+
+export const provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesItemDependsOnItemRegExp = new RegExp('^[a-z][a-z0-9_]{1,63}$');
+export const provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesItemDependsOnMax = 20;
+
+export const provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesItemNoteMax = 300;
+
+export const provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesMax = 120;
+
+export const provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileInternalNotesMax = 5000;
+
+export const provisionWhiteLabelRequestResponseRequestedPlanOneOneExpectedRevisionMin = 0;
+
 export const provisionWhiteLabelRequestResponseRequestedPlanOneTwoFeatureRowsItemLabelMax = 120;
 
 export const provisionWhiteLabelRequestResponseRequestedPlanOneTwoFeatureRowsItemValueMax = 500;
@@ -4201,6 +6213,94 @@ export const provisionWhiteLabelRequestResponseApprovedPlanOneOneEntitlementsMax
 export const provisionWhiteLabelRequestResponseApprovedPlanOneOneFeatureRowsItemLabelMax = 120;
 
 export const provisionWhiteLabelRequestResponseApprovedPlanOneOneFeatureRowsItemValueMax = 500;
+
+export const provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileSlugRegExp = new RegExp('^[a-z0-9](?:[a-z0-9-]{0,62}[a-z0-9])?$');
+export const provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileInternalNameMax = 120;
+
+export const provisionWhiteLabelRequestResponseApprovedPlanOneOneProfilePublicNameMax = 120;
+
+export const provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileTaglineMax = 160;
+
+export const provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileShortDescriptionMax = 300;
+
+export const provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileFullDescriptionMax = 5000;
+
+export const provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileIconUrlMax = 500;
+
+export const provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileImageUrlMax = 500;
+
+export const provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileBadgeLabelMax = 40;
+
+export const provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileFooterTextMax = 300;
+
+export const provisionWhiteLabelRequestResponseApprovedPlanOneOneProfilePromoTextMax = 200;
+
+export const provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileTermsMax = 5000;
+
+export const provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileContactSalesLabelMax = 60;
+
+export const provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileCustomPriceTextMax = 80;
+
+export const provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileFixedDiscountAmountMax = 18;
+
+
+export const provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileFixedDiscountAmountRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,2})?$');
+export const provisionWhiteLabelRequestResponseApprovedPlanOneOneProfilePromoPriceMax = 18;
+
+
+export const provisionWhiteLabelRequestResponseApprovedPlanOneOneProfilePromoPriceRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,2})?$');
+export const provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileTrialDaysMin = 0;
+export const provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileTrialDaysMax = 365;
+
+export const provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileCtaLabelMax = 60;
+
+export const provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileCtaUrlMax = 200;
+
+
+export const provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileCtaUrlRegExp = new RegExp('^/(?!/)[A-Za-z0-9/_#?=&.-]*$');
+export const provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileAdminSeatsMax = 10000;
+
+export const provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileSupportResponseHoursMax = 720;
+
+export const provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileLaunchTargetBusinessDaysMax = 365;
+
+export const provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileSlaTermsMax = 1000;
+
+export const provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileThemeModesMax = 2;
+
+export const provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileConvertProviderLimitMin = 0;
+export const provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileConvertProviderLimitMax = 100;
+
+export const provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileRequestedProvidersItemMax = 60;
+
+export const provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileRequestedProvidersMax = 30;
+
+export const provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesItemKeyRegExp = new RegExp('^[a-z][a-z0-9_]{1,63}$');
+export const provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesItemLabelMax = 120;
+
+export const provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesItemDescriptionMax = 600;
+
+export const provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesItemGroupMax = 60;
+
+export const provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesItemLimitValueMin = 0;
+export const provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesItemLimitValueMax = 1000000000000;
+
+export const provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesItemUnitMax = 30;
+
+export const provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesItemTooltipMax = 300;
+
+export const provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesItemBadgeMax = 30;
+
+export const provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesItemDependsOnItemRegExp = new RegExp('^[a-z][a-z0-9_]{1,63}$');
+export const provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesItemDependsOnMax = 20;
+
+export const provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesItemNoteMax = 300;
+
+export const provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesMax = 120;
+
+export const provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileInternalNotesMax = 5000;
+
+export const provisionWhiteLabelRequestResponseApprovedPlanOneOneExpectedRevisionMin = 0;
 
 export const provisionWhiteLabelRequestResponseApprovedPlanOneTwoFeatureRowsItemLabelMax = 120;
 
@@ -4278,7 +6378,66 @@ export const ProvisionWhiteLabelRequestResponse = zod.object({
   "featureRows": zod.array(zod.object({
   "label": zod.string().min(1).max(provisionWhiteLabelRequestResponseRequestedPlanOneOneFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(provisionWhiteLabelRequestResponseRequestedPlanOneOneFeatureRowsItemValueMax)
-}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.')
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.'),
+  "profile": zod.object({
+  "slug": zod.string().regex(provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileSlugRegExp).optional(),
+  "internalName": zod.string().max(provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileInternalNameMax).optional(),
+  "publicName": zod.string().max(provisionWhiteLabelRequestResponseRequestedPlanOneOneProfilePublicNameMax).optional(),
+  "tagline": zod.string().max(provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileTaglineMax).optional(),
+  "shortDescription": zod.string().max(provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileShortDescriptionMax).optional(),
+  "fullDescription": zod.string().max(provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileFullDescriptionMax).optional(),
+  "iconUrl": zod.string().max(provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileIconUrlMax).optional().describe('Local path or https URL without credentials'),
+  "imageUrl": zod.string().max(provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileImageUrlMax).optional().describe('Local path or https URL without credentials'),
+  "badgeType": zod.enum(['none', 'recommended', 'custom']).optional(),
+  "badgeLabel": zod.string().max(provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileBadgeLabelMax).optional(),
+  "featured": zod.boolean().optional(),
+  "footerText": zod.string().max(provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileFooterTextMax).optional(),
+  "promoText": zod.string().max(provisionWhiteLabelRequestResponseRequestedPlanOneOneProfilePromoTextMax).optional(),
+  "terms": zod.string().max(provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileTermsMax).optional(),
+  "pricingMode": zod.enum(['paid', 'free', 'custom', 'contact_sales']).optional(),
+  "contactSalesLabel": zod.string().max(provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileContactSalesLabelMax).optional(),
+  "customPriceText": zod.string().max(provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileCustomPriceTextMax).optional(),
+  "fixedDiscountAmount": zod.string().max(provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileFixedDiscountAmountMax).regex(provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileFixedDiscountAmountRegExp).nullish(),
+  "promoPrice": zod.string().max(provisionWhiteLabelRequestResponseRequestedPlanOneOneProfilePromoPriceMax).regex(provisionWhiteLabelRequestResponseRequestedPlanOneOneProfilePromoPriceRegExp).nullish(),
+  "promoStartsAt": zod.coerce.date().nullish(),
+  "promoEndsAt": zod.coerce.date().nullish(),
+  "billingInterval": zod.enum(['monthly', 'yearly', 'monthly_and_yearly', 'custom']).optional(),
+  "trialDays": zod.number().int().min(provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileTrialDaysMin).max(provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileTrialDaysMax).optional(),
+  "ctaLabel": zod.string().max(provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileCtaLabelMax).optional(),
+  "ctaUrl": zod.string().max(provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileCtaUrlMax).regex(provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileCtaUrlRegExp).optional(),
+  "visibility": zod.enum(['public', 'hidden']).optional(),
+  "adminSeats": zod.number().int().min(1).max(provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileAdminSeatsMax).nullish(),
+  "multiAdminRoles": zod.boolean().optional(),
+  "supportLevel": zod.enum(['email', 'priority', 'dedicated']).optional(),
+  "supportResponseHours": zod.number().int().min(1).max(provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileSupportResponseHoursMax).nullish(),
+  "launchTargetBusinessDays": zod.number().int().min(1).max(provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileLaunchTargetBusinessDaysMax).nullish(),
+  "dedicatedManager": zod.boolean().optional(),
+  "slaEnabled": zod.boolean().optional(),
+  "slaTerms": zod.string().max(provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileSlaTermsMax).optional(),
+  "earlyAccess": zod.boolean().optional(),
+  "poweredByFooter": zod.boolean().optional(),
+  "themeModes": zod.array(zod.enum(['light', 'dark'])).max(provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileThemeModesMax).optional(),
+  "convertProviderLimit": zod.number().int().min(provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileConvertProviderLimitMin).max(provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileConvertProviderLimitMax).nullish(),
+  "requestedProviders": zod.array(zod.string().min(1).max(provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileRequestedProvidersItemMax)).max(provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileRequestedProvidersMax).optional(),
+  "capabilities": zod.array(zod.object({
+  "key": zod.string().regex(provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesItemKeyRegExp),
+  "label": zod.string().min(1).max(provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesItemLabelMax),
+  "description": zod.string().max(provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesItemDescriptionMax).optional(),
+  "group": zod.string().max(provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesItemGroupMax).optional(),
+  "state": zod.enum(['included', 'excluded', 'optional', 'limited', 'unlimited', 'unavailable']).describe('Commercial state. limited requires limitValue.'),
+  "availability": zod.enum(['available', 'requires_configuration', 'unavailable']).describe('Implementation status; unavailable means not implemented and never a working toggle'),
+  "limitValue": zod.number().min(provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesItemLimitValueMin).max(provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesItemLimitValueMax).nullish(),
+  "unit": zod.string().max(provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesItemUnitMax).optional(),
+  "tooltip": zod.string().max(provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesItemTooltipMax).optional(),
+  "highlight": zod.boolean().optional(),
+  "publicVisible": zod.boolean().optional(),
+  "badge": zod.string().max(provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesItemBadgeMax).optional(),
+  "dependsOn": zod.array(zod.string().regex(provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesItemDependsOnItemRegExp)).max(provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesItemDependsOnMax).optional(),
+  "note": zod.string().max(provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesItemNoteMax).optional()
+})).max(provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesMax).optional(),
+  "internalNotes": zod.string().max(provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileInternalNotesMax).optional()
+}).optional().describe('Structured plan configuration. internalName and internalNotes are Super Admin only and never published.'),
+  "expectedRevision": zod.number().int().min(provisionWhiteLabelRequestResponseRequestedPlanOneOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
 }).and(zod.object({
   "id": zod.string().uuid(),
   "createdAt": zod.coerce.date(),
@@ -4288,7 +6447,8 @@ export const ProvisionWhiteLabelRequestResponse = zod.object({
   "featureRows": zod.array(zod.object({
   "label": zod.string().min(1).max(provisionWhiteLabelRequestResponseRequestedPlanOneTwoFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(provisionWhiteLabelRequestResponseRequestedPlanOneTwoFeatureRowsItemValueMax)
-}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(provisionWhiteLabelRequestResponseRequestedPlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.')
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(provisionWhiteLabelRequestResponseRequestedPlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.'),
+  "revision": zod.number().int().optional()
 })),zod.null()]).optional(),
   "requestedAddons": zod.array(zod.object({
   "monthlyPrice": zod.string().regex(provisionWhiteLabelRequestResponseRequestedAddonsItemOneMonthlyPriceRegExp).nullish(),
@@ -4325,7 +6485,66 @@ export const ProvisionWhiteLabelRequestResponse = zod.object({
   "featureRows": zod.array(zod.object({
   "label": zod.string().min(1).max(provisionWhiteLabelRequestResponseApprovedPlanOneOneFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(provisionWhiteLabelRequestResponseApprovedPlanOneOneFeatureRowsItemValueMax)
-}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.')
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.'),
+  "profile": zod.object({
+  "slug": zod.string().regex(provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileSlugRegExp).optional(),
+  "internalName": zod.string().max(provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileInternalNameMax).optional(),
+  "publicName": zod.string().max(provisionWhiteLabelRequestResponseApprovedPlanOneOneProfilePublicNameMax).optional(),
+  "tagline": zod.string().max(provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileTaglineMax).optional(),
+  "shortDescription": zod.string().max(provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileShortDescriptionMax).optional(),
+  "fullDescription": zod.string().max(provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileFullDescriptionMax).optional(),
+  "iconUrl": zod.string().max(provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileIconUrlMax).optional().describe('Local path or https URL without credentials'),
+  "imageUrl": zod.string().max(provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileImageUrlMax).optional().describe('Local path or https URL without credentials'),
+  "badgeType": zod.enum(['none', 'recommended', 'custom']).optional(),
+  "badgeLabel": zod.string().max(provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileBadgeLabelMax).optional(),
+  "featured": zod.boolean().optional(),
+  "footerText": zod.string().max(provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileFooterTextMax).optional(),
+  "promoText": zod.string().max(provisionWhiteLabelRequestResponseApprovedPlanOneOneProfilePromoTextMax).optional(),
+  "terms": zod.string().max(provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileTermsMax).optional(),
+  "pricingMode": zod.enum(['paid', 'free', 'custom', 'contact_sales']).optional(),
+  "contactSalesLabel": zod.string().max(provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileContactSalesLabelMax).optional(),
+  "customPriceText": zod.string().max(provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileCustomPriceTextMax).optional(),
+  "fixedDiscountAmount": zod.string().max(provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileFixedDiscountAmountMax).regex(provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileFixedDiscountAmountRegExp).nullish(),
+  "promoPrice": zod.string().max(provisionWhiteLabelRequestResponseApprovedPlanOneOneProfilePromoPriceMax).regex(provisionWhiteLabelRequestResponseApprovedPlanOneOneProfilePromoPriceRegExp).nullish(),
+  "promoStartsAt": zod.coerce.date().nullish(),
+  "promoEndsAt": zod.coerce.date().nullish(),
+  "billingInterval": zod.enum(['monthly', 'yearly', 'monthly_and_yearly', 'custom']).optional(),
+  "trialDays": zod.number().int().min(provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileTrialDaysMin).max(provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileTrialDaysMax).optional(),
+  "ctaLabel": zod.string().max(provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileCtaLabelMax).optional(),
+  "ctaUrl": zod.string().max(provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileCtaUrlMax).regex(provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileCtaUrlRegExp).optional(),
+  "visibility": zod.enum(['public', 'hidden']).optional(),
+  "adminSeats": zod.number().int().min(1).max(provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileAdminSeatsMax).nullish(),
+  "multiAdminRoles": zod.boolean().optional(),
+  "supportLevel": zod.enum(['email', 'priority', 'dedicated']).optional(),
+  "supportResponseHours": zod.number().int().min(1).max(provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileSupportResponseHoursMax).nullish(),
+  "launchTargetBusinessDays": zod.number().int().min(1).max(provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileLaunchTargetBusinessDaysMax).nullish(),
+  "dedicatedManager": zod.boolean().optional(),
+  "slaEnabled": zod.boolean().optional(),
+  "slaTerms": zod.string().max(provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileSlaTermsMax).optional(),
+  "earlyAccess": zod.boolean().optional(),
+  "poweredByFooter": zod.boolean().optional(),
+  "themeModes": zod.array(zod.enum(['light', 'dark'])).max(provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileThemeModesMax).optional(),
+  "convertProviderLimit": zod.number().int().min(provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileConvertProviderLimitMin).max(provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileConvertProviderLimitMax).nullish(),
+  "requestedProviders": zod.array(zod.string().min(1).max(provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileRequestedProvidersItemMax)).max(provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileRequestedProvidersMax).optional(),
+  "capabilities": zod.array(zod.object({
+  "key": zod.string().regex(provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesItemKeyRegExp),
+  "label": zod.string().min(1).max(provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesItemLabelMax),
+  "description": zod.string().max(provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesItemDescriptionMax).optional(),
+  "group": zod.string().max(provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesItemGroupMax).optional(),
+  "state": zod.enum(['included', 'excluded', 'optional', 'limited', 'unlimited', 'unavailable']).describe('Commercial state. limited requires limitValue.'),
+  "availability": zod.enum(['available', 'requires_configuration', 'unavailable']).describe('Implementation status; unavailable means not implemented and never a working toggle'),
+  "limitValue": zod.number().min(provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesItemLimitValueMin).max(provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesItemLimitValueMax).nullish(),
+  "unit": zod.string().max(provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesItemUnitMax).optional(),
+  "tooltip": zod.string().max(provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesItemTooltipMax).optional(),
+  "highlight": zod.boolean().optional(),
+  "publicVisible": zod.boolean().optional(),
+  "badge": zod.string().max(provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesItemBadgeMax).optional(),
+  "dependsOn": zod.array(zod.string().regex(provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesItemDependsOnItemRegExp)).max(provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesItemDependsOnMax).optional(),
+  "note": zod.string().max(provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesItemNoteMax).optional()
+})).max(provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesMax).optional(),
+  "internalNotes": zod.string().max(provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileInternalNotesMax).optional()
+}).optional().describe('Structured plan configuration. internalName and internalNotes are Super Admin only and never published.'),
+  "expectedRevision": zod.number().int().min(provisionWhiteLabelRequestResponseApprovedPlanOneOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
 }).and(zod.object({
   "id": zod.string().uuid(),
   "createdAt": zod.coerce.date(),
@@ -4335,7 +6554,8 @@ export const ProvisionWhiteLabelRequestResponse = zod.object({
   "featureRows": zod.array(zod.object({
   "label": zod.string().min(1).max(provisionWhiteLabelRequestResponseApprovedPlanOneTwoFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(provisionWhiteLabelRequestResponseApprovedPlanOneTwoFeatureRowsItemValueMax)
-}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(provisionWhiteLabelRequestResponseApprovedPlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.')
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(provisionWhiteLabelRequestResponseApprovedPlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.'),
+  "revision": zod.number().int().optional()
 })),zod.null()]).optional(),
   "approvedAddons": zod.array(zod.object({
   "monthlyPrice": zod.string().regex(provisionWhiteLabelRequestResponseApprovedAddonsItemOneMonthlyPriceRegExp).nullish(),
@@ -9554,6 +11774,94 @@ export const listPlansResponseOneFeatureRowsItemLabelMax = 120;
 
 export const listPlansResponseOneFeatureRowsItemValueMax = 500;
 
+export const listPlansResponseOneProfileSlugRegExp = new RegExp('^[a-z0-9](?:[a-z0-9-]{0,62}[a-z0-9])?$');
+export const listPlansResponseOneProfileInternalNameMax = 120;
+
+export const listPlansResponseOneProfilePublicNameMax = 120;
+
+export const listPlansResponseOneProfileTaglineMax = 160;
+
+export const listPlansResponseOneProfileShortDescriptionMax = 300;
+
+export const listPlansResponseOneProfileFullDescriptionMax = 5000;
+
+export const listPlansResponseOneProfileIconUrlMax = 500;
+
+export const listPlansResponseOneProfileImageUrlMax = 500;
+
+export const listPlansResponseOneProfileBadgeLabelMax = 40;
+
+export const listPlansResponseOneProfileFooterTextMax = 300;
+
+export const listPlansResponseOneProfilePromoTextMax = 200;
+
+export const listPlansResponseOneProfileTermsMax = 5000;
+
+export const listPlansResponseOneProfileContactSalesLabelMax = 60;
+
+export const listPlansResponseOneProfileCustomPriceTextMax = 80;
+
+export const listPlansResponseOneProfileFixedDiscountAmountMax = 18;
+
+
+export const listPlansResponseOneProfileFixedDiscountAmountRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,2})?$');
+export const listPlansResponseOneProfilePromoPriceMax = 18;
+
+
+export const listPlansResponseOneProfilePromoPriceRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,2})?$');
+export const listPlansResponseOneProfileTrialDaysMin = 0;
+export const listPlansResponseOneProfileTrialDaysMax = 365;
+
+export const listPlansResponseOneProfileCtaLabelMax = 60;
+
+export const listPlansResponseOneProfileCtaUrlMax = 200;
+
+
+export const listPlansResponseOneProfileCtaUrlRegExp = new RegExp('^/(?!/)[A-Za-z0-9/_#?=&.-]*$');
+export const listPlansResponseOneProfileAdminSeatsMax = 10000;
+
+export const listPlansResponseOneProfileSupportResponseHoursMax = 720;
+
+export const listPlansResponseOneProfileLaunchTargetBusinessDaysMax = 365;
+
+export const listPlansResponseOneProfileSlaTermsMax = 1000;
+
+export const listPlansResponseOneProfileThemeModesMax = 2;
+
+export const listPlansResponseOneProfileConvertProviderLimitMin = 0;
+export const listPlansResponseOneProfileConvertProviderLimitMax = 100;
+
+export const listPlansResponseOneProfileRequestedProvidersItemMax = 60;
+
+export const listPlansResponseOneProfileRequestedProvidersMax = 30;
+
+export const listPlansResponseOneProfileCapabilitiesItemKeyRegExp = new RegExp('^[a-z][a-z0-9_]{1,63}$');
+export const listPlansResponseOneProfileCapabilitiesItemLabelMax = 120;
+
+export const listPlansResponseOneProfileCapabilitiesItemDescriptionMax = 600;
+
+export const listPlansResponseOneProfileCapabilitiesItemGroupMax = 60;
+
+export const listPlansResponseOneProfileCapabilitiesItemLimitValueMin = 0;
+export const listPlansResponseOneProfileCapabilitiesItemLimitValueMax = 1000000000000;
+
+export const listPlansResponseOneProfileCapabilitiesItemUnitMax = 30;
+
+export const listPlansResponseOneProfileCapabilitiesItemTooltipMax = 300;
+
+export const listPlansResponseOneProfileCapabilitiesItemBadgeMax = 30;
+
+export const listPlansResponseOneProfileCapabilitiesItemDependsOnItemRegExp = new RegExp('^[a-z][a-z0-9_]{1,63}$');
+export const listPlansResponseOneProfileCapabilitiesItemDependsOnMax = 20;
+
+export const listPlansResponseOneProfileCapabilitiesItemNoteMax = 300;
+
+export const listPlansResponseOneProfileCapabilitiesMax = 120;
+
+export const listPlansResponseOneProfileInternalNotesMax = 5000;
+
+export const listPlansResponseOneExpectedRevisionMin = 0;
+
 export const listPlansResponseTwoFeatureRowsItemLabelMax = 120;
 
 export const listPlansResponseTwoFeatureRowsItemValueMax = 500;
@@ -9578,7 +11886,66 @@ export const ListPlansResponseItem = zod.object({
   "featureRows": zod.array(zod.object({
   "label": zod.string().min(1).max(listPlansResponseOneFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(listPlansResponseOneFeatureRowsItemValueMax)
-}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.')
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.'),
+  "profile": zod.object({
+  "slug": zod.string().regex(listPlansResponseOneProfileSlugRegExp).optional(),
+  "internalName": zod.string().max(listPlansResponseOneProfileInternalNameMax).optional(),
+  "publicName": zod.string().max(listPlansResponseOneProfilePublicNameMax).optional(),
+  "tagline": zod.string().max(listPlansResponseOneProfileTaglineMax).optional(),
+  "shortDescription": zod.string().max(listPlansResponseOneProfileShortDescriptionMax).optional(),
+  "fullDescription": zod.string().max(listPlansResponseOneProfileFullDescriptionMax).optional(),
+  "iconUrl": zod.string().max(listPlansResponseOneProfileIconUrlMax).optional().describe('Local path or https URL without credentials'),
+  "imageUrl": zod.string().max(listPlansResponseOneProfileImageUrlMax).optional().describe('Local path or https URL without credentials'),
+  "badgeType": zod.enum(['none', 'recommended', 'custom']).optional(),
+  "badgeLabel": zod.string().max(listPlansResponseOneProfileBadgeLabelMax).optional(),
+  "featured": zod.boolean().optional(),
+  "footerText": zod.string().max(listPlansResponseOneProfileFooterTextMax).optional(),
+  "promoText": zod.string().max(listPlansResponseOneProfilePromoTextMax).optional(),
+  "terms": zod.string().max(listPlansResponseOneProfileTermsMax).optional(),
+  "pricingMode": zod.enum(['paid', 'free', 'custom', 'contact_sales']).optional(),
+  "contactSalesLabel": zod.string().max(listPlansResponseOneProfileContactSalesLabelMax).optional(),
+  "customPriceText": zod.string().max(listPlansResponseOneProfileCustomPriceTextMax).optional(),
+  "fixedDiscountAmount": zod.string().max(listPlansResponseOneProfileFixedDiscountAmountMax).regex(listPlansResponseOneProfileFixedDiscountAmountRegExp).nullish(),
+  "promoPrice": zod.string().max(listPlansResponseOneProfilePromoPriceMax).regex(listPlansResponseOneProfilePromoPriceRegExp).nullish(),
+  "promoStartsAt": zod.coerce.date().nullish(),
+  "promoEndsAt": zod.coerce.date().nullish(),
+  "billingInterval": zod.enum(['monthly', 'yearly', 'monthly_and_yearly', 'custom']).optional(),
+  "trialDays": zod.number().int().min(listPlansResponseOneProfileTrialDaysMin).max(listPlansResponseOneProfileTrialDaysMax).optional(),
+  "ctaLabel": zod.string().max(listPlansResponseOneProfileCtaLabelMax).optional(),
+  "ctaUrl": zod.string().max(listPlansResponseOneProfileCtaUrlMax).regex(listPlansResponseOneProfileCtaUrlRegExp).optional(),
+  "visibility": zod.enum(['public', 'hidden']).optional(),
+  "adminSeats": zod.number().int().min(1).max(listPlansResponseOneProfileAdminSeatsMax).nullish(),
+  "multiAdminRoles": zod.boolean().optional(),
+  "supportLevel": zod.enum(['email', 'priority', 'dedicated']).optional(),
+  "supportResponseHours": zod.number().int().min(1).max(listPlansResponseOneProfileSupportResponseHoursMax).nullish(),
+  "launchTargetBusinessDays": zod.number().int().min(1).max(listPlansResponseOneProfileLaunchTargetBusinessDaysMax).nullish(),
+  "dedicatedManager": zod.boolean().optional(),
+  "slaEnabled": zod.boolean().optional(),
+  "slaTerms": zod.string().max(listPlansResponseOneProfileSlaTermsMax).optional(),
+  "earlyAccess": zod.boolean().optional(),
+  "poweredByFooter": zod.boolean().optional(),
+  "themeModes": zod.array(zod.enum(['light', 'dark'])).max(listPlansResponseOneProfileThemeModesMax).optional(),
+  "convertProviderLimit": zod.number().int().min(listPlansResponseOneProfileConvertProviderLimitMin).max(listPlansResponseOneProfileConvertProviderLimitMax).nullish(),
+  "requestedProviders": zod.array(zod.string().min(1).max(listPlansResponseOneProfileRequestedProvidersItemMax)).max(listPlansResponseOneProfileRequestedProvidersMax).optional(),
+  "capabilities": zod.array(zod.object({
+  "key": zod.string().regex(listPlansResponseOneProfileCapabilitiesItemKeyRegExp),
+  "label": zod.string().min(1).max(listPlansResponseOneProfileCapabilitiesItemLabelMax),
+  "description": zod.string().max(listPlansResponseOneProfileCapabilitiesItemDescriptionMax).optional(),
+  "group": zod.string().max(listPlansResponseOneProfileCapabilitiesItemGroupMax).optional(),
+  "state": zod.enum(['included', 'excluded', 'optional', 'limited', 'unlimited', 'unavailable']).describe('Commercial state. limited requires limitValue.'),
+  "availability": zod.enum(['available', 'requires_configuration', 'unavailable']).describe('Implementation status; unavailable means not implemented and never a working toggle'),
+  "limitValue": zod.number().min(listPlansResponseOneProfileCapabilitiesItemLimitValueMin).max(listPlansResponseOneProfileCapabilitiesItemLimitValueMax).nullish(),
+  "unit": zod.string().max(listPlansResponseOneProfileCapabilitiesItemUnitMax).optional(),
+  "tooltip": zod.string().max(listPlansResponseOneProfileCapabilitiesItemTooltipMax).optional(),
+  "highlight": zod.boolean().optional(),
+  "publicVisible": zod.boolean().optional(),
+  "badge": zod.string().max(listPlansResponseOneProfileCapabilitiesItemBadgeMax).optional(),
+  "dependsOn": zod.array(zod.string().regex(listPlansResponseOneProfileCapabilitiesItemDependsOnItemRegExp)).max(listPlansResponseOneProfileCapabilitiesItemDependsOnMax).optional(),
+  "note": zod.string().max(listPlansResponseOneProfileCapabilitiesItemNoteMax).optional()
+})).max(listPlansResponseOneProfileCapabilitiesMax).optional(),
+  "internalNotes": zod.string().max(listPlansResponseOneProfileInternalNotesMax).optional()
+}).optional().describe('Structured plan configuration. internalName and internalNotes are Super Admin only and never published.'),
+  "expectedRevision": zod.number().int().min(listPlansResponseOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
 }).and(zod.object({
   "id": zod.string().uuid(),
   "createdAt": zod.coerce.date(),
@@ -9588,7 +11955,8 @@ export const ListPlansResponseItem = zod.object({
   "featureRows": zod.array(zod.object({
   "label": zod.string().min(1).max(listPlansResponseTwoFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(listPlansResponseTwoFeatureRowsItemValueMax)
-}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(listPlansResponseTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.')
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(listPlansResponseTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.'),
+  "revision": zod.number().int().optional()
 }))
 export const ListPlansResponse = zod.array(ListPlansResponseItem)
 
@@ -9634,6 +12002,94 @@ export const createPlanBodyFeatureRowsItemLabelMax = 120;
 
 export const createPlanBodyFeatureRowsItemValueMax = 500;
 
+export const createPlanBodyProfileSlugRegExp = new RegExp('^[a-z0-9](?:[a-z0-9-]{0,62}[a-z0-9])?$');
+export const createPlanBodyProfileInternalNameMax = 120;
+
+export const createPlanBodyProfilePublicNameMax = 120;
+
+export const createPlanBodyProfileTaglineMax = 160;
+
+export const createPlanBodyProfileShortDescriptionMax = 300;
+
+export const createPlanBodyProfileFullDescriptionMax = 5000;
+
+export const createPlanBodyProfileIconUrlMax = 500;
+
+export const createPlanBodyProfileImageUrlMax = 500;
+
+export const createPlanBodyProfileBadgeLabelMax = 40;
+
+export const createPlanBodyProfileFooterTextMax = 300;
+
+export const createPlanBodyProfilePromoTextMax = 200;
+
+export const createPlanBodyProfileTermsMax = 5000;
+
+export const createPlanBodyProfileContactSalesLabelMax = 60;
+
+export const createPlanBodyProfileCustomPriceTextMax = 80;
+
+export const createPlanBodyProfileFixedDiscountAmountMax = 18;
+
+
+export const createPlanBodyProfileFixedDiscountAmountRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,2})?$');
+export const createPlanBodyProfilePromoPriceMax = 18;
+
+
+export const createPlanBodyProfilePromoPriceRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,2})?$');
+export const createPlanBodyProfileTrialDaysMin = 0;
+export const createPlanBodyProfileTrialDaysMax = 365;
+
+export const createPlanBodyProfileCtaLabelMax = 60;
+
+export const createPlanBodyProfileCtaUrlMax = 200;
+
+
+export const createPlanBodyProfileCtaUrlRegExp = new RegExp('^/(?!/)[A-Za-z0-9/_#?=&.-]*$');
+export const createPlanBodyProfileAdminSeatsMax = 10000;
+
+export const createPlanBodyProfileSupportResponseHoursMax = 720;
+
+export const createPlanBodyProfileLaunchTargetBusinessDaysMax = 365;
+
+export const createPlanBodyProfileSlaTermsMax = 1000;
+
+export const createPlanBodyProfileThemeModesMax = 2;
+
+export const createPlanBodyProfileConvertProviderLimitMin = 0;
+export const createPlanBodyProfileConvertProviderLimitMax = 100;
+
+export const createPlanBodyProfileRequestedProvidersItemMax = 60;
+
+export const createPlanBodyProfileRequestedProvidersMax = 30;
+
+export const createPlanBodyProfileCapabilitiesItemKeyRegExp = new RegExp('^[a-z][a-z0-9_]{1,63}$');
+export const createPlanBodyProfileCapabilitiesItemLabelMax = 120;
+
+export const createPlanBodyProfileCapabilitiesItemDescriptionMax = 600;
+
+export const createPlanBodyProfileCapabilitiesItemGroupMax = 60;
+
+export const createPlanBodyProfileCapabilitiesItemLimitValueMin = 0;
+export const createPlanBodyProfileCapabilitiesItemLimitValueMax = 1000000000000;
+
+export const createPlanBodyProfileCapabilitiesItemUnitMax = 30;
+
+export const createPlanBodyProfileCapabilitiesItemTooltipMax = 300;
+
+export const createPlanBodyProfileCapabilitiesItemBadgeMax = 30;
+
+export const createPlanBodyProfileCapabilitiesItemDependsOnItemRegExp = new RegExp('^[a-z][a-z0-9_]{1,63}$');
+export const createPlanBodyProfileCapabilitiesItemDependsOnMax = 20;
+
+export const createPlanBodyProfileCapabilitiesItemNoteMax = 300;
+
+export const createPlanBodyProfileCapabilitiesMax = 120;
+
+export const createPlanBodyProfileInternalNotesMax = 5000;
+
+export const createPlanBodyExpectedRevisionMin = 0;
+
 
 
 export const CreatePlanBody = zod.object({
@@ -9654,7 +12110,66 @@ export const CreatePlanBody = zod.object({
   "featureRows": zod.array(zod.object({
   "label": zod.string().min(1).max(createPlanBodyFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(createPlanBodyFeatureRowsItemValueMax)
-}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).optional().describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.')
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).optional().describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.'),
+  "profile": zod.object({
+  "slug": zod.string().regex(createPlanBodyProfileSlugRegExp).optional(),
+  "internalName": zod.string().max(createPlanBodyProfileInternalNameMax).optional(),
+  "publicName": zod.string().max(createPlanBodyProfilePublicNameMax).optional(),
+  "tagline": zod.string().max(createPlanBodyProfileTaglineMax).optional(),
+  "shortDescription": zod.string().max(createPlanBodyProfileShortDescriptionMax).optional(),
+  "fullDescription": zod.string().max(createPlanBodyProfileFullDescriptionMax).optional(),
+  "iconUrl": zod.string().max(createPlanBodyProfileIconUrlMax).optional().describe('Local path or https URL without credentials'),
+  "imageUrl": zod.string().max(createPlanBodyProfileImageUrlMax).optional().describe('Local path or https URL without credentials'),
+  "badgeType": zod.enum(['none', 'recommended', 'custom']).optional(),
+  "badgeLabel": zod.string().max(createPlanBodyProfileBadgeLabelMax).optional(),
+  "featured": zod.boolean().optional(),
+  "footerText": zod.string().max(createPlanBodyProfileFooterTextMax).optional(),
+  "promoText": zod.string().max(createPlanBodyProfilePromoTextMax).optional(),
+  "terms": zod.string().max(createPlanBodyProfileTermsMax).optional(),
+  "pricingMode": zod.enum(['paid', 'free', 'custom', 'contact_sales']).optional(),
+  "contactSalesLabel": zod.string().max(createPlanBodyProfileContactSalesLabelMax).optional(),
+  "customPriceText": zod.string().max(createPlanBodyProfileCustomPriceTextMax).optional(),
+  "fixedDiscountAmount": zod.string().max(createPlanBodyProfileFixedDiscountAmountMax).regex(createPlanBodyProfileFixedDiscountAmountRegExp).nullish(),
+  "promoPrice": zod.string().max(createPlanBodyProfilePromoPriceMax).regex(createPlanBodyProfilePromoPriceRegExp).nullish(),
+  "promoStartsAt": zod.coerce.date().nullish(),
+  "promoEndsAt": zod.coerce.date().nullish(),
+  "billingInterval": zod.enum(['monthly', 'yearly', 'monthly_and_yearly', 'custom']).optional(),
+  "trialDays": zod.number().int().min(createPlanBodyProfileTrialDaysMin).max(createPlanBodyProfileTrialDaysMax).optional(),
+  "ctaLabel": zod.string().max(createPlanBodyProfileCtaLabelMax).optional(),
+  "ctaUrl": zod.string().max(createPlanBodyProfileCtaUrlMax).regex(createPlanBodyProfileCtaUrlRegExp).optional(),
+  "visibility": zod.enum(['public', 'hidden']).optional(),
+  "adminSeats": zod.number().int().min(1).max(createPlanBodyProfileAdminSeatsMax).nullish(),
+  "multiAdminRoles": zod.boolean().optional(),
+  "supportLevel": zod.enum(['email', 'priority', 'dedicated']).optional(),
+  "supportResponseHours": zod.number().int().min(1).max(createPlanBodyProfileSupportResponseHoursMax).nullish(),
+  "launchTargetBusinessDays": zod.number().int().min(1).max(createPlanBodyProfileLaunchTargetBusinessDaysMax).nullish(),
+  "dedicatedManager": zod.boolean().optional(),
+  "slaEnabled": zod.boolean().optional(),
+  "slaTerms": zod.string().max(createPlanBodyProfileSlaTermsMax).optional(),
+  "earlyAccess": zod.boolean().optional(),
+  "poweredByFooter": zod.boolean().optional(),
+  "themeModes": zod.array(zod.enum(['light', 'dark'])).max(createPlanBodyProfileThemeModesMax).optional(),
+  "convertProviderLimit": zod.number().int().min(createPlanBodyProfileConvertProviderLimitMin).max(createPlanBodyProfileConvertProviderLimitMax).nullish(),
+  "requestedProviders": zod.array(zod.string().min(1).max(createPlanBodyProfileRequestedProvidersItemMax)).max(createPlanBodyProfileRequestedProvidersMax).optional(),
+  "capabilities": zod.array(zod.object({
+  "key": zod.string().regex(createPlanBodyProfileCapabilitiesItemKeyRegExp),
+  "label": zod.string().min(1).max(createPlanBodyProfileCapabilitiesItemLabelMax),
+  "description": zod.string().max(createPlanBodyProfileCapabilitiesItemDescriptionMax).optional(),
+  "group": zod.string().max(createPlanBodyProfileCapabilitiesItemGroupMax).optional(),
+  "state": zod.enum(['included', 'excluded', 'optional', 'limited', 'unlimited', 'unavailable']).describe('Commercial state. limited requires limitValue.'),
+  "availability": zod.enum(['available', 'requires_configuration', 'unavailable']).describe('Implementation status; unavailable means not implemented and never a working toggle'),
+  "limitValue": zod.number().min(createPlanBodyProfileCapabilitiesItemLimitValueMin).max(createPlanBodyProfileCapabilitiesItemLimitValueMax).nullish(),
+  "unit": zod.string().max(createPlanBodyProfileCapabilitiesItemUnitMax).optional(),
+  "tooltip": zod.string().max(createPlanBodyProfileCapabilitiesItemTooltipMax).optional(),
+  "highlight": zod.boolean().optional(),
+  "publicVisible": zod.boolean().optional(),
+  "badge": zod.string().max(createPlanBodyProfileCapabilitiesItemBadgeMax).optional(),
+  "dependsOn": zod.array(zod.string().regex(createPlanBodyProfileCapabilitiesItemDependsOnItemRegExp)).max(createPlanBodyProfileCapabilitiesItemDependsOnMax).optional(),
+  "note": zod.string().max(createPlanBodyProfileCapabilitiesItemNoteMax).optional()
+})).max(createPlanBodyProfileCapabilitiesMax).optional(),
+  "internalNotes": zod.string().max(createPlanBodyProfileInternalNotesMax).optional()
+}).optional().describe('Structured plan configuration. internalName and internalNotes are Super Admin only and never published.'),
+  "expectedRevision": zod.number().int().min(createPlanBodyExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
 })
 
 export const createPlanResponseOneNameMin = 2;
@@ -9698,6 +12213,94 @@ export const createPlanResponseOneFeatureRowsItemLabelMax = 120;
 
 export const createPlanResponseOneFeatureRowsItemValueMax = 500;
 
+export const createPlanResponseOneProfileSlugRegExp = new RegExp('^[a-z0-9](?:[a-z0-9-]{0,62}[a-z0-9])?$');
+export const createPlanResponseOneProfileInternalNameMax = 120;
+
+export const createPlanResponseOneProfilePublicNameMax = 120;
+
+export const createPlanResponseOneProfileTaglineMax = 160;
+
+export const createPlanResponseOneProfileShortDescriptionMax = 300;
+
+export const createPlanResponseOneProfileFullDescriptionMax = 5000;
+
+export const createPlanResponseOneProfileIconUrlMax = 500;
+
+export const createPlanResponseOneProfileImageUrlMax = 500;
+
+export const createPlanResponseOneProfileBadgeLabelMax = 40;
+
+export const createPlanResponseOneProfileFooterTextMax = 300;
+
+export const createPlanResponseOneProfilePromoTextMax = 200;
+
+export const createPlanResponseOneProfileTermsMax = 5000;
+
+export const createPlanResponseOneProfileContactSalesLabelMax = 60;
+
+export const createPlanResponseOneProfileCustomPriceTextMax = 80;
+
+export const createPlanResponseOneProfileFixedDiscountAmountMax = 18;
+
+
+export const createPlanResponseOneProfileFixedDiscountAmountRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,2})?$');
+export const createPlanResponseOneProfilePromoPriceMax = 18;
+
+
+export const createPlanResponseOneProfilePromoPriceRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,2})?$');
+export const createPlanResponseOneProfileTrialDaysMin = 0;
+export const createPlanResponseOneProfileTrialDaysMax = 365;
+
+export const createPlanResponseOneProfileCtaLabelMax = 60;
+
+export const createPlanResponseOneProfileCtaUrlMax = 200;
+
+
+export const createPlanResponseOneProfileCtaUrlRegExp = new RegExp('^/(?!/)[A-Za-z0-9/_#?=&.-]*$');
+export const createPlanResponseOneProfileAdminSeatsMax = 10000;
+
+export const createPlanResponseOneProfileSupportResponseHoursMax = 720;
+
+export const createPlanResponseOneProfileLaunchTargetBusinessDaysMax = 365;
+
+export const createPlanResponseOneProfileSlaTermsMax = 1000;
+
+export const createPlanResponseOneProfileThemeModesMax = 2;
+
+export const createPlanResponseOneProfileConvertProviderLimitMin = 0;
+export const createPlanResponseOneProfileConvertProviderLimitMax = 100;
+
+export const createPlanResponseOneProfileRequestedProvidersItemMax = 60;
+
+export const createPlanResponseOneProfileRequestedProvidersMax = 30;
+
+export const createPlanResponseOneProfileCapabilitiesItemKeyRegExp = new RegExp('^[a-z][a-z0-9_]{1,63}$');
+export const createPlanResponseOneProfileCapabilitiesItemLabelMax = 120;
+
+export const createPlanResponseOneProfileCapabilitiesItemDescriptionMax = 600;
+
+export const createPlanResponseOneProfileCapabilitiesItemGroupMax = 60;
+
+export const createPlanResponseOneProfileCapabilitiesItemLimitValueMin = 0;
+export const createPlanResponseOneProfileCapabilitiesItemLimitValueMax = 1000000000000;
+
+export const createPlanResponseOneProfileCapabilitiesItemUnitMax = 30;
+
+export const createPlanResponseOneProfileCapabilitiesItemTooltipMax = 300;
+
+export const createPlanResponseOneProfileCapabilitiesItemBadgeMax = 30;
+
+export const createPlanResponseOneProfileCapabilitiesItemDependsOnItemRegExp = new RegExp('^[a-z][a-z0-9_]{1,63}$');
+export const createPlanResponseOneProfileCapabilitiesItemDependsOnMax = 20;
+
+export const createPlanResponseOneProfileCapabilitiesItemNoteMax = 300;
+
+export const createPlanResponseOneProfileCapabilitiesMax = 120;
+
+export const createPlanResponseOneProfileInternalNotesMax = 5000;
+
+export const createPlanResponseOneExpectedRevisionMin = 0;
+
 export const createPlanResponseTwoFeatureRowsItemLabelMax = 120;
 
 export const createPlanResponseTwoFeatureRowsItemValueMax = 500;
@@ -9722,7 +12325,66 @@ export const CreatePlanResponse = zod.object({
   "featureRows": zod.array(zod.object({
   "label": zod.string().min(1).max(createPlanResponseOneFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(createPlanResponseOneFeatureRowsItemValueMax)
-}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.')
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.'),
+  "profile": zod.object({
+  "slug": zod.string().regex(createPlanResponseOneProfileSlugRegExp).optional(),
+  "internalName": zod.string().max(createPlanResponseOneProfileInternalNameMax).optional(),
+  "publicName": zod.string().max(createPlanResponseOneProfilePublicNameMax).optional(),
+  "tagline": zod.string().max(createPlanResponseOneProfileTaglineMax).optional(),
+  "shortDescription": zod.string().max(createPlanResponseOneProfileShortDescriptionMax).optional(),
+  "fullDescription": zod.string().max(createPlanResponseOneProfileFullDescriptionMax).optional(),
+  "iconUrl": zod.string().max(createPlanResponseOneProfileIconUrlMax).optional().describe('Local path or https URL without credentials'),
+  "imageUrl": zod.string().max(createPlanResponseOneProfileImageUrlMax).optional().describe('Local path or https URL without credentials'),
+  "badgeType": zod.enum(['none', 'recommended', 'custom']).optional(),
+  "badgeLabel": zod.string().max(createPlanResponseOneProfileBadgeLabelMax).optional(),
+  "featured": zod.boolean().optional(),
+  "footerText": zod.string().max(createPlanResponseOneProfileFooterTextMax).optional(),
+  "promoText": zod.string().max(createPlanResponseOneProfilePromoTextMax).optional(),
+  "terms": zod.string().max(createPlanResponseOneProfileTermsMax).optional(),
+  "pricingMode": zod.enum(['paid', 'free', 'custom', 'contact_sales']).optional(),
+  "contactSalesLabel": zod.string().max(createPlanResponseOneProfileContactSalesLabelMax).optional(),
+  "customPriceText": zod.string().max(createPlanResponseOneProfileCustomPriceTextMax).optional(),
+  "fixedDiscountAmount": zod.string().max(createPlanResponseOneProfileFixedDiscountAmountMax).regex(createPlanResponseOneProfileFixedDiscountAmountRegExp).nullish(),
+  "promoPrice": zod.string().max(createPlanResponseOneProfilePromoPriceMax).regex(createPlanResponseOneProfilePromoPriceRegExp).nullish(),
+  "promoStartsAt": zod.coerce.date().nullish(),
+  "promoEndsAt": zod.coerce.date().nullish(),
+  "billingInterval": zod.enum(['monthly', 'yearly', 'monthly_and_yearly', 'custom']).optional(),
+  "trialDays": zod.number().int().min(createPlanResponseOneProfileTrialDaysMin).max(createPlanResponseOneProfileTrialDaysMax).optional(),
+  "ctaLabel": zod.string().max(createPlanResponseOneProfileCtaLabelMax).optional(),
+  "ctaUrl": zod.string().max(createPlanResponseOneProfileCtaUrlMax).regex(createPlanResponseOneProfileCtaUrlRegExp).optional(),
+  "visibility": zod.enum(['public', 'hidden']).optional(),
+  "adminSeats": zod.number().int().min(1).max(createPlanResponseOneProfileAdminSeatsMax).nullish(),
+  "multiAdminRoles": zod.boolean().optional(),
+  "supportLevel": zod.enum(['email', 'priority', 'dedicated']).optional(),
+  "supportResponseHours": zod.number().int().min(1).max(createPlanResponseOneProfileSupportResponseHoursMax).nullish(),
+  "launchTargetBusinessDays": zod.number().int().min(1).max(createPlanResponseOneProfileLaunchTargetBusinessDaysMax).nullish(),
+  "dedicatedManager": zod.boolean().optional(),
+  "slaEnabled": zod.boolean().optional(),
+  "slaTerms": zod.string().max(createPlanResponseOneProfileSlaTermsMax).optional(),
+  "earlyAccess": zod.boolean().optional(),
+  "poweredByFooter": zod.boolean().optional(),
+  "themeModes": zod.array(zod.enum(['light', 'dark'])).max(createPlanResponseOneProfileThemeModesMax).optional(),
+  "convertProviderLimit": zod.number().int().min(createPlanResponseOneProfileConvertProviderLimitMin).max(createPlanResponseOneProfileConvertProviderLimitMax).nullish(),
+  "requestedProviders": zod.array(zod.string().min(1).max(createPlanResponseOneProfileRequestedProvidersItemMax)).max(createPlanResponseOneProfileRequestedProvidersMax).optional(),
+  "capabilities": zod.array(zod.object({
+  "key": zod.string().regex(createPlanResponseOneProfileCapabilitiesItemKeyRegExp),
+  "label": zod.string().min(1).max(createPlanResponseOneProfileCapabilitiesItemLabelMax),
+  "description": zod.string().max(createPlanResponseOneProfileCapabilitiesItemDescriptionMax).optional(),
+  "group": zod.string().max(createPlanResponseOneProfileCapabilitiesItemGroupMax).optional(),
+  "state": zod.enum(['included', 'excluded', 'optional', 'limited', 'unlimited', 'unavailable']).describe('Commercial state. limited requires limitValue.'),
+  "availability": zod.enum(['available', 'requires_configuration', 'unavailable']).describe('Implementation status; unavailable means not implemented and never a working toggle'),
+  "limitValue": zod.number().min(createPlanResponseOneProfileCapabilitiesItemLimitValueMin).max(createPlanResponseOneProfileCapabilitiesItemLimitValueMax).nullish(),
+  "unit": zod.string().max(createPlanResponseOneProfileCapabilitiesItemUnitMax).optional(),
+  "tooltip": zod.string().max(createPlanResponseOneProfileCapabilitiesItemTooltipMax).optional(),
+  "highlight": zod.boolean().optional(),
+  "publicVisible": zod.boolean().optional(),
+  "badge": zod.string().max(createPlanResponseOneProfileCapabilitiesItemBadgeMax).optional(),
+  "dependsOn": zod.array(zod.string().regex(createPlanResponseOneProfileCapabilitiesItemDependsOnItemRegExp)).max(createPlanResponseOneProfileCapabilitiesItemDependsOnMax).optional(),
+  "note": zod.string().max(createPlanResponseOneProfileCapabilitiesItemNoteMax).optional()
+})).max(createPlanResponseOneProfileCapabilitiesMax).optional(),
+  "internalNotes": zod.string().max(createPlanResponseOneProfileInternalNotesMax).optional()
+}).optional().describe('Structured plan configuration. internalName and internalNotes are Super Admin only and never published.'),
+  "expectedRevision": zod.number().int().min(createPlanResponseOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
 }).and(zod.object({
   "id": zod.string().uuid(),
   "createdAt": zod.coerce.date(),
@@ -9732,12 +12394,21 @@ export const CreatePlanResponse = zod.object({
   "featureRows": zod.array(zod.object({
   "label": zod.string().min(1).max(createPlanResponseTwoFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(createPlanResponseTwoFeatureRowsItemValueMax)
-}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(createPlanResponseTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.')
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(createPlanResponseTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.'),
+  "revision": zod.number().int().optional()
 }))
 
 
 export const DeletePlanParams = zod.object({
   "planId": zod.coerce.string().uuid()
+})
+
+export const deletePlanQueryExpectedRevisionMin = 0;
+
+
+
+export const DeletePlanQueryParams = zod.object({
+  "expectedRevision": zod.coerce.number().int().min(deletePlanQueryExpectedRevisionMin)
 })
 
 export const DeletePlanResponse = zod.object({
@@ -9790,6 +12461,94 @@ export const getPlanResponseOneFeatureRowsItemLabelMax = 120;
 
 export const getPlanResponseOneFeatureRowsItemValueMax = 500;
 
+export const getPlanResponseOneProfileSlugRegExp = new RegExp('^[a-z0-9](?:[a-z0-9-]{0,62}[a-z0-9])?$');
+export const getPlanResponseOneProfileInternalNameMax = 120;
+
+export const getPlanResponseOneProfilePublicNameMax = 120;
+
+export const getPlanResponseOneProfileTaglineMax = 160;
+
+export const getPlanResponseOneProfileShortDescriptionMax = 300;
+
+export const getPlanResponseOneProfileFullDescriptionMax = 5000;
+
+export const getPlanResponseOneProfileIconUrlMax = 500;
+
+export const getPlanResponseOneProfileImageUrlMax = 500;
+
+export const getPlanResponseOneProfileBadgeLabelMax = 40;
+
+export const getPlanResponseOneProfileFooterTextMax = 300;
+
+export const getPlanResponseOneProfilePromoTextMax = 200;
+
+export const getPlanResponseOneProfileTermsMax = 5000;
+
+export const getPlanResponseOneProfileContactSalesLabelMax = 60;
+
+export const getPlanResponseOneProfileCustomPriceTextMax = 80;
+
+export const getPlanResponseOneProfileFixedDiscountAmountMax = 18;
+
+
+export const getPlanResponseOneProfileFixedDiscountAmountRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,2})?$');
+export const getPlanResponseOneProfilePromoPriceMax = 18;
+
+
+export const getPlanResponseOneProfilePromoPriceRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,2})?$');
+export const getPlanResponseOneProfileTrialDaysMin = 0;
+export const getPlanResponseOneProfileTrialDaysMax = 365;
+
+export const getPlanResponseOneProfileCtaLabelMax = 60;
+
+export const getPlanResponseOneProfileCtaUrlMax = 200;
+
+
+export const getPlanResponseOneProfileCtaUrlRegExp = new RegExp('^/(?!/)[A-Za-z0-9/_#?=&.-]*$');
+export const getPlanResponseOneProfileAdminSeatsMax = 10000;
+
+export const getPlanResponseOneProfileSupportResponseHoursMax = 720;
+
+export const getPlanResponseOneProfileLaunchTargetBusinessDaysMax = 365;
+
+export const getPlanResponseOneProfileSlaTermsMax = 1000;
+
+export const getPlanResponseOneProfileThemeModesMax = 2;
+
+export const getPlanResponseOneProfileConvertProviderLimitMin = 0;
+export const getPlanResponseOneProfileConvertProviderLimitMax = 100;
+
+export const getPlanResponseOneProfileRequestedProvidersItemMax = 60;
+
+export const getPlanResponseOneProfileRequestedProvidersMax = 30;
+
+export const getPlanResponseOneProfileCapabilitiesItemKeyRegExp = new RegExp('^[a-z][a-z0-9_]{1,63}$');
+export const getPlanResponseOneProfileCapabilitiesItemLabelMax = 120;
+
+export const getPlanResponseOneProfileCapabilitiesItemDescriptionMax = 600;
+
+export const getPlanResponseOneProfileCapabilitiesItemGroupMax = 60;
+
+export const getPlanResponseOneProfileCapabilitiesItemLimitValueMin = 0;
+export const getPlanResponseOneProfileCapabilitiesItemLimitValueMax = 1000000000000;
+
+export const getPlanResponseOneProfileCapabilitiesItemUnitMax = 30;
+
+export const getPlanResponseOneProfileCapabilitiesItemTooltipMax = 300;
+
+export const getPlanResponseOneProfileCapabilitiesItemBadgeMax = 30;
+
+export const getPlanResponseOneProfileCapabilitiesItemDependsOnItemRegExp = new RegExp('^[a-z][a-z0-9_]{1,63}$');
+export const getPlanResponseOneProfileCapabilitiesItemDependsOnMax = 20;
+
+export const getPlanResponseOneProfileCapabilitiesItemNoteMax = 300;
+
+export const getPlanResponseOneProfileCapabilitiesMax = 120;
+
+export const getPlanResponseOneProfileInternalNotesMax = 5000;
+
+export const getPlanResponseOneExpectedRevisionMin = 0;
+
 export const getPlanResponseTwoFeatureRowsItemLabelMax = 120;
 
 export const getPlanResponseTwoFeatureRowsItemValueMax = 500;
@@ -9814,7 +12573,66 @@ export const GetPlanResponse = zod.object({
   "featureRows": zod.array(zod.object({
   "label": zod.string().min(1).max(getPlanResponseOneFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(getPlanResponseOneFeatureRowsItemValueMax)
-}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.')
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.'),
+  "profile": zod.object({
+  "slug": zod.string().regex(getPlanResponseOneProfileSlugRegExp).optional(),
+  "internalName": zod.string().max(getPlanResponseOneProfileInternalNameMax).optional(),
+  "publicName": zod.string().max(getPlanResponseOneProfilePublicNameMax).optional(),
+  "tagline": zod.string().max(getPlanResponseOneProfileTaglineMax).optional(),
+  "shortDescription": zod.string().max(getPlanResponseOneProfileShortDescriptionMax).optional(),
+  "fullDescription": zod.string().max(getPlanResponseOneProfileFullDescriptionMax).optional(),
+  "iconUrl": zod.string().max(getPlanResponseOneProfileIconUrlMax).optional().describe('Local path or https URL without credentials'),
+  "imageUrl": zod.string().max(getPlanResponseOneProfileImageUrlMax).optional().describe('Local path or https URL without credentials'),
+  "badgeType": zod.enum(['none', 'recommended', 'custom']).optional(),
+  "badgeLabel": zod.string().max(getPlanResponseOneProfileBadgeLabelMax).optional(),
+  "featured": zod.boolean().optional(),
+  "footerText": zod.string().max(getPlanResponseOneProfileFooterTextMax).optional(),
+  "promoText": zod.string().max(getPlanResponseOneProfilePromoTextMax).optional(),
+  "terms": zod.string().max(getPlanResponseOneProfileTermsMax).optional(),
+  "pricingMode": zod.enum(['paid', 'free', 'custom', 'contact_sales']).optional(),
+  "contactSalesLabel": zod.string().max(getPlanResponseOneProfileContactSalesLabelMax).optional(),
+  "customPriceText": zod.string().max(getPlanResponseOneProfileCustomPriceTextMax).optional(),
+  "fixedDiscountAmount": zod.string().max(getPlanResponseOneProfileFixedDiscountAmountMax).regex(getPlanResponseOneProfileFixedDiscountAmountRegExp).nullish(),
+  "promoPrice": zod.string().max(getPlanResponseOneProfilePromoPriceMax).regex(getPlanResponseOneProfilePromoPriceRegExp).nullish(),
+  "promoStartsAt": zod.coerce.date().nullish(),
+  "promoEndsAt": zod.coerce.date().nullish(),
+  "billingInterval": zod.enum(['monthly', 'yearly', 'monthly_and_yearly', 'custom']).optional(),
+  "trialDays": zod.number().int().min(getPlanResponseOneProfileTrialDaysMin).max(getPlanResponseOneProfileTrialDaysMax).optional(),
+  "ctaLabel": zod.string().max(getPlanResponseOneProfileCtaLabelMax).optional(),
+  "ctaUrl": zod.string().max(getPlanResponseOneProfileCtaUrlMax).regex(getPlanResponseOneProfileCtaUrlRegExp).optional(),
+  "visibility": zod.enum(['public', 'hidden']).optional(),
+  "adminSeats": zod.number().int().min(1).max(getPlanResponseOneProfileAdminSeatsMax).nullish(),
+  "multiAdminRoles": zod.boolean().optional(),
+  "supportLevel": zod.enum(['email', 'priority', 'dedicated']).optional(),
+  "supportResponseHours": zod.number().int().min(1).max(getPlanResponseOneProfileSupportResponseHoursMax).nullish(),
+  "launchTargetBusinessDays": zod.number().int().min(1).max(getPlanResponseOneProfileLaunchTargetBusinessDaysMax).nullish(),
+  "dedicatedManager": zod.boolean().optional(),
+  "slaEnabled": zod.boolean().optional(),
+  "slaTerms": zod.string().max(getPlanResponseOneProfileSlaTermsMax).optional(),
+  "earlyAccess": zod.boolean().optional(),
+  "poweredByFooter": zod.boolean().optional(),
+  "themeModes": zod.array(zod.enum(['light', 'dark'])).max(getPlanResponseOneProfileThemeModesMax).optional(),
+  "convertProviderLimit": zod.number().int().min(getPlanResponseOneProfileConvertProviderLimitMin).max(getPlanResponseOneProfileConvertProviderLimitMax).nullish(),
+  "requestedProviders": zod.array(zod.string().min(1).max(getPlanResponseOneProfileRequestedProvidersItemMax)).max(getPlanResponseOneProfileRequestedProvidersMax).optional(),
+  "capabilities": zod.array(zod.object({
+  "key": zod.string().regex(getPlanResponseOneProfileCapabilitiesItemKeyRegExp),
+  "label": zod.string().min(1).max(getPlanResponseOneProfileCapabilitiesItemLabelMax),
+  "description": zod.string().max(getPlanResponseOneProfileCapabilitiesItemDescriptionMax).optional(),
+  "group": zod.string().max(getPlanResponseOneProfileCapabilitiesItemGroupMax).optional(),
+  "state": zod.enum(['included', 'excluded', 'optional', 'limited', 'unlimited', 'unavailable']).describe('Commercial state. limited requires limitValue.'),
+  "availability": zod.enum(['available', 'requires_configuration', 'unavailable']).describe('Implementation status; unavailable means not implemented and never a working toggle'),
+  "limitValue": zod.number().min(getPlanResponseOneProfileCapabilitiesItemLimitValueMin).max(getPlanResponseOneProfileCapabilitiesItemLimitValueMax).nullish(),
+  "unit": zod.string().max(getPlanResponseOneProfileCapabilitiesItemUnitMax).optional(),
+  "tooltip": zod.string().max(getPlanResponseOneProfileCapabilitiesItemTooltipMax).optional(),
+  "highlight": zod.boolean().optional(),
+  "publicVisible": zod.boolean().optional(),
+  "badge": zod.string().max(getPlanResponseOneProfileCapabilitiesItemBadgeMax).optional(),
+  "dependsOn": zod.array(zod.string().regex(getPlanResponseOneProfileCapabilitiesItemDependsOnItemRegExp)).max(getPlanResponseOneProfileCapabilitiesItemDependsOnMax).optional(),
+  "note": zod.string().max(getPlanResponseOneProfileCapabilitiesItemNoteMax).optional()
+})).max(getPlanResponseOneProfileCapabilitiesMax).optional(),
+  "internalNotes": zod.string().max(getPlanResponseOneProfileInternalNotesMax).optional()
+}).optional().describe('Structured plan configuration. internalName and internalNotes are Super Admin only and never published.'),
+  "expectedRevision": zod.number().int().min(getPlanResponseOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
 }).and(zod.object({
   "id": zod.string().uuid(),
   "createdAt": zod.coerce.date(),
@@ -9824,7 +12642,8 @@ export const GetPlanResponse = zod.object({
   "featureRows": zod.array(zod.object({
   "label": zod.string().min(1).max(getPlanResponseTwoFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(getPlanResponseTwoFeatureRowsItemValueMax)
-}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(getPlanResponseTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.')
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(getPlanResponseTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.'),
+  "revision": zod.number().int().optional()
 }))
 
 
@@ -9873,6 +12692,94 @@ export const updatePlanBodyFeatureRowsItemLabelMax = 120;
 
 export const updatePlanBodyFeatureRowsItemValueMax = 500;
 
+export const updatePlanBodyProfileSlugRegExp = new RegExp('^[a-z0-9](?:[a-z0-9-]{0,62}[a-z0-9])?$');
+export const updatePlanBodyProfileInternalNameMax = 120;
+
+export const updatePlanBodyProfilePublicNameMax = 120;
+
+export const updatePlanBodyProfileTaglineMax = 160;
+
+export const updatePlanBodyProfileShortDescriptionMax = 300;
+
+export const updatePlanBodyProfileFullDescriptionMax = 5000;
+
+export const updatePlanBodyProfileIconUrlMax = 500;
+
+export const updatePlanBodyProfileImageUrlMax = 500;
+
+export const updatePlanBodyProfileBadgeLabelMax = 40;
+
+export const updatePlanBodyProfileFooterTextMax = 300;
+
+export const updatePlanBodyProfilePromoTextMax = 200;
+
+export const updatePlanBodyProfileTermsMax = 5000;
+
+export const updatePlanBodyProfileContactSalesLabelMax = 60;
+
+export const updatePlanBodyProfileCustomPriceTextMax = 80;
+
+export const updatePlanBodyProfileFixedDiscountAmountMax = 18;
+
+
+export const updatePlanBodyProfileFixedDiscountAmountRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,2})?$');
+export const updatePlanBodyProfilePromoPriceMax = 18;
+
+
+export const updatePlanBodyProfilePromoPriceRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,2})?$');
+export const updatePlanBodyProfileTrialDaysMin = 0;
+export const updatePlanBodyProfileTrialDaysMax = 365;
+
+export const updatePlanBodyProfileCtaLabelMax = 60;
+
+export const updatePlanBodyProfileCtaUrlMax = 200;
+
+
+export const updatePlanBodyProfileCtaUrlRegExp = new RegExp('^/(?!/)[A-Za-z0-9/_#?=&.-]*$');
+export const updatePlanBodyProfileAdminSeatsMax = 10000;
+
+export const updatePlanBodyProfileSupportResponseHoursMax = 720;
+
+export const updatePlanBodyProfileLaunchTargetBusinessDaysMax = 365;
+
+export const updatePlanBodyProfileSlaTermsMax = 1000;
+
+export const updatePlanBodyProfileThemeModesMax = 2;
+
+export const updatePlanBodyProfileConvertProviderLimitMin = 0;
+export const updatePlanBodyProfileConvertProviderLimitMax = 100;
+
+export const updatePlanBodyProfileRequestedProvidersItemMax = 60;
+
+export const updatePlanBodyProfileRequestedProvidersMax = 30;
+
+export const updatePlanBodyProfileCapabilitiesItemKeyRegExp = new RegExp('^[a-z][a-z0-9_]{1,63}$');
+export const updatePlanBodyProfileCapabilitiesItemLabelMax = 120;
+
+export const updatePlanBodyProfileCapabilitiesItemDescriptionMax = 600;
+
+export const updatePlanBodyProfileCapabilitiesItemGroupMax = 60;
+
+export const updatePlanBodyProfileCapabilitiesItemLimitValueMin = 0;
+export const updatePlanBodyProfileCapabilitiesItemLimitValueMax = 1000000000000;
+
+export const updatePlanBodyProfileCapabilitiesItemUnitMax = 30;
+
+export const updatePlanBodyProfileCapabilitiesItemTooltipMax = 300;
+
+export const updatePlanBodyProfileCapabilitiesItemBadgeMax = 30;
+
+export const updatePlanBodyProfileCapabilitiesItemDependsOnItemRegExp = new RegExp('^[a-z][a-z0-9_]{1,63}$');
+export const updatePlanBodyProfileCapabilitiesItemDependsOnMax = 20;
+
+export const updatePlanBodyProfileCapabilitiesItemNoteMax = 300;
+
+export const updatePlanBodyProfileCapabilitiesMax = 120;
+
+export const updatePlanBodyProfileInternalNotesMax = 5000;
+
+export const updatePlanBodyExpectedRevisionMin = 0;
+
 
 
 export const UpdatePlanBody = zod.object({
@@ -9893,7 +12800,66 @@ export const UpdatePlanBody = zod.object({
   "featureRows": zod.array(zod.object({
   "label": zod.string().min(1).max(updatePlanBodyFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(updatePlanBodyFeatureRowsItemValueMax)
-}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).optional().describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.')
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).optional().describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.'),
+  "profile": zod.object({
+  "slug": zod.string().regex(updatePlanBodyProfileSlugRegExp).optional(),
+  "internalName": zod.string().max(updatePlanBodyProfileInternalNameMax).optional(),
+  "publicName": zod.string().max(updatePlanBodyProfilePublicNameMax).optional(),
+  "tagline": zod.string().max(updatePlanBodyProfileTaglineMax).optional(),
+  "shortDescription": zod.string().max(updatePlanBodyProfileShortDescriptionMax).optional(),
+  "fullDescription": zod.string().max(updatePlanBodyProfileFullDescriptionMax).optional(),
+  "iconUrl": zod.string().max(updatePlanBodyProfileIconUrlMax).optional().describe('Local path or https URL without credentials'),
+  "imageUrl": zod.string().max(updatePlanBodyProfileImageUrlMax).optional().describe('Local path or https URL without credentials'),
+  "badgeType": zod.enum(['none', 'recommended', 'custom']).optional(),
+  "badgeLabel": zod.string().max(updatePlanBodyProfileBadgeLabelMax).optional(),
+  "featured": zod.boolean().optional(),
+  "footerText": zod.string().max(updatePlanBodyProfileFooterTextMax).optional(),
+  "promoText": zod.string().max(updatePlanBodyProfilePromoTextMax).optional(),
+  "terms": zod.string().max(updatePlanBodyProfileTermsMax).optional(),
+  "pricingMode": zod.enum(['paid', 'free', 'custom', 'contact_sales']).optional(),
+  "contactSalesLabel": zod.string().max(updatePlanBodyProfileContactSalesLabelMax).optional(),
+  "customPriceText": zod.string().max(updatePlanBodyProfileCustomPriceTextMax).optional(),
+  "fixedDiscountAmount": zod.string().max(updatePlanBodyProfileFixedDiscountAmountMax).regex(updatePlanBodyProfileFixedDiscountAmountRegExp).nullish(),
+  "promoPrice": zod.string().max(updatePlanBodyProfilePromoPriceMax).regex(updatePlanBodyProfilePromoPriceRegExp).nullish(),
+  "promoStartsAt": zod.coerce.date().nullish(),
+  "promoEndsAt": zod.coerce.date().nullish(),
+  "billingInterval": zod.enum(['monthly', 'yearly', 'monthly_and_yearly', 'custom']).optional(),
+  "trialDays": zod.number().int().min(updatePlanBodyProfileTrialDaysMin).max(updatePlanBodyProfileTrialDaysMax).optional(),
+  "ctaLabel": zod.string().max(updatePlanBodyProfileCtaLabelMax).optional(),
+  "ctaUrl": zod.string().max(updatePlanBodyProfileCtaUrlMax).regex(updatePlanBodyProfileCtaUrlRegExp).optional(),
+  "visibility": zod.enum(['public', 'hidden']).optional(),
+  "adminSeats": zod.number().int().min(1).max(updatePlanBodyProfileAdminSeatsMax).nullish(),
+  "multiAdminRoles": zod.boolean().optional(),
+  "supportLevel": zod.enum(['email', 'priority', 'dedicated']).optional(),
+  "supportResponseHours": zod.number().int().min(1).max(updatePlanBodyProfileSupportResponseHoursMax).nullish(),
+  "launchTargetBusinessDays": zod.number().int().min(1).max(updatePlanBodyProfileLaunchTargetBusinessDaysMax).nullish(),
+  "dedicatedManager": zod.boolean().optional(),
+  "slaEnabled": zod.boolean().optional(),
+  "slaTerms": zod.string().max(updatePlanBodyProfileSlaTermsMax).optional(),
+  "earlyAccess": zod.boolean().optional(),
+  "poweredByFooter": zod.boolean().optional(),
+  "themeModes": zod.array(zod.enum(['light', 'dark'])).max(updatePlanBodyProfileThemeModesMax).optional(),
+  "convertProviderLimit": zod.number().int().min(updatePlanBodyProfileConvertProviderLimitMin).max(updatePlanBodyProfileConvertProviderLimitMax).nullish(),
+  "requestedProviders": zod.array(zod.string().min(1).max(updatePlanBodyProfileRequestedProvidersItemMax)).max(updatePlanBodyProfileRequestedProvidersMax).optional(),
+  "capabilities": zod.array(zod.object({
+  "key": zod.string().regex(updatePlanBodyProfileCapabilitiesItemKeyRegExp),
+  "label": zod.string().min(1).max(updatePlanBodyProfileCapabilitiesItemLabelMax),
+  "description": zod.string().max(updatePlanBodyProfileCapabilitiesItemDescriptionMax).optional(),
+  "group": zod.string().max(updatePlanBodyProfileCapabilitiesItemGroupMax).optional(),
+  "state": zod.enum(['included', 'excluded', 'optional', 'limited', 'unlimited', 'unavailable']).describe('Commercial state. limited requires limitValue.'),
+  "availability": zod.enum(['available', 'requires_configuration', 'unavailable']).describe('Implementation status; unavailable means not implemented and never a working toggle'),
+  "limitValue": zod.number().min(updatePlanBodyProfileCapabilitiesItemLimitValueMin).max(updatePlanBodyProfileCapabilitiesItemLimitValueMax).nullish(),
+  "unit": zod.string().max(updatePlanBodyProfileCapabilitiesItemUnitMax).optional(),
+  "tooltip": zod.string().max(updatePlanBodyProfileCapabilitiesItemTooltipMax).optional(),
+  "highlight": zod.boolean().optional(),
+  "publicVisible": zod.boolean().optional(),
+  "badge": zod.string().max(updatePlanBodyProfileCapabilitiesItemBadgeMax).optional(),
+  "dependsOn": zod.array(zod.string().regex(updatePlanBodyProfileCapabilitiesItemDependsOnItemRegExp)).max(updatePlanBodyProfileCapabilitiesItemDependsOnMax).optional(),
+  "note": zod.string().max(updatePlanBodyProfileCapabilitiesItemNoteMax).optional()
+})).max(updatePlanBodyProfileCapabilitiesMax).optional(),
+  "internalNotes": zod.string().max(updatePlanBodyProfileInternalNotesMax).optional()
+}).optional().describe('Structured plan configuration. internalName and internalNotes are Super Admin only and never published.'),
+  "expectedRevision": zod.number().int().min(updatePlanBodyExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
 })
 
 export const updatePlanResponseOneNameMin = 2;
@@ -9937,6 +12903,94 @@ export const updatePlanResponseOneFeatureRowsItemLabelMax = 120;
 
 export const updatePlanResponseOneFeatureRowsItemValueMax = 500;
 
+export const updatePlanResponseOneProfileSlugRegExp = new RegExp('^[a-z0-9](?:[a-z0-9-]{0,62}[a-z0-9])?$');
+export const updatePlanResponseOneProfileInternalNameMax = 120;
+
+export const updatePlanResponseOneProfilePublicNameMax = 120;
+
+export const updatePlanResponseOneProfileTaglineMax = 160;
+
+export const updatePlanResponseOneProfileShortDescriptionMax = 300;
+
+export const updatePlanResponseOneProfileFullDescriptionMax = 5000;
+
+export const updatePlanResponseOneProfileIconUrlMax = 500;
+
+export const updatePlanResponseOneProfileImageUrlMax = 500;
+
+export const updatePlanResponseOneProfileBadgeLabelMax = 40;
+
+export const updatePlanResponseOneProfileFooterTextMax = 300;
+
+export const updatePlanResponseOneProfilePromoTextMax = 200;
+
+export const updatePlanResponseOneProfileTermsMax = 5000;
+
+export const updatePlanResponseOneProfileContactSalesLabelMax = 60;
+
+export const updatePlanResponseOneProfileCustomPriceTextMax = 80;
+
+export const updatePlanResponseOneProfileFixedDiscountAmountMax = 18;
+
+
+export const updatePlanResponseOneProfileFixedDiscountAmountRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,2})?$');
+export const updatePlanResponseOneProfilePromoPriceMax = 18;
+
+
+export const updatePlanResponseOneProfilePromoPriceRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,2})?$');
+export const updatePlanResponseOneProfileTrialDaysMin = 0;
+export const updatePlanResponseOneProfileTrialDaysMax = 365;
+
+export const updatePlanResponseOneProfileCtaLabelMax = 60;
+
+export const updatePlanResponseOneProfileCtaUrlMax = 200;
+
+
+export const updatePlanResponseOneProfileCtaUrlRegExp = new RegExp('^/(?!/)[A-Za-z0-9/_#?=&.-]*$');
+export const updatePlanResponseOneProfileAdminSeatsMax = 10000;
+
+export const updatePlanResponseOneProfileSupportResponseHoursMax = 720;
+
+export const updatePlanResponseOneProfileLaunchTargetBusinessDaysMax = 365;
+
+export const updatePlanResponseOneProfileSlaTermsMax = 1000;
+
+export const updatePlanResponseOneProfileThemeModesMax = 2;
+
+export const updatePlanResponseOneProfileConvertProviderLimitMin = 0;
+export const updatePlanResponseOneProfileConvertProviderLimitMax = 100;
+
+export const updatePlanResponseOneProfileRequestedProvidersItemMax = 60;
+
+export const updatePlanResponseOneProfileRequestedProvidersMax = 30;
+
+export const updatePlanResponseOneProfileCapabilitiesItemKeyRegExp = new RegExp('^[a-z][a-z0-9_]{1,63}$');
+export const updatePlanResponseOneProfileCapabilitiesItemLabelMax = 120;
+
+export const updatePlanResponseOneProfileCapabilitiesItemDescriptionMax = 600;
+
+export const updatePlanResponseOneProfileCapabilitiesItemGroupMax = 60;
+
+export const updatePlanResponseOneProfileCapabilitiesItemLimitValueMin = 0;
+export const updatePlanResponseOneProfileCapabilitiesItemLimitValueMax = 1000000000000;
+
+export const updatePlanResponseOneProfileCapabilitiesItemUnitMax = 30;
+
+export const updatePlanResponseOneProfileCapabilitiesItemTooltipMax = 300;
+
+export const updatePlanResponseOneProfileCapabilitiesItemBadgeMax = 30;
+
+export const updatePlanResponseOneProfileCapabilitiesItemDependsOnItemRegExp = new RegExp('^[a-z][a-z0-9_]{1,63}$');
+export const updatePlanResponseOneProfileCapabilitiesItemDependsOnMax = 20;
+
+export const updatePlanResponseOneProfileCapabilitiesItemNoteMax = 300;
+
+export const updatePlanResponseOneProfileCapabilitiesMax = 120;
+
+export const updatePlanResponseOneProfileInternalNotesMax = 5000;
+
+export const updatePlanResponseOneExpectedRevisionMin = 0;
+
 export const updatePlanResponseTwoFeatureRowsItemLabelMax = 120;
 
 export const updatePlanResponseTwoFeatureRowsItemValueMax = 500;
@@ -9961,7 +13015,66 @@ export const UpdatePlanResponse = zod.object({
   "featureRows": zod.array(zod.object({
   "label": zod.string().min(1).max(updatePlanResponseOneFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(updatePlanResponseOneFeatureRowsItemValueMax)
-}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.')
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.'),
+  "profile": zod.object({
+  "slug": zod.string().regex(updatePlanResponseOneProfileSlugRegExp).optional(),
+  "internalName": zod.string().max(updatePlanResponseOneProfileInternalNameMax).optional(),
+  "publicName": zod.string().max(updatePlanResponseOneProfilePublicNameMax).optional(),
+  "tagline": zod.string().max(updatePlanResponseOneProfileTaglineMax).optional(),
+  "shortDescription": zod.string().max(updatePlanResponseOneProfileShortDescriptionMax).optional(),
+  "fullDescription": zod.string().max(updatePlanResponseOneProfileFullDescriptionMax).optional(),
+  "iconUrl": zod.string().max(updatePlanResponseOneProfileIconUrlMax).optional().describe('Local path or https URL without credentials'),
+  "imageUrl": zod.string().max(updatePlanResponseOneProfileImageUrlMax).optional().describe('Local path or https URL without credentials'),
+  "badgeType": zod.enum(['none', 'recommended', 'custom']).optional(),
+  "badgeLabel": zod.string().max(updatePlanResponseOneProfileBadgeLabelMax).optional(),
+  "featured": zod.boolean().optional(),
+  "footerText": zod.string().max(updatePlanResponseOneProfileFooterTextMax).optional(),
+  "promoText": zod.string().max(updatePlanResponseOneProfilePromoTextMax).optional(),
+  "terms": zod.string().max(updatePlanResponseOneProfileTermsMax).optional(),
+  "pricingMode": zod.enum(['paid', 'free', 'custom', 'contact_sales']).optional(),
+  "contactSalesLabel": zod.string().max(updatePlanResponseOneProfileContactSalesLabelMax).optional(),
+  "customPriceText": zod.string().max(updatePlanResponseOneProfileCustomPriceTextMax).optional(),
+  "fixedDiscountAmount": zod.string().max(updatePlanResponseOneProfileFixedDiscountAmountMax).regex(updatePlanResponseOneProfileFixedDiscountAmountRegExp).nullish(),
+  "promoPrice": zod.string().max(updatePlanResponseOneProfilePromoPriceMax).regex(updatePlanResponseOneProfilePromoPriceRegExp).nullish(),
+  "promoStartsAt": zod.coerce.date().nullish(),
+  "promoEndsAt": zod.coerce.date().nullish(),
+  "billingInterval": zod.enum(['monthly', 'yearly', 'monthly_and_yearly', 'custom']).optional(),
+  "trialDays": zod.number().int().min(updatePlanResponseOneProfileTrialDaysMin).max(updatePlanResponseOneProfileTrialDaysMax).optional(),
+  "ctaLabel": zod.string().max(updatePlanResponseOneProfileCtaLabelMax).optional(),
+  "ctaUrl": zod.string().max(updatePlanResponseOneProfileCtaUrlMax).regex(updatePlanResponseOneProfileCtaUrlRegExp).optional(),
+  "visibility": zod.enum(['public', 'hidden']).optional(),
+  "adminSeats": zod.number().int().min(1).max(updatePlanResponseOneProfileAdminSeatsMax).nullish(),
+  "multiAdminRoles": zod.boolean().optional(),
+  "supportLevel": zod.enum(['email', 'priority', 'dedicated']).optional(),
+  "supportResponseHours": zod.number().int().min(1).max(updatePlanResponseOneProfileSupportResponseHoursMax).nullish(),
+  "launchTargetBusinessDays": zod.number().int().min(1).max(updatePlanResponseOneProfileLaunchTargetBusinessDaysMax).nullish(),
+  "dedicatedManager": zod.boolean().optional(),
+  "slaEnabled": zod.boolean().optional(),
+  "slaTerms": zod.string().max(updatePlanResponseOneProfileSlaTermsMax).optional(),
+  "earlyAccess": zod.boolean().optional(),
+  "poweredByFooter": zod.boolean().optional(),
+  "themeModes": zod.array(zod.enum(['light', 'dark'])).max(updatePlanResponseOneProfileThemeModesMax).optional(),
+  "convertProviderLimit": zod.number().int().min(updatePlanResponseOneProfileConvertProviderLimitMin).max(updatePlanResponseOneProfileConvertProviderLimitMax).nullish(),
+  "requestedProviders": zod.array(zod.string().min(1).max(updatePlanResponseOneProfileRequestedProvidersItemMax)).max(updatePlanResponseOneProfileRequestedProvidersMax).optional(),
+  "capabilities": zod.array(zod.object({
+  "key": zod.string().regex(updatePlanResponseOneProfileCapabilitiesItemKeyRegExp),
+  "label": zod.string().min(1).max(updatePlanResponseOneProfileCapabilitiesItemLabelMax),
+  "description": zod.string().max(updatePlanResponseOneProfileCapabilitiesItemDescriptionMax).optional(),
+  "group": zod.string().max(updatePlanResponseOneProfileCapabilitiesItemGroupMax).optional(),
+  "state": zod.enum(['included', 'excluded', 'optional', 'limited', 'unlimited', 'unavailable']).describe('Commercial state. limited requires limitValue.'),
+  "availability": zod.enum(['available', 'requires_configuration', 'unavailable']).describe('Implementation status; unavailable means not implemented and never a working toggle'),
+  "limitValue": zod.number().min(updatePlanResponseOneProfileCapabilitiesItemLimitValueMin).max(updatePlanResponseOneProfileCapabilitiesItemLimitValueMax).nullish(),
+  "unit": zod.string().max(updatePlanResponseOneProfileCapabilitiesItemUnitMax).optional(),
+  "tooltip": zod.string().max(updatePlanResponseOneProfileCapabilitiesItemTooltipMax).optional(),
+  "highlight": zod.boolean().optional(),
+  "publicVisible": zod.boolean().optional(),
+  "badge": zod.string().max(updatePlanResponseOneProfileCapabilitiesItemBadgeMax).optional(),
+  "dependsOn": zod.array(zod.string().regex(updatePlanResponseOneProfileCapabilitiesItemDependsOnItemRegExp)).max(updatePlanResponseOneProfileCapabilitiesItemDependsOnMax).optional(),
+  "note": zod.string().max(updatePlanResponseOneProfileCapabilitiesItemNoteMax).optional()
+})).max(updatePlanResponseOneProfileCapabilitiesMax).optional(),
+  "internalNotes": zod.string().max(updatePlanResponseOneProfileInternalNotesMax).optional()
+}).optional().describe('Structured plan configuration. internalName and internalNotes are Super Admin only and never published.'),
+  "expectedRevision": zod.number().int().min(updatePlanResponseOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
 }).and(zod.object({
   "id": zod.string().uuid(),
   "createdAt": zod.coerce.date(),
@@ -9971,8 +13084,144 @@ export const UpdatePlanResponse = zod.object({
   "featureRows": zod.array(zod.object({
   "label": zod.string().min(1).max(updatePlanResponseTwoFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(updatePlanResponseTwoFeatureRowsItemValueMax)
-}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(updatePlanResponseTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.')
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(updatePlanResponseTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.'),
+  "revision": zod.number().int().optional()
 }))
+
+
+export const ListPublicationVersionsResponse = zod.object({
+  "currentRevision": zod.string().nullable(),
+  "versions": zod.array(zod.object({
+  "id": zod.string().uuid(),
+  "revision": zod.string(),
+  "reason": zod.string(),
+  "publishedBy": zod.string(),
+  "rollbackOf": zod.string().nullable(),
+  "publishedAt": zod.coerce.date(),
+  "planCount": zod.number().int()
+}))
+})
+
+
+export const RollbackPublicationParams = zod.object({
+  "versionId": zod.coerce.string().uuid()
+})
+
+export const rollbackPublicationBodyExpectedPublishedRevisionRegExp = new RegExp('^[a-f0-9]{64}$');
+export const rollbackPublicationBodyReasonMin = 3;
+export const rollbackPublicationBodyReasonMax = 500;
+
+
+
+export const RollbackPublicationBody = zod.object({
+  "expectedPublishedRevision": zod.string().regex(rollbackPublicationBodyExpectedPublishedRevisionRegExp).nullable(),
+  "reason": zod.string().min(rollbackPublicationBodyReasonMin).max(rollbackPublicationBodyReasonMax)
+})
+
+export const RollbackPublicationResponse = zod.object({
+  "publishedRevision": zod.string()
+})
+
+
+export const reorderPlansBodyPlansItemRevisionMin = 0;
+
+export const reorderPlansBodyPlansMax = 500;
+
+
+
+export const ReorderPlansBody = zod.object({
+  "plans": zod.array(zod.object({
+  "id": zod.string().uuid(),
+  "revision": zod.number().int().min(reorderPlansBodyPlansItemRevisionMin)
+})).min(1).max(reorderPlansBodyPlansMax)
+})
+
+export const ReorderPlansResponse = zod.object({
+  "ok": zod.boolean()
+})
+
+
+export const GetPlanHistoryParams = zod.object({
+  "planId": zod.coerce.string().uuid()
+})
+
+export const GetPlanHistoryResponseItem = zod.object({
+  "id": zod.string().uuid(),
+  "actorId": zod.string(),
+  "eventType": zod.string(),
+  "description": zod.string(),
+  "metadata": zod.record(zod.string(), zod.unknown()),
+  "createdAt": zod.coerce.date()
+})
+export const GetPlanHistoryResponse = zod.array(GetPlanHistoryResponseItem)
+
+
+export const GetPlanMigrationPreviewParams = zod.object({
+  "planId": zod.coerce.string().uuid()
+})
+
+export const GetPlanMigrationPreviewQueryParams = zod.object({
+  "targetPlanId": zod.coerce.string().uuid()
+})
+
+export const GetPlanMigrationPreviewResponse = zod.object({
+  "previewToken": zod.string().describe('Binds a confirm to this exact published target and these exact current contracts'),
+  "publishedRevision": zod.string(),
+  "target": zod.object({
+  "id": zod.string().uuid(),
+  "name": zod.string(),
+  "prices": zod.object({
+  "monthlyPrice": zod.string().nullable(),
+  "yearlyPrice": zod.string().nullable(),
+  "setupFee": zod.string().nullable(),
+  "currency": zod.string()
+})
+}),
+  "subscribers": zod.array(zod.object({
+  "tenantId": zod.string().uuid(),
+  "tenantName": zod.string(),
+  "frozen": zod.boolean(),
+  "frozenAt": zod.coerce.date().nullable(),
+  "contractPlanName": zod.string().nullable(),
+  "currentPrices": zod.union([zod.object({
+  "monthlyPrice": zod.string().nullable(),
+  "yearlyPrice": zod.string().nullable(),
+  "setupFee": zod.string().nullable(),
+  "currency": zod.string()
+}),zod.null()]),
+  "priceChanged": zod.boolean(),
+  "entitlementChanges": zod.array(zod.object({
+  "key": zod.string(),
+  "current": zod.unknown(),
+  "target": zod.unknown()
+}))
+}))
+})
+
+
+export const MigratePlanSubscriptionsParams = zod.object({
+  "planId": zod.coerce.string().uuid()
+})
+
+export const migratePlanSubscriptionsBodyTenantIdsMax = 1000;
+
+export const migratePlanSubscriptionsBodyReasonMin = 3;
+export const migratePlanSubscriptionsBodyReasonMax = 500;
+
+export const migratePlanSubscriptionsBodyPreviewTokenRegExp = new RegExp('^[a-f0-9]{64}$');
+
+
+export const MigratePlanSubscriptionsBody = zod.object({
+  "toPlanId": zod.string().uuid(),
+  "tenantIds": zod.array(zod.string().uuid()).min(1).max(migratePlanSubscriptionsBodyTenantIdsMax),
+  "reason": zod.string().min(migratePlanSubscriptionsBodyReasonMin).max(migratePlanSubscriptionsBodyReasonMax),
+  "confirmed": zod.literal(true),
+  "previewToken": zod.string().regex(migratePlanSubscriptionsBodyPreviewTokenRegExp)
+})
+
+export const MigratePlanSubscriptionsResponse = zod.object({
+  "moved": zod.array(zod.string().uuid())
+})
 
 
 export const DuplicatePlanParams = zod.object({
@@ -10020,6 +13269,94 @@ export const duplicatePlanResponseOneFeatureRowsItemLabelMax = 120;
 
 export const duplicatePlanResponseOneFeatureRowsItemValueMax = 500;
 
+export const duplicatePlanResponseOneProfileSlugRegExp = new RegExp('^[a-z0-9](?:[a-z0-9-]{0,62}[a-z0-9])?$');
+export const duplicatePlanResponseOneProfileInternalNameMax = 120;
+
+export const duplicatePlanResponseOneProfilePublicNameMax = 120;
+
+export const duplicatePlanResponseOneProfileTaglineMax = 160;
+
+export const duplicatePlanResponseOneProfileShortDescriptionMax = 300;
+
+export const duplicatePlanResponseOneProfileFullDescriptionMax = 5000;
+
+export const duplicatePlanResponseOneProfileIconUrlMax = 500;
+
+export const duplicatePlanResponseOneProfileImageUrlMax = 500;
+
+export const duplicatePlanResponseOneProfileBadgeLabelMax = 40;
+
+export const duplicatePlanResponseOneProfileFooterTextMax = 300;
+
+export const duplicatePlanResponseOneProfilePromoTextMax = 200;
+
+export const duplicatePlanResponseOneProfileTermsMax = 5000;
+
+export const duplicatePlanResponseOneProfileContactSalesLabelMax = 60;
+
+export const duplicatePlanResponseOneProfileCustomPriceTextMax = 80;
+
+export const duplicatePlanResponseOneProfileFixedDiscountAmountMax = 18;
+
+
+export const duplicatePlanResponseOneProfileFixedDiscountAmountRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,2})?$');
+export const duplicatePlanResponseOneProfilePromoPriceMax = 18;
+
+
+export const duplicatePlanResponseOneProfilePromoPriceRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,2})?$');
+export const duplicatePlanResponseOneProfileTrialDaysMin = 0;
+export const duplicatePlanResponseOneProfileTrialDaysMax = 365;
+
+export const duplicatePlanResponseOneProfileCtaLabelMax = 60;
+
+export const duplicatePlanResponseOneProfileCtaUrlMax = 200;
+
+
+export const duplicatePlanResponseOneProfileCtaUrlRegExp = new RegExp('^/(?!/)[A-Za-z0-9/_#?=&.-]*$');
+export const duplicatePlanResponseOneProfileAdminSeatsMax = 10000;
+
+export const duplicatePlanResponseOneProfileSupportResponseHoursMax = 720;
+
+export const duplicatePlanResponseOneProfileLaunchTargetBusinessDaysMax = 365;
+
+export const duplicatePlanResponseOneProfileSlaTermsMax = 1000;
+
+export const duplicatePlanResponseOneProfileThemeModesMax = 2;
+
+export const duplicatePlanResponseOneProfileConvertProviderLimitMin = 0;
+export const duplicatePlanResponseOneProfileConvertProviderLimitMax = 100;
+
+export const duplicatePlanResponseOneProfileRequestedProvidersItemMax = 60;
+
+export const duplicatePlanResponseOneProfileRequestedProvidersMax = 30;
+
+export const duplicatePlanResponseOneProfileCapabilitiesItemKeyRegExp = new RegExp('^[a-z][a-z0-9_]{1,63}$');
+export const duplicatePlanResponseOneProfileCapabilitiesItemLabelMax = 120;
+
+export const duplicatePlanResponseOneProfileCapabilitiesItemDescriptionMax = 600;
+
+export const duplicatePlanResponseOneProfileCapabilitiesItemGroupMax = 60;
+
+export const duplicatePlanResponseOneProfileCapabilitiesItemLimitValueMin = 0;
+export const duplicatePlanResponseOneProfileCapabilitiesItemLimitValueMax = 1000000000000;
+
+export const duplicatePlanResponseOneProfileCapabilitiesItemUnitMax = 30;
+
+export const duplicatePlanResponseOneProfileCapabilitiesItemTooltipMax = 300;
+
+export const duplicatePlanResponseOneProfileCapabilitiesItemBadgeMax = 30;
+
+export const duplicatePlanResponseOneProfileCapabilitiesItemDependsOnItemRegExp = new RegExp('^[a-z][a-z0-9_]{1,63}$');
+export const duplicatePlanResponseOneProfileCapabilitiesItemDependsOnMax = 20;
+
+export const duplicatePlanResponseOneProfileCapabilitiesItemNoteMax = 300;
+
+export const duplicatePlanResponseOneProfileCapabilitiesMax = 120;
+
+export const duplicatePlanResponseOneProfileInternalNotesMax = 5000;
+
+export const duplicatePlanResponseOneExpectedRevisionMin = 0;
+
 export const duplicatePlanResponseTwoFeatureRowsItemLabelMax = 120;
 
 export const duplicatePlanResponseTwoFeatureRowsItemValueMax = 500;
@@ -10044,7 +13381,66 @@ export const DuplicatePlanResponse = zod.object({
   "featureRows": zod.array(zod.object({
   "label": zod.string().min(1).max(duplicatePlanResponseOneFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(duplicatePlanResponseOneFeatureRowsItemValueMax)
-}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.')
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.'),
+  "profile": zod.object({
+  "slug": zod.string().regex(duplicatePlanResponseOneProfileSlugRegExp).optional(),
+  "internalName": zod.string().max(duplicatePlanResponseOneProfileInternalNameMax).optional(),
+  "publicName": zod.string().max(duplicatePlanResponseOneProfilePublicNameMax).optional(),
+  "tagline": zod.string().max(duplicatePlanResponseOneProfileTaglineMax).optional(),
+  "shortDescription": zod.string().max(duplicatePlanResponseOneProfileShortDescriptionMax).optional(),
+  "fullDescription": zod.string().max(duplicatePlanResponseOneProfileFullDescriptionMax).optional(),
+  "iconUrl": zod.string().max(duplicatePlanResponseOneProfileIconUrlMax).optional().describe('Local path or https URL without credentials'),
+  "imageUrl": zod.string().max(duplicatePlanResponseOneProfileImageUrlMax).optional().describe('Local path or https URL without credentials'),
+  "badgeType": zod.enum(['none', 'recommended', 'custom']).optional(),
+  "badgeLabel": zod.string().max(duplicatePlanResponseOneProfileBadgeLabelMax).optional(),
+  "featured": zod.boolean().optional(),
+  "footerText": zod.string().max(duplicatePlanResponseOneProfileFooterTextMax).optional(),
+  "promoText": zod.string().max(duplicatePlanResponseOneProfilePromoTextMax).optional(),
+  "terms": zod.string().max(duplicatePlanResponseOneProfileTermsMax).optional(),
+  "pricingMode": zod.enum(['paid', 'free', 'custom', 'contact_sales']).optional(),
+  "contactSalesLabel": zod.string().max(duplicatePlanResponseOneProfileContactSalesLabelMax).optional(),
+  "customPriceText": zod.string().max(duplicatePlanResponseOneProfileCustomPriceTextMax).optional(),
+  "fixedDiscountAmount": zod.string().max(duplicatePlanResponseOneProfileFixedDiscountAmountMax).regex(duplicatePlanResponseOneProfileFixedDiscountAmountRegExp).nullish(),
+  "promoPrice": zod.string().max(duplicatePlanResponseOneProfilePromoPriceMax).regex(duplicatePlanResponseOneProfilePromoPriceRegExp).nullish(),
+  "promoStartsAt": zod.coerce.date().nullish(),
+  "promoEndsAt": zod.coerce.date().nullish(),
+  "billingInterval": zod.enum(['monthly', 'yearly', 'monthly_and_yearly', 'custom']).optional(),
+  "trialDays": zod.number().int().min(duplicatePlanResponseOneProfileTrialDaysMin).max(duplicatePlanResponseOneProfileTrialDaysMax).optional(),
+  "ctaLabel": zod.string().max(duplicatePlanResponseOneProfileCtaLabelMax).optional(),
+  "ctaUrl": zod.string().max(duplicatePlanResponseOneProfileCtaUrlMax).regex(duplicatePlanResponseOneProfileCtaUrlRegExp).optional(),
+  "visibility": zod.enum(['public', 'hidden']).optional(),
+  "adminSeats": zod.number().int().min(1).max(duplicatePlanResponseOneProfileAdminSeatsMax).nullish(),
+  "multiAdminRoles": zod.boolean().optional(),
+  "supportLevel": zod.enum(['email', 'priority', 'dedicated']).optional(),
+  "supportResponseHours": zod.number().int().min(1).max(duplicatePlanResponseOneProfileSupportResponseHoursMax).nullish(),
+  "launchTargetBusinessDays": zod.number().int().min(1).max(duplicatePlanResponseOneProfileLaunchTargetBusinessDaysMax).nullish(),
+  "dedicatedManager": zod.boolean().optional(),
+  "slaEnabled": zod.boolean().optional(),
+  "slaTerms": zod.string().max(duplicatePlanResponseOneProfileSlaTermsMax).optional(),
+  "earlyAccess": zod.boolean().optional(),
+  "poweredByFooter": zod.boolean().optional(),
+  "themeModes": zod.array(zod.enum(['light', 'dark'])).max(duplicatePlanResponseOneProfileThemeModesMax).optional(),
+  "convertProviderLimit": zod.number().int().min(duplicatePlanResponseOneProfileConvertProviderLimitMin).max(duplicatePlanResponseOneProfileConvertProviderLimitMax).nullish(),
+  "requestedProviders": zod.array(zod.string().min(1).max(duplicatePlanResponseOneProfileRequestedProvidersItemMax)).max(duplicatePlanResponseOneProfileRequestedProvidersMax).optional(),
+  "capabilities": zod.array(zod.object({
+  "key": zod.string().regex(duplicatePlanResponseOneProfileCapabilitiesItemKeyRegExp),
+  "label": zod.string().min(1).max(duplicatePlanResponseOneProfileCapabilitiesItemLabelMax),
+  "description": zod.string().max(duplicatePlanResponseOneProfileCapabilitiesItemDescriptionMax).optional(),
+  "group": zod.string().max(duplicatePlanResponseOneProfileCapabilitiesItemGroupMax).optional(),
+  "state": zod.enum(['included', 'excluded', 'optional', 'limited', 'unlimited', 'unavailable']).describe('Commercial state. limited requires limitValue.'),
+  "availability": zod.enum(['available', 'requires_configuration', 'unavailable']).describe('Implementation status; unavailable means not implemented and never a working toggle'),
+  "limitValue": zod.number().min(duplicatePlanResponseOneProfileCapabilitiesItemLimitValueMin).max(duplicatePlanResponseOneProfileCapabilitiesItemLimitValueMax).nullish(),
+  "unit": zod.string().max(duplicatePlanResponseOneProfileCapabilitiesItemUnitMax).optional(),
+  "tooltip": zod.string().max(duplicatePlanResponseOneProfileCapabilitiesItemTooltipMax).optional(),
+  "highlight": zod.boolean().optional(),
+  "publicVisible": zod.boolean().optional(),
+  "badge": zod.string().max(duplicatePlanResponseOneProfileCapabilitiesItemBadgeMax).optional(),
+  "dependsOn": zod.array(zod.string().regex(duplicatePlanResponseOneProfileCapabilitiesItemDependsOnItemRegExp)).max(duplicatePlanResponseOneProfileCapabilitiesItemDependsOnMax).optional(),
+  "note": zod.string().max(duplicatePlanResponseOneProfileCapabilitiesItemNoteMax).optional()
+})).max(duplicatePlanResponseOneProfileCapabilitiesMax).optional(),
+  "internalNotes": zod.string().max(duplicatePlanResponseOneProfileInternalNotesMax).optional()
+}).optional().describe('Structured plan configuration. internalName and internalNotes are Super Admin only and never published.'),
+  "expectedRevision": zod.number().int().min(duplicatePlanResponseOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
 }).and(zod.object({
   "id": zod.string().uuid(),
   "createdAt": zod.coerce.date(),
@@ -10054,7 +13450,8 @@ export const DuplicatePlanResponse = zod.object({
   "featureRows": zod.array(zod.object({
   "label": zod.string().min(1).max(duplicatePlanResponseTwoFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(duplicatePlanResponseTwoFeatureRowsItemValueMax)
-}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(duplicatePlanResponseTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.')
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(duplicatePlanResponseTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.'),
+  "revision": zod.number().int().optional()
 }))
 
 
@@ -10062,8 +13459,13 @@ export const SetPlanStatusParams = zod.object({
   "planId": zod.coerce.string().uuid()
 })
 
+export const setPlanStatusBodyExpectedRevisionMin = 0;
+
+
+
 export const SetPlanStatusBody = zod.object({
-  "status": zod.enum(['enabled', 'disabled', 'archived'])
+  "status": zod.enum(['enabled', 'disabled', 'archived']),
+  "expectedRevision": zod.number().int().min(setPlanStatusBodyExpectedRevisionMin)
 })
 
 export const setPlanStatusResponseOneNameMin = 2;
@@ -10107,6 +13509,94 @@ export const setPlanStatusResponseOneFeatureRowsItemLabelMax = 120;
 
 export const setPlanStatusResponseOneFeatureRowsItemValueMax = 500;
 
+export const setPlanStatusResponseOneProfileSlugRegExp = new RegExp('^[a-z0-9](?:[a-z0-9-]{0,62}[a-z0-9])?$');
+export const setPlanStatusResponseOneProfileInternalNameMax = 120;
+
+export const setPlanStatusResponseOneProfilePublicNameMax = 120;
+
+export const setPlanStatusResponseOneProfileTaglineMax = 160;
+
+export const setPlanStatusResponseOneProfileShortDescriptionMax = 300;
+
+export const setPlanStatusResponseOneProfileFullDescriptionMax = 5000;
+
+export const setPlanStatusResponseOneProfileIconUrlMax = 500;
+
+export const setPlanStatusResponseOneProfileImageUrlMax = 500;
+
+export const setPlanStatusResponseOneProfileBadgeLabelMax = 40;
+
+export const setPlanStatusResponseOneProfileFooterTextMax = 300;
+
+export const setPlanStatusResponseOneProfilePromoTextMax = 200;
+
+export const setPlanStatusResponseOneProfileTermsMax = 5000;
+
+export const setPlanStatusResponseOneProfileContactSalesLabelMax = 60;
+
+export const setPlanStatusResponseOneProfileCustomPriceTextMax = 80;
+
+export const setPlanStatusResponseOneProfileFixedDiscountAmountMax = 18;
+
+
+export const setPlanStatusResponseOneProfileFixedDiscountAmountRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,2})?$');
+export const setPlanStatusResponseOneProfilePromoPriceMax = 18;
+
+
+export const setPlanStatusResponseOneProfilePromoPriceRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,2})?$');
+export const setPlanStatusResponseOneProfileTrialDaysMin = 0;
+export const setPlanStatusResponseOneProfileTrialDaysMax = 365;
+
+export const setPlanStatusResponseOneProfileCtaLabelMax = 60;
+
+export const setPlanStatusResponseOneProfileCtaUrlMax = 200;
+
+
+export const setPlanStatusResponseOneProfileCtaUrlRegExp = new RegExp('^/(?!/)[A-Za-z0-9/_#?=&.-]*$');
+export const setPlanStatusResponseOneProfileAdminSeatsMax = 10000;
+
+export const setPlanStatusResponseOneProfileSupportResponseHoursMax = 720;
+
+export const setPlanStatusResponseOneProfileLaunchTargetBusinessDaysMax = 365;
+
+export const setPlanStatusResponseOneProfileSlaTermsMax = 1000;
+
+export const setPlanStatusResponseOneProfileThemeModesMax = 2;
+
+export const setPlanStatusResponseOneProfileConvertProviderLimitMin = 0;
+export const setPlanStatusResponseOneProfileConvertProviderLimitMax = 100;
+
+export const setPlanStatusResponseOneProfileRequestedProvidersItemMax = 60;
+
+export const setPlanStatusResponseOneProfileRequestedProvidersMax = 30;
+
+export const setPlanStatusResponseOneProfileCapabilitiesItemKeyRegExp = new RegExp('^[a-z][a-z0-9_]{1,63}$');
+export const setPlanStatusResponseOneProfileCapabilitiesItemLabelMax = 120;
+
+export const setPlanStatusResponseOneProfileCapabilitiesItemDescriptionMax = 600;
+
+export const setPlanStatusResponseOneProfileCapabilitiesItemGroupMax = 60;
+
+export const setPlanStatusResponseOneProfileCapabilitiesItemLimitValueMin = 0;
+export const setPlanStatusResponseOneProfileCapabilitiesItemLimitValueMax = 1000000000000;
+
+export const setPlanStatusResponseOneProfileCapabilitiesItemUnitMax = 30;
+
+export const setPlanStatusResponseOneProfileCapabilitiesItemTooltipMax = 300;
+
+export const setPlanStatusResponseOneProfileCapabilitiesItemBadgeMax = 30;
+
+export const setPlanStatusResponseOneProfileCapabilitiesItemDependsOnItemRegExp = new RegExp('^[a-z][a-z0-9_]{1,63}$');
+export const setPlanStatusResponseOneProfileCapabilitiesItemDependsOnMax = 20;
+
+export const setPlanStatusResponseOneProfileCapabilitiesItemNoteMax = 300;
+
+export const setPlanStatusResponseOneProfileCapabilitiesMax = 120;
+
+export const setPlanStatusResponseOneProfileInternalNotesMax = 5000;
+
+export const setPlanStatusResponseOneExpectedRevisionMin = 0;
+
 export const setPlanStatusResponseTwoFeatureRowsItemLabelMax = 120;
 
 export const setPlanStatusResponseTwoFeatureRowsItemValueMax = 500;
@@ -10131,7 +13621,66 @@ export const SetPlanStatusResponse = zod.object({
   "featureRows": zod.array(zod.object({
   "label": zod.string().min(1).max(setPlanStatusResponseOneFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(setPlanStatusResponseOneFeatureRowsItemValueMax)
-}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.')
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.'),
+  "profile": zod.object({
+  "slug": zod.string().regex(setPlanStatusResponseOneProfileSlugRegExp).optional(),
+  "internalName": zod.string().max(setPlanStatusResponseOneProfileInternalNameMax).optional(),
+  "publicName": zod.string().max(setPlanStatusResponseOneProfilePublicNameMax).optional(),
+  "tagline": zod.string().max(setPlanStatusResponseOneProfileTaglineMax).optional(),
+  "shortDescription": zod.string().max(setPlanStatusResponseOneProfileShortDescriptionMax).optional(),
+  "fullDescription": zod.string().max(setPlanStatusResponseOneProfileFullDescriptionMax).optional(),
+  "iconUrl": zod.string().max(setPlanStatusResponseOneProfileIconUrlMax).optional().describe('Local path or https URL without credentials'),
+  "imageUrl": zod.string().max(setPlanStatusResponseOneProfileImageUrlMax).optional().describe('Local path or https URL without credentials'),
+  "badgeType": zod.enum(['none', 'recommended', 'custom']).optional(),
+  "badgeLabel": zod.string().max(setPlanStatusResponseOneProfileBadgeLabelMax).optional(),
+  "featured": zod.boolean().optional(),
+  "footerText": zod.string().max(setPlanStatusResponseOneProfileFooterTextMax).optional(),
+  "promoText": zod.string().max(setPlanStatusResponseOneProfilePromoTextMax).optional(),
+  "terms": zod.string().max(setPlanStatusResponseOneProfileTermsMax).optional(),
+  "pricingMode": zod.enum(['paid', 'free', 'custom', 'contact_sales']).optional(),
+  "contactSalesLabel": zod.string().max(setPlanStatusResponseOneProfileContactSalesLabelMax).optional(),
+  "customPriceText": zod.string().max(setPlanStatusResponseOneProfileCustomPriceTextMax).optional(),
+  "fixedDiscountAmount": zod.string().max(setPlanStatusResponseOneProfileFixedDiscountAmountMax).regex(setPlanStatusResponseOneProfileFixedDiscountAmountRegExp).nullish(),
+  "promoPrice": zod.string().max(setPlanStatusResponseOneProfilePromoPriceMax).regex(setPlanStatusResponseOneProfilePromoPriceRegExp).nullish(),
+  "promoStartsAt": zod.coerce.date().nullish(),
+  "promoEndsAt": zod.coerce.date().nullish(),
+  "billingInterval": zod.enum(['monthly', 'yearly', 'monthly_and_yearly', 'custom']).optional(),
+  "trialDays": zod.number().int().min(setPlanStatusResponseOneProfileTrialDaysMin).max(setPlanStatusResponseOneProfileTrialDaysMax).optional(),
+  "ctaLabel": zod.string().max(setPlanStatusResponseOneProfileCtaLabelMax).optional(),
+  "ctaUrl": zod.string().max(setPlanStatusResponseOneProfileCtaUrlMax).regex(setPlanStatusResponseOneProfileCtaUrlRegExp).optional(),
+  "visibility": zod.enum(['public', 'hidden']).optional(),
+  "adminSeats": zod.number().int().min(1).max(setPlanStatusResponseOneProfileAdminSeatsMax).nullish(),
+  "multiAdminRoles": zod.boolean().optional(),
+  "supportLevel": zod.enum(['email', 'priority', 'dedicated']).optional(),
+  "supportResponseHours": zod.number().int().min(1).max(setPlanStatusResponseOneProfileSupportResponseHoursMax).nullish(),
+  "launchTargetBusinessDays": zod.number().int().min(1).max(setPlanStatusResponseOneProfileLaunchTargetBusinessDaysMax).nullish(),
+  "dedicatedManager": zod.boolean().optional(),
+  "slaEnabled": zod.boolean().optional(),
+  "slaTerms": zod.string().max(setPlanStatusResponseOneProfileSlaTermsMax).optional(),
+  "earlyAccess": zod.boolean().optional(),
+  "poweredByFooter": zod.boolean().optional(),
+  "themeModes": zod.array(zod.enum(['light', 'dark'])).max(setPlanStatusResponseOneProfileThemeModesMax).optional(),
+  "convertProviderLimit": zod.number().int().min(setPlanStatusResponseOneProfileConvertProviderLimitMin).max(setPlanStatusResponseOneProfileConvertProviderLimitMax).nullish(),
+  "requestedProviders": zod.array(zod.string().min(1).max(setPlanStatusResponseOneProfileRequestedProvidersItemMax)).max(setPlanStatusResponseOneProfileRequestedProvidersMax).optional(),
+  "capabilities": zod.array(zod.object({
+  "key": zod.string().regex(setPlanStatusResponseOneProfileCapabilitiesItemKeyRegExp),
+  "label": zod.string().min(1).max(setPlanStatusResponseOneProfileCapabilitiesItemLabelMax),
+  "description": zod.string().max(setPlanStatusResponseOneProfileCapabilitiesItemDescriptionMax).optional(),
+  "group": zod.string().max(setPlanStatusResponseOneProfileCapabilitiesItemGroupMax).optional(),
+  "state": zod.enum(['included', 'excluded', 'optional', 'limited', 'unlimited', 'unavailable']).describe('Commercial state. limited requires limitValue.'),
+  "availability": zod.enum(['available', 'requires_configuration', 'unavailable']).describe('Implementation status; unavailable means not implemented and never a working toggle'),
+  "limitValue": zod.number().min(setPlanStatusResponseOneProfileCapabilitiesItemLimitValueMin).max(setPlanStatusResponseOneProfileCapabilitiesItemLimitValueMax).nullish(),
+  "unit": zod.string().max(setPlanStatusResponseOneProfileCapabilitiesItemUnitMax).optional(),
+  "tooltip": zod.string().max(setPlanStatusResponseOneProfileCapabilitiesItemTooltipMax).optional(),
+  "highlight": zod.boolean().optional(),
+  "publicVisible": zod.boolean().optional(),
+  "badge": zod.string().max(setPlanStatusResponseOneProfileCapabilitiesItemBadgeMax).optional(),
+  "dependsOn": zod.array(zod.string().regex(setPlanStatusResponseOneProfileCapabilitiesItemDependsOnItemRegExp)).max(setPlanStatusResponseOneProfileCapabilitiesItemDependsOnMax).optional(),
+  "note": zod.string().max(setPlanStatusResponseOneProfileCapabilitiesItemNoteMax).optional()
+})).max(setPlanStatusResponseOneProfileCapabilitiesMax).optional(),
+  "internalNotes": zod.string().max(setPlanStatusResponseOneProfileInternalNotesMax).optional()
+}).optional().describe('Structured plan configuration. internalName and internalNotes are Super Admin only and never published.'),
+  "expectedRevision": zod.number().int().min(setPlanStatusResponseOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
 }).and(zod.object({
   "id": zod.string().uuid(),
   "createdAt": zod.coerce.date(),
@@ -10141,7 +13690,8 @@ export const SetPlanStatusResponse = zod.object({
   "featureRows": zod.array(zod.object({
   "label": zod.string().min(1).max(setPlanStatusResponseTwoFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(setPlanStatusResponseTwoFeatureRowsItemValueMax)
-}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(setPlanStatusResponseTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.')
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(setPlanStatusResponseTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.'),
+  "revision": zod.number().int().optional()
 }))
 
 
@@ -10416,6 +13966,94 @@ export const getTenantSubscriptionResponsePlanOneOneFeatureRowsItemLabelMax = 12
 
 export const getTenantSubscriptionResponsePlanOneOneFeatureRowsItemValueMax = 500;
 
+export const getTenantSubscriptionResponsePlanOneOneProfileSlugRegExp = new RegExp('^[a-z0-9](?:[a-z0-9-]{0,62}[a-z0-9])?$');
+export const getTenantSubscriptionResponsePlanOneOneProfileInternalNameMax = 120;
+
+export const getTenantSubscriptionResponsePlanOneOneProfilePublicNameMax = 120;
+
+export const getTenantSubscriptionResponsePlanOneOneProfileTaglineMax = 160;
+
+export const getTenantSubscriptionResponsePlanOneOneProfileShortDescriptionMax = 300;
+
+export const getTenantSubscriptionResponsePlanOneOneProfileFullDescriptionMax = 5000;
+
+export const getTenantSubscriptionResponsePlanOneOneProfileIconUrlMax = 500;
+
+export const getTenantSubscriptionResponsePlanOneOneProfileImageUrlMax = 500;
+
+export const getTenantSubscriptionResponsePlanOneOneProfileBadgeLabelMax = 40;
+
+export const getTenantSubscriptionResponsePlanOneOneProfileFooterTextMax = 300;
+
+export const getTenantSubscriptionResponsePlanOneOneProfilePromoTextMax = 200;
+
+export const getTenantSubscriptionResponsePlanOneOneProfileTermsMax = 5000;
+
+export const getTenantSubscriptionResponsePlanOneOneProfileContactSalesLabelMax = 60;
+
+export const getTenantSubscriptionResponsePlanOneOneProfileCustomPriceTextMax = 80;
+
+export const getTenantSubscriptionResponsePlanOneOneProfileFixedDiscountAmountMax = 18;
+
+
+export const getTenantSubscriptionResponsePlanOneOneProfileFixedDiscountAmountRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,2})?$');
+export const getTenantSubscriptionResponsePlanOneOneProfilePromoPriceMax = 18;
+
+
+export const getTenantSubscriptionResponsePlanOneOneProfilePromoPriceRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,2})?$');
+export const getTenantSubscriptionResponsePlanOneOneProfileTrialDaysMin = 0;
+export const getTenantSubscriptionResponsePlanOneOneProfileTrialDaysMax = 365;
+
+export const getTenantSubscriptionResponsePlanOneOneProfileCtaLabelMax = 60;
+
+export const getTenantSubscriptionResponsePlanOneOneProfileCtaUrlMax = 200;
+
+
+export const getTenantSubscriptionResponsePlanOneOneProfileCtaUrlRegExp = new RegExp('^/(?!/)[A-Za-z0-9/_#?=&.-]*$');
+export const getTenantSubscriptionResponsePlanOneOneProfileAdminSeatsMax = 10000;
+
+export const getTenantSubscriptionResponsePlanOneOneProfileSupportResponseHoursMax = 720;
+
+export const getTenantSubscriptionResponsePlanOneOneProfileLaunchTargetBusinessDaysMax = 365;
+
+export const getTenantSubscriptionResponsePlanOneOneProfileSlaTermsMax = 1000;
+
+export const getTenantSubscriptionResponsePlanOneOneProfileThemeModesMax = 2;
+
+export const getTenantSubscriptionResponsePlanOneOneProfileConvertProviderLimitMin = 0;
+export const getTenantSubscriptionResponsePlanOneOneProfileConvertProviderLimitMax = 100;
+
+export const getTenantSubscriptionResponsePlanOneOneProfileRequestedProvidersItemMax = 60;
+
+export const getTenantSubscriptionResponsePlanOneOneProfileRequestedProvidersMax = 30;
+
+export const getTenantSubscriptionResponsePlanOneOneProfileCapabilitiesItemKeyRegExp = new RegExp('^[a-z][a-z0-9_]{1,63}$');
+export const getTenantSubscriptionResponsePlanOneOneProfileCapabilitiesItemLabelMax = 120;
+
+export const getTenantSubscriptionResponsePlanOneOneProfileCapabilitiesItemDescriptionMax = 600;
+
+export const getTenantSubscriptionResponsePlanOneOneProfileCapabilitiesItemGroupMax = 60;
+
+export const getTenantSubscriptionResponsePlanOneOneProfileCapabilitiesItemLimitValueMin = 0;
+export const getTenantSubscriptionResponsePlanOneOneProfileCapabilitiesItemLimitValueMax = 1000000000000;
+
+export const getTenantSubscriptionResponsePlanOneOneProfileCapabilitiesItemUnitMax = 30;
+
+export const getTenantSubscriptionResponsePlanOneOneProfileCapabilitiesItemTooltipMax = 300;
+
+export const getTenantSubscriptionResponsePlanOneOneProfileCapabilitiesItemBadgeMax = 30;
+
+export const getTenantSubscriptionResponsePlanOneOneProfileCapabilitiesItemDependsOnItemRegExp = new RegExp('^[a-z][a-z0-9_]{1,63}$');
+export const getTenantSubscriptionResponsePlanOneOneProfileCapabilitiesItemDependsOnMax = 20;
+
+export const getTenantSubscriptionResponsePlanOneOneProfileCapabilitiesItemNoteMax = 300;
+
+export const getTenantSubscriptionResponsePlanOneOneProfileCapabilitiesMax = 120;
+
+export const getTenantSubscriptionResponsePlanOneOneProfileInternalNotesMax = 5000;
+
+export const getTenantSubscriptionResponsePlanOneOneExpectedRevisionMin = 0;
+
 export const getTenantSubscriptionResponsePlanOneTwoFeatureRowsItemLabelMax = 120;
 
 export const getTenantSubscriptionResponsePlanOneTwoFeatureRowsItemValueMax = 500;
@@ -10485,7 +14123,66 @@ export const GetTenantSubscriptionResponse = zod.object({
   "featureRows": zod.array(zod.object({
   "label": zod.string().min(1).max(getTenantSubscriptionResponsePlanOneOneFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(getTenantSubscriptionResponsePlanOneOneFeatureRowsItemValueMax)
-}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.')
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.'),
+  "profile": zod.object({
+  "slug": zod.string().regex(getTenantSubscriptionResponsePlanOneOneProfileSlugRegExp).optional(),
+  "internalName": zod.string().max(getTenantSubscriptionResponsePlanOneOneProfileInternalNameMax).optional(),
+  "publicName": zod.string().max(getTenantSubscriptionResponsePlanOneOneProfilePublicNameMax).optional(),
+  "tagline": zod.string().max(getTenantSubscriptionResponsePlanOneOneProfileTaglineMax).optional(),
+  "shortDescription": zod.string().max(getTenantSubscriptionResponsePlanOneOneProfileShortDescriptionMax).optional(),
+  "fullDescription": zod.string().max(getTenantSubscriptionResponsePlanOneOneProfileFullDescriptionMax).optional(),
+  "iconUrl": zod.string().max(getTenantSubscriptionResponsePlanOneOneProfileIconUrlMax).optional().describe('Local path or https URL without credentials'),
+  "imageUrl": zod.string().max(getTenantSubscriptionResponsePlanOneOneProfileImageUrlMax).optional().describe('Local path or https URL without credentials'),
+  "badgeType": zod.enum(['none', 'recommended', 'custom']).optional(),
+  "badgeLabel": zod.string().max(getTenantSubscriptionResponsePlanOneOneProfileBadgeLabelMax).optional(),
+  "featured": zod.boolean().optional(),
+  "footerText": zod.string().max(getTenantSubscriptionResponsePlanOneOneProfileFooterTextMax).optional(),
+  "promoText": zod.string().max(getTenantSubscriptionResponsePlanOneOneProfilePromoTextMax).optional(),
+  "terms": zod.string().max(getTenantSubscriptionResponsePlanOneOneProfileTermsMax).optional(),
+  "pricingMode": zod.enum(['paid', 'free', 'custom', 'contact_sales']).optional(),
+  "contactSalesLabel": zod.string().max(getTenantSubscriptionResponsePlanOneOneProfileContactSalesLabelMax).optional(),
+  "customPriceText": zod.string().max(getTenantSubscriptionResponsePlanOneOneProfileCustomPriceTextMax).optional(),
+  "fixedDiscountAmount": zod.string().max(getTenantSubscriptionResponsePlanOneOneProfileFixedDiscountAmountMax).regex(getTenantSubscriptionResponsePlanOneOneProfileFixedDiscountAmountRegExp).nullish(),
+  "promoPrice": zod.string().max(getTenantSubscriptionResponsePlanOneOneProfilePromoPriceMax).regex(getTenantSubscriptionResponsePlanOneOneProfilePromoPriceRegExp).nullish(),
+  "promoStartsAt": zod.coerce.date().nullish(),
+  "promoEndsAt": zod.coerce.date().nullish(),
+  "billingInterval": zod.enum(['monthly', 'yearly', 'monthly_and_yearly', 'custom']).optional(),
+  "trialDays": zod.number().int().min(getTenantSubscriptionResponsePlanOneOneProfileTrialDaysMin).max(getTenantSubscriptionResponsePlanOneOneProfileTrialDaysMax).optional(),
+  "ctaLabel": zod.string().max(getTenantSubscriptionResponsePlanOneOneProfileCtaLabelMax).optional(),
+  "ctaUrl": zod.string().max(getTenantSubscriptionResponsePlanOneOneProfileCtaUrlMax).regex(getTenantSubscriptionResponsePlanOneOneProfileCtaUrlRegExp).optional(),
+  "visibility": zod.enum(['public', 'hidden']).optional(),
+  "adminSeats": zod.number().int().min(1).max(getTenantSubscriptionResponsePlanOneOneProfileAdminSeatsMax).nullish(),
+  "multiAdminRoles": zod.boolean().optional(),
+  "supportLevel": zod.enum(['email', 'priority', 'dedicated']).optional(),
+  "supportResponseHours": zod.number().int().min(1).max(getTenantSubscriptionResponsePlanOneOneProfileSupportResponseHoursMax).nullish(),
+  "launchTargetBusinessDays": zod.number().int().min(1).max(getTenantSubscriptionResponsePlanOneOneProfileLaunchTargetBusinessDaysMax).nullish(),
+  "dedicatedManager": zod.boolean().optional(),
+  "slaEnabled": zod.boolean().optional(),
+  "slaTerms": zod.string().max(getTenantSubscriptionResponsePlanOneOneProfileSlaTermsMax).optional(),
+  "earlyAccess": zod.boolean().optional(),
+  "poweredByFooter": zod.boolean().optional(),
+  "themeModes": zod.array(zod.enum(['light', 'dark'])).max(getTenantSubscriptionResponsePlanOneOneProfileThemeModesMax).optional(),
+  "convertProviderLimit": zod.number().int().min(getTenantSubscriptionResponsePlanOneOneProfileConvertProviderLimitMin).max(getTenantSubscriptionResponsePlanOneOneProfileConvertProviderLimitMax).nullish(),
+  "requestedProviders": zod.array(zod.string().min(1).max(getTenantSubscriptionResponsePlanOneOneProfileRequestedProvidersItemMax)).max(getTenantSubscriptionResponsePlanOneOneProfileRequestedProvidersMax).optional(),
+  "capabilities": zod.array(zod.object({
+  "key": zod.string().regex(getTenantSubscriptionResponsePlanOneOneProfileCapabilitiesItemKeyRegExp),
+  "label": zod.string().min(1).max(getTenantSubscriptionResponsePlanOneOneProfileCapabilitiesItemLabelMax),
+  "description": zod.string().max(getTenantSubscriptionResponsePlanOneOneProfileCapabilitiesItemDescriptionMax).optional(),
+  "group": zod.string().max(getTenantSubscriptionResponsePlanOneOneProfileCapabilitiesItemGroupMax).optional(),
+  "state": zod.enum(['included', 'excluded', 'optional', 'limited', 'unlimited', 'unavailable']).describe('Commercial state. limited requires limitValue.'),
+  "availability": zod.enum(['available', 'requires_configuration', 'unavailable']).describe('Implementation status; unavailable means not implemented and never a working toggle'),
+  "limitValue": zod.number().min(getTenantSubscriptionResponsePlanOneOneProfileCapabilitiesItemLimitValueMin).max(getTenantSubscriptionResponsePlanOneOneProfileCapabilitiesItemLimitValueMax).nullish(),
+  "unit": zod.string().max(getTenantSubscriptionResponsePlanOneOneProfileCapabilitiesItemUnitMax).optional(),
+  "tooltip": zod.string().max(getTenantSubscriptionResponsePlanOneOneProfileCapabilitiesItemTooltipMax).optional(),
+  "highlight": zod.boolean().optional(),
+  "publicVisible": zod.boolean().optional(),
+  "badge": zod.string().max(getTenantSubscriptionResponsePlanOneOneProfileCapabilitiesItemBadgeMax).optional(),
+  "dependsOn": zod.array(zod.string().regex(getTenantSubscriptionResponsePlanOneOneProfileCapabilitiesItemDependsOnItemRegExp)).max(getTenantSubscriptionResponsePlanOneOneProfileCapabilitiesItemDependsOnMax).optional(),
+  "note": zod.string().max(getTenantSubscriptionResponsePlanOneOneProfileCapabilitiesItemNoteMax).optional()
+})).max(getTenantSubscriptionResponsePlanOneOneProfileCapabilitiesMax).optional(),
+  "internalNotes": zod.string().max(getTenantSubscriptionResponsePlanOneOneProfileInternalNotesMax).optional()
+}).optional().describe('Structured plan configuration. internalName and internalNotes are Super Admin only and never published.'),
+  "expectedRevision": zod.number().int().min(getTenantSubscriptionResponsePlanOneOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
 }).and(zod.object({
   "id": zod.string().uuid(),
   "createdAt": zod.coerce.date(),
@@ -10495,7 +14192,8 @@ export const GetTenantSubscriptionResponse = zod.object({
   "featureRows": zod.array(zod.object({
   "label": zod.string().min(1).max(getTenantSubscriptionResponsePlanOneTwoFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(getTenantSubscriptionResponsePlanOneTwoFeatureRowsItemValueMax)
-}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(getTenantSubscriptionResponsePlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.')
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(getTenantSubscriptionResponsePlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.'),
+  "revision": zod.number().int().optional()
 })),zod.null()]),
   "addons": zod.array(zod.object({
   "monthlyPrice": zod.string().regex(getTenantSubscriptionResponseAddonsItemOneMonthlyPriceRegExp).nullish(),
@@ -10584,6 +14282,94 @@ export const changeTenantPlanResponsePlanOneOneFeatureRowsItemLabelMax = 120;
 
 export const changeTenantPlanResponsePlanOneOneFeatureRowsItemValueMax = 500;
 
+export const changeTenantPlanResponsePlanOneOneProfileSlugRegExp = new RegExp('^[a-z0-9](?:[a-z0-9-]{0,62}[a-z0-9])?$');
+export const changeTenantPlanResponsePlanOneOneProfileInternalNameMax = 120;
+
+export const changeTenantPlanResponsePlanOneOneProfilePublicNameMax = 120;
+
+export const changeTenantPlanResponsePlanOneOneProfileTaglineMax = 160;
+
+export const changeTenantPlanResponsePlanOneOneProfileShortDescriptionMax = 300;
+
+export const changeTenantPlanResponsePlanOneOneProfileFullDescriptionMax = 5000;
+
+export const changeTenantPlanResponsePlanOneOneProfileIconUrlMax = 500;
+
+export const changeTenantPlanResponsePlanOneOneProfileImageUrlMax = 500;
+
+export const changeTenantPlanResponsePlanOneOneProfileBadgeLabelMax = 40;
+
+export const changeTenantPlanResponsePlanOneOneProfileFooterTextMax = 300;
+
+export const changeTenantPlanResponsePlanOneOneProfilePromoTextMax = 200;
+
+export const changeTenantPlanResponsePlanOneOneProfileTermsMax = 5000;
+
+export const changeTenantPlanResponsePlanOneOneProfileContactSalesLabelMax = 60;
+
+export const changeTenantPlanResponsePlanOneOneProfileCustomPriceTextMax = 80;
+
+export const changeTenantPlanResponsePlanOneOneProfileFixedDiscountAmountMax = 18;
+
+
+export const changeTenantPlanResponsePlanOneOneProfileFixedDiscountAmountRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,2})?$');
+export const changeTenantPlanResponsePlanOneOneProfilePromoPriceMax = 18;
+
+
+export const changeTenantPlanResponsePlanOneOneProfilePromoPriceRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,2})?$');
+export const changeTenantPlanResponsePlanOneOneProfileTrialDaysMin = 0;
+export const changeTenantPlanResponsePlanOneOneProfileTrialDaysMax = 365;
+
+export const changeTenantPlanResponsePlanOneOneProfileCtaLabelMax = 60;
+
+export const changeTenantPlanResponsePlanOneOneProfileCtaUrlMax = 200;
+
+
+export const changeTenantPlanResponsePlanOneOneProfileCtaUrlRegExp = new RegExp('^/(?!/)[A-Za-z0-9/_#?=&.-]*$');
+export const changeTenantPlanResponsePlanOneOneProfileAdminSeatsMax = 10000;
+
+export const changeTenantPlanResponsePlanOneOneProfileSupportResponseHoursMax = 720;
+
+export const changeTenantPlanResponsePlanOneOneProfileLaunchTargetBusinessDaysMax = 365;
+
+export const changeTenantPlanResponsePlanOneOneProfileSlaTermsMax = 1000;
+
+export const changeTenantPlanResponsePlanOneOneProfileThemeModesMax = 2;
+
+export const changeTenantPlanResponsePlanOneOneProfileConvertProviderLimitMin = 0;
+export const changeTenantPlanResponsePlanOneOneProfileConvertProviderLimitMax = 100;
+
+export const changeTenantPlanResponsePlanOneOneProfileRequestedProvidersItemMax = 60;
+
+export const changeTenantPlanResponsePlanOneOneProfileRequestedProvidersMax = 30;
+
+export const changeTenantPlanResponsePlanOneOneProfileCapabilitiesItemKeyRegExp = new RegExp('^[a-z][a-z0-9_]{1,63}$');
+export const changeTenantPlanResponsePlanOneOneProfileCapabilitiesItemLabelMax = 120;
+
+export const changeTenantPlanResponsePlanOneOneProfileCapabilitiesItemDescriptionMax = 600;
+
+export const changeTenantPlanResponsePlanOneOneProfileCapabilitiesItemGroupMax = 60;
+
+export const changeTenantPlanResponsePlanOneOneProfileCapabilitiesItemLimitValueMin = 0;
+export const changeTenantPlanResponsePlanOneOneProfileCapabilitiesItemLimitValueMax = 1000000000000;
+
+export const changeTenantPlanResponsePlanOneOneProfileCapabilitiesItemUnitMax = 30;
+
+export const changeTenantPlanResponsePlanOneOneProfileCapabilitiesItemTooltipMax = 300;
+
+export const changeTenantPlanResponsePlanOneOneProfileCapabilitiesItemBadgeMax = 30;
+
+export const changeTenantPlanResponsePlanOneOneProfileCapabilitiesItemDependsOnItemRegExp = new RegExp('^[a-z][a-z0-9_]{1,63}$');
+export const changeTenantPlanResponsePlanOneOneProfileCapabilitiesItemDependsOnMax = 20;
+
+export const changeTenantPlanResponsePlanOneOneProfileCapabilitiesItemNoteMax = 300;
+
+export const changeTenantPlanResponsePlanOneOneProfileCapabilitiesMax = 120;
+
+export const changeTenantPlanResponsePlanOneOneProfileInternalNotesMax = 5000;
+
+export const changeTenantPlanResponsePlanOneOneExpectedRevisionMin = 0;
+
 export const changeTenantPlanResponsePlanOneTwoFeatureRowsItemLabelMax = 120;
 
 export const changeTenantPlanResponsePlanOneTwoFeatureRowsItemValueMax = 500;
@@ -10653,7 +14439,66 @@ export const ChangeTenantPlanResponse = zod.object({
   "featureRows": zod.array(zod.object({
   "label": zod.string().min(1).max(changeTenantPlanResponsePlanOneOneFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(changeTenantPlanResponsePlanOneOneFeatureRowsItemValueMax)
-}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.')
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.'),
+  "profile": zod.object({
+  "slug": zod.string().regex(changeTenantPlanResponsePlanOneOneProfileSlugRegExp).optional(),
+  "internalName": zod.string().max(changeTenantPlanResponsePlanOneOneProfileInternalNameMax).optional(),
+  "publicName": zod.string().max(changeTenantPlanResponsePlanOneOneProfilePublicNameMax).optional(),
+  "tagline": zod.string().max(changeTenantPlanResponsePlanOneOneProfileTaglineMax).optional(),
+  "shortDescription": zod.string().max(changeTenantPlanResponsePlanOneOneProfileShortDescriptionMax).optional(),
+  "fullDescription": zod.string().max(changeTenantPlanResponsePlanOneOneProfileFullDescriptionMax).optional(),
+  "iconUrl": zod.string().max(changeTenantPlanResponsePlanOneOneProfileIconUrlMax).optional().describe('Local path or https URL without credentials'),
+  "imageUrl": zod.string().max(changeTenantPlanResponsePlanOneOneProfileImageUrlMax).optional().describe('Local path or https URL without credentials'),
+  "badgeType": zod.enum(['none', 'recommended', 'custom']).optional(),
+  "badgeLabel": zod.string().max(changeTenantPlanResponsePlanOneOneProfileBadgeLabelMax).optional(),
+  "featured": zod.boolean().optional(),
+  "footerText": zod.string().max(changeTenantPlanResponsePlanOneOneProfileFooterTextMax).optional(),
+  "promoText": zod.string().max(changeTenantPlanResponsePlanOneOneProfilePromoTextMax).optional(),
+  "terms": zod.string().max(changeTenantPlanResponsePlanOneOneProfileTermsMax).optional(),
+  "pricingMode": zod.enum(['paid', 'free', 'custom', 'contact_sales']).optional(),
+  "contactSalesLabel": zod.string().max(changeTenantPlanResponsePlanOneOneProfileContactSalesLabelMax).optional(),
+  "customPriceText": zod.string().max(changeTenantPlanResponsePlanOneOneProfileCustomPriceTextMax).optional(),
+  "fixedDiscountAmount": zod.string().max(changeTenantPlanResponsePlanOneOneProfileFixedDiscountAmountMax).regex(changeTenantPlanResponsePlanOneOneProfileFixedDiscountAmountRegExp).nullish(),
+  "promoPrice": zod.string().max(changeTenantPlanResponsePlanOneOneProfilePromoPriceMax).regex(changeTenantPlanResponsePlanOneOneProfilePromoPriceRegExp).nullish(),
+  "promoStartsAt": zod.coerce.date().nullish(),
+  "promoEndsAt": zod.coerce.date().nullish(),
+  "billingInterval": zod.enum(['monthly', 'yearly', 'monthly_and_yearly', 'custom']).optional(),
+  "trialDays": zod.number().int().min(changeTenantPlanResponsePlanOneOneProfileTrialDaysMin).max(changeTenantPlanResponsePlanOneOneProfileTrialDaysMax).optional(),
+  "ctaLabel": zod.string().max(changeTenantPlanResponsePlanOneOneProfileCtaLabelMax).optional(),
+  "ctaUrl": zod.string().max(changeTenantPlanResponsePlanOneOneProfileCtaUrlMax).regex(changeTenantPlanResponsePlanOneOneProfileCtaUrlRegExp).optional(),
+  "visibility": zod.enum(['public', 'hidden']).optional(),
+  "adminSeats": zod.number().int().min(1).max(changeTenantPlanResponsePlanOneOneProfileAdminSeatsMax).nullish(),
+  "multiAdminRoles": zod.boolean().optional(),
+  "supportLevel": zod.enum(['email', 'priority', 'dedicated']).optional(),
+  "supportResponseHours": zod.number().int().min(1).max(changeTenantPlanResponsePlanOneOneProfileSupportResponseHoursMax).nullish(),
+  "launchTargetBusinessDays": zod.number().int().min(1).max(changeTenantPlanResponsePlanOneOneProfileLaunchTargetBusinessDaysMax).nullish(),
+  "dedicatedManager": zod.boolean().optional(),
+  "slaEnabled": zod.boolean().optional(),
+  "slaTerms": zod.string().max(changeTenantPlanResponsePlanOneOneProfileSlaTermsMax).optional(),
+  "earlyAccess": zod.boolean().optional(),
+  "poweredByFooter": zod.boolean().optional(),
+  "themeModes": zod.array(zod.enum(['light', 'dark'])).max(changeTenantPlanResponsePlanOneOneProfileThemeModesMax).optional(),
+  "convertProviderLimit": zod.number().int().min(changeTenantPlanResponsePlanOneOneProfileConvertProviderLimitMin).max(changeTenantPlanResponsePlanOneOneProfileConvertProviderLimitMax).nullish(),
+  "requestedProviders": zod.array(zod.string().min(1).max(changeTenantPlanResponsePlanOneOneProfileRequestedProvidersItemMax)).max(changeTenantPlanResponsePlanOneOneProfileRequestedProvidersMax).optional(),
+  "capabilities": zod.array(zod.object({
+  "key": zod.string().regex(changeTenantPlanResponsePlanOneOneProfileCapabilitiesItemKeyRegExp),
+  "label": zod.string().min(1).max(changeTenantPlanResponsePlanOneOneProfileCapabilitiesItemLabelMax),
+  "description": zod.string().max(changeTenantPlanResponsePlanOneOneProfileCapabilitiesItemDescriptionMax).optional(),
+  "group": zod.string().max(changeTenantPlanResponsePlanOneOneProfileCapabilitiesItemGroupMax).optional(),
+  "state": zod.enum(['included', 'excluded', 'optional', 'limited', 'unlimited', 'unavailable']).describe('Commercial state. limited requires limitValue.'),
+  "availability": zod.enum(['available', 'requires_configuration', 'unavailable']).describe('Implementation status; unavailable means not implemented and never a working toggle'),
+  "limitValue": zod.number().min(changeTenantPlanResponsePlanOneOneProfileCapabilitiesItemLimitValueMin).max(changeTenantPlanResponsePlanOneOneProfileCapabilitiesItemLimitValueMax).nullish(),
+  "unit": zod.string().max(changeTenantPlanResponsePlanOneOneProfileCapabilitiesItemUnitMax).optional(),
+  "tooltip": zod.string().max(changeTenantPlanResponsePlanOneOneProfileCapabilitiesItemTooltipMax).optional(),
+  "highlight": zod.boolean().optional(),
+  "publicVisible": zod.boolean().optional(),
+  "badge": zod.string().max(changeTenantPlanResponsePlanOneOneProfileCapabilitiesItemBadgeMax).optional(),
+  "dependsOn": zod.array(zod.string().regex(changeTenantPlanResponsePlanOneOneProfileCapabilitiesItemDependsOnItemRegExp)).max(changeTenantPlanResponsePlanOneOneProfileCapabilitiesItemDependsOnMax).optional(),
+  "note": zod.string().max(changeTenantPlanResponsePlanOneOneProfileCapabilitiesItemNoteMax).optional()
+})).max(changeTenantPlanResponsePlanOneOneProfileCapabilitiesMax).optional(),
+  "internalNotes": zod.string().max(changeTenantPlanResponsePlanOneOneProfileInternalNotesMax).optional()
+}).optional().describe('Structured plan configuration. internalName and internalNotes are Super Admin only and never published.'),
+  "expectedRevision": zod.number().int().min(changeTenantPlanResponsePlanOneOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
 }).and(zod.object({
   "id": zod.string().uuid(),
   "createdAt": zod.coerce.date(),
@@ -10663,7 +14508,8 @@ export const ChangeTenantPlanResponse = zod.object({
   "featureRows": zod.array(zod.object({
   "label": zod.string().min(1).max(changeTenantPlanResponsePlanOneTwoFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(changeTenantPlanResponsePlanOneTwoFeatureRowsItemValueMax)
-}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(changeTenantPlanResponsePlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.')
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(changeTenantPlanResponsePlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.'),
+  "revision": zod.number().int().optional()
 })),zod.null()]),
   "addons": zod.array(zod.object({
   "monthlyPrice": zod.string().regex(changeTenantPlanResponseAddonsItemOneMonthlyPriceRegExp).nullish(),
@@ -10767,6 +14613,94 @@ export const updateSubscriptionCommercialResponsePlanOneOneFeatureRowsItemLabelM
 
 export const updateSubscriptionCommercialResponsePlanOneOneFeatureRowsItemValueMax = 500;
 
+export const updateSubscriptionCommercialResponsePlanOneOneProfileSlugRegExp = new RegExp('^[a-z0-9](?:[a-z0-9-]{0,62}[a-z0-9])?$');
+export const updateSubscriptionCommercialResponsePlanOneOneProfileInternalNameMax = 120;
+
+export const updateSubscriptionCommercialResponsePlanOneOneProfilePublicNameMax = 120;
+
+export const updateSubscriptionCommercialResponsePlanOneOneProfileTaglineMax = 160;
+
+export const updateSubscriptionCommercialResponsePlanOneOneProfileShortDescriptionMax = 300;
+
+export const updateSubscriptionCommercialResponsePlanOneOneProfileFullDescriptionMax = 5000;
+
+export const updateSubscriptionCommercialResponsePlanOneOneProfileIconUrlMax = 500;
+
+export const updateSubscriptionCommercialResponsePlanOneOneProfileImageUrlMax = 500;
+
+export const updateSubscriptionCommercialResponsePlanOneOneProfileBadgeLabelMax = 40;
+
+export const updateSubscriptionCommercialResponsePlanOneOneProfileFooterTextMax = 300;
+
+export const updateSubscriptionCommercialResponsePlanOneOneProfilePromoTextMax = 200;
+
+export const updateSubscriptionCommercialResponsePlanOneOneProfileTermsMax = 5000;
+
+export const updateSubscriptionCommercialResponsePlanOneOneProfileContactSalesLabelMax = 60;
+
+export const updateSubscriptionCommercialResponsePlanOneOneProfileCustomPriceTextMax = 80;
+
+export const updateSubscriptionCommercialResponsePlanOneOneProfileFixedDiscountAmountMax = 18;
+
+
+export const updateSubscriptionCommercialResponsePlanOneOneProfileFixedDiscountAmountRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,2})?$');
+export const updateSubscriptionCommercialResponsePlanOneOneProfilePromoPriceMax = 18;
+
+
+export const updateSubscriptionCommercialResponsePlanOneOneProfilePromoPriceRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,2})?$');
+export const updateSubscriptionCommercialResponsePlanOneOneProfileTrialDaysMin = 0;
+export const updateSubscriptionCommercialResponsePlanOneOneProfileTrialDaysMax = 365;
+
+export const updateSubscriptionCommercialResponsePlanOneOneProfileCtaLabelMax = 60;
+
+export const updateSubscriptionCommercialResponsePlanOneOneProfileCtaUrlMax = 200;
+
+
+export const updateSubscriptionCommercialResponsePlanOneOneProfileCtaUrlRegExp = new RegExp('^/(?!/)[A-Za-z0-9/_#?=&.-]*$');
+export const updateSubscriptionCommercialResponsePlanOneOneProfileAdminSeatsMax = 10000;
+
+export const updateSubscriptionCommercialResponsePlanOneOneProfileSupportResponseHoursMax = 720;
+
+export const updateSubscriptionCommercialResponsePlanOneOneProfileLaunchTargetBusinessDaysMax = 365;
+
+export const updateSubscriptionCommercialResponsePlanOneOneProfileSlaTermsMax = 1000;
+
+export const updateSubscriptionCommercialResponsePlanOneOneProfileThemeModesMax = 2;
+
+export const updateSubscriptionCommercialResponsePlanOneOneProfileConvertProviderLimitMin = 0;
+export const updateSubscriptionCommercialResponsePlanOneOneProfileConvertProviderLimitMax = 100;
+
+export const updateSubscriptionCommercialResponsePlanOneOneProfileRequestedProvidersItemMax = 60;
+
+export const updateSubscriptionCommercialResponsePlanOneOneProfileRequestedProvidersMax = 30;
+
+export const updateSubscriptionCommercialResponsePlanOneOneProfileCapabilitiesItemKeyRegExp = new RegExp('^[a-z][a-z0-9_]{1,63}$');
+export const updateSubscriptionCommercialResponsePlanOneOneProfileCapabilitiesItemLabelMax = 120;
+
+export const updateSubscriptionCommercialResponsePlanOneOneProfileCapabilitiesItemDescriptionMax = 600;
+
+export const updateSubscriptionCommercialResponsePlanOneOneProfileCapabilitiesItemGroupMax = 60;
+
+export const updateSubscriptionCommercialResponsePlanOneOneProfileCapabilitiesItemLimitValueMin = 0;
+export const updateSubscriptionCommercialResponsePlanOneOneProfileCapabilitiesItemLimitValueMax = 1000000000000;
+
+export const updateSubscriptionCommercialResponsePlanOneOneProfileCapabilitiesItemUnitMax = 30;
+
+export const updateSubscriptionCommercialResponsePlanOneOneProfileCapabilitiesItemTooltipMax = 300;
+
+export const updateSubscriptionCommercialResponsePlanOneOneProfileCapabilitiesItemBadgeMax = 30;
+
+export const updateSubscriptionCommercialResponsePlanOneOneProfileCapabilitiesItemDependsOnItemRegExp = new RegExp('^[a-z][a-z0-9_]{1,63}$');
+export const updateSubscriptionCommercialResponsePlanOneOneProfileCapabilitiesItemDependsOnMax = 20;
+
+export const updateSubscriptionCommercialResponsePlanOneOneProfileCapabilitiesItemNoteMax = 300;
+
+export const updateSubscriptionCommercialResponsePlanOneOneProfileCapabilitiesMax = 120;
+
+export const updateSubscriptionCommercialResponsePlanOneOneProfileInternalNotesMax = 5000;
+
+export const updateSubscriptionCommercialResponsePlanOneOneExpectedRevisionMin = 0;
+
 export const updateSubscriptionCommercialResponsePlanOneTwoFeatureRowsItemLabelMax = 120;
 
 export const updateSubscriptionCommercialResponsePlanOneTwoFeatureRowsItemValueMax = 500;
@@ -10836,7 +14770,66 @@ export const UpdateSubscriptionCommercialResponse = zod.object({
   "featureRows": zod.array(zod.object({
   "label": zod.string().min(1).max(updateSubscriptionCommercialResponsePlanOneOneFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(updateSubscriptionCommercialResponsePlanOneOneFeatureRowsItemValueMax)
-}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.')
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.'),
+  "profile": zod.object({
+  "slug": zod.string().regex(updateSubscriptionCommercialResponsePlanOneOneProfileSlugRegExp).optional(),
+  "internalName": zod.string().max(updateSubscriptionCommercialResponsePlanOneOneProfileInternalNameMax).optional(),
+  "publicName": zod.string().max(updateSubscriptionCommercialResponsePlanOneOneProfilePublicNameMax).optional(),
+  "tagline": zod.string().max(updateSubscriptionCommercialResponsePlanOneOneProfileTaglineMax).optional(),
+  "shortDescription": zod.string().max(updateSubscriptionCommercialResponsePlanOneOneProfileShortDescriptionMax).optional(),
+  "fullDescription": zod.string().max(updateSubscriptionCommercialResponsePlanOneOneProfileFullDescriptionMax).optional(),
+  "iconUrl": zod.string().max(updateSubscriptionCommercialResponsePlanOneOneProfileIconUrlMax).optional().describe('Local path or https URL without credentials'),
+  "imageUrl": zod.string().max(updateSubscriptionCommercialResponsePlanOneOneProfileImageUrlMax).optional().describe('Local path or https URL without credentials'),
+  "badgeType": zod.enum(['none', 'recommended', 'custom']).optional(),
+  "badgeLabel": zod.string().max(updateSubscriptionCommercialResponsePlanOneOneProfileBadgeLabelMax).optional(),
+  "featured": zod.boolean().optional(),
+  "footerText": zod.string().max(updateSubscriptionCommercialResponsePlanOneOneProfileFooterTextMax).optional(),
+  "promoText": zod.string().max(updateSubscriptionCommercialResponsePlanOneOneProfilePromoTextMax).optional(),
+  "terms": zod.string().max(updateSubscriptionCommercialResponsePlanOneOneProfileTermsMax).optional(),
+  "pricingMode": zod.enum(['paid', 'free', 'custom', 'contact_sales']).optional(),
+  "contactSalesLabel": zod.string().max(updateSubscriptionCommercialResponsePlanOneOneProfileContactSalesLabelMax).optional(),
+  "customPriceText": zod.string().max(updateSubscriptionCommercialResponsePlanOneOneProfileCustomPriceTextMax).optional(),
+  "fixedDiscountAmount": zod.string().max(updateSubscriptionCommercialResponsePlanOneOneProfileFixedDiscountAmountMax).regex(updateSubscriptionCommercialResponsePlanOneOneProfileFixedDiscountAmountRegExp).nullish(),
+  "promoPrice": zod.string().max(updateSubscriptionCommercialResponsePlanOneOneProfilePromoPriceMax).regex(updateSubscriptionCommercialResponsePlanOneOneProfilePromoPriceRegExp).nullish(),
+  "promoStartsAt": zod.coerce.date().nullish(),
+  "promoEndsAt": zod.coerce.date().nullish(),
+  "billingInterval": zod.enum(['monthly', 'yearly', 'monthly_and_yearly', 'custom']).optional(),
+  "trialDays": zod.number().int().min(updateSubscriptionCommercialResponsePlanOneOneProfileTrialDaysMin).max(updateSubscriptionCommercialResponsePlanOneOneProfileTrialDaysMax).optional(),
+  "ctaLabel": zod.string().max(updateSubscriptionCommercialResponsePlanOneOneProfileCtaLabelMax).optional(),
+  "ctaUrl": zod.string().max(updateSubscriptionCommercialResponsePlanOneOneProfileCtaUrlMax).regex(updateSubscriptionCommercialResponsePlanOneOneProfileCtaUrlRegExp).optional(),
+  "visibility": zod.enum(['public', 'hidden']).optional(),
+  "adminSeats": zod.number().int().min(1).max(updateSubscriptionCommercialResponsePlanOneOneProfileAdminSeatsMax).nullish(),
+  "multiAdminRoles": zod.boolean().optional(),
+  "supportLevel": zod.enum(['email', 'priority', 'dedicated']).optional(),
+  "supportResponseHours": zod.number().int().min(1).max(updateSubscriptionCommercialResponsePlanOneOneProfileSupportResponseHoursMax).nullish(),
+  "launchTargetBusinessDays": zod.number().int().min(1).max(updateSubscriptionCommercialResponsePlanOneOneProfileLaunchTargetBusinessDaysMax).nullish(),
+  "dedicatedManager": zod.boolean().optional(),
+  "slaEnabled": zod.boolean().optional(),
+  "slaTerms": zod.string().max(updateSubscriptionCommercialResponsePlanOneOneProfileSlaTermsMax).optional(),
+  "earlyAccess": zod.boolean().optional(),
+  "poweredByFooter": zod.boolean().optional(),
+  "themeModes": zod.array(zod.enum(['light', 'dark'])).max(updateSubscriptionCommercialResponsePlanOneOneProfileThemeModesMax).optional(),
+  "convertProviderLimit": zod.number().int().min(updateSubscriptionCommercialResponsePlanOneOneProfileConvertProviderLimitMin).max(updateSubscriptionCommercialResponsePlanOneOneProfileConvertProviderLimitMax).nullish(),
+  "requestedProviders": zod.array(zod.string().min(1).max(updateSubscriptionCommercialResponsePlanOneOneProfileRequestedProvidersItemMax)).max(updateSubscriptionCommercialResponsePlanOneOneProfileRequestedProvidersMax).optional(),
+  "capabilities": zod.array(zod.object({
+  "key": zod.string().regex(updateSubscriptionCommercialResponsePlanOneOneProfileCapabilitiesItemKeyRegExp),
+  "label": zod.string().min(1).max(updateSubscriptionCommercialResponsePlanOneOneProfileCapabilitiesItemLabelMax),
+  "description": zod.string().max(updateSubscriptionCommercialResponsePlanOneOneProfileCapabilitiesItemDescriptionMax).optional(),
+  "group": zod.string().max(updateSubscriptionCommercialResponsePlanOneOneProfileCapabilitiesItemGroupMax).optional(),
+  "state": zod.enum(['included', 'excluded', 'optional', 'limited', 'unlimited', 'unavailable']).describe('Commercial state. limited requires limitValue.'),
+  "availability": zod.enum(['available', 'requires_configuration', 'unavailable']).describe('Implementation status; unavailable means not implemented and never a working toggle'),
+  "limitValue": zod.number().min(updateSubscriptionCommercialResponsePlanOneOneProfileCapabilitiesItemLimitValueMin).max(updateSubscriptionCommercialResponsePlanOneOneProfileCapabilitiesItemLimitValueMax).nullish(),
+  "unit": zod.string().max(updateSubscriptionCommercialResponsePlanOneOneProfileCapabilitiesItemUnitMax).optional(),
+  "tooltip": zod.string().max(updateSubscriptionCommercialResponsePlanOneOneProfileCapabilitiesItemTooltipMax).optional(),
+  "highlight": zod.boolean().optional(),
+  "publicVisible": zod.boolean().optional(),
+  "badge": zod.string().max(updateSubscriptionCommercialResponsePlanOneOneProfileCapabilitiesItemBadgeMax).optional(),
+  "dependsOn": zod.array(zod.string().regex(updateSubscriptionCommercialResponsePlanOneOneProfileCapabilitiesItemDependsOnItemRegExp)).max(updateSubscriptionCommercialResponsePlanOneOneProfileCapabilitiesItemDependsOnMax).optional(),
+  "note": zod.string().max(updateSubscriptionCommercialResponsePlanOneOneProfileCapabilitiesItemNoteMax).optional()
+})).max(updateSubscriptionCommercialResponsePlanOneOneProfileCapabilitiesMax).optional(),
+  "internalNotes": zod.string().max(updateSubscriptionCommercialResponsePlanOneOneProfileInternalNotesMax).optional()
+}).optional().describe('Structured plan configuration. internalName and internalNotes are Super Admin only and never published.'),
+  "expectedRevision": zod.number().int().min(updateSubscriptionCommercialResponsePlanOneOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
 }).and(zod.object({
   "id": zod.string().uuid(),
   "createdAt": zod.coerce.date(),
@@ -10846,7 +14839,8 @@ export const UpdateSubscriptionCommercialResponse = zod.object({
   "featureRows": zod.array(zod.object({
   "label": zod.string().min(1).max(updateSubscriptionCommercialResponsePlanOneTwoFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(updateSubscriptionCommercialResponsePlanOneTwoFeatureRowsItemValueMax)
-}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(updateSubscriptionCommercialResponsePlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.')
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(updateSubscriptionCommercialResponsePlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.'),
+  "revision": zod.number().int().optional()
 })),zod.null()]),
   "addons": zod.array(zod.object({
   "monthlyPrice": zod.string().regex(updateSubscriptionCommercialResponseAddonsItemOneMonthlyPriceRegExp).nullish(),
@@ -10967,6 +14961,94 @@ export const setTenantAddonsResponsePlanOneOneFeatureRowsItemLabelMax = 120;
 
 export const setTenantAddonsResponsePlanOneOneFeatureRowsItemValueMax = 500;
 
+export const setTenantAddonsResponsePlanOneOneProfileSlugRegExp = new RegExp('^[a-z0-9](?:[a-z0-9-]{0,62}[a-z0-9])?$');
+export const setTenantAddonsResponsePlanOneOneProfileInternalNameMax = 120;
+
+export const setTenantAddonsResponsePlanOneOneProfilePublicNameMax = 120;
+
+export const setTenantAddonsResponsePlanOneOneProfileTaglineMax = 160;
+
+export const setTenantAddonsResponsePlanOneOneProfileShortDescriptionMax = 300;
+
+export const setTenantAddonsResponsePlanOneOneProfileFullDescriptionMax = 5000;
+
+export const setTenantAddonsResponsePlanOneOneProfileIconUrlMax = 500;
+
+export const setTenantAddonsResponsePlanOneOneProfileImageUrlMax = 500;
+
+export const setTenantAddonsResponsePlanOneOneProfileBadgeLabelMax = 40;
+
+export const setTenantAddonsResponsePlanOneOneProfileFooterTextMax = 300;
+
+export const setTenantAddonsResponsePlanOneOneProfilePromoTextMax = 200;
+
+export const setTenantAddonsResponsePlanOneOneProfileTermsMax = 5000;
+
+export const setTenantAddonsResponsePlanOneOneProfileContactSalesLabelMax = 60;
+
+export const setTenantAddonsResponsePlanOneOneProfileCustomPriceTextMax = 80;
+
+export const setTenantAddonsResponsePlanOneOneProfileFixedDiscountAmountMax = 18;
+
+
+export const setTenantAddonsResponsePlanOneOneProfileFixedDiscountAmountRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,2})?$');
+export const setTenantAddonsResponsePlanOneOneProfilePromoPriceMax = 18;
+
+
+export const setTenantAddonsResponsePlanOneOneProfilePromoPriceRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,2})?$');
+export const setTenantAddonsResponsePlanOneOneProfileTrialDaysMin = 0;
+export const setTenantAddonsResponsePlanOneOneProfileTrialDaysMax = 365;
+
+export const setTenantAddonsResponsePlanOneOneProfileCtaLabelMax = 60;
+
+export const setTenantAddonsResponsePlanOneOneProfileCtaUrlMax = 200;
+
+
+export const setTenantAddonsResponsePlanOneOneProfileCtaUrlRegExp = new RegExp('^/(?!/)[A-Za-z0-9/_#?=&.-]*$');
+export const setTenantAddonsResponsePlanOneOneProfileAdminSeatsMax = 10000;
+
+export const setTenantAddonsResponsePlanOneOneProfileSupportResponseHoursMax = 720;
+
+export const setTenantAddonsResponsePlanOneOneProfileLaunchTargetBusinessDaysMax = 365;
+
+export const setTenantAddonsResponsePlanOneOneProfileSlaTermsMax = 1000;
+
+export const setTenantAddonsResponsePlanOneOneProfileThemeModesMax = 2;
+
+export const setTenantAddonsResponsePlanOneOneProfileConvertProviderLimitMin = 0;
+export const setTenantAddonsResponsePlanOneOneProfileConvertProviderLimitMax = 100;
+
+export const setTenantAddonsResponsePlanOneOneProfileRequestedProvidersItemMax = 60;
+
+export const setTenantAddonsResponsePlanOneOneProfileRequestedProvidersMax = 30;
+
+export const setTenantAddonsResponsePlanOneOneProfileCapabilitiesItemKeyRegExp = new RegExp('^[a-z][a-z0-9_]{1,63}$');
+export const setTenantAddonsResponsePlanOneOneProfileCapabilitiesItemLabelMax = 120;
+
+export const setTenantAddonsResponsePlanOneOneProfileCapabilitiesItemDescriptionMax = 600;
+
+export const setTenantAddonsResponsePlanOneOneProfileCapabilitiesItemGroupMax = 60;
+
+export const setTenantAddonsResponsePlanOneOneProfileCapabilitiesItemLimitValueMin = 0;
+export const setTenantAddonsResponsePlanOneOneProfileCapabilitiesItemLimitValueMax = 1000000000000;
+
+export const setTenantAddonsResponsePlanOneOneProfileCapabilitiesItemUnitMax = 30;
+
+export const setTenantAddonsResponsePlanOneOneProfileCapabilitiesItemTooltipMax = 300;
+
+export const setTenantAddonsResponsePlanOneOneProfileCapabilitiesItemBadgeMax = 30;
+
+export const setTenantAddonsResponsePlanOneOneProfileCapabilitiesItemDependsOnItemRegExp = new RegExp('^[a-z][a-z0-9_]{1,63}$');
+export const setTenantAddonsResponsePlanOneOneProfileCapabilitiesItemDependsOnMax = 20;
+
+export const setTenantAddonsResponsePlanOneOneProfileCapabilitiesItemNoteMax = 300;
+
+export const setTenantAddonsResponsePlanOneOneProfileCapabilitiesMax = 120;
+
+export const setTenantAddonsResponsePlanOneOneProfileInternalNotesMax = 5000;
+
+export const setTenantAddonsResponsePlanOneOneExpectedRevisionMin = 0;
+
 export const setTenantAddonsResponsePlanOneTwoFeatureRowsItemLabelMax = 120;
 
 export const setTenantAddonsResponsePlanOneTwoFeatureRowsItemValueMax = 500;
@@ -11036,7 +15118,66 @@ export const SetTenantAddonsResponse = zod.object({
   "featureRows": zod.array(zod.object({
   "label": zod.string().min(1).max(setTenantAddonsResponsePlanOneOneFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(setTenantAddonsResponsePlanOneOneFeatureRowsItemValueMax)
-}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.')
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.'),
+  "profile": zod.object({
+  "slug": zod.string().regex(setTenantAddonsResponsePlanOneOneProfileSlugRegExp).optional(),
+  "internalName": zod.string().max(setTenantAddonsResponsePlanOneOneProfileInternalNameMax).optional(),
+  "publicName": zod.string().max(setTenantAddonsResponsePlanOneOneProfilePublicNameMax).optional(),
+  "tagline": zod.string().max(setTenantAddonsResponsePlanOneOneProfileTaglineMax).optional(),
+  "shortDescription": zod.string().max(setTenantAddonsResponsePlanOneOneProfileShortDescriptionMax).optional(),
+  "fullDescription": zod.string().max(setTenantAddonsResponsePlanOneOneProfileFullDescriptionMax).optional(),
+  "iconUrl": zod.string().max(setTenantAddonsResponsePlanOneOneProfileIconUrlMax).optional().describe('Local path or https URL without credentials'),
+  "imageUrl": zod.string().max(setTenantAddonsResponsePlanOneOneProfileImageUrlMax).optional().describe('Local path or https URL without credentials'),
+  "badgeType": zod.enum(['none', 'recommended', 'custom']).optional(),
+  "badgeLabel": zod.string().max(setTenantAddonsResponsePlanOneOneProfileBadgeLabelMax).optional(),
+  "featured": zod.boolean().optional(),
+  "footerText": zod.string().max(setTenantAddonsResponsePlanOneOneProfileFooterTextMax).optional(),
+  "promoText": zod.string().max(setTenantAddonsResponsePlanOneOneProfilePromoTextMax).optional(),
+  "terms": zod.string().max(setTenantAddonsResponsePlanOneOneProfileTermsMax).optional(),
+  "pricingMode": zod.enum(['paid', 'free', 'custom', 'contact_sales']).optional(),
+  "contactSalesLabel": zod.string().max(setTenantAddonsResponsePlanOneOneProfileContactSalesLabelMax).optional(),
+  "customPriceText": zod.string().max(setTenantAddonsResponsePlanOneOneProfileCustomPriceTextMax).optional(),
+  "fixedDiscountAmount": zod.string().max(setTenantAddonsResponsePlanOneOneProfileFixedDiscountAmountMax).regex(setTenantAddonsResponsePlanOneOneProfileFixedDiscountAmountRegExp).nullish(),
+  "promoPrice": zod.string().max(setTenantAddonsResponsePlanOneOneProfilePromoPriceMax).regex(setTenantAddonsResponsePlanOneOneProfilePromoPriceRegExp).nullish(),
+  "promoStartsAt": zod.coerce.date().nullish(),
+  "promoEndsAt": zod.coerce.date().nullish(),
+  "billingInterval": zod.enum(['monthly', 'yearly', 'monthly_and_yearly', 'custom']).optional(),
+  "trialDays": zod.number().int().min(setTenantAddonsResponsePlanOneOneProfileTrialDaysMin).max(setTenantAddonsResponsePlanOneOneProfileTrialDaysMax).optional(),
+  "ctaLabel": zod.string().max(setTenantAddonsResponsePlanOneOneProfileCtaLabelMax).optional(),
+  "ctaUrl": zod.string().max(setTenantAddonsResponsePlanOneOneProfileCtaUrlMax).regex(setTenantAddonsResponsePlanOneOneProfileCtaUrlRegExp).optional(),
+  "visibility": zod.enum(['public', 'hidden']).optional(),
+  "adminSeats": zod.number().int().min(1).max(setTenantAddonsResponsePlanOneOneProfileAdminSeatsMax).nullish(),
+  "multiAdminRoles": zod.boolean().optional(),
+  "supportLevel": zod.enum(['email', 'priority', 'dedicated']).optional(),
+  "supportResponseHours": zod.number().int().min(1).max(setTenantAddonsResponsePlanOneOneProfileSupportResponseHoursMax).nullish(),
+  "launchTargetBusinessDays": zod.number().int().min(1).max(setTenantAddonsResponsePlanOneOneProfileLaunchTargetBusinessDaysMax).nullish(),
+  "dedicatedManager": zod.boolean().optional(),
+  "slaEnabled": zod.boolean().optional(),
+  "slaTerms": zod.string().max(setTenantAddonsResponsePlanOneOneProfileSlaTermsMax).optional(),
+  "earlyAccess": zod.boolean().optional(),
+  "poweredByFooter": zod.boolean().optional(),
+  "themeModes": zod.array(zod.enum(['light', 'dark'])).max(setTenantAddonsResponsePlanOneOneProfileThemeModesMax).optional(),
+  "convertProviderLimit": zod.number().int().min(setTenantAddonsResponsePlanOneOneProfileConvertProviderLimitMin).max(setTenantAddonsResponsePlanOneOneProfileConvertProviderLimitMax).nullish(),
+  "requestedProviders": zod.array(zod.string().min(1).max(setTenantAddonsResponsePlanOneOneProfileRequestedProvidersItemMax)).max(setTenantAddonsResponsePlanOneOneProfileRequestedProvidersMax).optional(),
+  "capabilities": zod.array(zod.object({
+  "key": zod.string().regex(setTenantAddonsResponsePlanOneOneProfileCapabilitiesItemKeyRegExp),
+  "label": zod.string().min(1).max(setTenantAddonsResponsePlanOneOneProfileCapabilitiesItemLabelMax),
+  "description": zod.string().max(setTenantAddonsResponsePlanOneOneProfileCapabilitiesItemDescriptionMax).optional(),
+  "group": zod.string().max(setTenantAddonsResponsePlanOneOneProfileCapabilitiesItemGroupMax).optional(),
+  "state": zod.enum(['included', 'excluded', 'optional', 'limited', 'unlimited', 'unavailable']).describe('Commercial state. limited requires limitValue.'),
+  "availability": zod.enum(['available', 'requires_configuration', 'unavailable']).describe('Implementation status; unavailable means not implemented and never a working toggle'),
+  "limitValue": zod.number().min(setTenantAddonsResponsePlanOneOneProfileCapabilitiesItemLimitValueMin).max(setTenantAddonsResponsePlanOneOneProfileCapabilitiesItemLimitValueMax).nullish(),
+  "unit": zod.string().max(setTenantAddonsResponsePlanOneOneProfileCapabilitiesItemUnitMax).optional(),
+  "tooltip": zod.string().max(setTenantAddonsResponsePlanOneOneProfileCapabilitiesItemTooltipMax).optional(),
+  "highlight": zod.boolean().optional(),
+  "publicVisible": zod.boolean().optional(),
+  "badge": zod.string().max(setTenantAddonsResponsePlanOneOneProfileCapabilitiesItemBadgeMax).optional(),
+  "dependsOn": zod.array(zod.string().regex(setTenantAddonsResponsePlanOneOneProfileCapabilitiesItemDependsOnItemRegExp)).max(setTenantAddonsResponsePlanOneOneProfileCapabilitiesItemDependsOnMax).optional(),
+  "note": zod.string().max(setTenantAddonsResponsePlanOneOneProfileCapabilitiesItemNoteMax).optional()
+})).max(setTenantAddonsResponsePlanOneOneProfileCapabilitiesMax).optional(),
+  "internalNotes": zod.string().max(setTenantAddonsResponsePlanOneOneProfileInternalNotesMax).optional()
+}).optional().describe('Structured plan configuration. internalName and internalNotes are Super Admin only and never published.'),
+  "expectedRevision": zod.number().int().min(setTenantAddonsResponsePlanOneOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
 }).and(zod.object({
   "id": zod.string().uuid(),
   "createdAt": zod.coerce.date(),
@@ -11046,7 +15187,8 @@ export const SetTenantAddonsResponse = zod.object({
   "featureRows": zod.array(zod.object({
   "label": zod.string().min(1).max(setTenantAddonsResponsePlanOneTwoFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(setTenantAddonsResponsePlanOneTwoFeatureRowsItemValueMax)
-}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(setTenantAddonsResponsePlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.')
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(setTenantAddonsResponsePlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.'),
+  "revision": zod.number().int().optional()
 })),zod.null()]),
   "addons": zod.array(zod.object({
   "monthlyPrice": zod.string().regex(setTenantAddonsResponseAddonsItemOneMonthlyPriceRegExp).nullish(),
@@ -11155,6 +15297,94 @@ export const setTenantOverridesResponsePlanOneOneFeatureRowsItemLabelMax = 120;
 
 export const setTenantOverridesResponsePlanOneOneFeatureRowsItemValueMax = 500;
 
+export const setTenantOverridesResponsePlanOneOneProfileSlugRegExp = new RegExp('^[a-z0-9](?:[a-z0-9-]{0,62}[a-z0-9])?$');
+export const setTenantOverridesResponsePlanOneOneProfileInternalNameMax = 120;
+
+export const setTenantOverridesResponsePlanOneOneProfilePublicNameMax = 120;
+
+export const setTenantOverridesResponsePlanOneOneProfileTaglineMax = 160;
+
+export const setTenantOverridesResponsePlanOneOneProfileShortDescriptionMax = 300;
+
+export const setTenantOverridesResponsePlanOneOneProfileFullDescriptionMax = 5000;
+
+export const setTenantOverridesResponsePlanOneOneProfileIconUrlMax = 500;
+
+export const setTenantOverridesResponsePlanOneOneProfileImageUrlMax = 500;
+
+export const setTenantOverridesResponsePlanOneOneProfileBadgeLabelMax = 40;
+
+export const setTenantOverridesResponsePlanOneOneProfileFooterTextMax = 300;
+
+export const setTenantOverridesResponsePlanOneOneProfilePromoTextMax = 200;
+
+export const setTenantOverridesResponsePlanOneOneProfileTermsMax = 5000;
+
+export const setTenantOverridesResponsePlanOneOneProfileContactSalesLabelMax = 60;
+
+export const setTenantOverridesResponsePlanOneOneProfileCustomPriceTextMax = 80;
+
+export const setTenantOverridesResponsePlanOneOneProfileFixedDiscountAmountMax = 18;
+
+
+export const setTenantOverridesResponsePlanOneOneProfileFixedDiscountAmountRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,2})?$');
+export const setTenantOverridesResponsePlanOneOneProfilePromoPriceMax = 18;
+
+
+export const setTenantOverridesResponsePlanOneOneProfilePromoPriceRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,2})?$');
+export const setTenantOverridesResponsePlanOneOneProfileTrialDaysMin = 0;
+export const setTenantOverridesResponsePlanOneOneProfileTrialDaysMax = 365;
+
+export const setTenantOverridesResponsePlanOneOneProfileCtaLabelMax = 60;
+
+export const setTenantOverridesResponsePlanOneOneProfileCtaUrlMax = 200;
+
+
+export const setTenantOverridesResponsePlanOneOneProfileCtaUrlRegExp = new RegExp('^/(?!/)[A-Za-z0-9/_#?=&.-]*$');
+export const setTenantOverridesResponsePlanOneOneProfileAdminSeatsMax = 10000;
+
+export const setTenantOverridesResponsePlanOneOneProfileSupportResponseHoursMax = 720;
+
+export const setTenantOverridesResponsePlanOneOneProfileLaunchTargetBusinessDaysMax = 365;
+
+export const setTenantOverridesResponsePlanOneOneProfileSlaTermsMax = 1000;
+
+export const setTenantOverridesResponsePlanOneOneProfileThemeModesMax = 2;
+
+export const setTenantOverridesResponsePlanOneOneProfileConvertProviderLimitMin = 0;
+export const setTenantOverridesResponsePlanOneOneProfileConvertProviderLimitMax = 100;
+
+export const setTenantOverridesResponsePlanOneOneProfileRequestedProvidersItemMax = 60;
+
+export const setTenantOverridesResponsePlanOneOneProfileRequestedProvidersMax = 30;
+
+export const setTenantOverridesResponsePlanOneOneProfileCapabilitiesItemKeyRegExp = new RegExp('^[a-z][a-z0-9_]{1,63}$');
+export const setTenantOverridesResponsePlanOneOneProfileCapabilitiesItemLabelMax = 120;
+
+export const setTenantOverridesResponsePlanOneOneProfileCapabilitiesItemDescriptionMax = 600;
+
+export const setTenantOverridesResponsePlanOneOneProfileCapabilitiesItemGroupMax = 60;
+
+export const setTenantOverridesResponsePlanOneOneProfileCapabilitiesItemLimitValueMin = 0;
+export const setTenantOverridesResponsePlanOneOneProfileCapabilitiesItemLimitValueMax = 1000000000000;
+
+export const setTenantOverridesResponsePlanOneOneProfileCapabilitiesItemUnitMax = 30;
+
+export const setTenantOverridesResponsePlanOneOneProfileCapabilitiesItemTooltipMax = 300;
+
+export const setTenantOverridesResponsePlanOneOneProfileCapabilitiesItemBadgeMax = 30;
+
+export const setTenantOverridesResponsePlanOneOneProfileCapabilitiesItemDependsOnItemRegExp = new RegExp('^[a-z][a-z0-9_]{1,63}$');
+export const setTenantOverridesResponsePlanOneOneProfileCapabilitiesItemDependsOnMax = 20;
+
+export const setTenantOverridesResponsePlanOneOneProfileCapabilitiesItemNoteMax = 300;
+
+export const setTenantOverridesResponsePlanOneOneProfileCapabilitiesMax = 120;
+
+export const setTenantOverridesResponsePlanOneOneProfileInternalNotesMax = 5000;
+
+export const setTenantOverridesResponsePlanOneOneExpectedRevisionMin = 0;
+
 export const setTenantOverridesResponsePlanOneTwoFeatureRowsItemLabelMax = 120;
 
 export const setTenantOverridesResponsePlanOneTwoFeatureRowsItemValueMax = 500;
@@ -11224,7 +15454,66 @@ export const SetTenantOverridesResponse = zod.object({
   "featureRows": zod.array(zod.object({
   "label": zod.string().min(1).max(setTenantOverridesResponsePlanOneOneFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(setTenantOverridesResponsePlanOneOneFeatureRowsItemValueMax)
-}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.')
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.'),
+  "profile": zod.object({
+  "slug": zod.string().regex(setTenantOverridesResponsePlanOneOneProfileSlugRegExp).optional(),
+  "internalName": zod.string().max(setTenantOverridesResponsePlanOneOneProfileInternalNameMax).optional(),
+  "publicName": zod.string().max(setTenantOverridesResponsePlanOneOneProfilePublicNameMax).optional(),
+  "tagline": zod.string().max(setTenantOverridesResponsePlanOneOneProfileTaglineMax).optional(),
+  "shortDescription": zod.string().max(setTenantOverridesResponsePlanOneOneProfileShortDescriptionMax).optional(),
+  "fullDescription": zod.string().max(setTenantOverridesResponsePlanOneOneProfileFullDescriptionMax).optional(),
+  "iconUrl": zod.string().max(setTenantOverridesResponsePlanOneOneProfileIconUrlMax).optional().describe('Local path or https URL without credentials'),
+  "imageUrl": zod.string().max(setTenantOverridesResponsePlanOneOneProfileImageUrlMax).optional().describe('Local path or https URL without credentials'),
+  "badgeType": zod.enum(['none', 'recommended', 'custom']).optional(),
+  "badgeLabel": zod.string().max(setTenantOverridesResponsePlanOneOneProfileBadgeLabelMax).optional(),
+  "featured": zod.boolean().optional(),
+  "footerText": zod.string().max(setTenantOverridesResponsePlanOneOneProfileFooterTextMax).optional(),
+  "promoText": zod.string().max(setTenantOverridesResponsePlanOneOneProfilePromoTextMax).optional(),
+  "terms": zod.string().max(setTenantOverridesResponsePlanOneOneProfileTermsMax).optional(),
+  "pricingMode": zod.enum(['paid', 'free', 'custom', 'contact_sales']).optional(),
+  "contactSalesLabel": zod.string().max(setTenantOverridesResponsePlanOneOneProfileContactSalesLabelMax).optional(),
+  "customPriceText": zod.string().max(setTenantOverridesResponsePlanOneOneProfileCustomPriceTextMax).optional(),
+  "fixedDiscountAmount": zod.string().max(setTenantOverridesResponsePlanOneOneProfileFixedDiscountAmountMax).regex(setTenantOverridesResponsePlanOneOneProfileFixedDiscountAmountRegExp).nullish(),
+  "promoPrice": zod.string().max(setTenantOverridesResponsePlanOneOneProfilePromoPriceMax).regex(setTenantOverridesResponsePlanOneOneProfilePromoPriceRegExp).nullish(),
+  "promoStartsAt": zod.coerce.date().nullish(),
+  "promoEndsAt": zod.coerce.date().nullish(),
+  "billingInterval": zod.enum(['monthly', 'yearly', 'monthly_and_yearly', 'custom']).optional(),
+  "trialDays": zod.number().int().min(setTenantOverridesResponsePlanOneOneProfileTrialDaysMin).max(setTenantOverridesResponsePlanOneOneProfileTrialDaysMax).optional(),
+  "ctaLabel": zod.string().max(setTenantOverridesResponsePlanOneOneProfileCtaLabelMax).optional(),
+  "ctaUrl": zod.string().max(setTenantOverridesResponsePlanOneOneProfileCtaUrlMax).regex(setTenantOverridesResponsePlanOneOneProfileCtaUrlRegExp).optional(),
+  "visibility": zod.enum(['public', 'hidden']).optional(),
+  "adminSeats": zod.number().int().min(1).max(setTenantOverridesResponsePlanOneOneProfileAdminSeatsMax).nullish(),
+  "multiAdminRoles": zod.boolean().optional(),
+  "supportLevel": zod.enum(['email', 'priority', 'dedicated']).optional(),
+  "supportResponseHours": zod.number().int().min(1).max(setTenantOverridesResponsePlanOneOneProfileSupportResponseHoursMax).nullish(),
+  "launchTargetBusinessDays": zod.number().int().min(1).max(setTenantOverridesResponsePlanOneOneProfileLaunchTargetBusinessDaysMax).nullish(),
+  "dedicatedManager": zod.boolean().optional(),
+  "slaEnabled": zod.boolean().optional(),
+  "slaTerms": zod.string().max(setTenantOverridesResponsePlanOneOneProfileSlaTermsMax).optional(),
+  "earlyAccess": zod.boolean().optional(),
+  "poweredByFooter": zod.boolean().optional(),
+  "themeModes": zod.array(zod.enum(['light', 'dark'])).max(setTenantOverridesResponsePlanOneOneProfileThemeModesMax).optional(),
+  "convertProviderLimit": zod.number().int().min(setTenantOverridesResponsePlanOneOneProfileConvertProviderLimitMin).max(setTenantOverridesResponsePlanOneOneProfileConvertProviderLimitMax).nullish(),
+  "requestedProviders": zod.array(zod.string().min(1).max(setTenantOverridesResponsePlanOneOneProfileRequestedProvidersItemMax)).max(setTenantOverridesResponsePlanOneOneProfileRequestedProvidersMax).optional(),
+  "capabilities": zod.array(zod.object({
+  "key": zod.string().regex(setTenantOverridesResponsePlanOneOneProfileCapabilitiesItemKeyRegExp),
+  "label": zod.string().min(1).max(setTenantOverridesResponsePlanOneOneProfileCapabilitiesItemLabelMax),
+  "description": zod.string().max(setTenantOverridesResponsePlanOneOneProfileCapabilitiesItemDescriptionMax).optional(),
+  "group": zod.string().max(setTenantOverridesResponsePlanOneOneProfileCapabilitiesItemGroupMax).optional(),
+  "state": zod.enum(['included', 'excluded', 'optional', 'limited', 'unlimited', 'unavailable']).describe('Commercial state. limited requires limitValue.'),
+  "availability": zod.enum(['available', 'requires_configuration', 'unavailable']).describe('Implementation status; unavailable means not implemented and never a working toggle'),
+  "limitValue": zod.number().min(setTenantOverridesResponsePlanOneOneProfileCapabilitiesItemLimitValueMin).max(setTenantOverridesResponsePlanOneOneProfileCapabilitiesItemLimitValueMax).nullish(),
+  "unit": zod.string().max(setTenantOverridesResponsePlanOneOneProfileCapabilitiesItemUnitMax).optional(),
+  "tooltip": zod.string().max(setTenantOverridesResponsePlanOneOneProfileCapabilitiesItemTooltipMax).optional(),
+  "highlight": zod.boolean().optional(),
+  "publicVisible": zod.boolean().optional(),
+  "badge": zod.string().max(setTenantOverridesResponsePlanOneOneProfileCapabilitiesItemBadgeMax).optional(),
+  "dependsOn": zod.array(zod.string().regex(setTenantOverridesResponsePlanOneOneProfileCapabilitiesItemDependsOnItemRegExp)).max(setTenantOverridesResponsePlanOneOneProfileCapabilitiesItemDependsOnMax).optional(),
+  "note": zod.string().max(setTenantOverridesResponsePlanOneOneProfileCapabilitiesItemNoteMax).optional()
+})).max(setTenantOverridesResponsePlanOneOneProfileCapabilitiesMax).optional(),
+  "internalNotes": zod.string().max(setTenantOverridesResponsePlanOneOneProfileInternalNotesMax).optional()
+}).optional().describe('Structured plan configuration. internalName and internalNotes are Super Admin only and never published.'),
+  "expectedRevision": zod.number().int().min(setTenantOverridesResponsePlanOneOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
 }).and(zod.object({
   "id": zod.string().uuid(),
   "createdAt": zod.coerce.date(),
@@ -11234,7 +15523,8 @@ export const SetTenantOverridesResponse = zod.object({
   "featureRows": zod.array(zod.object({
   "label": zod.string().min(1).max(setTenantOverridesResponsePlanOneTwoFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(setTenantOverridesResponsePlanOneTwoFeatureRowsItemValueMax)
-}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(setTenantOverridesResponsePlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.')
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(setTenantOverridesResponsePlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.'),
+  "revision": zod.number().int().optional()
 })),zod.null()]),
   "addons": zod.array(zod.object({
   "monthlyPrice": zod.string().regex(setTenantOverridesResponseAddonsItemOneMonthlyPriceRegExp).nullish(),
@@ -11329,6 +15619,94 @@ export const setTenantSuspensionResponsePlanOneOneFeatureRowsItemLabelMax = 120;
 
 export const setTenantSuspensionResponsePlanOneOneFeatureRowsItemValueMax = 500;
 
+export const setTenantSuspensionResponsePlanOneOneProfileSlugRegExp = new RegExp('^[a-z0-9](?:[a-z0-9-]{0,62}[a-z0-9])?$');
+export const setTenantSuspensionResponsePlanOneOneProfileInternalNameMax = 120;
+
+export const setTenantSuspensionResponsePlanOneOneProfilePublicNameMax = 120;
+
+export const setTenantSuspensionResponsePlanOneOneProfileTaglineMax = 160;
+
+export const setTenantSuspensionResponsePlanOneOneProfileShortDescriptionMax = 300;
+
+export const setTenantSuspensionResponsePlanOneOneProfileFullDescriptionMax = 5000;
+
+export const setTenantSuspensionResponsePlanOneOneProfileIconUrlMax = 500;
+
+export const setTenantSuspensionResponsePlanOneOneProfileImageUrlMax = 500;
+
+export const setTenantSuspensionResponsePlanOneOneProfileBadgeLabelMax = 40;
+
+export const setTenantSuspensionResponsePlanOneOneProfileFooterTextMax = 300;
+
+export const setTenantSuspensionResponsePlanOneOneProfilePromoTextMax = 200;
+
+export const setTenantSuspensionResponsePlanOneOneProfileTermsMax = 5000;
+
+export const setTenantSuspensionResponsePlanOneOneProfileContactSalesLabelMax = 60;
+
+export const setTenantSuspensionResponsePlanOneOneProfileCustomPriceTextMax = 80;
+
+export const setTenantSuspensionResponsePlanOneOneProfileFixedDiscountAmountMax = 18;
+
+
+export const setTenantSuspensionResponsePlanOneOneProfileFixedDiscountAmountRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,2})?$');
+export const setTenantSuspensionResponsePlanOneOneProfilePromoPriceMax = 18;
+
+
+export const setTenantSuspensionResponsePlanOneOneProfilePromoPriceRegExp = new RegExp('^[0-9]+(?:\\.[0-9]{1,2})?$');
+export const setTenantSuspensionResponsePlanOneOneProfileTrialDaysMin = 0;
+export const setTenantSuspensionResponsePlanOneOneProfileTrialDaysMax = 365;
+
+export const setTenantSuspensionResponsePlanOneOneProfileCtaLabelMax = 60;
+
+export const setTenantSuspensionResponsePlanOneOneProfileCtaUrlMax = 200;
+
+
+export const setTenantSuspensionResponsePlanOneOneProfileCtaUrlRegExp = new RegExp('^/(?!/)[A-Za-z0-9/_#?=&.-]*$');
+export const setTenantSuspensionResponsePlanOneOneProfileAdminSeatsMax = 10000;
+
+export const setTenantSuspensionResponsePlanOneOneProfileSupportResponseHoursMax = 720;
+
+export const setTenantSuspensionResponsePlanOneOneProfileLaunchTargetBusinessDaysMax = 365;
+
+export const setTenantSuspensionResponsePlanOneOneProfileSlaTermsMax = 1000;
+
+export const setTenantSuspensionResponsePlanOneOneProfileThemeModesMax = 2;
+
+export const setTenantSuspensionResponsePlanOneOneProfileConvertProviderLimitMin = 0;
+export const setTenantSuspensionResponsePlanOneOneProfileConvertProviderLimitMax = 100;
+
+export const setTenantSuspensionResponsePlanOneOneProfileRequestedProvidersItemMax = 60;
+
+export const setTenantSuspensionResponsePlanOneOneProfileRequestedProvidersMax = 30;
+
+export const setTenantSuspensionResponsePlanOneOneProfileCapabilitiesItemKeyRegExp = new RegExp('^[a-z][a-z0-9_]{1,63}$');
+export const setTenantSuspensionResponsePlanOneOneProfileCapabilitiesItemLabelMax = 120;
+
+export const setTenantSuspensionResponsePlanOneOneProfileCapabilitiesItemDescriptionMax = 600;
+
+export const setTenantSuspensionResponsePlanOneOneProfileCapabilitiesItemGroupMax = 60;
+
+export const setTenantSuspensionResponsePlanOneOneProfileCapabilitiesItemLimitValueMin = 0;
+export const setTenantSuspensionResponsePlanOneOneProfileCapabilitiesItemLimitValueMax = 1000000000000;
+
+export const setTenantSuspensionResponsePlanOneOneProfileCapabilitiesItemUnitMax = 30;
+
+export const setTenantSuspensionResponsePlanOneOneProfileCapabilitiesItemTooltipMax = 300;
+
+export const setTenantSuspensionResponsePlanOneOneProfileCapabilitiesItemBadgeMax = 30;
+
+export const setTenantSuspensionResponsePlanOneOneProfileCapabilitiesItemDependsOnItemRegExp = new RegExp('^[a-z][a-z0-9_]{1,63}$');
+export const setTenantSuspensionResponsePlanOneOneProfileCapabilitiesItemDependsOnMax = 20;
+
+export const setTenantSuspensionResponsePlanOneOneProfileCapabilitiesItemNoteMax = 300;
+
+export const setTenantSuspensionResponsePlanOneOneProfileCapabilitiesMax = 120;
+
+export const setTenantSuspensionResponsePlanOneOneProfileInternalNotesMax = 5000;
+
+export const setTenantSuspensionResponsePlanOneOneExpectedRevisionMin = 0;
+
 export const setTenantSuspensionResponsePlanOneTwoFeatureRowsItemLabelMax = 120;
 
 export const setTenantSuspensionResponsePlanOneTwoFeatureRowsItemValueMax = 500;
@@ -11398,7 +15776,66 @@ export const SetTenantSuspensionResponse = zod.object({
   "featureRows": zod.array(zod.object({
   "label": zod.string().min(1).max(setTenantSuspensionResponsePlanOneOneFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(setTenantSuspensionResponsePlanOneOneFeatureRowsItemValueMax)
-}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.')
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).describe('Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap.'),
+  "profile": zod.object({
+  "slug": zod.string().regex(setTenantSuspensionResponsePlanOneOneProfileSlugRegExp).optional(),
+  "internalName": zod.string().max(setTenantSuspensionResponsePlanOneOneProfileInternalNameMax).optional(),
+  "publicName": zod.string().max(setTenantSuspensionResponsePlanOneOneProfilePublicNameMax).optional(),
+  "tagline": zod.string().max(setTenantSuspensionResponsePlanOneOneProfileTaglineMax).optional(),
+  "shortDescription": zod.string().max(setTenantSuspensionResponsePlanOneOneProfileShortDescriptionMax).optional(),
+  "fullDescription": zod.string().max(setTenantSuspensionResponsePlanOneOneProfileFullDescriptionMax).optional(),
+  "iconUrl": zod.string().max(setTenantSuspensionResponsePlanOneOneProfileIconUrlMax).optional().describe('Local path or https URL without credentials'),
+  "imageUrl": zod.string().max(setTenantSuspensionResponsePlanOneOneProfileImageUrlMax).optional().describe('Local path or https URL without credentials'),
+  "badgeType": zod.enum(['none', 'recommended', 'custom']).optional(),
+  "badgeLabel": zod.string().max(setTenantSuspensionResponsePlanOneOneProfileBadgeLabelMax).optional(),
+  "featured": zod.boolean().optional(),
+  "footerText": zod.string().max(setTenantSuspensionResponsePlanOneOneProfileFooterTextMax).optional(),
+  "promoText": zod.string().max(setTenantSuspensionResponsePlanOneOneProfilePromoTextMax).optional(),
+  "terms": zod.string().max(setTenantSuspensionResponsePlanOneOneProfileTermsMax).optional(),
+  "pricingMode": zod.enum(['paid', 'free', 'custom', 'contact_sales']).optional(),
+  "contactSalesLabel": zod.string().max(setTenantSuspensionResponsePlanOneOneProfileContactSalesLabelMax).optional(),
+  "customPriceText": zod.string().max(setTenantSuspensionResponsePlanOneOneProfileCustomPriceTextMax).optional(),
+  "fixedDiscountAmount": zod.string().max(setTenantSuspensionResponsePlanOneOneProfileFixedDiscountAmountMax).regex(setTenantSuspensionResponsePlanOneOneProfileFixedDiscountAmountRegExp).nullish(),
+  "promoPrice": zod.string().max(setTenantSuspensionResponsePlanOneOneProfilePromoPriceMax).regex(setTenantSuspensionResponsePlanOneOneProfilePromoPriceRegExp).nullish(),
+  "promoStartsAt": zod.coerce.date().nullish(),
+  "promoEndsAt": zod.coerce.date().nullish(),
+  "billingInterval": zod.enum(['monthly', 'yearly', 'monthly_and_yearly', 'custom']).optional(),
+  "trialDays": zod.number().int().min(setTenantSuspensionResponsePlanOneOneProfileTrialDaysMin).max(setTenantSuspensionResponsePlanOneOneProfileTrialDaysMax).optional(),
+  "ctaLabel": zod.string().max(setTenantSuspensionResponsePlanOneOneProfileCtaLabelMax).optional(),
+  "ctaUrl": zod.string().max(setTenantSuspensionResponsePlanOneOneProfileCtaUrlMax).regex(setTenantSuspensionResponsePlanOneOneProfileCtaUrlRegExp).optional(),
+  "visibility": zod.enum(['public', 'hidden']).optional(),
+  "adminSeats": zod.number().int().min(1).max(setTenantSuspensionResponsePlanOneOneProfileAdminSeatsMax).nullish(),
+  "multiAdminRoles": zod.boolean().optional(),
+  "supportLevel": zod.enum(['email', 'priority', 'dedicated']).optional(),
+  "supportResponseHours": zod.number().int().min(1).max(setTenantSuspensionResponsePlanOneOneProfileSupportResponseHoursMax).nullish(),
+  "launchTargetBusinessDays": zod.number().int().min(1).max(setTenantSuspensionResponsePlanOneOneProfileLaunchTargetBusinessDaysMax).nullish(),
+  "dedicatedManager": zod.boolean().optional(),
+  "slaEnabled": zod.boolean().optional(),
+  "slaTerms": zod.string().max(setTenantSuspensionResponsePlanOneOneProfileSlaTermsMax).optional(),
+  "earlyAccess": zod.boolean().optional(),
+  "poweredByFooter": zod.boolean().optional(),
+  "themeModes": zod.array(zod.enum(['light', 'dark'])).max(setTenantSuspensionResponsePlanOneOneProfileThemeModesMax).optional(),
+  "convertProviderLimit": zod.number().int().min(setTenantSuspensionResponsePlanOneOneProfileConvertProviderLimitMin).max(setTenantSuspensionResponsePlanOneOneProfileConvertProviderLimitMax).nullish(),
+  "requestedProviders": zod.array(zod.string().min(1).max(setTenantSuspensionResponsePlanOneOneProfileRequestedProvidersItemMax)).max(setTenantSuspensionResponsePlanOneOneProfileRequestedProvidersMax).optional(),
+  "capabilities": zod.array(zod.object({
+  "key": zod.string().regex(setTenantSuspensionResponsePlanOneOneProfileCapabilitiesItemKeyRegExp),
+  "label": zod.string().min(1).max(setTenantSuspensionResponsePlanOneOneProfileCapabilitiesItemLabelMax),
+  "description": zod.string().max(setTenantSuspensionResponsePlanOneOneProfileCapabilitiesItemDescriptionMax).optional(),
+  "group": zod.string().max(setTenantSuspensionResponsePlanOneOneProfileCapabilitiesItemGroupMax).optional(),
+  "state": zod.enum(['included', 'excluded', 'optional', 'limited', 'unlimited', 'unavailable']).describe('Commercial state. limited requires limitValue.'),
+  "availability": zod.enum(['available', 'requires_configuration', 'unavailable']).describe('Implementation status; unavailable means not implemented and never a working toggle'),
+  "limitValue": zod.number().min(setTenantSuspensionResponsePlanOneOneProfileCapabilitiesItemLimitValueMin).max(setTenantSuspensionResponsePlanOneOneProfileCapabilitiesItemLimitValueMax).nullish(),
+  "unit": zod.string().max(setTenantSuspensionResponsePlanOneOneProfileCapabilitiesItemUnitMax).optional(),
+  "tooltip": zod.string().max(setTenantSuspensionResponsePlanOneOneProfileCapabilitiesItemTooltipMax).optional(),
+  "highlight": zod.boolean().optional(),
+  "publicVisible": zod.boolean().optional(),
+  "badge": zod.string().max(setTenantSuspensionResponsePlanOneOneProfileCapabilitiesItemBadgeMax).optional(),
+  "dependsOn": zod.array(zod.string().regex(setTenantSuspensionResponsePlanOneOneProfileCapabilitiesItemDependsOnItemRegExp)).max(setTenantSuspensionResponsePlanOneOneProfileCapabilitiesItemDependsOnMax).optional(),
+  "note": zod.string().max(setTenantSuspensionResponsePlanOneOneProfileCapabilitiesItemNoteMax).optional()
+})).max(setTenantSuspensionResponsePlanOneOneProfileCapabilitiesMax).optional(),
+  "internalNotes": zod.string().max(setTenantSuspensionResponsePlanOneOneProfileInternalNotesMax).optional()
+}).optional().describe('Structured plan configuration. internalName and internalNotes are Super Admin only and never published.'),
+  "expectedRevision": zod.number().int().min(setTenantSuspensionResponsePlanOneOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
 }).and(zod.object({
   "id": zod.string().uuid(),
   "createdAt": zod.coerce.date(),
@@ -11408,7 +15845,8 @@ export const SetTenantSuspensionResponse = zod.object({
   "featureRows": zod.array(zod.object({
   "label": zod.string().min(1).max(setTenantSuspensionResponsePlanOneTwoFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(setTenantSuspensionResponsePlanOneTwoFeatureRowsItemValueMax)
-}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(setTenantSuspensionResponsePlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.')
+}).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(setTenantSuspensionResponsePlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.'),
+  "revision": zod.number().int().optional()
 })),zod.null()]),
   "addons": zod.array(zod.object({
   "monthlyPrice": zod.string().regex(setTenantSuspensionResponseAddonsItemOneMonthlyPriceRegExp).nullish(),
