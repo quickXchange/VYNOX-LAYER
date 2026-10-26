@@ -17,7 +17,7 @@ try {
   await admin.query("CREATE ROLE supabase_admin NOLOGIN; CREATE ROLE anon NOLOGIN; CREATE ROLE authenticated NOLOGIN; CREATE ROLE service_role NOLOGIN");
   await migrate();
   await migrate(); // Idempotent ledger, not repeated schema creation.
-  await verifyTarget(admin);
+  await verifyTarget(admin, { planManagement: true });
   // This role exists only in the guarded disposable database. Never reuse a
   // published/shared fixture credential; base64url contains no SQL quote characters.
   const disposablePassword = randomBytes(32).toString("base64url");

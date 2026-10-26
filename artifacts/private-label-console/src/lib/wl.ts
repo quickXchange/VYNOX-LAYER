@@ -1,3 +1,4 @@
+import { effectiveRecurring, type PlanProfile } from '@/components/plan-management/types';
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/lib/auth';
 import type { Addon, WhiteLabelAttachment, WhiteLabelCatalog, WhiteLabelDesign, WhiteLabelEvent, WhiteLabelOrderDetail, WhiteLabelRequest } from '@workspace/api-client-react';
@@ -24,7 +25,13 @@ export const pctBp = (pct: string | null | undefined): bigint => { const b = toC
 /** Percentage discount on a recurring price only (never setup). BigInt cents, half-up rounding; null stays null. */
 export const discounted = (v: string | null | undefined, pct?: string | null): string | null | undefined => (v == null || v === '' || !DEC.test(v) ? v : fromCents((toCents(v) * (10000n - pctBp(pct)) + 5000n) / 10000n));
 export const hasDiscount = (pct?: string | null) => pctBp(pct) > 0n;
-export const periodPrice = (x: { monthlyPrice?: string | null; yearlyPrice?: string | null; discountPercent?: string } | null | undefined, p: string) => (x ? discounted(p === 'yearly' ? x.yearlyPrice : x.monthlyPrice, x.discountPercent) : undefined);
+// Same rule as the server (fixed discount / active promotion / percentage); see effectiveRecurring.
+export const periodPrice = (x: { monthlyPrice?: string | null; yearlyPrice?: string | null; discountPercent?: string; profile?: Partial<PlanProfile> | null } | null | undefined, p: string) => {
+  if (!x) return undefined;
+  const pr = x.profile;
+  if (pr && (pr.fixedDiscountAmount || pr.promoPrice)) return effectiveRecurring({ monthlyPrice: x.monthlyPrice ?? null, yearlyPrice: x.yearlyPrice ?? null, discountPercent: x.discountPercent, profile: pr }, p === 'yearly' ? 'yearly' : 'monthly');
+  return discounted(p === 'yearly' ? x.yearlyPrice : x.monthlyPrice, x.discountPercent);
+};
 export const listPrice = (x: { monthlyPrice?: string | null; yearlyPrice?: string | null } | null | undefined, p: string) => (x ? (p === 'yearly' ? x.yearlyPrice : x.monthlyPrice) : undefined);
 export const unknownCount = (xs: (string | null | undefined)[]) => xs.filter((v) => v == null || v === '').length;
 export const sumNum = (xs: (string | null | undefined)[]) => fromCents(xs.reduce((a, v) => a + toCents(v), 0n));

@@ -66,6 +66,9 @@ jobs:
         run: pnpm run external:migrate
         env:
           QXLAYER_EXTERNAL_MIGRATIONS_APPROVED: "true"
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+          QXLAYER_OPERATOR_SERVICE_ID: ${{ vars.RENDER_API_SERVICE_ID }}
+          QXLAYER_OPERATOR_WRITE_SCOPE: "isolated"
           MIGRATION_DATABASE_URL: ${{ secrets.MIGRATION_DATABASE_URL }}
           SUPABASE_PROJECT_REF: ${{ vars.SUPABASE_PROJECT_REF }}
           MIGRATION_EXPECTED_HOST: ${{ vars.MIGRATION_EXPECTED_HOST }}

@@ -1,0 +1,16 @@
+{
+  "columns": [
+    {"table_name":"plans","name":"profile","type":"jsonb","required":true,"default_value":"'{}'::jsonb"},
+    {"table_name":"plans","name":"revision","type":"integer","required":true,"default_value":"0"},
+    {"table_name":"plans","name":"updated_by","type":"text","required":false,"default_value":null},
+    {"table_name":"tenant_addons","name":"contract_snapshot","type":"jsonb","required":false,"default_value":null},
+    {"table_name":"tenant_subscriptions","name":"contract_snapshot","type":"jsonb","required":false,"default_value":null},
+    {"table_name":"tenant_subscriptions","name":"contract_frozen_at","type":"timestamp with time zone","required":false,"default_value":null}
+  ],
+  "constraints": [
+    {"table_name":"plans","name":"plans_profile_object","type":"c","definition":"CHECK (jsonb_typeof(profile) = 'object'::text)","validated":true}
+  ],
+  "indexes": [
+    {"table_name":"plans","name":"plans_active_slug","definition":"CREATE UNIQUE INDEX plans_active_slug ON public.plans USING btree (((profile ->> 'slug'::text))) WHERE ((status <> 'archived'::text) AND (profile ? 'slug'::text))","valid":true}
+  ]
+}

@@ -6,6 +6,8 @@ import { decimal, decimalString } from "./decimal";
 import { applyDependencies, readRegistry } from "../product-registry/service";
 import { recurringEstimate } from "./commercial-pricing";
 import { applyServiceDependencies } from "./service-policy";
+import { readSnapshot } from "../plan-management/contracts";
+import { applyPlanPolicy } from "../plan-management/effective-policy";
 
 export function currentPeriod(now = new Date()) { return now.toISOString().slice(0, 7); }
 export async function lockTenant(client: DatabaseClient, tenantId: string) {
@@ -16,11 +18,22 @@ export async function lockTenant(client: DatabaseClient, tenantId: string) {
 export async function resolveEntitlements(client: DatabaseClient, tenantId: string) {
   const tenant = await client.query("SELECT status FROM tenants WHERE id=$1", [tenantId]);
   if (!tenant.rowCount) throw new HttpError(404, "Tenant not found.");
-  const sub = await client.query("SELECT plan_id,status,billing_period,discount_percent,cancelled,operator_note FROM tenant_subscriptions WHERE tenant_id=$1", [tenantId]);
-  const plan = sub.rowCount ? await readPlan(client, sub.rows[0].plan_id, true) : null;
-  const assigned = await client.query("SELECT addon_id FROM tenant_addons WHERE tenant_id=$1 ORDER BY addon_id", [tenantId]);
+  const sub = await client.query("SELECT * FROM tenant_subscriptions WHERE tenant_id=$1", [tenantId]);
+  const catalogPlan = sub.rowCount ? await readPlan(client, sub.rows[0].plan_id, true) : null;
+  // A frozen contract preserves the customer's agreed access and prices; later
+  // catalog edits apply only after an explicit, audited subscription migration.
+  const contract = readSnapshot(sub.rows[0]);
+  const plan = catalogPlan && contract && contract.planId === catalogPlan.id ? {
+    ...catalogPlan, entitlements: contract.entitlements as Entry[], pricingConfigured: contract.pricingConfigured,
+    monthlyPrice: contract.monthlyPrice, yearlyPrice: contract.yearlyPrice, setupFee: contract.setupFee, currency: contract.currency,
+    discountPercent: contract.discountPercent, profile: (contract as any).profile ?? {},
+  } : catalogPlan;
+  const assigned = await client.query("SELECT addon_id,contract_snapshot FROM tenant_addons WHERE tenant_id=$1 ORDER BY addon_id", [tenantId]);
   const addons = [];
-  for (const row of assigned.rows) addons.push(await readAddon(client, row.addon_id, true));
+  for (const row of assigned.rows) {
+    const current = await readAddon(client, row.addon_id, true);
+    addons.push(row.contract_snapshot ? { ...current, ...row.contract_snapshot } as typeof current : current);
+  }
   const overridesResult = await client.query("SELECT key,value,reason FROM tenant_entitlement_overrides WHERE tenant_id=$1 ORDER BY key", [tenantId]);
   const overrides = overridesResult.rows as (Entry & { reason: string })[];
   const defs = await definitions(client);
@@ -46,6 +59,7 @@ export async function resolveEntitlements(client: DatabaseClient, tenantId: stri
     await apply(overrides, "super-admin override", false);
   }
   const status = !plan ? "unassigned" : sub.rows[0].cancelled ? "cancelled" : tenant.rows[0].status === "suspended" || sub.rows[0].status === "suspended" ? "suspended" : "active";
+  applyPlanPolicy(plan?.profile, features, limits, sources);
   if (status !== "active") {
     for (const key of Object.keys(features)) features[key] = false;
     for (const key of Object.keys(limits)) limits[key] = "0";

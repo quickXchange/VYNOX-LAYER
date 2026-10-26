@@ -103,7 +103,7 @@ export function submitRequest(p: Principal, raw: WhiteLabelRequestInput, sandbox
     design?.referenceAttachmentIds.forEach(id => categoryFor(id, "design_reference"));
     configuration.attachmentIds?.forEach(id => categoryFor(id, "requirement"));
     const storedConfiguration = { ...configuration, ...(sandboxOnly ? { sandboxOnly: true } : {}),
-      catalogSnapshot: snapshot, inputFingerprint: fingerprint };
+      catalogSnapshot: snapshot, pricedAt: new Date().toISOString(), inputFingerprint: fingerprint };
     const inserted = await c.query(`INSERT INTO white_label_requests (customer_user_id,idempotency_key,configuration)
       VALUES ($1,$2,$3) ON CONFLICT (customer_user_id,idempotency_key) DO NOTHING RETURNING ${columns}`, [p.userId, idempotencyKey, JSON.stringify(storedConfiguration)]);
     const row = inserted.rows[0] ?? (await c.query(`SELECT ${columns} FROM white_label_requests WHERE customer_user_id=$1 AND idempotency_key=$2`, [p.userId, idempotencyKey])).rows[0];

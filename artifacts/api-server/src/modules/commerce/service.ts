@@ -5,7 +5,8 @@ import { acceptanceCatalog, assertCatalogOperationAllowed, catalogTable } from "
 import { z } from "zod";
 import { requireSuperAdmin, type Principal } from "../authentication/service";
 import { requestContext, event, isSandboxRequest } from "../customer/order-model";
-import { catalogSelection, whiteLabelCatalog } from "../customer/order-catalog";
+import { whiteLabelCatalog } from "../customer/order-catalog";
+import { orderAgreement } from "./order-agreement";
 import { HttpError } from "../../lib/errors";
 import { audit } from "../../lib/audit";
 import { catalogLock } from "../entitlements/catalog";
@@ -58,10 +59,10 @@ async function billing(c: DatabaseClient, row: any) {
   const available = (await c.query(`SELECT ${methodColumns} FROM qxlayer_commerce.methods WHERE enabled AND approved ORDER BY name,id`)).rows;
   let price: ReturnType<typeof invoicePricing> | null = null, blockedReason: string | null = null;
   try {
-    price = (await livePricing(c, row)).price;
-    const period = (await c.query(`SELECT monthly,yearly FROM ${catalogTable("offer_settings")} WHERE plan_id=$1`,
-      [row.approved_configuration?.plan?.id ?? row.configuration.requestedPlanId])).rows[0];
-    if (period && !period[price.billingPeriod]) blockedReason = "This billing period is disabled for the plan.";
+    const frozen = await livePricing(c, row);
+    price = frozen.price;
+    if (frozen.selection.plan.billingPeriods && !frozen.selection.plan.billingPeriods.includes(price.billingPeriod))
+      blockedReason = "This billing period is not included in the order agreement.";
   } catch (error) { if (!(error instanceof HttpError)) throw error; blockedReason = error.message; }
   const eligible = available.filter(m => m.currency === price?.currency);
   if (!blockedReason && !eligible.length) blockedReason = "No approved payment method is configured for this currency.";
@@ -69,9 +70,9 @@ async function billing(c: DatabaseClient, row: any) {
   return { invoice, methods: eligible, purchasable: !blockedReason, blockedReason };
 }
 async function livePricing(c: DatabaseClient, row: any) {
-  const quoted = row.status === "quote_ready" ? row.approved_configuration : null;
-  const selection = await catalogSelection(c, quoted?.plan?.id ?? row.configuration.requestedPlanId,
-    quoted?.addons?.map((a: { id: string }) => a.id) ?? row.configuration.requestedAddonIds ?? [],!!quoted);
+  // Both snapshots are server-authored. A later publication must never reprice
+  // a submitted order. Legacy requests without evidence require operator review.
+  const selection = orderAgreement(row);
   const quotation = row.status === "quote_ready" ? { status: row.status, monthlyPrice: row.monthly_price, setupPrice: row.setup_price,
     customizationPrice: row.customization_price, customDesignDecision: row.custom_design_decision, currency: row.currency } : undefined;
   return { selection, price: invoicePricing({ ...row.configuration, catalogSnapshot: selection }, quotation) };
@@ -89,8 +90,8 @@ export function checkout(p: Principal, id: string, methodId: string) {
     if (before.invoice) return before;
     // Revalidate live approval/availability; never reprice an existing invoice.
     const { selection, price } = await livePricing(c, row);
-    const periods = (await c.query(`SELECT monthly,yearly FROM ${catalogTable("offer_settings")} WHERE plan_id=$1`, [selection.plan!.id])).rows[0];
-    if (periods && !periods[price.billingPeriod]) throw new HttpError(409, "This billing period is disabled for the plan.");
+    if (selection.plan.billingPeriods && !selection.plan.billingPeriods.includes(price.billingPeriod))
+      throw new HttpError(409, "This billing period is not included in the order agreement.");
     // Row-share locks require UPDATE-policy visibility, which customers must not
     // have on operator configuration. Pair this advisory read lock with writes.
     await catalogLock(c, `commerce-method:${methodId}`, false);

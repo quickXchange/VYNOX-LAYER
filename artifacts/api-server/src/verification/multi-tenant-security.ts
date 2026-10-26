@@ -105,7 +105,7 @@ try {
       ["plans list", () => catalog.listPlans(principal)], ["plan detail", () => catalog.getPlan(principal, f!.planId)],
       ["plan create/update", () => catalog.savePlan(principal, f!.plan, f!.planId)],
       ["plan duplicate", () => catalog.duplicatePlan(principal, f!.planId)],
-      ["plan archive", () => catalog.changePlanStatus(principal, f!.planId, "archived")],
+      ["plan archive", () => catalog.changePlanStatus(principal, f!.planId, "archived", 0)],
       ["addons list", () => catalog.listAddons(principal)],
       ["addon update", () => catalog.saveAddon(principal, { name: "Forbidden", description: "", enabled: true, entitlements: [] }, f!.addonId)],
       ["tenant create", () => tenant.createTenant(principal, { name: "Forbidden", slug: `forbidden-${suffix.slice(0, 8)}`, planId: f!.planId })],

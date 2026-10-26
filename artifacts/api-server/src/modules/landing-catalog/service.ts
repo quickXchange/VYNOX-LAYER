@@ -5,7 +5,7 @@ import { contextFor, requireSuperAdmin, type Principal } from "../authentication
 import { audit } from "../../lib/audit";
 import { assertCatalogOperationAllowed, catalogTable } from "../../lib/catalog-scope";
 import { HttpError } from "../../lib/errors";
-import { discountedRecurring } from "../entitlements/commercial-pricing";
+import { effectiveRecurring } from "../entitlements/commercial-pricing";
 import { cents } from "../commerce/pricing";
 import { publishedOffers } from "../commerce/pricing-publication";
 import { defaultExploreContent, assertPublicArtworkUrl } from "./explore-content";
@@ -48,8 +48,9 @@ export function publicProductCatalog() {
     const products = (await client.query(`SELECT ${projection} FROM landing_products WHERE visible=true ORDER BY display_order,key`)).rows;
     // Marketing remains database-owned; no hardcoded commercial fallback.
     const published = await publishedOffers(client);
-    const configured = published.plans.filter((p: any) => p.currency === "EUR").map((p: any) => ({monthly_price:p.monthlyPrice,yearly_price:p.yearlyPrice,setup_fee:p.setupFee,discount_percent:p.discountPercent,currency:p.currency,monthly:p.billingPeriods.includes("monthly")}));
-    const offers = configured.map((p: any) => ({ ...p, price: discountedRecurring(p.monthly ? p.monthly_price : p.yearly_price, p.discount_percent), period: p.monthly ? "monthly" : "yearly" }))
+    const configured = published.plans.filter((p: any) => p.currency === "EUR" && p.pricingConfigured && p.monthlyPrice != null && p.yearlyPrice != null).map((p: any) => ({src:p,setup_fee:p.setupFee,currency:p.currency,monthly:p.billingPeriods.includes("monthly")}));
+    // Contact-sales/custom plans have no price and never produce a "starting at" figure.
+    const offers = configured.map((p: any) => ({ ...p, price: effectiveRecurring(p.src, p.monthly ? "monthly" : "yearly")!, period: p.monthly ? "monthly" : "yearly" }))
       .sort((a: any,b: any) => BigInt(a.price.replace(".", "")) < BigInt(b.price.replace(".", "")) ? -1 :
         BigInt(a.price.replace(".", "")) > BigInt(b.price.replace(".", "")) ? 1 : 0);
     for (const product of products) if (product.key === "crypto_exchange") {

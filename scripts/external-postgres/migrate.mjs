@@ -3,6 +3,8 @@ import { readFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import { pathToFileURL } from "node:url";
 import { STAGING_SUPABASE_PROJECT } from "../external-hosting/staging-targets.mjs";
+import { targetScopePreflight } from "../external-hosting/target-scope-preflight.mjs";
+import { schemaLedger } from "./legacy-data-receipts.mjs";
 const require = createRequire(new URL("../../lib/db/package.json", import.meta.url));
 const { Client } = require("pg");
 
@@ -30,6 +32,16 @@ export function targetConfiguration(env) {
 }
 export async function migrate(env = process.env) {
   const options = targetConfiguration(env);
+  // Only the validated disposable localhost test target is exempt from provider scope checks.
+  if (!(env.QXLAYER_MIGRATION_TEST === "true" && env.NODE_ENV === "test")) {
+    await targetScopePreflight({
+      connectionString: options.connectionString,
+      serviceId: env.QXLAYER_OPERATOR_SERVICE_ID,
+      scope: env.QXLAYER_OPERATOR_WRITE_SCOPE ?? "acceptance-only",
+      publicWriteApproved: env.QXLAYER_PUBLIC_GLOBAL_WRITES_APPROVED === "true",
+      token: env.RENDER_API_KEY,
+    });
+  }
   if (options.caFile) {
     options.ssl = { rejectUnauthorized: true, ca: await readFile(options.caFile, "utf8"),
       servername: new URL(options.connectionString).hostname };
@@ -49,15 +61,20 @@ export async function migrate(env = process.env) {
   for (const entry of manifest) {
     if (!/^\d{4}_[a-z_]+\.sql$/.test(entry.file) || entry.file <= previous)
       throw new Error("Invalid/unsorted migration manifest.");
-    if (entry.source && (!production || ![
+    const planSchemaSource = ["../../lib/db/migrations/plan-management-profiles.sql", "../../lib/db/migrations/plan-management-release-safety.sql"].includes(entry.source);
+    if (entry.source && !planSchemaSource && entry.source !== "../migrations/0004_phase1_commerce.sql" && (!production || ![
       "../migrations/0001_application_schema.sql", "../migrations/0002_runtime_security.sql",
       "0004_latest-schema-PREPARED.sql", "0005_auth_runtime.sql", "../migrations/0007_global_exchange_catalog.sql",
-      "../migrations/0008_tenant_site_releases.sql"].includes(entry.source)))
+      "../migrations/0008_tenant_site_releases.sql", "../migrations/0010_acceptance_catalog.sql",
+      "../migrations/0011_plan_feature_rows.sql"].includes(entry.source)))
       throw new Error("Unreviewed Production migration source");
     const sql = await readFile(new URL(entry.source ?? entry.file, dir), "utf8");
     if (createHash("sha256").update(sql).digest("hex") !== entry.sha256)
       throw new Error("Migration checksum mismatch.");
-    migrations.push({ ...entry, sql }); previous = entry.file;
+    // These reusable files own a transaction for standalone Development use.
+    // The external runner owns ONE transaction including its migration ledger.
+    const executable = planSchemaSource ? sql.replace(/^BEGIN;\s*$/m, "").replace(/^COMMIT;\s*$/m, "") : sql;
+    migrations.push({ ...entry, sql: executable }); previous = entry.file;
   }
   const c = new Client(options);
   await c.connect();
@@ -80,10 +97,11 @@ export async function migrate(env = process.env) {
     await c.query("REVOKE ALL ON SCHEMA qxlayer_migrations FROM PUBLIC");
     await c.query("CREATE TABLE IF NOT EXISTS qxlayer_migrations.versions (file text PRIMARY KEY, sha256 text NOT NULL, applied_at timestamptz NOT NULL DEFAULT now())");
     const applied = await c.query("SELECT file,sha256 FROM qxlayer_migrations.versions ORDER BY file");
-    for (const row of applied.rows)
+    const schemaRows = schemaLedger(applied.rows, production);
+    for (const row of schemaRows)
       if (!migrations.some(m => m.file === row.file && m.sha256 === row.sha256))
         throw new Error("Unknown or changed applied migration.");
-    const appliedNames = applied.rows.map(r => r.file);
+    const appliedNames = schemaRows.map(r => r.file);
     if (appliedNames.some((name, i) => migrations[i]?.file !== name))
       throw new Error("Migration history is not an ordered prefix.");
     for (const m of migrations) {

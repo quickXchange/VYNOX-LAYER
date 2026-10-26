@@ -1,8 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
+import { Link } from 'wouter';
+import { PlanCard } from '@/components/plan-management/plan-card-preview';
+import type { PlanProfile } from '@/components/plan-management/types';
 import { Section, SectionHead } from '@site/components/sections/common';
 
 type Ent = { key: string; value: boolean | string };
-type PPlan = { id: string; name: string; description?: string; monthlyPrice: string | null; yearlyPrice: string | null; setupFee: string | null; currency: string; discountPercent?: string | null; billingPeriods?: string[]; entitlements?: Ent[]; pricingConfigured?: boolean };
+type PPlan = { id: string; name: string; description?: string; monthlyPrice: string | null; yearlyPrice: string | null; setupFee: string | null; currency: string; discountPercent?: string | null; billingPeriods?: string[]; entitlements?: Ent[]; pricingConfigured?: boolean; profile?: Partial<PlanProfile> };
 type PAddon = { id: string; name: string; description?: string; monthlyPrice: string | null; yearlyPrice: string | null; setupFee: string | null; currency: string; discountPercent?: string | null; entitlements?: Ent[] };
 type Catalog = { plans: PPlan[]; addons: PAddon[]; methods: unknown[]; purchaseAvailable: boolean };
 const LABELS: Record<string, string> = { crypto_exchange: 'Crypto exchange', swap: 'Swap', convert: 'Convert', telegram_bot: 'Telegram bot', telegram_mini_app: 'Telegram mini app', quickex: 'Quickex provider', whitebit: 'WhiteBIT provider', quickex_customer_credentials: 'Own Quickex credentials', whitebit_customer_credentials: 'Own WhiteBIT credentials', api_keys: 'API keys', website: 'Website', max_staff: 'Staff seats' };
@@ -45,7 +48,9 @@ export function PublishedPlans() {
           : q.isError ? <div className="s-card p-8 text-center" role="alert"><p className="font-semibold">Plans could not be loaded</p><button type="button" className="s-muted mt-2 text-sm underline" onClick={() => q.refetch()} data-testid="button-retry-plans">Try again</button></div>
           : plans.length === 0 ? <div className="s-card p-8 text-center" data-testid="empty-plans"><p className="text-xl font-semibold">Pricing on request</p><p className="s-muted mt-1 text-sm">No plans are published right now.</p></div>
           : <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3" data-testid="list-published-plans">
-            {plans.map((p) => (
+            {plans.map((p) => p.profile && Object.keys(p.profile).length > 0 ? (
+              <PlanCard key={p.id} plan={p} cta={(href, l) => <Link href={href} className="inline-flex w-full justify-center rounded-sm bg-primary px-4 py-2 text-sm text-primary-foreground hover:opacity-90" data-testid={`link-plan-cta-${p.id}`}>{l}</Link>} />
+            ) : (
               <article key={p.id} className="s-card flex flex-col gap-4 p-5" data-testid={`card-plan-${p.id}`}>
                 <header><h3 className="text-xl font-semibold">{p.name}</h3>{p.description && <p className="s-muted mt-1 text-sm">{p.description}</p>}</header>
                 <Prices x={p} periods={p.billingPeriods} />

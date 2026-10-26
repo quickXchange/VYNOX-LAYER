@@ -8,6 +8,7 @@
 import type { EntitlementEntry } from './entitlementEntry';
 import type { PlanFeatureRow } from './planFeatureRow';
 import type { PlanInputStatus } from './planInputStatus';
+import type { PlanProfile } from './planProfile';
 
 export interface PlanInput {
   /**
@@ -54,4 +55,10 @@ export interface PlanInput {
   entitlements: EntitlementEntry[];
   /** Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap. */
   featureRows?: PlanFeatureRow[];
+  profile?: PlanProfile;
+  /**
+     * Optimistic concurrency token from the last read; a mismatch returns 409.
+     * @minimum 0
+     */
+  expectedRevision?: number;
 }

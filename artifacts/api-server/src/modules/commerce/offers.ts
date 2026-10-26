@@ -34,8 +34,13 @@ export function periods(p: Principal, id: string, input?: { monthly: boolean; ye
     await catalogLock(c, `plan:${id}`, !!input);
     if (!(await c.query(`SELECT id FROM ${catalogTable("plans")} WHERE id=$1`, [id])).rowCount) throw new HttpError(404, "Plan not found.");
     if (input) {
+      const row = (await c.query(`SELECT * FROM ${catalogTable("plans")} WHERE id=$1 FOR UPDATE`, [id])).rows[0];
+      const { billingError } = await import("../plan-management/profile");
+      const bErr = billingError(row.profile ?? {}, row.pricing_configured, { monthlyPrice: row.pricing_configured ? row.monthly_price : null, yearlyPrice: row.pricing_configured ? row.yearly_price : null, setupFee: row.pricing_configured ? row.setup_fee : null, discountPercent: row.discount_percent }, input);
+      if (bErr) throw new HttpError(400, bErr);
       await c.query(`INSERT INTO ${catalogTable("offer_settings")}(plan_id,monthly,yearly) VALUES($1,$2,$3)
         ON CONFLICT(plan_id) DO UPDATE SET monthly=$2,yearly=$3`, [id, input.monthly, input.yearly]);
+      await c.query(`UPDATE ${catalogTable("plans")} SET revision=revision+1,updated_at=now(),updated_by=$2 WHERE id=$1`, [id, p.userId]);
       await audit(c, p, null, "commerce.periods.saved", "Updated enabled plan billing periods", { id, ...input });
     }
     return (await c.query(`SELECT monthly,yearly FROM ${catalogTable("offer_settings")} WHERE plan_id=$1`, [id])).rows[0] ?? { monthly: true, yearly: true };

@@ -525,6 +525,243 @@ export interface PlanFeatureRow {
   value: string;
 }
 
+export type PlanProfileBadgeType = typeof PlanProfileBadgeType[keyof typeof PlanProfileBadgeType];
+
+
+export const PlanProfileBadgeType = {
+  none: 'none',
+  recommended: 'recommended',
+  custom: 'custom',
+} as const;
+
+export type PlanProfilePricingMode = typeof PlanProfilePricingMode[keyof typeof PlanProfilePricingMode];
+
+
+export const PlanProfilePricingMode = {
+  paid: 'paid',
+  free: 'free',
+  custom: 'custom',
+  contact_sales: 'contact_sales',
+} as const;
+
+export type PlanProfileBillingInterval = typeof PlanProfileBillingInterval[keyof typeof PlanProfileBillingInterval];
+
+
+export const PlanProfileBillingInterval = {
+  monthly: 'monthly',
+  yearly: 'yearly',
+  monthly_and_yearly: 'monthly_and_yearly',
+  custom: 'custom',
+} as const;
+
+export type PlanProfileVisibility = typeof PlanProfileVisibility[keyof typeof PlanProfileVisibility];
+
+
+export const PlanProfileVisibility = {
+  public: 'public',
+  hidden: 'hidden',
+} as const;
+
+export type PlanProfileSupportLevel = typeof PlanProfileSupportLevel[keyof typeof PlanProfileSupportLevel];
+
+
+export const PlanProfileSupportLevel = {
+  email: 'email',
+  priority: 'priority',
+  dedicated: 'dedicated',
+} as const;
+
+export type PlanProfileThemeModesItem = typeof PlanProfileThemeModesItem[keyof typeof PlanProfileThemeModesItem];
+
+
+export const PlanProfileThemeModesItem = {
+  light: 'light',
+  dark: 'dark',
+} as const;
+
+/**
+ * Commercial state. limited requires limitValue.
+ */
+export type PlanCapabilityState = typeof PlanCapabilityState[keyof typeof PlanCapabilityState];
+
+
+export const PlanCapabilityState = {
+  included: 'included',
+  excluded: 'excluded',
+  optional: 'optional',
+  limited: 'limited',
+  unlimited: 'unlimited',
+  unavailable: 'unavailable',
+} as const;
+
+/**
+ * Implementation status; unavailable means not implemented and never a working toggle
+ */
+export type PlanCapabilityAvailability = typeof PlanCapabilityAvailability[keyof typeof PlanCapabilityAvailability];
+
+
+export const PlanCapabilityAvailability = {
+  available: 'available',
+  requires_configuration: 'requires_configuration',
+  unavailable: 'unavailable',
+} as const;
+
+export interface PlanCapability {
+  /** @pattern ^[a-z][a-z0-9_]{1,63}$ */
+  key: string;
+  /**
+     * @minLength 1
+     * @maxLength 120
+     */
+  label: string;
+  /** @maxLength 600 */
+  description?: string;
+  /** @maxLength 60 */
+  group?: string;
+  /** Commercial state. limited requires limitValue. */
+  state: PlanCapabilityState;
+  /** Implementation status; unavailable means not implemented and never a working toggle */
+  availability: PlanCapabilityAvailability;
+  /**
+     * @minimum 0
+     * @maximum 1000000000000
+     * @nullable
+     */
+  limitValue?: number | null;
+  /** @maxLength 30 */
+  unit?: string;
+  /** @maxLength 300 */
+  tooltip?: string;
+  highlight?: boolean;
+  publicVisible?: boolean;
+  /** @maxLength 30 */
+  badge?: string;
+  /**
+     * @maxItems 20
+     * @items.pattern ^[a-z][a-z0-9_]{1,63}$
+     */
+  dependsOn?: string[];
+  /** @maxLength 300 */
+  note?: string;
+}
+
+/**
+ * Structured plan configuration. internalName and internalNotes are Super Admin only and never published.
+ */
+export interface PlanProfile {
+  /** @pattern ^[a-z0-9](?:[a-z0-9-]{0,62}[a-z0-9])?$ */
+  slug?: string;
+  /** @maxLength 120 */
+  internalName?: string;
+  /** @maxLength 120 */
+  publicName?: string;
+  /** @maxLength 160 */
+  tagline?: string;
+  /** @maxLength 300 */
+  shortDescription?: string;
+  /** @maxLength 5000 */
+  fullDescription?: string;
+  /**
+     * Local path or https URL without credentials
+     * @maxLength 500
+     */
+  iconUrl?: string;
+  /**
+     * Local path or https URL without credentials
+     * @maxLength 500
+     */
+  imageUrl?: string;
+  badgeType?: PlanProfileBadgeType;
+  /** @maxLength 40 */
+  badgeLabel?: string;
+  featured?: boolean;
+  /** @maxLength 300 */
+  footerText?: string;
+  /** @maxLength 200 */
+  promoText?: string;
+  /** @maxLength 5000 */
+  terms?: string;
+  pricingMode?: PlanProfilePricingMode;
+  /** @maxLength 60 */
+  contactSalesLabel?: string;
+  /** @maxLength 80 */
+  customPriceText?: string;
+  /**
+     * @maxLength 18
+     * @nullable
+     * @pattern ^[0-9]+(?:\.[0-9]{1,2})?$
+     */
+  fixedDiscountAmount?: string | null;
+  /**
+     * @maxLength 18
+     * @nullable
+     * @pattern ^[0-9]+(?:\.[0-9]{1,2})?$
+     */
+  promoPrice?: string | null;
+  /** @nullable */
+  promoStartsAt?: string | null;
+  /** @nullable */
+  promoEndsAt?: string | null;
+  billingInterval?: PlanProfileBillingInterval;
+  /**
+     * @minimum 0
+     * @maximum 365
+     */
+  trialDays?: number;
+  /** @maxLength 60 */
+  ctaLabel?: string;
+  /**
+     * @maxLength 200
+     * @pattern ^/(?!/)[A-Za-z0-9/_#?=&.-]*$
+     */
+  ctaUrl?: string;
+  visibility?: PlanProfileVisibility;
+  /**
+     * @minimum 1
+     * @maximum 10000
+     * @nullable
+     */
+  adminSeats?: number | null;
+  multiAdminRoles?: boolean;
+  supportLevel?: PlanProfileSupportLevel;
+  /**
+     * @minimum 1
+     * @maximum 720
+     * @nullable
+     */
+  supportResponseHours?: number | null;
+  /**
+     * @minimum 1
+     * @maximum 365
+     * @nullable
+     */
+  launchTargetBusinessDays?: number | null;
+  dedicatedManager?: boolean;
+  slaEnabled?: boolean;
+  /** @maxLength 1000 */
+  slaTerms?: string;
+  earlyAccess?: boolean;
+  poweredByFooter?: boolean;
+  /** @maxItems 2 */
+  themeModes?: PlanProfileThemeModesItem[];
+  /**
+     * @minimum 0
+     * @maximum 100
+     * @nullable
+     */
+  convertProviderLimit?: number | null;
+  /**
+     * @maxItems 30
+     * @items.minLength 1
+     * @items.maxLength 60
+     */
+  requestedProviders?: string[];
+  /** @maxItems 120 */
+  capabilities?: PlanCapability[];
+  /** @maxLength 5000 */
+  internalNotes?: string;
+}
+
 export interface PlanInput {
   /**
      * @minLength 2
@@ -570,6 +807,12 @@ export interface PlanInput {
   entitlements: EntitlementEntry[];
   /** Ordered plain-text marketing rows only. Omit on update to preserve existing rows; an empty array clears them. Subject to the normal request byte limit, not a row-count cap. */
   featureRows?: PlanFeatureRow[];
+  profile?: PlanProfile;
+  /**
+     * Optimistic concurrency token from the last read; a mismatch returns 409.
+     * @minimum 0
+     */
+  expectedRevision?: number;
 }
 
 export type PlanBillingPeriodsItem = typeof PlanBillingPeriodsItem[keyof typeof PlanBillingPeriodsItem];
@@ -588,6 +831,7 @@ export type Plan = PlanInput & {
   billingPeriods?: PlanBillingPeriodsItem[];
   /** Ordered plain-text marketing rows only; legacy published snapshots return an empty array. */
   featureRows: PlanFeatureRow[];
+  revision?: number;
 };
 
 export interface AddonInput {
@@ -2733,6 +2977,129 @@ export type Tenant = TenantSummary & ({
   websiteSettings?: WebsiteSettings;
 });
 
+export interface PlanRevisionRef {
+  id: string;
+  /** @minimum 0 */
+  revision: number;
+}
+
+export interface PlanOrderInput {
+  /**
+     * @minItems 1
+     * @maxItems 500
+     */
+  plans: PlanRevisionRef[];
+}
+
+export interface PublicationVersion {
+  id: string;
+  revision: string;
+  reason: string;
+  publishedBy: string;
+  /** @nullable */
+  rollbackOf: string | null;
+  publishedAt: string;
+  planCount: number;
+}
+
+export interface PublicationVersionList {
+  /** @nullable */
+  currentRevision: string | null;
+  versions: PublicationVersion[];
+}
+
+export interface PublicationRollbackInput {
+  /**
+     * @nullable
+     * @pattern ^[a-f0-9]{64}$
+     */
+  expectedPublishedRevision: string | null;
+  /**
+     * @minLength 3
+     * @maxLength 500
+     */
+  reason: string;
+}
+
+export interface PublicationRollbackResult {
+  publishedRevision: string;
+}
+
+export type PlanHistoryEntryMetadata = { [key: string]: unknown };
+
+export interface PlanHistoryEntry {
+  id: string;
+  actorId: string;
+  eventType: string;
+  description: string;
+  metadata: PlanHistoryEntryMetadata;
+  createdAt: string;
+}
+
+export interface MigrationEntitlementChange {
+  key: string;
+  current: unknown;
+  target: unknown;
+}
+
+export interface MigrationPrices {
+  /** @nullable */
+  monthlyPrice: string | null;
+  /** @nullable */
+  yearlyPrice: string | null;
+  /** @nullable */
+  setupFee: string | null;
+  currency: string;
+}
+
+export interface MigrationSubscriber {
+  tenantId: string;
+  tenantName: string;
+  frozen: boolean;
+  /** @nullable */
+  frozenAt: string | null;
+  /** @nullable */
+  contractPlanName: string | null;
+  currentPrices: MigrationPrices | null;
+  priceChanged: boolean;
+  entitlementChanges: MigrationEntitlementChange[];
+}
+
+export type MigrationPreviewTarget = {
+  id: string;
+  name: string;
+  prices: MigrationPrices;
+};
+
+export interface MigrationPreview {
+  /** Binds a confirm to this exact published target and these exact current contracts */
+  previewToken: string;
+  publishedRevision: string;
+  target: MigrationPreviewTarget;
+  subscribers: MigrationSubscriber[];
+}
+
+export interface MigrationInput {
+  toPlanId: string;
+  /**
+     * @minItems 1
+     * @maxItems 1000
+     */
+  tenantIds: string[];
+  /**
+     * @minLength 3
+     * @maxLength 500
+     */
+  reason: string;
+  confirmed: true;
+  /** @pattern ^[a-f0-9]{64}$ */
+  previewToken: string;
+}
+
+export interface MigrationResult {
+  moved: string[];
+}
+
 export type PlanStatusInputStatus = typeof PlanStatusInputStatus[keyof typeof PlanStatusInputStatus];
 
 
@@ -2744,6 +3111,8 @@ export const PlanStatusInputStatus = {
 
 export interface PlanStatusInput {
   status: PlanStatusInputStatus;
+  /** @minimum 0 */
+  expectedRevision: number;
 }
 
 export interface SubscriptionPlanInput {
@@ -3536,5 +3905,16 @@ export const ListExchangeOrdersView = {
 
 export type GetDomainHostingProof200 = {
   proof: string;
+};
+
+export type DeletePlanParams = {
+/**
+ * @minimum 0
+ */
+expectedRevision: number;
+};
+
+export type GetPlanMigrationPreviewParams = {
+targetPlanId: string;
 };
 

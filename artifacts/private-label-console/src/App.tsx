@@ -193,6 +193,8 @@ function AppRoutes() {
               <Route path="/" component={HomeRedirect} />
               <Route path="/demo/admin" component={DemoAdmin} />
               <Route path="/products/:productKey" component={ProductExplore} />
+              <Route path="/pricing">{() => <Redirect to="/products/crypto_exchange#pricing" replace />}</Route>
+              <Route path="/contact">{() => <Redirect to={`/account/configure${window.location.search}`} replace />}</Route>
               {ownedAuth && <Route path="/sign-in" component={OwnedSignIn} />}
               {ownedAuth && <Route path="/sign-up" component={OwnedSignUp} />}
               {ownedAuth && <Route path="/forgot-password" component={OwnedForgot} />}
