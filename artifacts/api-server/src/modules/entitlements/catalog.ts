@@ -8,6 +8,7 @@ import { contextFor, requireSuperAdmin, type Principal } from "../authentication
 import { isInteger, normalizeDecimal } from "./decimal";
 import { discountBasisPoints, pricingTriple } from "./commercial-pricing";
 import { freezePricingBeforeEdit } from "../commerce/pricing-publication";
+import { assertRevision, assertSlugAvailable, billingError, normalizeProfile, type PlanProfile } from "../plan-management/profile";
 
 export type PlanInput = z.infer<typeof CreatePlanBody>;
 export type AddonInput = z.infer<typeof CreateAddonBody>;
@@ -57,6 +58,7 @@ export async function readPlan(client: DatabaseClient, id: string, historical = 
     billingPeriods: [(!period || period.monthly) && "monthly", (!period || period.yearly) && "yearly"].filter(Boolean) as ("monthly" | "yearly")[],
     displayOrder: p.display_order as number, status: p.status as "enabled" | "disabled" | "archived",
     entitlements: e.rows as Entry[], createdAt: p.created_at as Date, updatedAt: p.updated_at as Date,
+    profile: (p.profile ?? {}) as NonNullable<PlanInput["profile"]>, revision: (p.revision ?? 0) as number,
   };
 }
 export async function readAddon(client: DatabaseClient, id: string, historical = false) {
@@ -99,7 +101,7 @@ export function listAddons(principal: Principal) {
     return addons;
   });
 }
-async function writePlan(client: DatabaseClient, input: PlanInput, id?: string) {
+async function writePlan(client: DatabaseClient, input: PlanInput, id?: string, actor?: string) {
   if (!id && input.currency !== "EUR") throw new HttpError(400, "New plans must be priced in EUR.");
   if (input.name.trim().length < 2) throw new HttpError(400, "Plan name must contain at least two non-whitespace characters.");
   // Validate direct service callers as well as HTTP requests. Bound the raw
@@ -110,15 +112,30 @@ async function writePlan(client: DatabaseClient, input: PlanInput, id?: string) 
     return { label, value };
   });
   const entries = await validateEntries(client, input.entitlements);
+  const profile = input.profile !== undefined ? normalizeProfile(input.profile) : undefined;
+  // Every update is bound to the revision the editor read; no silent overwrite.
+  if (id) await assertRevision(client, id, input.expectedRevision);
+  const stored = id ? (await client.query(`SELECT profile FROM ${catalogTable("plans")} WHERE id=$1`, [id])).rows[0]?.profile as PlanProfile | undefined : undefined;
+  const effective = profile ?? stored ?? {};
+  await assertSlugAvailable(client, effective.slug, input.status, id);
   const configured = pricingTriple([input.monthlyPrice, input.yearlyPrice, input.setupFee]);
   discountBasisPoints(input.discountPercent);
+  // New plans derive billing availability from the chosen interval; existing plans use their stored periods.
+  const iv = effective.billingInterval;
+  const derived = { monthly: iv !== "yearly", yearly: iv !== "monthly" };
+  const periods = id ? ((await client.query(`SELECT monthly,yearly FROM ${catalogTable("offer_settings")} WHERE plan_id=$1`, [id])).rows[0] ?? { monthly: true, yearly: true }) : derived;
+  const bErr = billingError(effective, configured, { monthlyPrice: input.monthlyPrice, yearlyPrice: input.yearlyPrice, setupFee: input.setupFee, discountPercent: input.discountPercent }, periods);
+  if (bErr) throw new HttpError(400, bErr);
   const args = [input.name.trim(), input.description, input.monthlyPrice ?? "0", input.yearlyPrice ?? "0", input.setupFee ?? "0", input.currency, input.billingLabel, input.displayOrder, input.status];
   const r = id
     ? await client.query(`UPDATE ${catalogTable("plans")} SET name=$1,description=$2,monthly_price=CASE WHEN $11 THEN $3 ELSE monthly_price END,yearly_price=CASE WHEN $11 THEN $4 ELSE yearly_price END,setup_fee=CASE WHEN $11 THEN $5 ELSE setup_fee END,currency=$6,billing_label=$7,display_order=$8,status=$9,updated_at=now() WHERE id=$10 RETURNING id`, [...args, id, configured])
     : await client.query(`INSERT INTO ${catalogTable("plans")} (name,description,monthly_price,yearly_price,setup_fee,currency,billing_label,display_order,status) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING id`, args);
   const planId = r.rows[0].id as string;
+  if (!id && iv && iv !== "monthly_and_yearly") await client.query(`INSERT INTO ${catalogTable("offer_settings")}(plan_id,monthly,yearly) VALUES($1,$2,$3) ON CONFLICT(plan_id) DO UPDATE SET monthly=$2,yearly=$3`, [planId, derived.monthly, derived.yearly]);
   // Omission preserves rows on updates; [] explicitly clears them. New plans
   // use the database default. These display strings never enter entitlements.
+  if (profile !== undefined) await client.query(`UPDATE ${catalogTable("plans")} SET profile=$2::jsonb WHERE id=$1`, [planId, JSON.stringify(profile)]);
+  await client.query(`UPDATE ${catalogTable("plans")} SET revision=revision+1,updated_by=$2 WHERE id=$1`, [planId, actor ?? null]);
   if (featureRows !== undefined) await client.query(`UPDATE ${catalogTable("plans")} SET feature_rows=$2::jsonb WHERE id=$1`, [planId, JSON.stringify(featureRows)]);
   await client.query(`UPDATE ${catalogTable("plans")} SET pricing_configured=$2,discount_percent=COALESCE($3,discount_percent) WHERE id=$1`, [planId, configured, input.discountPercent ?? null]);
   await client.query(`DELETE FROM ${catalogTable("plan_entitlements")} WHERE plan_id=$1`, [planId]);
@@ -131,7 +148,7 @@ export function savePlan(principal: Principal, input: PlanInput, id?: string) {
     await freezePricingBeforeEdit(client);
     if (id) { await catalogLock(client, `plan:${id}`, true); await client.query(`SELECT id FROM ${catalogTable("plans")} WHERE id=$1 FOR UPDATE`, [id]); }
     const before = id ? await readPlan(client, id) : null;
-    const after = await writePlan(client, input, id);
+    const after = await writePlan(client, input, id, principal.userId);
     await audit(client, principal, null, id ? "plan.updated" : "plan.created", `${id ? "Updated" : "Created"} plan ${after.name}; pricing is metadata only`, { planId: after.id, before, after });
     return after;
   });
@@ -141,19 +158,23 @@ export function duplicatePlan(principal: Principal, id: string) {
   return withDatabase(contextFor(principal, undefined, true), async (client) => {
     await freezePricingBeforeEdit(client);
     const source = await readPlan(client, id);
-    const after = await writePlan(client, { ...source, name: `${source.name.slice(0, 110)} copy`, status: "disabled" });
+    const { slug: _slug, ...profileWithoutSlug } = source.profile ?? {};
+    const { revision: _r, ...rest } = source;
+    const after = await writePlan(client, { ...rest, name: `${source.name.slice(0, 110)} copy`, status: "disabled", profile: { ...profileWithoutSlug, badgeType: "none", featured: false } }, undefined, principal.userId);
     await audit(client, principal, null, "plan.duplicated", `Duplicated plan ${source.name}`, { sourceId: id, after });
     return after;
   });
 }
-export function changePlanStatus(principal: Principal, id: string, status: PlanInput["status"]) {
+export function changePlanStatus(principal: Principal, id: string, status: PlanInput["status"], expectedRevision: number | undefined) {
   requireSuperAdmin(principal);
   return withDatabase(contextFor(principal, undefined, true), async (client) => {
     await freezePricingBeforeEdit(client);
     await catalogLock(client, `plan:${id}`, true);
     await client.query(`SELECT id FROM ${catalogTable("plans")} WHERE id=$1 FOR UPDATE`, [id]);
+    await assertRevision(client, id, expectedRevision);
     const before = await readPlan(client, id);
-    await client.query(`UPDATE ${catalogTable("plans")} SET status=$2,updated_at=now() WHERE id=$1`, [id, status]);
+    await assertSlugAvailable(client, before.profile?.slug, status, id);
+    await client.query(`UPDATE ${catalogTable("plans")} SET status=$2,updated_at=now(),revision=revision+1,updated_by=$3 WHERE id=$1`, [id, status, principal.userId]);
     const after = await readPlan(client, id);
     await audit(client, principal, null, `plan.${status}`, `Set plan ${after.name} to ${status}; existing subscriptions retained`, { planId: id, before: before.status, after: status });
     return after;
@@ -191,11 +212,12 @@ export function saveAddon(principal: Principal, input: AddonInput, id?: string) 
 }
 
 /** Keep every historical order reference and live subscription; only truly unused records may be deleted. */
-export function deleteCatalogRecord(principal: Principal, id: string, kind: "plan" | "addon") {
+export function deleteCatalogRecord(principal: Principal, id: string, kind: "plan" | "addon", expectedRevision?: number) {
   requireSuperAdmin(principal);
   return withDatabase(contextFor(principal, undefined, true), async client => {
     await freezePricingBeforeEdit(client);
     await catalogLock(client, `${kind}:${id}`, true);
+    if (kind === "plan") await assertRevision(client, id, expectedRevision);
     const before = kind === "plan" ? await readPlan(client, id) : await readAddon(client, id);
     // Retained IDs do not make a public subscription a private assignment.
     // Only sandbox request references can belong to the Acceptance catalog.

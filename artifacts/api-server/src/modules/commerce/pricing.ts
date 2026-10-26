@@ -1,5 +1,5 @@
 import { HttpError } from "../../lib/errors";
-import { discountedRecurring } from "../entitlements/commercial-pricing";
+import { effectiveRecurring } from "../entitlements/commercial-pricing";
 export function cents(value: unknown): bigint {
   if (typeof value !== "string" || !/^\d{1,20}(\.\d{1,2})?$/.test(value)) throw new HttpError(400, "Use a nonnegative amount with at most two decimals.");
   const [a, b = ""] = value.split(".");
@@ -22,7 +22,9 @@ export function invoicePricing(configuration: any, quotation?: { status: string;
     const recurring = cents(quotation.monthlyPrice), setup = cents(quotation.setupPrice), customization = cents(quotation.customizationPrice ?? "0");
     return { amount: money(recurring + setup + customization), currency: quotation.currency, recurring: money(recurring), setup: money(setup), customization: money(customization), billingPeriod: yearly ? "yearly" : "monthly" };
   }
-  const recurring = [plan, ...addons].reduce((sum, p) => sum + cents(discountedRecurring(yearly ? p.yearlyPrice : p.monthlyPrice, p.discountPercent)), 0n);
+  // Promotions are evaluated at the order's immutable pricing instant (submission), not at payment time.
+  const at = configuration.pricedAt ? new Date(configuration.pricedAt) : new Date();
+  const recurring = [plan, ...addons].reduce((sum, p) => sum + cents(effectiveRecurring(p, yearly ? "yearly" : "monthly", at)), 0n);
   const setup = [plan, ...addons].reduce((sum, p) => sum + cents(p.setupFee), 0n);
   return { amount: money(recurring + setup), currency: plan.currency, recurring: money(recurring), setup: money(setup), customization: "0.00", billingPeriod: yearly ? "yearly" : "monthly" };
 }

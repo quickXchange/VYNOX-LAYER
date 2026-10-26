@@ -17,4 +17,5 @@ export type Plan = PlanInput & {
   billingPeriods?: PlanBillingPeriodsItem[];
   /** Ordered plain-text marketing rows only; legacy published snapshots return an empty array. */
   featureRows: PlanFeatureRow[];
+  revision?: number;
 };

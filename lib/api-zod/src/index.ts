@@ -5,3 +5,5 @@ export * from "./site-release";
 // Runtime consumers use the validator; query input types live in the client package.
 export { ListExchangeOrdersParams } from "./generated/api";
 export { ListExchangeAuditParams } from "./generated/api";
+export { DeletePlanParams } from "./generated/api";
+export { GetPlanMigrationPreviewParams } from "./generated/api";

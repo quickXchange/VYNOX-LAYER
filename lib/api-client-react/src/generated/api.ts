@@ -33,6 +33,7 @@ import type {
   CustomerDomain,
   CustomerNotifications,
   DeletePhase1Method200,
+  DeletePlanParams,
   DemoLaunchInput,
   DemoSession,
   DomainHostingAction,
@@ -64,6 +65,7 @@ import type {
   ExchangeWalletScanInput,
   GetDomainHostingProof200,
   GetPhase1Catalog200,
+  GetPlanMigrationPreviewParams,
   GetReleasedSiteConfigParams,
   GlobalCatalogPatch,
   GlobalExchangeCatalog,
@@ -74,11 +76,16 @@ import type {
   ListExchangeAuditParams,
   ListExchangeOrdersParams,
   ListPlatformPriceProposals200Item,
+  MigrationInput,
+  MigrationPreview,
+  MigrationResult,
   ModuleDefinition,
   MutationStatus,
   NotificationReadInput,
   Plan,
+  PlanHistoryEntry,
   PlanInput,
+  PlanOrderInput,
   PlanProposalCatalog,
   PlanStatusInput,
   PlatformApprovalInput,
@@ -109,6 +116,9 @@ import type {
   PublicExchange,
   PublicSite,
   PublicTelegramMiniConfig,
+  PublicationRollbackInput,
+  PublicationRollbackResult,
+  PublicationVersionList,
   RegisterTenantTelegramWebhook200,
   ReleasedSiteConfig,
   ResourceCreated,
@@ -9458,17 +9468,26 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       return useMutation(getCreatePlanMutationOptions(options));
     }
 
-export const getDeletePlanUrl = (planId: string,) => {
+export const getDeletePlanUrl = (planId: string,
+    params: DeletePlanParams,) => {
+  const normalizedParams = new URLSearchParams();
 
+  Object.entries(params || {}).forEach(([key, value]) => {
 
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
 
+  const stringifiedParams = normalizedParams.toString();
 
-  return `/api/plans/${planId}`
+  return stringifiedParams.length > 0 ? `/api/plans/${planId}?${stringifiedParams}` : `/api/plans/${planId}`
 }
 
-export const deletePlan = async (planId: string, options?: Parameters<typeof customFetch>[1]): Promise<MutationStatus> => {
+export const deletePlan = async (planId: string,
+    params: DeletePlanParams, options?: Parameters<typeof customFetch>[1]): Promise<MutationStatus> => {
 
-  return customFetch<MutationStatus>(getDeletePlanUrl(planId),
+  return customFetch<MutationStatus>(getDeletePlanUrl(planId,params),
   {
     ...options,
     method: 'DELETE'
@@ -9498,9 +9517,9 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
 
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof deletePlan>>, DeletePlanMutationVariables> = (props) => {
-          const {planId} = props ?? {};
+          const {planId,params} = props ?? {};
 
-          return  deletePlan(planId,requestOptions)
+          return  deletePlan(planId,params,requestOptions)
         }
 
 
@@ -9513,7 +9532,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
     export type DeletePlanMutationResult = NonNullable<Awaited<ReturnType<typeof deletePlan>>>
 
     export type DeletePlanMutationError = ErrorType<void>
-    export type DeletePlanMutationVariables = {planId: string}
+    export type DeletePlanMutationVariables = {planId: string;params: DeletePlanParams}
 
     export const useDeletePlan = <TError = ErrorType<void>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deletePlan>>, TError,DeletePlanMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
@@ -9678,6 +9697,479 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
         TContext
       > => {
       return useMutation(getUpdatePlanMutationOptions(options));
+    }
+
+export const getListPublicationVersionsUrl = () => {
+
+
+
+
+  return `/api/plan-management/versions`
+}
+
+export const listPublicationVersions = async ( options?: Parameters<typeof customFetch>[1]): Promise<PublicationVersionList> => {
+
+  return customFetch<PublicationVersionList>(getListPublicationVersionsUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListPublicationVersionsQueryKey = () => {
+    return [
+    `/api/plan-management/versions`
+    ] as const;
+    }
+
+
+export const getListPublicationVersionsQueryOptions = <TData = Awaited<ReturnType<typeof listPublicationVersions>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listPublicationVersions>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListPublicationVersionsQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listPublicationVersions>>> = ({ signal }) => listPublicationVersions({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listPublicationVersions>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ListPublicationVersionsQueryResult = NonNullable<Awaited<ReturnType<typeof listPublicationVersions>>>
+export type ListPublicationVersionsQueryError = ErrorType<unknown>
+
+
+
+export function useListPublicationVersions<TData = Awaited<ReturnType<typeof listPublicationVersions>>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listPublicationVersions>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getListPublicationVersionsQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getRollbackPublicationUrl = (versionId: string,) => {
+
+
+
+
+  return `/api/plan-management/versions/${versionId}/rollback`
+}
+
+export const rollbackPublication = async (versionId: string,
+    publicationRollbackInput: PublicationRollbackInput, options?: Parameters<typeof customFetch>[1]): Promise<PublicationRollbackResult> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<PublicationRollbackResult>(getRollbackPublicationUrl(versionId),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(publicationRollbackInput)
+  }
+);}
+
+
+
+
+
+export const getRollbackPublicationMutationKey = () => ['rollbackPublication'] as const;
+
+export const getRollbackPublicationMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof rollbackPublication>>, TError,RollbackPublicationMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof rollbackPublication>>, TError,RollbackPublicationMutationVariables, TContext> => {
+
+const mutationKey = getRollbackPublicationMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof rollbackPublication>>, RollbackPublicationMutationVariables> = (props) => {
+          const {versionId,data} = props ?? {};
+
+          return  rollbackPublication(versionId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type RollbackPublicationMutationResult = NonNullable<Awaited<ReturnType<typeof rollbackPublication>>>
+    export type RollbackPublicationMutationBody = BodyType<PublicationRollbackInput>
+    export type RollbackPublicationMutationError = ErrorType<void>
+    export type RollbackPublicationMutationVariables = {versionId: string;data: BodyType<PublicationRollbackInput>}
+
+    export const useRollbackPublication = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof rollbackPublication>>, TError,RollbackPublicationMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof rollbackPublication>>,
+        TError,
+        RollbackPublicationMutationVariables,
+        TContext
+      > => {
+      return useMutation(getRollbackPublicationMutationOptions(options));
+    }
+
+export const getReorderPlansUrl = () => {
+
+
+
+
+  return `/api/plan-management/order`
+}
+
+export const reorderPlans = async (planOrderInput: PlanOrderInput, options?: Parameters<typeof customFetch>[1]): Promise<MutationStatus> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<MutationStatus>(getReorderPlansUrl(),
+  {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(planOrderInput)
+  }
+);}
+
+
+
+
+
+export const getReorderPlansMutationKey = () => ['reorderPlans'] as const;
+
+export const getReorderPlansMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof reorderPlans>>, TError,ReorderPlansMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof reorderPlans>>, TError,ReorderPlansMutationVariables, TContext> => {
+
+const mutationKey = getReorderPlansMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof reorderPlans>>, ReorderPlansMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  reorderPlans(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ReorderPlansMutationResult = NonNullable<Awaited<ReturnType<typeof reorderPlans>>>
+    export type ReorderPlansMutationBody = BodyType<PlanOrderInput>
+    export type ReorderPlansMutationError = ErrorType<void>
+    export type ReorderPlansMutationVariables = {data: BodyType<PlanOrderInput>}
+
+    export const useReorderPlans = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof reorderPlans>>, TError,ReorderPlansMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof reorderPlans>>,
+        TError,
+        ReorderPlansMutationVariables,
+        TContext
+      > => {
+      return useMutation(getReorderPlansMutationOptions(options));
+    }
+
+export const getGetPlanHistoryUrl = (planId: string,) => {
+
+
+
+
+  return `/api/plan-management/plans/${planId}/history`
+}
+
+export const getPlanHistory = async (planId: string, options?: Parameters<typeof customFetch>[1]): Promise<PlanHistoryEntry[]> => {
+
+  return customFetch<PlanHistoryEntry[]>(getGetPlanHistoryUrl(planId),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetPlanHistoryQueryKey = (planId: string,) => {
+    return [
+    `/api/plan-management/plans/${planId}/history`
+    ] as const;
+    }
+
+
+export const getGetPlanHistoryQueryOptions = <TData = Awaited<ReturnType<typeof getPlanHistory>>, TError = ErrorType<unknown>>(planId: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getPlanHistory>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetPlanHistoryQueryKey(planId);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getPlanHistory>>> = ({ signal }) => getPlanHistory(planId, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: planId !== null && planId !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getPlanHistory>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetPlanHistoryQueryResult = NonNullable<Awaited<ReturnType<typeof getPlanHistory>>>
+export type GetPlanHistoryQueryError = ErrorType<unknown>
+
+
+
+export function useGetPlanHistory<TData = Awaited<ReturnType<typeof getPlanHistory>>, TError = ErrorType<unknown>>(
+ planId: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getPlanHistory>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetPlanHistoryQueryOptions(planId,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getGetPlanMigrationPreviewUrl = (planId: string,
+    params: GetPlanMigrationPreviewParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/plan-management/plans/${planId}/migration-preview?${stringifiedParams}` : `/api/plan-management/plans/${planId}/migration-preview`
+}
+
+export const getPlanMigrationPreview = async (planId: string,
+    params: GetPlanMigrationPreviewParams, options?: Parameters<typeof customFetch>[1]): Promise<MigrationPreview> => {
+
+  return customFetch<MigrationPreview>(getGetPlanMigrationPreviewUrl(planId,params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetPlanMigrationPreviewQueryKey = (planId: string,
+    params?: GetPlanMigrationPreviewParams,) => {
+    return [
+    `/api/plan-management/plans/${planId}/migration-preview`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getGetPlanMigrationPreviewQueryOptions = <TData = Awaited<ReturnType<typeof getPlanMigrationPreview>>, TError = ErrorType<unknown>>(planId: string,
+    params: GetPlanMigrationPreviewParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getPlanMigrationPreview>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetPlanMigrationPreviewQueryKey(planId,params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getPlanMigrationPreview>>> = ({ signal }) => getPlanMigrationPreview(planId,params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: planId !== null && planId !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getPlanMigrationPreview>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetPlanMigrationPreviewQueryResult = NonNullable<Awaited<ReturnType<typeof getPlanMigrationPreview>>>
+export type GetPlanMigrationPreviewQueryError = ErrorType<unknown>
+
+
+
+export function useGetPlanMigrationPreview<TData = Awaited<ReturnType<typeof getPlanMigrationPreview>>, TError = ErrorType<unknown>>(
+ planId: string,
+    params: GetPlanMigrationPreviewParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getPlanMigrationPreview>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetPlanMigrationPreviewQueryOptions(planId,params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getMigratePlanSubscriptionsUrl = (planId: string,) => {
+
+
+
+
+  return `/api/plan-management/plans/${planId}/migrate`
+}
+
+export const migratePlanSubscriptions = async (planId: string,
+    migrationInput: MigrationInput, options?: Parameters<typeof customFetch>[1]): Promise<MigrationResult> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<MigrationResult>(getMigratePlanSubscriptionsUrl(planId),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(migrationInput)
+  }
+);}
+
+
+
+
+
+export const getMigratePlanSubscriptionsMutationKey = () => ['migratePlanSubscriptions'] as const;
+
+export const getMigratePlanSubscriptionsMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof migratePlanSubscriptions>>, TError,MigratePlanSubscriptionsMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof migratePlanSubscriptions>>, TError,MigratePlanSubscriptionsMutationVariables, TContext> => {
+
+const mutationKey = getMigratePlanSubscriptionsMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof migratePlanSubscriptions>>, MigratePlanSubscriptionsMutationVariables> = (props) => {
+          const {planId,data} = props ?? {};
+
+          return  migratePlanSubscriptions(planId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type MigratePlanSubscriptionsMutationResult = NonNullable<Awaited<ReturnType<typeof migratePlanSubscriptions>>>
+    export type MigratePlanSubscriptionsMutationBody = BodyType<MigrationInput>
+    export type MigratePlanSubscriptionsMutationError = ErrorType<void>
+    export type MigratePlanSubscriptionsMutationVariables = {planId: string;data: BodyType<MigrationInput>}
+
+    export const useMigratePlanSubscriptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof migratePlanSubscriptions>>, TError,MigratePlanSubscriptionsMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof migratePlanSubscriptions>>,
+        TError,
+        MigratePlanSubscriptionsMutationVariables,
+        TContext
+      > => {
+      return useMutation(getMigratePlanSubscriptionsMutationOptions(options));
     }
 
 export const getDuplicatePlanUrl = (planId: string,) => {

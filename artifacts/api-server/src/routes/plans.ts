@@ -22,7 +22,8 @@ router.put("/plans/:planId", async (req, res) => {
 });
 router.delete("/plans/:planId", async (req, res) => {
   const { planId } = v.DeletePlanParams.parse(req.params);
-  res.json(v.DeletePlanResponse.parse(await catalog.deleteCatalogRecord(principalFrom(res), planId, "plan")));
+  const { expectedRevision } = v.DeletePlanQueryParams.parse(req.query);
+  res.json(v.DeletePlanResponse.parse(await catalog.deleteCatalogRecord(principalFrom(res), planId, "plan", expectedRevision)));
 });
 router.post("/plans/:planId/duplicate", async (req, res) => {
   const { planId } = v.DuplicatePlanParams.parse(req.params);
@@ -30,7 +31,7 @@ router.post("/plans/:planId/duplicate", async (req, res) => {
 });
 router.put("/plans/:planId/status", async (req, res) => {
   const { planId } = v.SetPlanStatusParams.parse(req.params);
-  res.json(v.SetPlanStatusResponse.parse(await catalog.changePlanStatus(principalFrom(res), planId, v.SetPlanStatusBody.parse(req.body).status)));
+  res.json(v.SetPlanStatusResponse.parse(await (async () => { const b = v.SetPlanStatusBody.parse(req.body); return catalog.changePlanStatus(principalFrom(res), planId, b.status, b.expectedRevision); })()));
 });
 router.get("/add-ons", async (_req, res) => res.json(v.ListAddonsResponse.parse(await catalog.listAddons(principalFrom(res)))));
 router.post("/add-ons", async (req, res) => res.status(201).json(v.CreateAddonResponse.parse(await catalog.saveAddon(principalFrom(res), v.CreateAddonBody.parse(req.body)))));

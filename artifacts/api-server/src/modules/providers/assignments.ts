@@ -1,7 +1,7 @@
 import { withDatabase } from "@workspace/db";
 import { CreateProviderAssignmentBody, UpdateProviderAssignmentBody } from "@workspace/api-zod";
 import { contextFor, requireSuperAdmin, type Principal } from "../authentication/service";
-import { lockTenant, requireFeature, resolveEntitlements } from "../entitlements/resolver";
+import { enforceLimit, lockTenant, requireFeature, resolveEntitlements } from "../entitlements/resolver";
 import { audit } from "../../lib/audit";
 import { HttpError } from "../../lib/errors";
 import { rejectSecrets, validateConfiguration } from "./security";
@@ -19,6 +19,11 @@ export function createProviderAssignment(principal: Principal, tenantId: string,
     requireFeature(effective, "crypto_exchange");
     const provider = await readProvider(client, body.providerId);
     if (!capabilityAllowed(provider, body.capability, body.environment, effective.features)) throw new HttpError(403, "Provider capability/environment or entitlement is unavailable.");
+    // Plan provider limit counts distinct convert providers; eligibility is enforced by capabilityAllowed.
+    if (body.capability === "convert" && "max_convert_providers" in effective.limits) {
+      const used = (await client.query("SELECT count(DISTINCT provider_id)::int AS n FROM provider_assignments WHERE tenant_id=$1 AND capability='convert' AND provider_id<>$2", [tenantId, body.providerId])).rows[0].n as number;
+      enforceLimit(effective, "max_convert_providers", String(used + 1));
+    }
     const result = await client.query(`INSERT INTO provider_assignments(tenant_id,provider_id,capability,environment)
       VALUES($1,$2,$3,$4) ON CONFLICT(tenant_id,provider_id,capability,environment) DO NOTHING RETURNING *`,
     [tenantId, body.providerId, body.capability, body.environment]);

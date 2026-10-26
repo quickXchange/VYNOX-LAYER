@@ -6,6 +6,7 @@ import catalogRouter from "./catalog";
 import platformRouter from "./platform";
 import tenantsRouter from "./tenants";
 import plansRouter from "./plans";
+import planManagementRouter from "./plan-management";
 import websiteRouter from "./website";
 import websiteDiagnosticsRouter from "./website-diagnostics";
 import landingCatalogRouter from "./landing-catalog";
@@ -48,6 +49,7 @@ router.use(integrationsRouter);
 router.use(catalogRouter);
 router.use(tenantsRouter);
 router.use(platformRouter);
+router.use(planManagementRouter);
 router.use(plansRouter);
 
 export default router;

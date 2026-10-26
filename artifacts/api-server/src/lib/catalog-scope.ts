@@ -29,6 +29,7 @@ const sharedTables = {
   addon_entitlements: "public.addon_entitlements",
   offer_settings: "qxlayer_commerce.offer_settings",
   pricing_publication: "qxlayer_commerce.pricing_publication",
+  pricing_publication_versions: "qxlayer_commerce.pricing_publication_versions",
   catalog_audit_events: "public.audit_events",
 } as const;
 export type CatalogTable = keyof typeof sharedTables;

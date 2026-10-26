@@ -9,4 +9,6 @@ import type { PlanStatusInputStatus } from './planStatusInputStatus';
 
 export interface PlanStatusInput {
   status: PlanStatusInputStatus;
+  /** @minimum 0 */
+  expectedRevision: number;
 }

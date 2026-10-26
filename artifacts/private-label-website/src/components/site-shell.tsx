@@ -131,6 +131,7 @@ function Footer({ site, nav }: { site: PublicSite; nav: { id: string; label: str
       <div className="border-t" style={{ borderColor: 'var(--s-line)' }}>
         <div className="s-wrap flex flex-col gap-1 py-5 text-xs s-muted sm:flex-row sm:justify-between">
           <span>{site.brandName}</span>
+          {site.features.powered_by_footer && <span>Powered by VynoX</span>}
           {site.sandboxOnly && <span className="s-mono uppercase tracking-widest">Sandbox environment - no real funds move here</span>}
         </div>
       </div>

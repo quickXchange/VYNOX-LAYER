@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { pool } from "@workspace/db";
 import { CreatePlanBody, UpdatePlanBody } from "@workspace/api-zod";
-import { savePlan, duplicatePlan, readPlan, type PlanInput } from "./catalog";
+import { getPlan, savePlan, duplicatePlan, readPlan, type PlanInput } from "./catalog";
 import { resolveEntitlements } from "./resolver";
 import { publishedOffers, pricingPublication, pricingRevision } from "../commerce/pricing-publication";
 import { whiteLabelCatalog } from "../customer/order-catalog";
@@ -84,7 +84,7 @@ function fixture() {
         if (sql.startsWith("INSERT")) entries.set(key, [...entries.get(key) ?? [], { key: args[1], value: JSON.parse(args[2]) }]);
         return result(entries.get(key) ?? []);
       }
-      const pub = sql.match(/(?:FROM|INTO) ((?:qxlayer_commerce|qxlayer_acceptance_catalog)\.pricing_publication)/)?.[1];
+      const pub = sql.match(/(?:FROM|INTO) ((?:qxlayer_commerce|qxlayer_acceptance_catalog)\.pricing_publication)(?!_)/)?.[1];
       if (pub) {
         if (sql.startsWith("INSERT")) publications.set(pub, { payload: JSON.parse(args[0]), revision: args[1], published_at: new Date() });
         return result(publications.has(pub) ? [publications.get(pub)] : []);
@@ -126,11 +126,13 @@ test("create, omitted update, reorder, duplicate and clear roundtrip in each ser
         ...input, featureRows: rows.map(row => ({ label: ` \t${row.label}\n`, value: ` \n${row.value}\t ` })),
       });
       assert.deepEqual(created.featureRows, rows);
-      assert.deepEqual((await savePlan(operator, input, created.id)).featureRows, rows);
+      const second = await savePlan(operator, { ...input, expectedRevision: created.revision }, created.id);
+      assert.deepEqual(second.featureRows, rows);
       const reordered = [...rows].reverse();
-      assert.deepEqual((await savePlan(operator, {
-        ...input, featureRows: reordered.map(row => ({ label: ` ${row.label} `, value: ` ${row.value} ` })),
-      }, created.id)).featureRows, reordered);
+      const third = await savePlan(operator, {
+        ...input, expectedRevision: second.revision, featureRows: reordered.map(row => ({ label: ` ${row.label} `, value: ` ${row.value} ` })),
+      }, created.id);
+      assert.deepEqual(third.featureRows, reordered);
       const duplicate = await duplicatePlan(operator, created.id);
       assert.deepEqual(duplicate.featureRows, reordered);
       assert.equal(duplicate.status, "disabled");
@@ -141,7 +143,7 @@ test("create, omitted update, reorder, duplicate and clear roundtrip in each ser
       });
       assert.deepEqual(published.published.plans.find((p: { id: string }) => p.id === created.id)?.featureRows, reordered);
       assert.deepEqual((await whiteLabelCatalog(operator)).plans.find(p => p.id === created.id)?.featureRows, reordered);
-      assert.deepEqual((await savePlan(operator, { ...input, featureRows: [] }, created.id)).featureRows, []);
+      assert.deepEqual((await savePlan(operator, { ...input, expectedRevision: (await getPlan(operator, created.id)).revision, featureRows: [] }, created.id)).featureRows, []);
       assert.deepEqual((await publishedOffers(f.c as any)).plans.find(p => p.id === created.id)?.featureRows, reordered,
         "unpublished edits must not change customer-visible snapshots");
       assert.deepEqual((await readPlan(f.c as any, duplicate.id)).featureRows, reordered);
