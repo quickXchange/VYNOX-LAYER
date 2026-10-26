@@ -9,14 +9,14 @@ import { catalogTable } from "../../lib/catalog-scope";
 
 export async function catalogSelection(c: DatabaseClient, planId: string | null, addonIds: string[], approvedPrivateOffer=false) {
   const plan = planId ? await readPlan(c, planId) : null;
-  if (plan && ((demoEnabled() && plan.name === DEMO_PLAN_NAME) || plan.status !== "enabled" || !["website", "crypto_exchange"].every(k => plan.entitlements.some(e => e.key === k && e.value === true)))) {
+  if (plan && ((demoEnabled() && plan.name === DEMO_PLAN_NAME) || (approvedPrivateOffer && (plan.status !== "enabled" || !["website", "crypto_exchange"].every(k => plan.entitlements.some(e => e.key === k && e.value === true)))))) {
     throw new HttpError(400, "Choose an enabled White Label Exchange plan.");
   }
   const addons = [];
   for (const id of new Set(addonIds)) addons.push(await readAddon(c, id));
-  if (addons.some(a => !a.enabled)) throw new HttpError(400, "One of the requested add-ons is no longer available.");
+  if (approvedPrivateOffer && addons.some(a => !a.enabled)) throw new HttpError(400, "One of the requested add-ons is no longer available.");
   if (addons.length && !plan) throw new HttpError(400, "Select a plan before choosing add-ons.");
-  if (addons.some(a => a.currency !== plan?.currency)) throw new HttpError(400, "Requested add-ons must use the plan's currency. No automatic currency conversion is performed.");
+  if (approvedPrivateOffer && addons.some(a => a.currency !== plan?.currency)) throw new HttpError(400, "Requested add-ons must use the plan's currency. No automatic currency conversion is performed.");
   if(approvedPrivateOffer) return {plan,addons};
   const {publishedOffers}=await import("../commerce/pricing-publication");
   const published=await publishedOffers(c);
@@ -28,6 +28,10 @@ export async function catalogSelection(c: DatabaseClient, planId: string | null,
   });
   if(plan&&!publishedPlan)
     throw new HttpError(409,"This plan or add-on is not published. Refresh the public catalog or request an approved private quotation.");
+  if (publishedPlan && !["website", "crypto_exchange"].every(k => publishedPlan.entitlements.some(e => e.key === k && e.value === true)))
+    throw new HttpError(400, "Choose a published White Label Exchange plan.");
+  if (publishedAddons.some(a => a.currency !== publishedPlan?.currency))
+    throw new HttpError(400, "Published add-ons must use the plan currency.");
   return {plan:publishedPlan??null,addons:publishedAddons};
 }
 export function whiteLabelCatalog(p: Principal) {

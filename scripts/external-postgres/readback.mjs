@@ -12,9 +12,9 @@ if (options.caFile) {
 }
 const c = new Client(options);
 try {
-  await c.connect(); await c.query("BEGIN READ ONLY"); await verifyTarget(c);
+  await c.connect(); await c.query("BEGIN READ ONLY"); await verifyTarget(c, { planManagement: true });
   const versions = await c.query("SELECT file,sha256 FROM qxlayer_migrations.versions ORDER BY file");
-  const expected = JSON.parse(await readFile(new URL("../../deploy/migrations/manifest.json",import.meta.url),"utf8"));
+  const expected = JSON.parse(await readFile(new URL(process.env.QXLAYER_EXTERNAL_ENVIRONMENT === "production" ? "../../deploy/production-candidate/manifest.json" : "../../deploy/migrations/manifest.json",import.meta.url),"utf8"));
   assertMigrationReadback(versions.rows, expected);
   await c.query("COMMIT");
 } catch { console.error("External readback failed; release is stopped."); process.exitCode=1; }

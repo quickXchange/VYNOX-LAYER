@@ -28,9 +28,12 @@ export async function resolveEntitlements(client: DatabaseClient, tenantId: stri
     monthlyPrice: contract.monthlyPrice, yearlyPrice: contract.yearlyPrice, setupFee: contract.setupFee, currency: contract.currency,
     discountPercent: contract.discountPercent, profile: (contract as any).profile ?? {},
   } : catalogPlan;
-  const assigned = await client.query("SELECT addon_id FROM tenant_addons WHERE tenant_id=$1 ORDER BY addon_id", [tenantId]);
+  const assigned = await client.query("SELECT addon_id,contract_snapshot FROM tenant_addons WHERE tenant_id=$1 ORDER BY addon_id", [tenantId]);
   const addons = [];
-  for (const row of assigned.rows) addons.push(await readAddon(client, row.addon_id, true));
+  for (const row of assigned.rows) {
+    const current = await readAddon(client, row.addon_id, true);
+    addons.push(row.contract_snapshot ? { ...current, ...row.contract_snapshot } as typeof current : current);
+  }
   const overridesResult = await client.query("SELECT key,value,reason FROM tenant_entitlement_overrides WHERE tenant_id=$1 ORDER BY key", [tenantId]);
   const overrides = overridesResult.rows as (Entry & { reason: string })[];
   const defs = await definitions(client);

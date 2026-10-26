@@ -43,8 +43,13 @@ export function setTenantAddons(principal: Principal, tenantId: string, ids: str
       if (!addon.enabled && !before.addons.some((a) => a.id === id)) throw new HttpError(400, "A disabled add-on cannot receive new assignments.");
       if (addon.currency !== before.plan.currency) throw new HttpError(400, "Add-ons must use the plan currency; no currency conversion is performed.");
     }
-    await client.query("DELETE FROM tenant_addons WHERE tenant_id=$1", [tenantId]);
-    for (const id of unique) await client.query("INSERT INTO tenant_addons (tenant_id,addon_id) VALUES ($1,$2)", [tenantId, id]);
+    // Retained assignments keep their original agreement, even when another
+    // add-on is added or removed.
+    await client.query("DELETE FROM tenant_addons WHERE tenant_id=$1 AND NOT (addon_id=ANY($2::uuid[]))", [tenantId, unique]);
+    for (const id of unique) {
+      const snapshot = await readAddon(client, id);
+      await client.query("INSERT INTO tenant_addons (tenant_id,addon_id,contract_snapshot) VALUES ($1,$2,$3::jsonb) ON CONFLICT (tenant_id,addon_id) DO NOTHING", [tenantId, id, JSON.stringify(snapshot)]);
+    }
     const after = await resolveEntitlements(client, tenantId);
     await audit(client, principal, tenantId, "subscription.addons_changed", "Updated tenant add-on assignments", { before: before.addons.map((a) => a.id), after: unique, overLimit: after.overLimit });
     return after;

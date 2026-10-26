@@ -2,8 +2,20 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { readSchema, canonicalSchema } from "./schema-reference.mjs";
 
+/** Only call after the migration has committed; failed readback cannot undo it. */
+export async function verifyCommittedTarget(client, options) {
+  try {
+    await verifyTarget(client, options);
+  } catch (cause) {
+    const error = new Error("Schema is committed; post-commit verification failed. Acceptance stopped; no rollback was performed.", { cause });
+    error.code = "POST_COMMIT_VERIFICATION_FAILED";
+    error.schemaCommitted = true;
+    throw error;
+  }
+}
+
 /** Read-only schema/security readback, never repairs or silently accepts drift. */
-export async function verifyTarget(client, { policyRole = "PUBLIC" } = {}) {
+export async function verifyTarget(client, { policyRole = "PUBLIC", planManagement = false } = {}) {
   const expected = JSON.parse(await readFile(new URL("../../deploy/migrations/rls-reference.json", import.meta.url), "utf8"));
   if (policyRole === "qxlayer_runtime") {
     // Approved public pricing rules are read-only public configuration, not tenant secrets.
@@ -11,6 +23,10 @@ export async function verifyTarget(client, { policyRole = "PUBLIC" } = {}) {
   }
   const schema = JSON.parse(await readFile(new URL("../../deploy/migrations/schema-reference.json", import.meta.url), "utf8"));
   const site = JSON.parse(await readFile(new URL("../../deploy/migrations/site-release-reference.json", import.meta.url), "utf8"));
+  if (planManagement) {
+    const plans = JSON.parse(await readFile(new URL("../../deploy/migrations/plan-management-reference.json", import.meta.url), "utf8"));
+    for (const key of ["columns", "constraints", "indexes"]) schema[key].push(...plans[key]);
+  }
   for (const key of ["columns", "constraints", "indexes"])
     schema[key] = [...schema[key], ...site[key]].sort((a,b) => a.table_name.localeCompare(b.table_name) || (key === "columns" ? 0 : a.name.localeCompare(b.name)));
   expected.tables = [...expected.tables, ...site.tables].sort((a,b) => a.name.localeCompare(b.name));
@@ -26,7 +42,8 @@ export async function verifyTarget(client, { policyRole = "PUBLIC" } = {}) {
   assert.deepEqual(actual.rows, expected.tables, "Exact tables, RLS/FORCE and all predicates must match.");
   assert(["PUBLIC", "qxlayer_runtime"].includes(policyRole));
   const targets = await client.query(`SELECT bool_and(polpermissive AND polroles=ARRAY[
-    CASE WHEN $1='PUBLIC' THEN 0::oid ELSE (SELECT oid FROM pg_roles WHERE rolname=$1) END]) AS safe
+    CASE WHEN $1='PUBLIC' OR c.relname IN ('global_exchange_catalog','global_exchange_catalog_links')
+      THEN 0::oid ELSE (SELECT oid FROM pg_roles WHERE rolname=$1) END]) AS safe
     FROM pg_policy p JOIN pg_class c ON c.oid=p.polrelid JOIN pg_namespace n ON n.oid=c.relnamespace
     WHERE n.nspname='public'`, [policyRole]);
   assert.equal(targets.rows[0]?.safe,true,"Policy role targets/permissiveness must match the source.");

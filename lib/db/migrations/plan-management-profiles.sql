@@ -40,10 +40,10 @@ CREATE TRIGGER publication_versions_immutable BEFORE UPDATE OR DELETE ON qxlayer
 ALTER TABLE qxlayer_commerce.pricing_publication_versions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE qxlayer_commerce.pricing_publication_versions FORCE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS versions_read ON qxlayer_commerce.pricing_publication_versions;
-CREATE POLICY versions_read ON qxlayer_commerce.pricing_publication_versions FOR SELECT USING (current_setting('app.is_super_admin',true)='true');
+CREATE POLICY versions_read ON qxlayer_commerce.pricing_publication_versions FOR SELECT USING (session_user IN ('qxlayer_app','postgres') AND current_setting('app.is_super_admin',true)='true');
 DROP POLICY IF EXISTS versions_insert ON qxlayer_commerce.pricing_publication_versions;
 CREATE POLICY versions_insert ON qxlayer_commerce.pricing_publication_versions FOR INSERT
- WITH CHECK (current_setting('app.is_super_admin',true)='true' AND current_setting('app.can_write',true)='true');
+  WITH CHECK (session_user IN ('qxlayer_app','postgres') AND current_setting('app.is_super_admin',true)='true' AND current_setting('app.can_write',true)='true');
 GRANT SELECT,INSERT ON qxlayer_commerce.pricing_publication_versions TO pg_database_owner;
 DO $$ BEGIN
  IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname='qxlayer_runtime') THEN

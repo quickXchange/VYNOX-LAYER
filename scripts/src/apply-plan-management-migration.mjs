@@ -19,6 +19,7 @@ await withDatabase({ actorId: "development:plan-management-migration", isSuperAd
 const c2 = await pool.connect();
 try {
   await c2.query(await sql("plan-management-seed.sql"));
+   await c2.query(await sql("plan-management-release-safety.sql"));
   console.log(JSON.stringify((await c2.query("SELECT name,status,profile->>'slug' AS slug FROM public.plans ORDER BY status,display_order")).rows));
   console.log(JSON.stringify((await c2.query("SELECT count(*) FILTER (WHERE contract_snapshot IS NULL) AS unfrozen, count(*) AS total FROM public.tenant_subscriptions")).rows[0]));
 } finally { c2.release(); await pool.end(); }

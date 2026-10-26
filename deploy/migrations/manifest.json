@@ -22,5 +22,15 @@
   {
     "file": "0011_plan_feature_rows.sql",
     "sha256": "963776ab32d0c4260b4ae03e351c4fdf02f7adb8a2c6812c4923b936f85bd06c"
+  },
+  {
+    "file": "0012_plan_management_profiles.sql",
+    "source": "../../lib/db/migrations/plan-management-profiles.sql",
+    "sha256": "8607d9ed0cd3d6b45c7a9c33f5cb5730d1ca9c3303910403fbcfb5db55433efd"
+  },
+  {
+    "file": "0013_plan_management_safety.sql",
+    "source": "../../lib/db/migrations/plan-management-release-safety.sql",
+    "sha256": "5ebd4ebd7803b107ce2a928249c5db54527ab0bf27c2919247c7afe57c06ebf1"
   }
 ]
