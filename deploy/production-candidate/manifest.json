@@ -52,5 +52,9 @@
     "file": "0013_plan_management_safety.sql",
     "source": "../../lib/db/migrations/plan-management-release-safety.sql",
     "sha256": "5ebd4ebd7803b107ce2a928249c5db54527ab0bf27c2919247c7afe57c06ebf1"
+  },
+  {
+    "file": "0014_subscription_trials.sql",
+    "sha256": "d1330a708aeeda8c7d838c6d911bc96a95c5b4ff3ec3308ac42875f1febf0a31"
   }
 ]
