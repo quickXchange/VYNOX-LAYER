@@ -160,6 +160,27 @@ test("exact external policy targets and least privilege in disposable PostgreSQL
       await client.query("ALTER POLICY qx_read ON tenants TO qxlayer_runtime");
       await verifyCommittedTarget(client, { policyRole: "qxlayer_runtime" });
     });
+    await t.test("plan schema matches its additive reference and public login cannot assume operator history access", async () => {
+      await client.query(`CREATE SCHEMA IF NOT EXISTS qxlayer_commerce;
+        CREATE TABLE IF NOT EXISTS qxlayer_commerce.offer_settings(plan_id uuid PRIMARY KEY,monthly boolean,yearly boolean);
+        DO $$ BEGIN IF NOT EXISTS(SELECT FROM pg_roles WHERE rolname='qxlayer_public_app') THEN CREATE ROLE qxlayer_public_app; END IF; END $$;
+        GRANT qxlayer_runtime TO qxlayer_public_app;
+        GRANT USAGE ON SCHEMA qxlayer_commerce TO qxlayer_runtime;`);
+      for (const file of ["plan-management-profiles.sql", "plan-management-release-safety.sql"])
+        await client.query(await readFile(new URL(`../../lib/db/migrations/${file}`, import.meta.url), "utf8"));
+      await verifyTarget(client, { policyRole: "qxlayer_runtime", planManagement: true });
+      await client.query(`INSERT INTO qxlayer_commerce.pricing_publication_versions(revision,payload,reason,published_by)
+        VALUES(repeat('a',64),'{}','synthetic','synthetic');
+        SET row_security=on; SET SESSION AUTHORIZATION qxlayer_public_app; SET ROLE qxlayer_runtime;
+        SET app.is_super_admin='true'; SET app.can_write='true'`);
+      try {
+        assert.equal((await client.query("SELECT count(*)::int AS n FROM qxlayer_commerce.pricing_publication_versions")).rows[0].n, 0);
+        await assert.rejects(client.query(`INSERT INTO qxlayer_commerce.pricing_publication_versions(revision,payload,reason,published_by)
+          VALUES(repeat('b',64),'{}','synthetic','synthetic')`), /row-level security/);
+      } finally {
+        await client.query("RESET ROLE; RESET SESSION AUTHORIZATION");
+      }
+    });
   } finally {
     await client?.end();
     try { if (started) run("pg_ctl", ["-D", data, "-m", "immediate", "-w", "stop"]); }

@@ -51,7 +51,13 @@ ChangeNOW / SwapSpace / FixedFloat are stored only as requested provider names.
 - Development publication: `CONFIRM_PUBLISH_DEFAULT_TIERS=yes QXLAYER_EXTERNAL_ENVIRONMENT=development tsx src/verification/publish-default-tiers.ts` (idempotent; refuses non-heliumdb, production, acceptance).
 
 ## Production release boundary
-Development schema and publication have been updated, not Production. These code changes require the additive schema before a Production deployment; do not merge into the automatic release chain until a separately approved, backed-up external-database migration is prepared and verified. The Development runner deliberately refuses Production. Existing external migration manifests have not been updated by this work.
+Development schema and publication have been updated, not Production. These code changes require the additive schema before a Production deployment; do not merge into the automatic release chain until a backed-up external-database migration is rehearsed against the actual target's ledger and verified. The Development runner deliberately refuses Production.
+
+External manifests now register checksummed schema-only versions 0012 (profiles/contracts/history) and 0013 (add-on agreements/session-bound history). The external runner removes their standalone transaction wrappers so schema and ledger remain in its single atomic transaction. Existing applied migration hashes must never be rewritten to force acceptance.
+
+Release order: verify backup and actual Production ledger; apply schema-only migrations; release compatible code; only then initialize the new catalog and publish it through the authorized operator flow. Do not run the archive/seed against the old runtime. The frozen old publication remains orderable on the compatible runtime until the new offering is explicitly published. Catalog initialization is intentionally not an automatic schema migration.
+
+Submitted orders use server-persisted agreement snapshots, not today's catalog prices or billing periods. Missing historical snapshots require an operator-approved quotation. Payment-method approval and closed-order checks remain live. Retained add-on assignments freeze price and entitlements and are not rewritten by edits to the catalog or unrelated assignment changes.
 
 ## API changes
 Existing `/api/plans` CRUD/status/duplicate APIs now accept structured profiles and require revision checks for edits. Existing pricing-publication APIs preserve immutable history.

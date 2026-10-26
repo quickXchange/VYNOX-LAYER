@@ -5,6 +5,7 @@ import { assertCatalogOperationAllowed, catalogTable } from "../../lib/catalog-s
 import { contextFor, requireSuperAdmin, type Principal } from "../authentication/service";
 import { draftOffers, freezePricingBeforeEdit, pricingRevision, publishedOffers } from "../commerce/pricing-publication";
 import { freezeContract, readSnapshot } from "./contracts";
+import { applyPlanPolicy } from "./effective-policy";
 
 export function planHistory(p: Principal, planId: string) {
   requireSuperAdmin(p);
@@ -76,6 +77,22 @@ type Diff = { key: string; current: unknown; target: unknown };
 type PubPlan = Awaited<ReturnType<typeof publishedOffers>>["plans"][number];
 const pricesOf = (x: { monthlyPrice: string | null; yearlyPrice: string | null; setupFee: string | null; currency: string }) => ({ monthlyPrice: x.monthlyPrice, yearlyPrice: x.yearlyPrice, setupFee: x.setupFee, currency: x.currency });
 
+function contractFields(x: { entitlements: { key: string; value: boolean | string }[]; profile?: any; discountPercent?: string; billingPeriods?: string[] }) {
+  const features: Record<string, boolean> = {}, limits: Record<string, string> = {};
+  for (const e of x.entitlements) {
+    if (typeof e.value === "boolean") features[e.key] = e.value;
+    else limits[e.key] = e.value;
+  }
+  applyPlanPolicy(x.profile, features, limits, {});
+  return new Map<string, unknown>([
+    ...Object.entries(features).map(([k,v]) => [`access.${k}`,v] as [string, unknown]),
+    ...Object.entries(limits).map(([k,v]) => [`limit.${k}`,v] as [string, unknown]),
+    ['billing.discountPercent', x.discountPercent ?? '0'],
+    ['billing.periods', JSON.stringify(x.billingPeriods ?? [])],
+    ...Object.entries(x.profile ?? {}).map(([k,v]) => [`contract.${k}`, typeof v === 'object' ? JSON.stringify(v) : v] as [string, unknown]),
+  ]);
+}
+
 /** Preview against the PUBLISHED target only; the token binds confirm to this exact state. */
 async function buildPreview(c: DatabaseClient, fromPlanId: string, toPlanId: string) {
   const pubRow = (await c.query(`SELECT revision FROM ${catalogTable("pricing_publication")} WHERE singleton=true`)).rows[0];
@@ -84,13 +101,13 @@ async function buildPreview(c: DatabaseClient, fromPlanId: string, toPlanId: str
   const target = published.plans.find(x => x.id === toPlanId) as PubPlan | undefined;
   if (!target) throw new HttpError(409, "The target plan is not in the current publication. Publish it first.");
   const subs = (await c.query(`SELECT s.*,t.name AS tenant_name FROM tenant_subscriptions s JOIN tenants t ON t.id=s.tenant_id WHERE s.plan_id=$1 ORDER BY t.name,t.id`, [fromPlanId])).rows;
-  const tgt = new Map(target.entitlements.map(e => [e.key, e.value]));
+  const tgt = contractFields(target);
   const subscribers = subs.map(s => {
     const snap = readSnapshot(s);
-    const cur = new Map((snap?.entitlements ?? []).map(e => [e.key, e.value]));
+    const cur = contractFields(snap ?? { entitlements: [] });
     const keys = [...new Set([...cur.keys(), ...tgt.keys()])].sort();
     const entitlementChanges: Diff[] = keys.filter(k => JSON.stringify(cur.get(k) ?? null) !== JSON.stringify(tgt.get(k) ?? null)).map(k => ({ key: k, current: cur.get(k) ?? null, target: tgt.get(k) ?? null }));
-    const priceChanged = !snap || snap.monthlyPrice !== target.monthlyPrice || snap.yearlyPrice !== target.yearlyPrice || snap.setupFee !== target.setupFee || snap.currency !== target.currency;
+    const priceChanged = !snap || snap.monthlyPrice !== target.monthlyPrice || snap.yearlyPrice !== target.yearlyPrice || snap.setupFee !== target.setupFee || snap.currency !== target.currency || entitlementChanges.some(d => d.key.startsWith('billing.') || /^contract.(fixedDiscountAmount|promoPrice|promoStartsAt|promoEndsAt|pricingMode|trialDays)$/.test(d.key));
     return { tenantId: s.tenant_id as string, tenantName: s.tenant_name as string, frozen: !!snap, frozenAt: s.contract_frozen_at ? new Date(s.contract_frozen_at).toISOString() : null,
       contractPlanName: snap?.planName ?? null, currentPrices: snap ? pricesOf(snap) : null, priceChanged, entitlementChanges, _snap: snap };
   });

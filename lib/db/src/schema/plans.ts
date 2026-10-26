@@ -94,6 +94,7 @@ export const tenantSubscriptionsTable = pgTable("tenant_subscriptions", {
 ]);
 
 export const tenantAddonsTable = pgTable("tenant_addons", {
+  contractSnapshot: jsonb("contract_snapshot"),
   tenantId: uuid("tenant_id").notNull().references(() => tenantsTable.id),
   addonId: uuid("addon_id").notNull().references(() => addonsTable.id),
 }, (t) => [

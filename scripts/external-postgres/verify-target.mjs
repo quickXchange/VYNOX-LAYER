@@ -15,7 +15,7 @@ export async function verifyCommittedTarget(client, options) {
 }
 
 /** Read-only schema/security readback, never repairs or silently accepts drift. */
-export async function verifyTarget(client, { policyRole = "PUBLIC" } = {}) {
+export async function verifyTarget(client, { policyRole = "PUBLIC", planManagement = false } = {}) {
   const expected = JSON.parse(await readFile(new URL("../../deploy/migrations/rls-reference.json", import.meta.url), "utf8"));
   if (policyRole === "qxlayer_runtime") {
     // Approved public pricing rules are read-only public configuration, not tenant secrets.
@@ -23,6 +23,10 @@ export async function verifyTarget(client, { policyRole = "PUBLIC" } = {}) {
   }
   const schema = JSON.parse(await readFile(new URL("../../deploy/migrations/schema-reference.json", import.meta.url), "utf8"));
   const site = JSON.parse(await readFile(new URL("../../deploy/migrations/site-release-reference.json", import.meta.url), "utf8"));
+  if (planManagement) {
+    const plans = JSON.parse(await readFile(new URL("../../deploy/migrations/plan-management-reference.json", import.meta.url), "utf8"));
+    for (const key of ["columns", "constraints", "indexes"]) schema[key].push(...plans[key]);
+  }
   for (const key of ["columns", "constraints", "indexes"])
     schema[key] = [...schema[key], ...site[key]].sort((a,b) => a.table_name.localeCompare(b.table_name) || (key === "columns" ? 0 : a.name.localeCompare(b.name)));
   expected.tables = [...expected.tables, ...site.tables].sort((a,b) => a.name.localeCompare(b.name));

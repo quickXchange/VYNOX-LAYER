@@ -32,5 +32,25 @@
     "file": "0008_tenant_site_releases.sql",
     "sha256": "0a5f15c3629574cb287f2bbeafd72a35a15c3c730cd079745064e95177316bd2",
     "source": "../migrations/0008_tenant_site_releases.sql"
+  },
+  {
+    "file": "0010_acceptance_catalog.sql",
+    "source": "../migrations/0010_acceptance_catalog.sql",
+    "sha256": "6b95d151fbc6d4665ec02b47d0f9eb40f25a5a80bf83c69b90f74296d9cb2299"
+  },
+  {
+    "file": "0011_plan_feature_rows.sql",
+    "source": "../migrations/0011_plan_feature_rows.sql",
+    "sha256": "963776ab32d0c4260b4ae03e351c4fdf02f7adb8a2c6812c4923b936f85bd06c"
+  },
+  {
+    "file": "0012_plan_management_profiles.sql",
+    "source": "../../lib/db/migrations/plan-management-profiles.sql",
+    "sha256": "8607d9ed0cd3d6b45c7a9c33f5cb5730d1ca9c3303910403fbcfb5db55433efd"
+  },
+  {
+    "file": "0013_plan_management_safety.sql",
+    "source": "../../lib/db/migrations/plan-management-release-safety.sql",
+    "sha256": "5ebd4ebd7803b107ce2a928249c5db54527ab0bf27c2919247c7afe57c06ebf1"
   }
 ]

@@ -34,7 +34,7 @@ test("migration history and atomic rollback in disposable local PostgreSQL", { t
     await client.query("CREATE ROLE supabase_admin NOLOGIN");
     for (const dir of ["scripts/external-postgres", "scripts/external-hosting", "deploy/migrations", "lib"])
       await mkdir(join(root, dir), { recursive: true });
-    for (const file of ["external-postgres/migrate.mjs", "external-hosting/staging-targets.mjs",
+    for (const file of ["external-postgres/migrate.mjs", "external-postgres/legacy-data-receipts.mjs", "external-hosting/staging-targets.mjs",
       "external-hosting/target-scope-preflight.mjs"])
       await copyFile(new URL(`../${file}`, import.meta.url), join(root, "scripts", file));
     await symlink(fileURLToPath(new URL("../../lib/db", import.meta.url)), join(root, "lib/db"));

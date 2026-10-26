@@ -162,11 +162,27 @@ try {
   assert.ok(!(await draftOffers(client as any)).plans.some(p => p.id === premium.id));
   await pub(); assert.ok(!(await publicOffers()).plans.some((p: any) => p.id === premium.id));
   await status(() => req(premium.id), 409, "hidden plan excluded from public offers and requests");
+  await q("SELECT set_config('app.is_super_admin','true',true),set_config('app.can_write','true',true)");
+  const sampleAddon = (await q("INSERT INTO public.addons(name,monthly_price,yearly_price,pricing_configured,pricing_confirmed) VALUES('Disposable preservation check',25,250,true,true) RETURNING id")).rows[0];
+  const sampleTenant = (await q("SELECT tenant_id FROM public.tenant_subscriptions ORDER BY tenant_id LIMIT 1")).rows[0];
+  assert.ok(sampleAddon && sampleTenant, "add-on preservation requires fixtures");
+  await q("INSERT INTO public.tenant_addons(tenant_id,addon_id) VALUES($1,$2) ON CONFLICT DO NOTHING", [sampleTenant.tenant_id, sampleAddon.id]);
+  const readAgreement = async () => (await q("SELECT contract_snapshot FROM public.tenant_addons WHERE tenant_id=$1 AND addon_id=$2", [sampleTenant.tenant_id, sampleAddon.id])).rows[0].contract_snapshot;
+  const originalAddon = await readAgreement();
+  assert.ok(originalAddon);
+  await q("UPDATE public.addons SET monthly_price=99999 WHERE id=$1", [sampleAddon.id]);
+  assert.deepEqual(await readAgreement(), originalAddon);
+  const effectiveAddon = (await resolveEntitlements(client as any, sampleTenant.tenant_id)).addons.find(a => a.id === sampleAddon.id);
+  assert.equal(effectiveAddon?.monthlyPrice, originalAddon.monthlyPrice);
+  ok("catalog add-on edits leave assignment agreement and effective recurring price unchanged");
   const stdNow = await getPlan(admin, std.id);
   await changePlanStatus(admin, std.id, "disabled", stdNow.revision);
-  await status(() => req(std.id), 400, "disabled plan cannot be requested");
+  await req(std.id);
+  ok("unpublished disable does not interrupt the published offer");
+  await pub();
+  await status(() => req(std.id), 409, "published disable removes plan from requests");
   const archived = plans.find(p => p.status === "archived")!;
-  await status(() => req(archived.id), 400, "archived plan cannot be requested");
+  await status(() => req(archived.id), 409, "unpublished archived plan cannot be requested");
   // Fixed discount + promotion through the real save -> publish -> order -> invoice path.
   const ents = (await getPlan(admin, starterId)).entitlements;
   const now = Date.now();
@@ -182,7 +198,7 @@ try {
     assert.equal(invoicePricing({ ...cfg, catalogSnapshot: live }).recurring, want, `${pl.name} ${period}`);
     assert.equal(invoicePricing(cfg).recurring, want);
   }
-  const late = { ...(await q("SELECT configuration FROM white_label_requests WHERE configuration->'catalogSnapshot'->'plan'->>'id'=$1 LIMIT 1", [promoPlan.id])).rows[0].configuration, pricedAt: new Date(now + 7200e3).toISOString() };
+  const late = { ...(await q("SELECT configuration FROM white_label_requests WHERE configuration->'catalogSnapshot'->'plan'->>'id'=$1 AND configuration->>'billingPeriod'='monthly' LIMIT 1", [promoPlan.id])).rows[0].configuration, pricedAt: new Date(now + 7200e3).toISOString() };
   assert.equal(invoicePricing(late).recurring, "50.00");
   ok("fixed discount and promotion window priced identically by order snapshot and live invoice path; expired window reverts");
 
