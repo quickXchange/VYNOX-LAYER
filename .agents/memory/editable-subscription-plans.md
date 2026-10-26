@@ -13,3 +13,9 @@ Requested integration names and commercial features are not evidence of implemen
 **Why:** The user explicitly forbids false operational claims and requires backend enforcement.
 
 **How to apply:** Independently check entitlement, implementation, eligible provider configuration and existing financial holds. Preserve Acceptance isolation and use a separately approved Production migration; Development catalog publication is not a Production release.
+
+Legacy-plan removal means permanently delete only truly unused plans and archive plans with retained references.
+
+**Why:** The user explicitly chose deletion of unused old plans while preserving those with history.
+
+**How to apply:** Check subscriptions, orders, invoices, JSON snapshots, publication history and protected Acceptance references before deletion. Preserve Starter, Standard and Premium and existing agreements; do not equate an inactive plan with an unused one.
