@@ -12,6 +12,11 @@
     "sha256": "3814d317a99cc091168ef93f98996acc97e4d0d8ea253b570291e746a885153d"
   },
   {
+    "file": "0004_platform_commerce.sql",
+    "source": "../migrations/0004_phase1_commerce.sql",
+    "sha256": "e3b8e0eb0e9eb92f03dbd5539f338205bf481324f701a4d80ab4f090546711f4"
+  },
+  {
     "file": "0007_global_exchange_catalog.sql",
     "sha256": "7f9831fbfa0cd904da08d7b8d6d251a0d3e4378500716b25ca943432dee3e2fc"
   },
