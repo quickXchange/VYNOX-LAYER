@@ -1328,6 +1328,29 @@ paths:
       requestBody: {required: true, content: {application/json: {schema: {$ref: "#/components/schemas/AddonInput"}}}}
       responses:
         "200": {description: Add-on saved, content: {application/json: {schema: {$ref: "#/components/schemas/Addon"}}}}
+  /tenants/{tenantId}/subscription/trial:
+    post:
+      operationId: startTenantTrial
+      tags: [tenants]
+      parameters: [{$ref: "#/components/parameters/TenantId"}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/TrialStartInput"}
+      responses:
+        "200": {description: "Trial subscription; no charge", content: {application/json: {schema: {$ref: "#/components/schemas/SubscriptionView"}}}}
+    put:
+      operationId: updateTenantTrial
+      tags: [tenants]
+      parameters: [{$ref: "#/components/parameters/TenantId"}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/TrialActionInput"}
+      responses:
+        "200": {description: "Updated trial; no charge or automatic renewal", content: {application/json: {schema: {$ref: "#/components/schemas/SubscriptionView"}}}}
   /tenants/{tenantId}/subscription:
     get:
       operationId: getTenantSubscription
@@ -2724,6 +2747,7 @@ components:
         name: { type: string, minLength: 2, maxLength: 120 }
         slug: { type: string, minLength: 2, maxLength: 48, pattern: "^[a-z0-9]+(?:-[a-z0-9]+)*$" }
         planId: { type: string, format: uuid }
+        prepareTrial: {type: boolean, description: "Create an unassigned draft; review and start a published trial separately."}
       required: [name, slug, planId]
     BrandInput:
       type: object
@@ -3082,6 +3106,35 @@ components:
         limit: {type: string}
         exceeded: {type: boolean}
       required: [key, label, used, limit, exceeded]
+    TrialStartInput:
+      type: object
+      required: [planId, billingPeriod, publishedRevision, idempotencyKey, reason]
+      properties:
+        planId: {type: string, format: uuid}
+        billingPeriod: {type: string, enum: [monthly, yearly]}
+        publishedRevision: {type: string, minLength: 1}
+        idempotencyKey: {type: string, format: uuid}
+        reason: {type: string, minLength: 2, maxLength: 500}
+    TrialActionInput:
+      type: object
+      required: [trialId, action, reason]
+      properties:
+        trialId: {type: string, format: uuid}
+        action: {type: string, enum: [cancel, request_renewal]}
+        reason: {type: string, minLength: 2, maxLength: 500}
+    SubscriptionTrial:
+      type: object
+      required: [id, state, startedAt, endsAt, renewalRule, renewalRequestedAt, cancelledAt, publishedRevision, agreedRecurringPrice]
+      properties:
+        id: {type: string, format: uuid}
+        state: {type: string, enum: [active, cancelled, expired]}
+        startedAt: {type: string}
+        endsAt: {type: string}
+        renewalRule: {type: string, enum: [manual_agreement_required]}
+        renewalRequestedAt: {type: ["string", "null"]}
+        cancelledAt: {type: ["string", "null"]}
+        publishedRevision: {type: string}
+        agreedRecurringPrice: {type: string}
     SubscriptionView:
       type: object
       properties:
@@ -3094,6 +3147,8 @@ components:
         recurringEstimate: {type: ["string", "null"]}
         currency: {type: ["string", "null"]}
         billingConnected: {type: boolean}
+        trial:
+          oneOf: [{$ref: "#/components/schemas/SubscriptionTrial"}, {type: "null"}]
         plan:
           oneOf: [{$ref: "#/components/schemas/Plan"}, {type: "null"}]
         addons: {type: array, items: {$ref: "#/components/schemas/Addon"}}

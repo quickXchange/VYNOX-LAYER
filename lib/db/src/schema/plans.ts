@@ -85,6 +85,7 @@ export const tenantSubscriptionsTable = pgTable("tenant_subscriptions", {
   // Immutable contract frozen at assignment; catalog edits never rewrite it.
   contractSnapshot: jsonb("contract_snapshot").$type<Record<string, unknown>>(),
   contractFrozenAt: timestamp("contract_frozen_at", { withTimezone: true }),
+  trial: jsonb("trial").$type<Record<string, unknown>>(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 }, () => [
   check("subscription_status", sql`status IN ('active','suspended')`),

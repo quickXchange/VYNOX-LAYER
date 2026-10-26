@@ -33,7 +33,8 @@ test("billing must be coherent", () => {
   assert.equal(billingError({ pricingMode: "paid", fixedDiscountAmount: "5" }, true, paid, both), null);
   assert.ok(billingError({ pricingMode: "paid", fixedDiscountAmount: "60" }, true, paid, both), "fixed discount >= price");
   assert.ok(billingError({ pricingMode: "paid", fixedDiscountAmount: "5" }, true, { ...paid, discountPercent: "10" }, both), "no stacking with percentage");
-  assert.ok(billingError({ pricingMode: "paid", trialDays: 7 }, true, paid, both), "trial unsupported");
+  assert.equal(billingError({ pricingMode: "paid", trialDays: 7 }, true, paid, both), null);
+  for (const trialDays of [-1, 1.5, 366]) assert.ok(billingError({ pricingMode: "paid", trialDays }, true, paid, both));
   assert.equal(billingError({ pricingMode: "paid" }, true, { ...paid, discountPercent: "10" }, both), null);
   assert.ok(billingError({ pricingMode: "paid", promoPrice: "40" }, true, paid, both));
   assert.ok(billingError({ pricingMode: "paid", promoPrice: "40", promoStartsAt: new Date("2026-02-01T00:00:00Z"), promoEndsAt: new Date("2026-01-01T00:00:00Z") }, true, paid, both));

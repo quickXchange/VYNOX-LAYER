@@ -16,6 +16,7 @@ export function changeTenantPlan(principal: Principal, tenantId: string, planId:
   return withDatabase(contextFor(principal, tenantId, true), async (client) => {
     await lockTenant(client, tenantId);
     const before = await resolveEntitlements(client, tenantId);
+    if (before.trial) throw new HttpError(409, "Trial agreements cannot be replaced through plan assignment.");
     const plan = await readPlan(client, planId);
     if (plan.status !== "enabled" && before.plan?.id !== planId) throw new HttpError(400, "Only enabled plans can receive new assignments.");
     if (before.addons.some(a => a.currency !== plan.currency)) throw new HttpError(409, "Remove add-ons in the old currency before changing the plan currency.");
@@ -36,6 +37,7 @@ export function setTenantAddons(principal: Principal, tenantId: string, ids: str
   return withDatabase(contextFor(principal, tenantId, true), async (client) => {
     await lockTenant(client, tenantId);
     const before = await resolveEntitlements(client, tenantId);
+    if (before.trial) throw new HttpError(409, "Trial prices are frozen; add-ons require a separate agreement.");
     if (!before.plan) throw new HttpError(400, "Assign a plan before adding add-ons.");
     const unique = [...new Set(ids)];
     for (const id of unique) {
@@ -62,6 +64,7 @@ export function setTenantOverrides(principal: Principal, tenantId: string, overr
   return withDatabase(contextFor(principal, tenantId, true), async (client) => {
     await lockTenant(client, tenantId);
     const before = await resolveEntitlements(client, tenantId);
+    if (before.trial) throw new HttpError(409, "Trial entitlements are frozen; overrides require a separate agreement.");
     if (!before.plan) throw new HttpError(400, "Assign a plan before applying overrides.");
     const entries = await validateEntries(client, overrides);
     await client.query("DELETE FROM tenant_entitlement_overrides WHERE tenant_id=$1", [tenantId]);
@@ -104,6 +107,7 @@ export function updateSubscriptionCommercial(principal: Principal, tenantId: str
   return withDatabase(contextFor(principal, tenantId, true), async client => {
     await lockTenant(client, tenantId);
     const before = await resolveEntitlements(client, tenantId);
+    if (before.trial) throw new HttpError(409, "Use trial controls. Commercial edits and restore cannot alter a trial agreement or bypass expiry.");
     if (!before.plan) throw new HttpError(409, "Assign a plan before managing this subscription.");
     await client.query("UPDATE tenant_subscriptions SET billing_period=$2,discount_percent=$3,operator_note=$4,updated_at=now() WHERE tenant_id=$1",
       [tenantId, input.billingPeriod, input.discountPercent, input.operatorNote.trim()]);

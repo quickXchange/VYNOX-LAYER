@@ -73,6 +73,9 @@ async function livePricing(c: DatabaseClient, row: any) {
   // Both snapshots are server-authored. A later publication must never reprice
   // a submitted order. Legacy requests without evidence require operator review.
   const selection = orderAgreement(row);
+  const quoted = row.status === "quote_ready" ? row.approved_configuration : null;
+  if ((selection.plan?.profile?.trialDays ?? 0) > 0 && !quoted)
+    throw new HttpError(409, "This offer includes a free trial. An operator must prepare the trial first; paid checkout requires a separately reviewed quotation.");
   const quotation = row.status === "quote_ready" ? { status: row.status, monthlyPrice: row.monthly_price, setupPrice: row.setup_price,
     customizationPrice: row.customization_price, customDesignDecision: row.custom_design_decision, currency: row.currency } : undefined;
   return { selection, price: invoicePricing({ ...row.configuration, catalogSnapshot: selection }, quotation) };

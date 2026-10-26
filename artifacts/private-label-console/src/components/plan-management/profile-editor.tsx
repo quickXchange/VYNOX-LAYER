@@ -43,7 +43,7 @@ export function ProfileEditor({ value: p, onChange }: { value: PlanProfile; onCh
       {p.pricingMode === 'paid' && <>
         {money('fixedDiscountAmount', 'Fixed recurring discount (replaces percentage)')}{money('promoPrice', 'Promotional monthly price')}
         {date('promoStartsAt', 'Promotion starts')}{date('promoEndsAt', 'Promotion ends (exclusive)')}</>}
-      <Field label="Trial days"><Input disabled value="Unavailable" data-testid="input-profile-trialDays" className="font-mono" /></Field>
+      <Field label="Trial days (0 = none; no automatic renewal)"><Input type="number" min={0} max={365} value={p.trialDays ?? 0} onChange={e => set('trialDays', Number(e.target.value))} data-testid="input-profile-trialDays" className="font-mono" /></Field>
       <p className="self-end text-xs text-muted-foreground">Trials need a billing scheduler, which does not exist yet.</p>
       <p className="text-xs text-muted-foreground md:col-span-2">Prices above set the mode's amounts. Quotes, invoices, estimates and the public card share one rule: an active promotion replaces the monthly price; otherwise a fixed discount is subtracted from monthly and yearly; otherwise the percentage applies. Orders keep the price from their submission time. No payment is collected automatically.</p>
       <H>Product</H>

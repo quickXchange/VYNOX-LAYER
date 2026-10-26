@@ -51,6 +51,7 @@ export default function ClientNew() {
   const [touched, setTouched] = useState(false);
   const [created, setCreated] = useState<Tenant | null>(null);
   const [planId, setPlanId] = useState('');
+  const [prepareTrial, setPrepareTrial] = useState(false);
   const plans = useListPlans();
   const enabled = (plans.data ?? []).filter((p) => p.status === 'enabled').sort((a, b) => a.displayOrder - b.displayOrder);
   const m = useCreateTenant();
@@ -67,7 +68,7 @@ export default function ClientNew() {
       </ol>
       <div className="max-w-3xl">
         {created ? <Wizard initial={created} /> : (
-          <form className="space-y-4 rounded-md border bg-card p-5" onSubmit={(e) => { e.preventDefault(); m.mutate({ data: { name: name.trim(), slug: s, planId } }, { onSuccess: (t) => { inv(); setCreated(t); }, onError: (er) => toast({ title: 'Could not create client', description: (er as Error).message, variant: 'destructive' }) }); }}>
+          <form className="space-y-4 rounded-md border bg-card p-5" onSubmit={(e) => { e.preventDefault(); m.mutate({ data: { name: name.trim(), slug: s, planId, prepareTrial } }, { onSuccess: (t) => { inv(); setCreated(t); }, onError: (er) => toast({ title: 'Could not create client', description: (er as Error).message, variant: 'destructive' }) }); }}>
             <div className="space-y-1.5"><Label>Client name</Label><Input data-testid="input-name" value={name} onChange={(e) => setName(e.target.value)} /></div>
             <div className="space-y-1.5"><Label>Slug</Label><Input data-testid="input-slug" className="font-mono" value={s} onChange={(e) => { setTouched(true); setSlug(e.target.value); }} />
               <p className="text-xs text-muted-foreground">Lowercase letters, numbers and hyphens.</p></div>
@@ -75,6 +76,8 @@ export default function ClientNew() {
               {plans.isLoading ? <Skeleton className="h-9" /> : plans.isError ? <ErrorState what="plans" onRetry={() => plans.refetch()} /> : enabled.length === 0 ? <p className="text-sm text-muted-foreground" data-testid="text-no-plans">No enabled plans. <Link href="/plans" className="text-copper underline">Enable or create a plan</Link> first.</p> : (
                 <Select value={planId} onValueChange={setPlanId}><SelectTrigger data-testid="select-plan"><SelectValue placeholder="Select an enabled plan" /></SelectTrigger>
                   <SelectContent>{enabled.map((p) => <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>)}</SelectContent></Select>)}</div>
+            <label className="flex gap-2 text-sm"><input type="checkbox" checked={prepareTrial} onChange={e => setPrepareTrial(e.target.checked)} />Prepare for a free trial instead of assigning a billing agreement</label>
+            {prepareTrial && <p className="text-sm text-muted-foreground">Creates an unassigned draft. On the next step, select and review a published trial offer. The plan above is not assigned and access remains disabled until the trial starts. No payment or delivery is activated.</p>}
             <div className="flex justify-end"><Button data-testid="button-create" disabled={!valid || m.isPending}>{m.isPending ? 'Creating' : 'Create draft client'}</Button></div>
           </form>)}
       </div>

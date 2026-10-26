@@ -76,8 +76,7 @@ export function billingError(profile: PlanProfile, configured: boolean, prices: 
   const mode = effectiveMode(profile, configured);
   const m = n(prices.monthlyPrice), y = n(prices.yearlyPrice);
   const fixed = n(profile.fixedDiscountAmount), promo = n(profile.promoPrice), pct = Number(prices.discountPercent ?? 0);
-  // No billing scheduler exists, so a trial cannot be honoured: explicitly unavailable.
-  if ((profile.trialDays ?? 0) > 0) return "Trials are unavailable: there is no billing scheduler to start or end them.";
+  if (!Number.isInteger(profile.trialDays ?? 0) || (profile.trialDays ?? 0) < 0 || (profile.trialDays ?? 0) > 365) return "Trial duration must be a whole number from 0 to 365 days.";
   if (mode === "paid" && !configured) return "Paid plans need monthly, yearly and setup prices.";
   if (mode === "free" && (!configured || m !== 0 || y !== 0)) return "Free plans need configured recurring prices of exactly 0.";
   if ((mode === "custom" || mode === "contact_sales") && configured) return "Custom and contact-sales plans must leave prices unconfigured.";

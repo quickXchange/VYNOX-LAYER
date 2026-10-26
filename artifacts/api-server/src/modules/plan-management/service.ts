@@ -136,6 +136,7 @@ export function migrateSubscriptions(p: Principal, fromPlanId: string, input: { 
     const moved: string[] = [];
     for (const tenantId of ids) {
       const s = (await c.query("SELECT * FROM tenant_subscriptions WHERE tenant_id=$1", [tenantId])).rows[0];
+      if (s.trial) throw new HttpError(409, "Trial contracts cannot be changed by a bulk plan migration. Arrange a separate reviewed renewal agreement.");
       const addonCur = (await c.query("SELECT DISTINCT a.currency FROM tenant_addons t JOIN addons a ON a.id=t.addon_id WHERE t.tenant_id=$1", [tenantId])).rows;
       if (addonCur.some(r => r.currency !== target.currency)) throw new HttpError(409, "A selected customer has add-ons in another currency.");
       await c.query("UPDATE tenant_subscriptions SET plan_id=$2,updated_at=now() WHERE tenant_id=$1", [tenantId, target.id]);

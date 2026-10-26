@@ -29,7 +29,7 @@ export function profileError(p: PlanProfile, pr: Prices, periods?: { monthly: bo
   if (mode === 'free' && (!pr.configured || m !== 0 || y !== 0)) return 'Free plans need configured recurring prices of 0';
   if ((mode === 'custom' || mode === 'contact_sales') && pr.configured) return 'Custom and contact-sales plans must leave prices unconfigured';
   if (mode === 'custom' && !p.customPriceText?.trim()) return 'Custom pricing needs public price text';
-  if ((p.trialDays ?? 0) > 0) return 'Trials are unavailable (no billing scheduler); set trial days to 0';
+  if (!Number.isInteger(p.trialDays ?? 0) || (p.trialDays ?? 0) < 0 || (p.trialDays ?? 0) > 365) return 'Trial duration must be 0–365 whole days';
   const fixed = p.fixedDiscountAmount ? Number(p.fixedDiscountAmount) : 0;
   if (p.fixedDiscountAmount && !MONEY.test(p.fixedDiscountAmount)) return 'Fixed discount must be a decimal amount';
   if (p.promoPrice && !MONEY.test(p.promoPrice)) return 'Promotional price must be a decimal amount';

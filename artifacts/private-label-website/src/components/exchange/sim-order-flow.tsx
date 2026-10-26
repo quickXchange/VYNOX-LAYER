@@ -1,5 +1,6 @@
-import { useState, type Dispatch, type SetStateAction } from 'react';
-import { ArrowLeft, Check, Pencil, RotateCcw, ShieldCheck } from 'lucide-react';
+import { useRef, useState, type Dispatch, type SetStateAction } from 'react';
+import { Link } from 'wouter';
+import { ArrowLeft, LayoutDashboard, Check, Pencil, RotateCcw, ShieldCheck } from 'lucide-react';
 import { detailsErrors, simRef, type SimDetails, type SimQuote, type SimStage } from '../../lib/sim-order';
 
 export interface SimSummary { action: 'Swap' | 'Convert'; payLabel: string; receiveLabel: string; paySymbol: string; receiveSymbol: string; amount: number; quote: SimQuote; method: string | null }
@@ -7,8 +8,15 @@ const fmt = (n: number) => (n >= 1 ? n.toLocaleString('en-US', { maximumFraction
 const STEPS: { k: SimStage; l: string }[] = [{ k: 'amount', l: 'Amount' }, { k: 'details', l: 'Details' }, { k: 'review', l: 'Review' }, { k: 'done', l: 'Complete' }];
 
 /** Steps 2-4 of the design-preview simulator. Local state only; nothing leaves the browser. */
-export function SimOrderFlow({ stage, setStage, summary, run, onEdit, onRestart, details: d, setDetails: setD }: { details: SimDetails; setDetails: Dispatch<SetStateAction<SimDetails>>; stage: SimStage; setStage: (s: SimStage) => void; summary: SimSummary; run: number; onEdit: () => void; onRestart: () => void }) {
+export function SimOrderFlow({ stage, setStage, summary, run, onEdit, onRestart, details: d, setDetails: setD, onComplete, adminHref }: { onComplete?: () => string | null; adminHref?: (ref: string) => string; details: SimDetails; setDetails: Dispatch<SetStateAction<SimDetails>>; stage: SimStage; setStage: (s: SimStage) => void; summary: SimSummary; run: number; onEdit: () => void; onRestart: () => void }) {
   const [tried, setTried] = useState(false);
+  const recorded = useRef(false);
+  const [demoRef, setDemoRef] = useState<string | null>(null);
+  const confirm = () => {
+    setTried(true); if (!d.agree) return;
+    if (!recorded.current && onComplete) { recorded.current = true; setDemoRef(onComplete()); }
+    setStage('done');
+  };
   const errs = detailsErrors(d);
   const idx = STEPS.findIndex((s) => s.k === stage);
   const q = summary.quote;
@@ -63,7 +71,7 @@ export function SimOrderFlow({ stage, setStage, summary, run, onEdit, onRestart,
           <div className="flex flex-wrap gap-2">
             <button type="button" className="s-btn s-btn-ghost" onClick={() => setStage('details')} data-testid="button-sim-edit-details"><Pencil size={14} />Edit details</button>
             <button type="button" className="s-btn s-btn-ghost" onClick={onEdit} data-testid="button-sim-edit-amount">Edit amount</button>
-            <button type="button" className="s-btn s-btn-primary w-full" onClick={() => { setTried(true); if (d.agree) setStage('done'); }} data-testid="button-sim-confirm">Confirm simulated order</button>
+            <button type="button" className="s-btn s-btn-primary w-full" onClick={confirm} data-testid="button-sim-confirm">Confirm simulated order</button>
           </div>
         </div>)}
 
@@ -72,10 +80,11 @@ export function SimOrderFlow({ stage, setStage, summary, run, onEdit, onRestart,
           <div className="text-center">
             <span className="mx-auto grid h-12 w-12 place-items-center rounded-full" style={{ background: 'var(--s-accent)', color: 'var(--s-bg)' }}><Check size={22} /></span>
             <h3 className="mt-3 text-lg font-semibold">Simulated order complete</h3>
-            <p className="s-muted mt-1 font-mono text-xs" data-testid="text-sim-ref">{simRef(run)} (sample reference)</p>
+            <p className="s-muted mt-1 font-mono text-xs" data-testid="text-sim-ref">{demoRef ?? simRef(run)} (sample reference)</p>
           </div>
           {summaryBox}
-          <p className="flex items-start gap-2 text-xs leading-relaxed"><ShieldCheck size={15} className="mt-0.5 shrink-0" style={{ color: 'var(--s-accent-ink)' }} />Synthetic simulation only. No quote or order was created, no payment instructions exist and nothing was sent or saved.</p>
+          <p className="flex items-start gap-2 text-xs leading-relaxed"><ShieldCheck size={15} className="mt-0.5 shrink-0" style={{ color: 'var(--s-accent-ink)' }} />{demoRef ? 'Synthetic simulation only. No real quote, payment or order exists and nothing was sent to a server. An in-memory demo record (amounts only, no name, email or reference) was added to the simulation admin for this tab; it is cleared on reload or reset.' : 'Synthetic simulation only. No quote or order was created, no payment instructions exist and nothing was sent or saved.'}</p>
+          {demoRef && adminHref && <Link href={adminHref(demoRef)} className="s-btn s-btn-ghost w-full" data-testid="link-sim-open-admin"><LayoutDashboard size={15} />View order in admin (simulation)</Link>}
           <button type="button" className="s-btn s-btn-primary w-full" onClick={onRestart} data-testid="button-sim-restart"><RotateCcw size={15} />Start a new simulation</button>
         </div>)}
     </div>
