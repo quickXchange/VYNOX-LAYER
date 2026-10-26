@@ -24,3 +24,25 @@ test('preview site is synthetic: sandbox-only, no favicon, no domain, defaults f
   assert.equal(s.domain, null);
   assert.ok(s.assets.every((a) => a.testnet));
 });
+
+test('preview ids are 128-bit hex, nonce-scoped and remembered per tab only', async () => {
+  const { newPreviewId, isPreviewId, resolvePreviewId, PREVIEW_ID_STORAGE_KEY } = await import('./design-preview-bridge');
+  const id = newPreviewId(); assert.ok(isPreviewId(id)); assert.notEqual(id, newPreviewId());
+  const mem = new Map<string, string>();
+  const st = { getItem: (k: string) => mem.get(k) ?? null, setItem: (k: string, v: string) => { mem.set(k, v); } };
+  assert.equal(resolvePreviewId(`?pid=${id}`, st), id);
+  assert.equal(mem.get(PREVIEW_ID_STORAGE_KEY), id);
+  assert.equal(resolvePreviewId('', st), id, 'survives SPA route changes and reload via sessionStorage token');
+  assert.equal(resolvePreviewId('?pid=../../etc', { getItem: () => null, setItem: () => {} }), null);
+});
+
+test('bridge messages require matching nonce and sanitize config', async () => {
+  const { parseBridgeMessage, configMessage, readyMessage, newPreviewId, MSG_CONFIG } = await import('./design-preview-bridge');
+  const id = newPreviewId(), other = newPreviewId();
+  assert.equal(parseBridgeMessage(readyMessage(other), id), null);
+  assert.equal(parseBridgeMessage({ type: MSG_CONFIG, id, config: {} }, id), null, 'version required');
+  const m = parseBridgeMessage({ ...configMessage(id, {}), config: { brandName: 'Harbor', primary: 'red', logoDataUrl: 'https://x/y.png' } }, id);
+  assert.ok(m && m.type === MSG_CONFIG);
+  if (m && m.type === MSG_CONFIG) { assert.equal(m.config.brandName, 'Harbor'); assert.equal(m.config.primary, DEFAULT_PREVIEW.primary); assert.equal(m.config.logoDataUrl, null); }
+  assert.equal(DEFAULT_PREVIEW.brandName, 'NovaX');
+});

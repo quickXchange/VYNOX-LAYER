@@ -7,6 +7,7 @@ import Entry from '@/pages/entry';
 import { SiteHome, FeaturePage, LegalPage } from '@/pages/site';
 import NotFound from '@/pages/not-found';
 import { DesignPreviewHome, DesignPreviewFeature, DesignPreviewLegal } from '@/pages/design-preview';
+import { DesignPreviewAdmin } from '@/pages/design-preview-admin';
 const TelegramMini = lazy(() => import('@/pages/telegram-mini'));
 const OrderTracking = lazy(() => import('@/pages/order-tracking'));
 import {
@@ -59,6 +60,9 @@ function Router() {
         <Route path="/" component={MainPlatformEntry} />
         <Route path="/sandbox/site-finder" component={Entry} />
         <Route path="/__design-preview" component={DesignPreviewHome} />
+        <Route path="/__design-preview/admin" component={DesignPreviewAdmin} />
+        <Route path="/__design-preview/admin/orders/:ref" component={DesignPreviewAdmin} />
+        <Route path="/__design-preview/admin/:section" component={DesignPreviewAdmin} />
         <Route path="/__design-preview/privacy">{() => <DesignPreviewLegal kind="privacy" />}</Route>
         <Route path="/__design-preview/terms">{() => <DesignPreviewLegal kind="terms" />}</Route>
         <Route path="/__design-preview/:feature" component={DesignPreviewFeature} />

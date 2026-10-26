@@ -13,3 +13,9 @@ The demo should be wide and professional, and Swap/Convert must progress through
 **Why:** The user explicitly requested a full multi-step simulator comparable to the approved NovaX experience.
 
 **How to apply:** Preserve sample details during back/edit navigation, clearly distinguish simulated completion from a real order, and keep the entire journey local-only.
+
+Step 2 must link to a separate full-page NovaX product simulator instead of embedding the preview in the purchase form. Include a connected simulated admin experience.
+
+**Why:** The user found the embedded preview slow and incomplete and explicitly requested a full-product experience comparable to Quickchange.
+
+**How to apply:** Preserve the approved master, customer design inputs and purchase draft. Connect synthetic Swap/Convert orders to local admin simulation without enabling financial execution, accessing actual tenant records or persisting private attachments.
