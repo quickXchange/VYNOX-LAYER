@@ -98,7 +98,17 @@ export default function PlanDetail() {
               {([['monthlyPrice', 'Monthly price'], ['yearlyPrice', 'Yearly price'], ['setupFee', 'Setup fee']] as const).map(([k, l]) => (
                 <div key={k} className="space-y-1.5"><Label htmlFor={`plan-${k}`}>{l}</Label><Input id={`plan-${k}`} data-testid={`input-plan-${k}`} className="font-mono" disabled={!configured} placeholder={configured ? '0.00' : 'Not configured'} aria-invalid={configured && !MONEY.test(f[k])} value={f[k]} onChange={(e) => set(k, e.target.value)} /></div>))}
               <div className="space-y-1.5"><Label htmlFor="plan-discount">Discount percent (recurring only)</Label><Input id="plan-discount" data-testid="input-plan-discount" className="font-mono" inputMode="decimal" value={f.discountPercent} onChange={(e) => set('discountPercent', e.target.value)} /></div>
-              <div className="space-y-1.5"><Label>Currency</Label><Input data-testid="input-plan-currency" readOnly={!id} className="font-mono" value={f.currency} onChange={(e) => set('currency', e.target.value.toUpperCase())} /></div>
+              <div className="space-y-1.5"><Label htmlFor="plan-currency">Currency</Label>
+                <Select value={f.currency} onValueChange={(v) => set('currency', v)}>
+                  <SelectTrigger id="plan-currency" data-testid="select-plan-currency" aria-describedby="plan-currency-help"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="EUR">EUR — Euro</SelectItem>
+                    <SelectItem value="USD">USD — US Dollar</SelectItem>
+                    {!['EUR', 'USD'].includes(f.currency) && <SelectItem value={f.currency}>{f.currency} — Existing currency</SelectItem>}
+                  </SelectContent>
+                </Select>
+                <p id="plan-currency-help" className="text-xs text-muted-foreground">Applies to all prices and fixed discounts on this plan. Amounts are not converted automatically; review them before saving and publishing. Existing customer agreements remain unchanged.</p>
+              </div>
               <div className="space-y-1.5"><Label>Display order</Label><Input data-testid="input-plan-order" className="font-mono" value={f.displayOrder} onChange={(e) => set('displayOrder', e.target.value)} /></div>
               <div className="space-y-1.5"><Label>Status</Label>
                 <Select value={f.status} onValueChange={(v) => { if (['enabled', 'disabled', 'archived'].includes(v)) set('status', v); }}><SelectTrigger data-testid="select-plan-status"><SelectValue>{f.status.charAt(0).toUpperCase() + f.status.slice(1)}</SelectValue></SelectTrigger>

@@ -102,7 +102,7 @@ export function listAddons(principal: Principal) {
   });
 }
 async function writePlan(client: DatabaseClient, input: PlanInput, id?: string, actor?: string) {
-  if (!id && input.currency !== "EUR") throw new HttpError(400, "New plans must be priced in EUR.");
+  if (!id && !["EUR", "USD"].includes(input.currency)) throw new HttpError(400, "New plans must be priced in EUR or USD.");
   if (input.name.trim().length < 2) throw new HttpError(400, "Plan name must contain at least two non-whitespace characters.");
   // Validate direct service callers as well as HTTP requests. Bound the raw
   // strings first, then normalize display text without interpreting it as HTML.

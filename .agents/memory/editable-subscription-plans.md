@@ -19,3 +19,9 @@ Legacy-plan removal means permanently delete only truly unused plans and archive
 **Why:** The user explicitly chose deletion of unused old plans while preserving those with history.
 
 **How to apply:** Check subscriptions, orders, invoices, JSON snapshots, publication history and protected Acceptance references before deletion. Preserve Starter, Standard and Premium and existing agreements; do not equate an inactive plan with an unused one.
+
+Super Admin must be able to select USD as well as EUR for subscription plans.
+
+**Why:** The user explicitly requested USD support and administrator-controlled currency rather than EUR-only new plans.
+
+**How to apply:** Treat currency as a plan draft setting requiring publication, not an exchange-rate conversion or permission to reprice existing customer agreements.
