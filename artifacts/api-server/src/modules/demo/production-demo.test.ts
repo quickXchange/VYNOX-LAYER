@@ -103,12 +103,13 @@ test("Production-mode demo HTTP: all actions, snapshots, tracking and admin sect
     await request("/public/sites/novax-live-demo", 200);
     await request("/public/sites/nova%78-live-demo", 200);
     const config = await request("/public/sites/novax-live-demo/exchange", 200);
-    assert.equal(config.routes.length, 18);
+    assert.equal(config.routes.length, 12);
+    assert.deepEqual([...new Set(config.routes.map((r: { action: string }) => r.action))].sort(), ["convert", "swap"]);
     await request("/public/sites/novax-live-demo/exchange/quotes", 403, "POST", {}, true);
-    for (const action of ["swap", "convert", "buy", "sell"]) {
+    for (const action of ["swap", "convert"]) {
       const route = config.routes.find((r: { action: string }) => r.action === action);
       const q = await request("/public/sites/novax-live-demo/exchange/quotes", 200, "POST", { action, source: route.source,
-        destination: route.destination, amount: action === "buy" ? "250" : "0.025", ...(route.paymentMethodIds.length ? { paymentMethodId: route.paymentMethodIds[0] } : {}) });
+        destination: route.destination, amount: "0.025", ...(route.paymentMethodIds.length ? { paymentMethodId: route.paymentMethodIds[0] } : {}) });
       const body = { quoteToken: q.token, idempotencyKey: randomUUID() };
       const created = await request("/public/sites/novax-live-demo/exchange/orders", 201, "POST", body);
       const repeat = await request("/public/sites/novax-live-demo/exchange/orders", 201, "POST", body);

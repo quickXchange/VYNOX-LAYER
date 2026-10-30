@@ -20,13 +20,14 @@ const methods = ["da000000-0000-4000-8000-000000000011", "da000000-0000-4000-800
 const rates: Record<string, number> = { "fiat:USD": 1, "btc:bitcoin-testnet": 60000, "eth:ethereum-sepolia": 3000, "usdt:ethereum-sepolia": 1 };
 const routes = (["swap", "convert", "buy", "sell"] as const).flatMap(action => {
   const endpoints = demoCatalog.map(a => a.assetNetworkId);
-  const sources = action === "buy" ? ["fiat:USD"] : endpoints;
-  const destinations = action === "sell" ? ["fiat:USD"] : endpoints;
-  return sources.flatMap(source => destinations.filter(d => d !== source).map(destination => ({
+  const sources = action === "swap" ? [...endpoints, "fiat:USD"] : action === "buy" ? ["fiat:USD"] : endpoints;
+  const destinations = action === "swap" ? [...endpoints, "fiat:USD"] : action === "sell" ? ["fiat:USD"] : endpoints;
+  return sources.flatMap(source => destinations.filter(d => d !== source &&
+    (action !== "swap" || source.startsWith("fiat:") !== d.startsWith("fiat:"))).map(destination => ({
     action, source, destination, enabled: true, rate: (rates[source] / rates[destination]).toFixed(18),
     minimum: source === "fiat:USD" ? "20" : source.startsWith("usdt") ? "25" : "0.001",
     maximum: source === "fiat:USD" ? "5000" : source.startsWith("usdt") ? "10000" : "10",
-    feeBps: 35, spreadBps: 50, fixedFee: "0", paymentMethodIds: ["buy", "sell"].includes(action) ? methods : [],
+    feeBps: 35, spreadBps: 50, fixedFee: "0", paymentMethodIds: ["swap", "buy", "sell"].includes(action) ? methods : [],
   })));
 });
 export const demoSettings = SaveExchangeConfigurationBody.parse({

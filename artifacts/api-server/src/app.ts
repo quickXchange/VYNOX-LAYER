@@ -8,6 +8,7 @@ import { createAccessGate } from "../../../lib/production-access-gate/index.mjs"
 import { supabaseAuthConfiguration, supabaseDefaultProvider } from "./modules/supabase-auth/config";
 import { createPreparationIsolation } from "./middlewares/preparation-isolation";
 import { requireAuthentication } from "./middlewares/authentication";
+import { jsonBody, formBody, requestBodyBudget } from "./middlewares/request-body";
 
 // No silent fallback to a retired provider, including in a future published build.
 if (!supabaseDefaultProvider()) throw new Error("Supabase Auth must be explicitly configured. Legacy authentication is retired; Production migration approval is required before publishing.");
@@ -48,8 +49,7 @@ app.use((req, res, next) => {
   }
   return accessGate(req, res, next);
 });
-app.use(express.json({ limit: "128kb" }));
-app.use(express.urlencoded({ extended: true, limit: "128kb" }));
+app.use(jsonBody, formBody, requestBodyBudget);
 
 app.use(createPreparationIsolation(requireAuthentication));
 app.use("/api", router);
@@ -58,6 +58,15 @@ const errorHandler: ErrorRequestHandler = (error, req, res, _next) => {
     res.status(400).json({ error: "Invalid safe diagnostic." }); return;
   }
   if (error?.type === "entity.too.large") { res.status(413).json({ error: "The upload or request exceeds its allowed size limit." }); return; }
+  if (["encoding.unsupported", "charset.unsupported"].includes(error?.type)) {
+    res.status(415).json({ error: "Unsupported request encoding." }); return;
+  }
+  if (["entity.parse.failed", "request.size.invalid", "querystring.parse.rangeError"].includes(error?.type)) {
+    res.status(400).json({ error: "Malformed request body." }); return;
+  }
+  if (error?.type === "parameters.too.many") {
+    res.status(413).json({ error: "Too many request parameters." }); return;
+  }
   // The generated API validators and application validators can resolve distinct
   // Zod packages. Keep valid client mistakes at 400 rather than logging a 500.
   if (error instanceof ZodError || (error?.name === "ZodError" && Array.isArray(error.issues))) {
@@ -77,7 +86,9 @@ const errorHandler: ErrorRequestHandler = (error, req, res, _next) => {
   const code = (error as { code?: string }).code;
   if (code === "23505") { res.status(409).json({ error: "This slug, domain, or unique configuration is already in use." }); return; }
   if (code === "23503") { res.status(400).json({ error: "Configuration references an unavailable catalog entry or a dependent record." }); return; }
-  req.log.error({ err: error }, "Request failed");
+  // Driver/parser errors can contain submitted values, SQL parameters or PII.
+  // Keep a correlation ID and bounded diagnostic code, never the raw exception.
+  req.log.error({ code: typeof code === "string" && /^[A-Z0-9_]{1,40}$/.test(code) ? code : "INTERNAL_ERROR" }, "Request failed");
   res.status(500).json({ error: "The operation could not be completed." });
 };
 app.use(errorHandler);

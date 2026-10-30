@@ -1246,3 +1246,17 @@ mtime_ms = 1792861191624
 storage_uri = "gcs://replit-rams-assets-reed/rams/assets/repl:372d2684-97ec-4ce5-b16a-77fb322db72a/c2d00741-4c01-4846-ade8-76a1fc4b5ada/9c932050-aa59-4862-8fd3-792cdaba0bd2"
 storage_version_token = "1792861208628530"
 content_type = "application/pdf"
+
+[[outputs]]
+id = "HV9NB13tZRG6LuhWvO_x-"
+uri = "file://generated-artifacts/security-audit/security-report.html"
+type = "html"
+title = "Security audit — interim findings and evidence"
+description = "Detailed backup verification, applied fixes, scan results, test evidence and remaining risks. No credentials or customer records included."
+logical_id = "61e86ae9-c9d6-461d-a747-b0a85f8c6f52"
+content_hash = "sha256:7f7bbc82822133586384953052bf9746f66ab9017934c7ef5138ab54ddb7b791"
+size = 13787
+mtime_ms = 1793367906073
+storage_uri = "gcs://replit-rams-assets-reed/rams/assets/repl:372d2684-97ec-4ce5-b16a-77fb322db72a/61e86ae9-c9d6-461d-a747-b0a85f8c6f52/2625e1df-9955-4fed-934e-69bf421c89ac"
+storage_version_token = "1793367929900369"
+content_type = "text/html"

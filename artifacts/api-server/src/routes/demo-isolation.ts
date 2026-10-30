@@ -121,7 +121,7 @@ router.use(async (req, res, next) => {
       tenantId: DEMO_TENANT_ID, tenantStatus: "active", status: "active",
       plan: { id: "da000000-0000-4000-8000-000000000020", name: "Fictional sandbox demo", description: "No billing or execution",
         status: "enabled", currency: "USD", monthlyPrice: "0", yearlyPrice: "0", setupFee: "0",
-        displayOrder: 0, billingLabel: "Demo only", entitlements: [], createdAt: DEMO_DATE, updatedAt: DEMO_DATE },
+        displayOrder: 0, billingLabel: "Demo only", entitlements: [], featureRows: [], createdAt: DEMO_DATE, updatedAt: DEMO_DATE },
       addons: [], overrides: [], features: demoFeatures, limits: {}, sources: {}, usage: [], enabledModules: demoTenant.enabledModules, overLimit: false,
     })); return;
   }

@@ -41,7 +41,9 @@ test("contract validates bounded plain strings, has no small row cap and preserv
     assert.equal(UpdatePlanBody.safeParse({ ...input, featureRows }).success, false);
   }
   const app = readFileSync(new URL("../../app.ts", import.meta.url), "utf8");
-  assert.match(app, /express\.json\(\{ limit: "128kb" \}\)/);
+  assert.match(app, /app\.use\(jsonBody, formBody, requestBodyBudget\)/);
+  const body = readFileSync(new URL("../../middlewares/request-body.ts", import.meta.url), "utf8");
+  assert.match(body, /express\.json\(\{ limit: "128kb", inflate: false \}\)/);
 });
 
 /** In-memory query adapter only: tests never open a database or execute DDL. */

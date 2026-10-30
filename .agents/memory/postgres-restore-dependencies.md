@@ -19,3 +19,13 @@ no application table privileges until explicit Development grants were applied.
 **How to apply:** Check each required privilege separately: PostgreSQL's
 comma-separated privilege list means **any**, not **all**. Never accept a role-name
 check as permission or publishing parity proof.
+
+An isolated `--no-owner --no-acl` restore still needs roles named by RLS policies.
+Create only inert, NOLOGIN role identities in the disposable cluster, and inspect
+the archive's treatment of the initial public schema rather than always dropping it.
+
+**Why:** A real Development archive depended on the initial public schema and
+policy role identities even though owner/ACL restoration was excluded.
+
+**How to apply:** Confine these stand-ins to socket-only local rehearsal clusters;
+never create or weaken source or Production roles to make a rehearsal pass.
