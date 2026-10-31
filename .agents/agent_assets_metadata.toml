@@ -1288,3 +1288,31 @@ mtime_ms = 1793458728043
 storage_uri = "gcs://replit-rams-assets-reed/rams/assets/repl:372d2684-97ec-4ce5-b16a-77fb322db72a/3df26700-3881-4228-99d7-505561c7d664/618f098e-6f09-43aa-ab40-c256f005aa7c"
 storage_version_token = "1793458732338056"
 content_type = "text/html"
+
+[[outputs]]
+id = "bpNriRogcKd8WPg97vvXj"
+uri = "file://generated-artifacts/security-audit/external-recovery-status.html"
+type = "html"
+title = "External recovery verification status"
+description = "Verified encrypted captures, access blockers, and remaining recovery requirements. No Production changes."
+logical_id = "23ffda5c-acc8-44a8-9cb7-035bb12b4e8d"
+content_hash = "sha256:7fe73542ad49f2bce4d9bd508bd04055e716867f0080d33e2cba7a5b554cc6ef"
+size = 3675
+mtime_ms = 1793462541011
+storage_uri = "gcs://replit-rams-assets-reed/rams/assets/repl:372d2684-97ec-4ce5-b16a-77fb322db72a/23ffda5c-acc8-44a8-9cb7-035bb12b4e8d/28c9b8fe-37b9-4206-b0d5-f7931dcd1a35"
+storage_version_token = "1793462549423106"
+content_type = "text/html"
+
+[[outputs]]
+id = "ktsR7-MaYfjOCK1QHnMIZ"
+uri = "file://generated-artifacts/reports/supabase-recovery-token-instructions.pdf"
+type = "pdf"
+title = "Supabase permissions and token setup"
+description = "One-page PDF with the required read-only permissions, setup steps, and token-safety instructions. No credentials included."
+logical_id = "fda679aa-3312-44cc-b234-a88a1dad4f52"
+content_hash = "sha256:d6decb7062d47989ac879d5a119ee686d700bfda07a879b58ed53b56f530d787"
+size = 2549
+mtime_ms = 1793473185847
+storage_uri = "gcs://replit-rams-assets-reed/rams/assets/repl:372d2684-97ec-4ce5-b16a-77fb322db72a/fda679aa-3312-44cc-b234-a88a1dad4f52/636180f2-34c5-4947-9c5d-dfa976678d25"
+storage_version_token = "1793473190840996"
+content_type = "application/pdf"
