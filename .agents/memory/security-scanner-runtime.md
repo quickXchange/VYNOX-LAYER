@@ -19,6 +19,15 @@ successfully completed equivalent scan. A successful managed Pro scan does not
 mean the separately installed direct Pro binary has authentication; its login
 error is not evidence that the managed scanner is unavailable.
 
+Shell free-space readings and successful scanner runs do not prove browser
+runtime capacity.
+
+**Why:** Browser startup still reported ENOSPC after shell scratch storage showed
+ample capacity and all managed scanners completed.
+
+**How to apply:** Verify the specific failing runtime; do not declare the storage
+blocker resolved from shell disk statistics alone.
+
 Stream large privacy report summaries instead of loading their whole JSON into
 Node memory.
 
