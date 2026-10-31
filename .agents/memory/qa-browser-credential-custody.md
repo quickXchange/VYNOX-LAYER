@@ -14,3 +14,9 @@ A managed browser's resource exhaustion or closed service is an incomplete test,
 **Why:** The managed browser failed with resource exhaustion and could not create new contexts, while independent Chromium completed the same public and native authenticated flows successfully.
 
 **How to apply:** Continue the same tester's scope, dispose pages/contexts, keep temporary browser dependencies out of application dependencies, and retain the loopback/in-memory credential boundary during recovery.
+
+Native sign-in tests must suppress automatic accessibility snapshots of populated credential fields.
+
+**Why:** A managed browser snapshot included disposable sign-in field values despite instructions not to print credentials. The test stopped and the identities were deleted.
+
+**How to apply:** Use a browser execution path with controlled, sanitized output before entering credentials. Never reuse affected disposable credentials; revoke sessions and delete their exact scoped accounts first.
