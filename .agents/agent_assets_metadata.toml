@@ -1274,3 +1274,17 @@ mtime_ms = 1793457319907
 storage_uri = "gcs://replit-rams-assets-reed/rams/assets/repl:372d2684-97ec-4ce5-b16a-77fb322db72a/72fdb098-f865-482c-8c77-df8353d19f41/e143c741-f872-4426-9a16-94e2cf31b879"
 storage_version_token = "1793457329153201"
 content_type = "text/html"
+
+[[outputs]]
+id = "uMDDwKxlbQkQpIWZiv95v"
+uri = "file://generated-artifacts/security-audit/super-admin-security-report.html"
+type = "html"
+title = "Super Admin Security Audit — Progress and Evidence"
+description = "Tested retry-limit hardening, backup/restore evidence, 298 passing API tests, endpoint probes, scanner findings and explicitly outstanding requirements."
+logical_id = "3df26700-3881-4228-99d7-505561c7d664"
+content_hash = "sha256:2f03d3e02d59d9761c5bd00f58be6fd5810bb1ebb0eed0e2343a48f75b6afd4e"
+size = 14428
+mtime_ms = 1793458728043
+storage_uri = "gcs://replit-rams-assets-reed/rams/assets/repl:372d2684-97ec-4ce5-b16a-77fb322db72a/3df26700-3881-4228-99d7-505561c7d664/618f098e-6f09-43aa-ab40-c256f005aa7c"
+storage_version_token = "1793458732338056"
+content_type = "text/html"

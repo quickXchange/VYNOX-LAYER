@@ -76,3 +76,4 @@
 - [Customer feature intake](customer-feature-intake.md) — Swap/Convert are multi-select; Convert provider preferences are review requests, not activation.
 - [Editable subscription plans](editable-subscription-plans.md) — Starter/Standard/Premium replace old offers; preserve contracts, version publication, no invented prices.
 - [Subscription trial safety](subscription-trial-safety.md) — new agreements only; freeze promotional amounts, enforce deadlines independently, never auto-renew or charge.
+- [Authentication retry budgets](authentication-retry-budgets.md) — account limits must survive IP rotation without introducing permanent Owner lockout.
