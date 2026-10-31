@@ -1260,3 +1260,17 @@ mtime_ms = 1793371524320
 storage_uri = "gcs://replit-rams-assets-reed/rams/assets/repl:372d2684-97ec-4ce5-b16a-77fb322db72a/61e86ae9-c9d6-461d-a747-b0a85f8c6f52/ecb9c1c9-f43e-4f3c-a53f-a4f29335dda3"
 storage_version_token = "1793371532706926"
 content_type = "text/html"
+
+[[outputs]]
+id = "yrYbUtVYnIyYCV_lUwhFD"
+uri = "file://generated-artifacts/reports/vynox-super-admin-flow.html"
+type = "html"
+title = "VYNOX LAYER — Complete Super Admin Flow"
+description = "Downloadable operating report covering Owner access, navigation, order review, setup, releases, delivery, plans, permissions and troubleshooting. Open and print to save as PDF."
+logical_id = "72fdb098-f865-482c-8c77-df8353d19f41"
+content_hash = "sha256:0ab26f3a9ae1713a06639b746fa275c900c7601d455b06a3d3702b7278b53bf2"
+size = 23477
+mtime_ms = 1793457319907
+storage_uri = "gcs://replit-rams-assets-reed/rams/assets/repl:372d2684-97ec-4ce5-b16a-77fb322db72a/72fdb098-f865-482c-8c77-df8353d19f41/e143c741-f872-4426-9a16-94e2cf31b879"
+storage_version_token = "1793457329153201"
+content_type = "text/html"
