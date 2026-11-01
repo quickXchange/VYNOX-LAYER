@@ -20,7 +20,7 @@ const password = z.string().max(128).superRefine((value, ctx) => {
     ctx.addIssue({ code: "custom", message: "Include uppercase letters, lowercase letters and numbers." });
 });
 const email = z.string().email().max(254).transform(v => v.trim().toLowerCase());
-const factorId = z.string().uuid();
+const factorId = z.guid();
 export const input = z.discriminatedUnion("action", [
   z.object({ action: z.literal("signup"), name: z.string().trim().min(1).max(120), email, password }).strict(),
   z.object({ action: z.literal("login"), email, password: z.string().min(1).max(128) }).strict(),

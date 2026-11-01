@@ -17,7 +17,7 @@ router.post("/customer/order-attachments", raw({ type: "application/octet-stream
   res.status(201).json(await uploadAttachment(principalFrom(res), m.fileName, m.contentType, m.category, req.body));
 });
 router.get("/customer/order-attachments/:id/content", async (req, res) => {
-  const id = z.string().uuid().parse(req.params.id);
+  const id = z.guid().parse(req.params.id);
   const { row, file } = await attachmentFor(principalFrom(res), id);
   const inline = row.content_type.startsWith("image/") && req.query.download !== "1";
   res.setHeader("Content-Type", row.content_type);

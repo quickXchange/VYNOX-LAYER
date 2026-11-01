@@ -14,7 +14,7 @@ import { DEMO_SLUG } from "../modules/demo/identity";
 import { demoSite, demoPublicExchange } from "../modules/demo/fixture";
 import { assertDeliveredExchangeAccess } from "../modules/customer/service";
 
-const router = Router(), uuid = z.string().uuid();
+const router = Router(), uuid = z.guid();
 router.get("/public/site-config", async (req, res) => {
   const input = z.object({ slug: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/).max(48).optional(), host: z.string().max(253).optional() }).strict().parse(req.query);
   if (!!input.slug === !!input.host) throw new HttpError(400, "Provide exactly one slug or host.");

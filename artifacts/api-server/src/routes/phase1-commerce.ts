@@ -8,7 +8,7 @@ import { proposals, approveProposal, periods } from "../modules/commerce/offers"
 import { pricingPublication } from "../modules/commerce/pricing-publication";
 
 const router = Router();
-const uuid = z.string().uuid().transform(value => value.toLowerCase());
+const uuid = z.guid().transform(value => value.toLowerCase());
 router.get("/phase1/catalog", async (_req, res) => { res.json(await publicOffers()); });
 router.get("/commerce/pricing-publication", requireAuthentication, async (_req, res) => {
   res.set("Cache-Control","no-store"); res.json(await pricingPublication(principalFrom(res)));

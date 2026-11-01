@@ -121,9 +121,9 @@ export const getReleasedSiteConfigResponseExchangeOnePaymentMethodsItemReserveRe
 
 
 export const GetReleasedSiteConfigResponse = zod.object({
-  "schema_version": zod.number().int(),
+  "schema_version": zod.number().refine(Number.isInteger, "Expected integer, received float"),
   "site": zod.object({
-  "schema_version": zod.number().int().optional(),
+  "schema_version": zod.number().refine(Number.isInteger, "Expected integer, received float").optional(),
   "releaseChecksum": zod.string().optional(),
   "preview": zod.boolean().optional(),
   "defaultLanguage": zod.string().optional(),
@@ -182,7 +182,7 @@ export const GetReleasedSiteConfigResponse = zod.object({
   "networkName": zod.string(),
   "testnet": zod.boolean(),
   "logoUrl": zod.string().nullish(),
-  "decimals": zod.number().int().optional(),
+  "decimals": zod.number().refine(Number.isInteger, "Expected integer, received float").optional(),
   "memoRequired": zod.boolean().optional()
 }))
 }),
@@ -196,18 +196,18 @@ export const GetReleasedSiteConfigResponse = zod.object({
   "status": zod.enum(['enabled', 'disabled', 'catalog_only']),
   "logoUrl": zod.string().max(getReleasedSiteConfigResponseExchangeOneCurrenciesItemLogoUrlMax).nullable(),
   "metadata": zod.record(zod.string(), zod.unknown()),
-  "revision": zod.number().int().min(getReleasedSiteConfigResponseExchangeOneCurrenciesItemRevisionMin)
+  "revision": zod.number().refine(Number.isInteger, "Expected integer, received float").min(getReleasedSiteConfigResponseExchangeOneCurrenciesItemRevisionMin)
 })).optional(),
   "defaultPairs": zod.object({
   "swap": zod.object({
   "source": zod.string().min(1).max(getReleasedSiteConfigResponseExchangeOneDefaultPairsSwapSourceMax),
   "destination": zod.string().min(1).max(getReleasedSiteConfigResponseExchangeOneDefaultPairsSwapDestinationMax),
-  "paymentMethodId": zod.string().uuid().optional()
+  "paymentMethodId": zod.guid().optional()
 }).optional(),
   "convert": zod.object({
   "source": zod.string().min(1).max(getReleasedSiteConfigResponseExchangeOneDefaultPairsConvertSourceMax),
   "destination": zod.string().min(1).max(getReleasedSiteConfigResponseExchangeOneDefaultPairsConvertDestinationMax),
-  "paymentMethodId": zod.string().uuid().optional()
+  "paymentMethodId": zod.guid().optional()
 }).optional()
 }).optional(),
   "enabled": zod.boolean(),
@@ -222,11 +222,11 @@ export const GetReleasedSiteConfigResponse = zod.object({
   "networkName": zod.string(),
   "testnet": zod.boolean(),
   "logoUrl": zod.string().nullish(),
-  "decimals": zod.number().int().optional(),
+  "decimals": zod.number().refine(Number.isInteger, "Expected integer, received float").optional(),
   "memoRequired": zod.boolean().optional()
 })),
   "routes": zod.array(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "source": zod.string().min(1).max(getReleasedSiteConfigResponseExchangeOneRoutesItemSourceMax),
   "destination": zod.string().min(1).max(getReleasedSiteConfigResponseExchangeOneRoutesItemDestinationMax),
   "action": zod.enum(['swap', 'convert', 'buy', 'sell']),
@@ -234,15 +234,15 @@ export const GetReleasedSiteConfigResponse = zod.object({
   "rate": zod.string().regex(getReleasedSiteConfigResponseExchangeOneRoutesItemRateRegExp),
   "minimum": zod.string().regex(getReleasedSiteConfigResponseExchangeOneRoutesItemMinimumRegExp),
   "maximum": zod.string().regex(getReleasedSiteConfigResponseExchangeOneRoutesItemMaximumRegExp),
-  "feeBps": zod.number().int().min(getReleasedSiteConfigResponseExchangeOneRoutesItemFeeBpsMin).max(getReleasedSiteConfigResponseExchangeOneRoutesItemFeeBpsMax),
+  "feeBps": zod.number().refine(Number.isInteger, "Expected integer, received float").min(getReleasedSiteConfigResponseExchangeOneRoutesItemFeeBpsMin).max(getReleasedSiteConfigResponseExchangeOneRoutesItemFeeBpsMax),
   "fixedFee": zod.string().regex(getReleasedSiteConfigResponseExchangeOneRoutesItemFixedFeeRegExp),
-  "spreadBps": zod.number().int().min(getReleasedSiteConfigResponseExchangeOneRoutesItemSpreadBpsMin).max(getReleasedSiteConfigResponseExchangeOneRoutesItemSpreadBpsMax),
-  "paymentMethodIds": zod.array(zod.string().uuid()).max(getReleasedSiteConfigResponseExchangeOneRoutesItemPaymentMethodIdsMax),
+  "spreadBps": zod.number().refine(Number.isInteger, "Expected integer, received float").min(getReleasedSiteConfigResponseExchangeOneRoutesItemSpreadBpsMin).max(getReleasedSiteConfigResponseExchangeOneRoutesItemSpreadBpsMax),
+  "paymentMethodIds": zod.array(zod.guid()).max(getReleasedSiteConfigResponseExchangeOneRoutesItemPaymentMethodIdsMax),
   "providerId": zod.string().max(getReleasedSiteConfigResponseExchangeOneRoutesItemProviderIdMax).optional()
 })),
   "paymentMethods": zod.array(zod.object({
   "receivingIbanRequired": zod.boolean().optional().describe('Public field requirement only; no operator bank details'),
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "label": zod.string().min(getReleasedSiteConfigResponseExchangeOnePaymentMethodsItemLabelMin).max(getReleasedSiteConfigResponseExchangeOnePaymentMethodsItemLabelMax),
   "instructions": zod.string().max(getReleasedSiteConfigResponseExchangeOnePaymentMethodsItemInstructionsMax).optional().describe('Optional sandbox payment instructions, frozen on order creation; never include credentials'),
   "enabled": zod.boolean(),
@@ -256,7 +256,7 @@ export const GetReleasedSiteConfigResponse = zod.object({
   "methodType": zod.enum(['bank', 'card', 'manual']).optional(),
   "minimum": zod.string().regex(getReleasedSiteConfigResponseExchangeOnePaymentMethodsItemMinimumRegExp).optional(),
   "maximum": zod.string().regex(getReleasedSiteConfigResponseExchangeOnePaymentMethodsItemMaximumRegExp).nullish(),
-  "feeBps": zod.number().int().min(getReleasedSiteConfigResponseExchangeOnePaymentMethodsItemFeeBpsMin).max(getReleasedSiteConfigResponseExchangeOnePaymentMethodsItemFeeBpsMax).optional(),
+  "feeBps": zod.number().refine(Number.isInteger, "Expected integer, received float").min(getReleasedSiteConfigResponseExchangeOnePaymentMethodsItemFeeBpsMin).max(getReleasedSiteConfigResponseExchangeOnePaymentMethodsItemFeeBpsMax).optional(),
   "fixedFee": zod.string().regex(getReleasedSiteConfigResponseExchangeOnePaymentMethodsItemFixedFeeRegExp).optional(),
   "reserve": zod.string().regex(getReleasedSiteConfigResponseExchangeOnePaymentMethodsItemReserveRegExp).optional().describe('Administrator-maintained sandbox reserve metadata in fiat currency. No funds exist and this does not affect quotes or execution.')
 })),
@@ -276,7 +276,7 @@ export const GetReleasedSiteConfigResponse = zod.object({
 
 
 export const GetTenantReleasesParams = zod.object({
-  "tenantId": zod.coerce.string().uuid()
+  "tenantId": zod.guid()
 })
 
 export const GetTenantReleasesResponse = zod.object({
@@ -291,7 +291,7 @@ export const GetTenantReleasesResponse = zod.object({
 })),
   "history": zod.array(zod.object({
   "id": zod.string(),
-  "version": zod.number().int(),
+  "version": zod.number().refine(Number.isInteger, "Expected integer, received float"),
   "checksum": zod.string(),
   "createdBy": zod.string(),
   "createdAt": zod.string(),
@@ -301,12 +301,12 @@ export const GetTenantReleasesResponse = zod.object({
 
 
 export const ReleaseTenantSiteParams = zod.object({
-  "tenantId": zod.coerce.string().uuid()
+  "tenantId": zod.guid()
 })
 
 export const ReleaseTenantSiteResponse = zod.object({
   "id": zod.string(),
-  "version": zod.number().int(),
+  "version": zod.number().refine(Number.isInteger, "Expected integer, received float"),
   "checksum": zod.string(),
   "createdBy": zod.string(),
   "createdAt": zod.string(),
@@ -315,13 +315,13 @@ export const ReleaseTenantSiteResponse = zod.object({
 
 
 export const RollbackTenantSiteParams = zod.object({
-  "tenantId": zod.coerce.string().uuid(),
-  "releaseId": zod.coerce.string().uuid()
+  "tenantId": zod.guid(),
+  "releaseId": zod.guid()
 })
 
 export const RollbackTenantSiteResponse = zod.object({
   "id": zod.string(),
-  "version": zod.number().int(),
+  "version": zod.number().refine(Number.isInteger, "Expected integer, received float"),
   "checksum": zod.string(),
   "createdBy": zod.string(),
   "createdAt": zod.string(),
@@ -330,7 +330,7 @@ export const RollbackTenantSiteResponse = zod.object({
 
 
 export const PreviewTenantDraftParams = zod.object({
-  "tenantId": zod.coerce.string().uuid()
+  "tenantId": zod.guid()
 })
 
 export const PreviewTenantDraftResponse = zod.object({
@@ -340,7 +340,7 @@ export const PreviewTenantDraftResponse = zod.object({
 
 
 export const UploadTenantDraftAssetParams = zod.object({
-  "tenantId": zod.coerce.string().uuid()
+  "tenantId": zod.guid()
 })
 
 export const UploadTenantDraftAssetResponse = zod.object({
@@ -373,7 +373,7 @@ export const GetGlobalExchangeCatalogResponse = zod.object({
   "status": zod.enum(['enabled', 'disabled', 'catalog_only']),
   "logoUrl": zod.string().max(getGlobalExchangeCatalogResponseEntriesItemLogoUrlMax).nullable(),
   "metadata": zod.record(zod.string(), zod.unknown()),
-  "revision": zod.number().int().min(getGlobalExchangeCatalogResponseEntriesItemRevisionMin)
+  "revision": zod.number().refine(Number.isInteger, "Expected integer, received float").min(getGlobalExchangeCatalogResponseEntriesItemRevisionMin)
 })),
   "links": zod.array(zod.object({
   "kind": zod.enum(['payment_fiat', 'asset_network']),
@@ -420,7 +420,7 @@ export const PatchGlobalExchangeCatalogBody = zod.object({
   "status": zod.enum(['enabled', 'disabled', 'catalog_only']),
   "logoUrl": zod.string().max(patchGlobalExchangeCatalogBodyEntriesItemLogoUrlMax).nullable(),
   "metadata": zod.record(zod.string(), zod.unknown()),
-  "revision": zod.number().int().min(patchGlobalExchangeCatalogBodyEntriesItemRevisionMin)
+  "revision": zod.number().refine(Number.isInteger, "Expected integer, received float").min(patchGlobalExchangeCatalogBodyEntriesItemRevisionMin)
 })).max(patchGlobalExchangeCatalogBodyEntriesMax).optional(),
   "links": zod.array(zod.object({
   "kind": zod.enum(['payment_fiat', 'asset_network']),
@@ -462,7 +462,7 @@ export const PatchGlobalExchangeCatalogResponse = zod.object({
   "status": zod.enum(['enabled', 'disabled', 'catalog_only']),
   "logoUrl": zod.string().max(patchGlobalExchangeCatalogResponseEntriesItemLogoUrlMax).nullable(),
   "metadata": zod.record(zod.string(), zod.unknown()),
-  "revision": zod.number().int().min(patchGlobalExchangeCatalogResponseEntriesItemRevisionMin)
+  "revision": zod.number().refine(Number.isInteger, "Expected integer, received float").min(patchGlobalExchangeCatalogResponseEntriesItemRevisionMin)
 })),
   "links": zod.array(zod.object({
   "kind": zod.enum(['payment_fiat', 'asset_network']),
@@ -477,8 +477,8 @@ export const PatchGlobalExchangeCatalogResponse = zod.object({
 
 
 export const ScanExchangeWalletParams = zod.object({
-  "tenantId": zod.coerce.string().uuid(),
-  "walletId": zod.coerce.string().uuid()
+  "tenantId": zod.guid(),
+  "walletId": zod.guid()
 })
 
 export const scanExchangeWalletBodyReasonMin = 2;
@@ -491,17 +491,17 @@ export const ScanExchangeWalletBody = zod.object({
 })
 
 export const ScanExchangeWalletResponse = zod.object({
-  "walletId": zod.string().uuid(),
+  "walletId": zod.guid(),
   "observedAt": zod.coerce.date(),
   "from": zod.string(),
   "to": zod.string(),
-  "confirmationsRequired": zod.number().int(),
+  "confirmationsRequired": zod.number().refine(Number.isInteger, "Expected integer, received float"),
   "observations": zod.array(zod.object({
   "eventId": zod.string(),
   "transactionHash": zod.string(),
   "amount": zod.string(),
   "blockOrSlot": zod.string(),
-  "confirmations": zod.number().int(),
+  "confirmations": zod.number().refine(Number.isInteger, "Expected integer, received float"),
   "canonical": zod.boolean(),
   "successful": zod.boolean(),
   "confirmed": zod.boolean()
@@ -535,7 +535,7 @@ export const ListPhase1MethodsResponseItem = zod.object({
   "enabled": zod.boolean(),
   "approved": zod.boolean()
 }).and(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "createdAt": zod.coerce.date()
 }))
 export const ListPhase1MethodsResponse = zod.array(ListPhase1MethodsResponseItem)
@@ -574,13 +574,13 @@ export const CreatePhase1MethodResponse = zod.object({
   "enabled": zod.boolean(),
   "approved": zod.boolean()
 }).and(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "createdAt": zod.coerce.date()
 }))
 
 
 export const UpdatePhase1MethodParams = zod.object({
-  "id": zod.coerce.string().uuid()
+  "id": zod.guid()
 })
 
 export const updatePhase1MethodBodyNameMin = 2;
@@ -616,13 +616,13 @@ export const UpdatePhase1MethodResponse = zod.object({
   "enabled": zod.boolean(),
   "approved": zod.boolean()
 }).and(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "createdAt": zod.coerce.date()
 }))
 
 
 export const DeletePhase1MethodParams = zod.object({
-  "id": zod.coerce.string().uuid()
+  "id": zod.guid()
 })
 
 export const DeletePhase1MethodResponse = zod.object({
@@ -631,7 +631,7 @@ export const DeletePhase1MethodResponse = zod.object({
 
 
 export const GetCustomerOrderBillingParams = zod.object({
-  "id": zod.coerce.string().uuid()
+  "id": zod.guid()
 })
 
 export const getCustomerOrderBillingResponseMethodsItemOneNameMin = 2;
@@ -644,8 +644,8 @@ export const getCustomerOrderBillingResponseMethodsItemOneInstructionsMax = 4000
 
 export const GetCustomerOrderBillingResponse = zod.object({
   "invoice": zod.union([zod.object({
-  "id": zod.string().uuid(),
-  "orderId": zod.string().uuid(),
+  "id": zod.guid(),
+  "orderId": zod.guid(),
   "amount": zod.string(),
   "currency": zod.string(),
   "status": zod.enum(['pending', 'reported', 'paid', 'rejected']),
@@ -663,7 +663,7 @@ export const GetCustomerOrderBillingResponse = zod.object({
   "enabled": zod.boolean(),
   "approved": zod.boolean()
 }).and(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "createdAt": zod.coerce.date()
 }))),
   "purchasable": zod.boolean(),
@@ -672,7 +672,7 @@ export const GetCustomerOrderBillingResponse = zod.object({
 
 
 export const GetOperatorOrderBillingParams = zod.object({
-  "id": zod.coerce.string().uuid()
+  "id": zod.guid()
 })
 
 export const getOperatorOrderBillingResponseMethodsItemOneNameMin = 2;
@@ -685,8 +685,8 @@ export const getOperatorOrderBillingResponseMethodsItemOneInstructionsMax = 4000
 
 export const GetOperatorOrderBillingResponse = zod.object({
   "invoice": zod.union([zod.object({
-  "id": zod.string().uuid(),
-  "orderId": zod.string().uuid(),
+  "id": zod.guid(),
+  "orderId": zod.guid(),
   "amount": zod.string(),
   "currency": zod.string(),
   "status": zod.enum(['pending', 'reported', 'paid', 'rejected']),
@@ -704,7 +704,7 @@ export const GetOperatorOrderBillingResponse = zod.object({
   "enabled": zod.boolean(),
   "approved": zod.boolean()
 }).and(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "createdAt": zod.coerce.date()
 }))),
   "purchasable": zod.boolean(),
@@ -713,11 +713,11 @@ export const GetOperatorOrderBillingResponse = zod.object({
 
 
 export const CreatePlatformInvoiceParams = zod.object({
-  "id": zod.coerce.string().uuid()
+  "id": zod.guid()
 })
 
 export const CreatePlatformInvoiceBody = zod.object({
-  "methodId": zod.string().uuid()
+  "methodId": zod.guid()
 })
 
 export const createPlatformInvoiceResponseMethodsItemOneNameMin = 2;
@@ -730,8 +730,8 @@ export const createPlatformInvoiceResponseMethodsItemOneInstructionsMax = 4000;
 
 export const CreatePlatformInvoiceResponse = zod.object({
   "invoice": zod.union([zod.object({
-  "id": zod.string().uuid(),
-  "orderId": zod.string().uuid(),
+  "id": zod.guid(),
+  "orderId": zod.guid(),
   "amount": zod.string(),
   "currency": zod.string(),
   "status": zod.enum(['pending', 'reported', 'paid', 'rejected']),
@@ -749,7 +749,7 @@ export const CreatePlatformInvoiceResponse = zod.object({
   "enabled": zod.boolean(),
   "approved": zod.boolean()
 }).and(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "createdAt": zod.coerce.date()
 }))),
   "purchasable": zod.boolean(),
@@ -758,7 +758,7 @@ export const CreatePlatformInvoiceResponse = zod.object({
 
 
 export const ReportPlatformPaymentParams = zod.object({
-  "id": zod.coerce.string().uuid()
+  "id": zod.guid()
 })
 
 export const reportPlatformPaymentBodyReferenceMin = 3;
@@ -780,8 +780,8 @@ export const reportPlatformPaymentResponseMethodsItemOneInstructionsMax = 4000;
 
 export const ReportPlatformPaymentResponse = zod.object({
   "invoice": zod.union([zod.object({
-  "id": zod.string().uuid(),
-  "orderId": zod.string().uuid(),
+  "id": zod.guid(),
+  "orderId": zod.guid(),
   "amount": zod.string(),
   "currency": zod.string(),
   "status": zod.enum(['pending', 'reported', 'paid', 'rejected']),
@@ -799,7 +799,7 @@ export const ReportPlatformPaymentResponse = zod.object({
   "enabled": zod.boolean(),
   "approved": zod.boolean()
 }).and(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "createdAt": zod.coerce.date()
 }))),
   "purchasable": zod.boolean(),
@@ -808,7 +808,7 @@ export const ReportPlatformPaymentResponse = zod.object({
 
 
 export const ConfirmPlatformPaymentParams = zod.object({
-  "id": zod.coerce.string().uuid()
+  "id": zod.guid()
 })
 
 export const confirmPlatformPaymentBodyReferenceMin = 3;
@@ -836,8 +836,8 @@ export const confirmPlatformPaymentResponseMethodsItemOneInstructionsMax = 4000;
 
 export const ConfirmPlatformPaymentResponse = zod.object({
   "invoice": zod.union([zod.object({
-  "id": zod.string().uuid(),
-  "orderId": zod.string().uuid(),
+  "id": zod.guid(),
+  "orderId": zod.guid(),
   "amount": zod.string(),
   "currency": zod.string(),
   "status": zod.enum(['pending', 'reported', 'paid', 'rejected']),
@@ -855,7 +855,7 @@ export const ConfirmPlatformPaymentResponse = zod.object({
   "enabled": zod.boolean(),
   "approved": zod.boolean()
 }).and(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "createdAt": zod.coerce.date()
 }))),
   "purchasable": zod.boolean(),
@@ -864,7 +864,7 @@ export const ConfirmPlatformPaymentResponse = zod.object({
 
 
 export const RejectPlatformPaymentParams = zod.object({
-  "id": zod.coerce.string().uuid()
+  "id": zod.guid()
 })
 
 export const rejectPlatformPaymentBodyEvidenceMin = 10;
@@ -886,8 +886,8 @@ export const rejectPlatformPaymentResponseMethodsItemOneInstructionsMax = 4000;
 
 export const RejectPlatformPaymentResponse = zod.object({
   "invoice": zod.union([zod.object({
-  "id": zod.string().uuid(),
-  "orderId": zod.string().uuid(),
+  "id": zod.guid(),
+  "orderId": zod.guid(),
   "amount": zod.string(),
   "currency": zod.string(),
   "status": zod.enum(['pending', 'reported', 'paid', 'rejected']),
@@ -905,7 +905,7 @@ export const RejectPlatformPaymentResponse = zod.object({
   "enabled": zod.boolean(),
   "approved": zod.boolean()
 }).and(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "createdAt": zod.coerce.date()
 }))),
   "purchasable": zod.boolean(),
@@ -914,10 +914,10 @@ export const RejectPlatformPaymentResponse = zod.object({
 
 
 export const ListPlatformEmailsResponseItem = zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "subject": zod.string(),
   "status": zod.enum(['pending', 'sent', 'failed']),
-  "attempts": zod.number().int(),
+  "attempts": zod.number().refine(Number.isInteger, "Expected integer, received float"),
   "lastError": zod.string().nullable(),
   "createdAt": zod.coerce.date(),
   "sentAt": zod.coerce.date().nullable()
@@ -926,7 +926,7 @@ export const ListPlatformEmailsResponse = zod.array(ListPlatformEmailsResponseIt
 
 
 export const RetryPlatformEmailParams = zod.object({
-  "id": zod.coerce.string().uuid()
+  "id": zod.guid()
 })
 
 export const RetryPlatformEmailResponse = zod.object({
@@ -939,7 +939,7 @@ export const ListPlatformPriceProposalsResponse = zod.array(ListPlatformPricePro
 
 
 export const ApprovePlatformPriceProposalParams = zod.object({
-  "id": zod.coerce.string().uuid(),
+  "id": zod.guid(),
   "kind": zod.enum(['plan', 'addon'])
 })
 
@@ -959,7 +959,7 @@ export const ApprovePlatformPriceProposalResponse = zod.object({
 
 
 export const GetPlatformBillingPeriodsParams = zod.object({
-  "id": zod.coerce.string().uuid()
+  "id": zod.guid()
 })
 
 export const GetPlatformBillingPeriodsResponse = zod.object({
@@ -969,7 +969,7 @@ export const GetPlatformBillingPeriodsResponse = zod.object({
 
 
 export const UpdatePlatformBillingPeriodsParams = zod.object({
-  "id": zod.coerce.string().uuid()
+  "id": zod.guid()
 })
 
 export const UpdatePlatformBillingPeriodsBody = zod.object({
@@ -1005,10 +1005,10 @@ export const GetSupabaseAuthSessionResponse = zod.object({
 }),zod.null()]),
   "mfaRequired": zod.boolean(),
   "emailMfaAvailable": zod.boolean().optional().describe('Development only; server-confirmed Super Admin with verified Gmail and existing TOTP. Never inferred from browser metadata.'),
-  "emailMfaChallengeExpiresAt": zod.number().int().optional().describe('Development only; expiry in epoch milliseconds of this browser session\'s usable email MFA challenge. No code or proof is exposed.'),
-  "emailLoginChallengeExpiresAt": zod.number().int().optional().describe('Development only; public expiry of the current HttpOnly browser-bound passwordless challenge, including indistinguishable ineligible-account challenges.'),
+  "emailMfaChallengeExpiresAt": zod.number().refine(Number.isInteger, "Expected integer, received float").optional().describe('Development only; expiry in epoch milliseconds of this browser session\'s usable email MFA challenge. No code or proof is exposed.'),
+  "emailLoginChallengeExpiresAt": zod.number().refine(Number.isInteger, "Expected integer, received float").optional().describe('Development only; public expiry of the current HttpOnly browser-bound passwordless challenge, including indistinguishable ineligible-account challenges.'),
   "recovery": zod.boolean(),
-  "recoveryCodesRemaining": zod.number().int().min(getSupabaseAuthSessionResponseRecoveryCodesRemainingMin).optional().describe('Development-only unused recovery codes, visible only after MFA.'),
+  "recoveryCodesRemaining": zod.number().refine(Number.isInteger, "Expected integer, received float").min(getSupabaseAuthSessionResponseRecoveryCodesRemainingMin).optional().describe('Development-only unused recovery codes, visible only after MFA.'),
   "existingAccountLinked": zod.boolean().optional().describe('Whether this authenticated subject already has an explicit identity link. Does not grant access or expose preserved IDs.')
 })
 
@@ -1031,7 +1031,7 @@ export const performSupabaseAuthActionBodyRecoveryCodeMax = 64;
 
 export const PerformSupabaseAuthActionBody = zod.object({
   "action": zod.enum(['signup', 'login', 'login-email-send', 'login-email-verify', 'logout', 'recover', 'resend', 'verify', 'reset-password', 'change-password', 'mfa-enroll', 'mfa-verify', 'mfa-email-send', 'mfa-email-verify', 'mfa-remove', 'link-existing', 'mfa-recovery-generate', 'mfa-recover']),
-  "email": zod.string().email().max(performSupabaseAuthActionBodyEmailMax).optional(),
+  "email": zod.email().max(performSupabaseAuthActionBodyEmailMax).optional(),
   "name": zod.string().min(1).max(performSupabaseAuthActionBodyNameMax).optional(),
   "password": zod.string().max(performSupabaseAuthActionBodyPasswordMax).optional(),
   "currentPassword": zod.string().max(performSupabaseAuthActionBodyCurrentPasswordMax).optional(),
@@ -1041,11 +1041,11 @@ export const PerformSupabaseAuthActionBody = zod.object({
   "recoveryCode": zod.string().min(performSupabaseAuthActionBodyRecoveryCodeMin).max(performSupabaseAuthActionBodyRecoveryCodeMax).optional(),
   "confirmReplace": zod.boolean().optional(),
   "confirmReset": zod.boolean().optional(),
-  "factorId": zod.string().uuid().optional()
+  "factorId": zod.guid().optional()
 })
 
 export const PerformSupabaseAuthActionResponse = zod.object({
-  "emailLoginChallengeExpiresAt": zod.number().int().optional().describe('Development passwordless send receipt; must match the subsequent cookie-bound session readback before asking for the emailed code.'),
+  "emailLoginChallengeExpiresAt": zod.number().refine(Number.isInteger, "Expected integer, received float").optional().describe('Development passwordless send receipt; must match the subsequent cookie-bound session readback before asking for the emailed code.'),
   "ok": zod.boolean(),
   "recoveryCodes": zod.array(zod.string()).optional().describe('Development-only plaintext codes returned once after fresh password and TOTP proof.'),
   "mfaRequired": zod.boolean().optional(),
@@ -1084,7 +1084,7 @@ export const GetPublicTelegramMiniConfigResponse = zod.object({
 
 
 export const RegisterTenantTelegramWebhookParams = zod.object({
-  "tenantId": zod.coerce.string().uuid()
+  "tenantId": zod.guid()
 })
 
 export const registerTenantTelegramWebhookBodyReasonMin = 2;
@@ -1129,7 +1129,7 @@ export const GetIntegrationRuntimeResponse = zod.object({
   "settings": zod.record(zod.string(), zod.unknown()),
   "credentialsConfigured": zod.boolean(),
   "canManageCredentials": zod.boolean(),
-  "revision": zod.number().int(),
+  "revision": zod.number().refine(Number.isInteger, "Expected integer, received float"),
   "health": zod.record(zod.string(), zod.unknown()),
   "updatedAt": zod.coerce.date()
 })),
@@ -1149,7 +1149,7 @@ export const GetIntegrationRuntimeResponse = zod.object({
 
 
 export const GetTenantIntegrationRuntimeParams = zod.object({
-  "tenantId": zod.coerce.string().uuid()
+  "tenantId": zod.guid()
 })
 
 export const GetTenantIntegrationRuntimeResponse = zod.object({
@@ -1179,7 +1179,7 @@ export const GetTenantIntegrationRuntimeResponse = zod.object({
   "settings": zod.record(zod.string(), zod.unknown()),
   "credentialsConfigured": zod.boolean(),
   "canManageCredentials": zod.boolean(),
-  "revision": zod.number().int(),
+  "revision": zod.number().refine(Number.isInteger, "Expected integer, received float"),
   "health": zod.record(zod.string(), zod.unknown()),
   "updatedAt": zod.coerce.date()
 })),
@@ -1199,7 +1199,7 @@ export const GetTenantIntegrationRuntimeResponse = zod.object({
 
 
 export const SaveTenantIntegrationParams = zod.object({
-  "tenantId": zod.coerce.string().uuid(),
+  "tenantId": zod.guid(),
   "providerKey": zod.coerce.string()
 })
 
@@ -1227,14 +1227,14 @@ export const SaveTenantIntegrationResponse = zod.object({
   "settings": zod.record(zod.string(), zod.unknown()),
   "credentialsConfigured": zod.boolean(),
   "canManageCredentials": zod.boolean(),
-  "revision": zod.number().int(),
+  "revision": zod.number().refine(Number.isInteger, "Expected integer, received float"),
   "health": zod.record(zod.string(), zod.unknown()),
   "updatedAt": zod.coerce.date()
 })
 
 
 export const TestTenantIntegrationParams = zod.object({
-  "tenantId": zod.coerce.string().uuid(),
+  "tenantId": zod.guid(),
   "providerKey": zod.coerce.string()
 })
 
@@ -1257,7 +1257,7 @@ export const TestTenantIntegrationResponse = zod.object({
   "settings": zod.record(zod.string(), zod.unknown()),
   "credentialsConfigured": zod.boolean(),
   "canManageCredentials": zod.boolean(),
-  "revision": zod.number().int(),
+  "revision": zod.number().refine(Number.isInteger, "Expected integer, received float"),
   "health": zod.record(zod.string(), zod.unknown()),
   "updatedAt": zod.coerce.date()
 })
@@ -1326,23 +1326,23 @@ export const GetProviderFoundationResponse = zod.object({
   "entitlementKey": zod.string().max(getProviderFoundationResponseProvidersItemOneEntitlementKeyMax).nullable(),
   "tenantConfigurable": zod.boolean()
 }).and(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "createdAt": zod.string(),
   "updatedAt": zod.string(),
   "implementationStatus": zod.enum(['not_implemented']),
   "connectionStatus": zod.enum(['not_configured']),
-  "assignedTenants": zod.number().int(),
+  "assignedTenants": zod.number().refine(Number.isInteger, "Expected integer, received float"),
   "credentialStorageAvailable": zod.boolean()
 }))),
   "assignments": zod.array(zod.object({
-  "providerId": zod.string().uuid(),
+  "providerId": zod.guid(),
   "capability": zod.string().regex(getProviderFoundationResponseAssignmentsItemOneCapabilityRegExp),
   "environment": zod.enum(['sandbox', 'test', 'live'])
 }).and(zod.object({
   "configuration": zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean()]))
 })).and(zod.object({
-  "id": zod.string().uuid(),
-  "tenantId": zod.string().uuid(),
+  "id": zod.guid(),
+  "tenantId": zod.guid(),
   "connectionStatus": zod.enum(['not_configured', 'configured']),
   "credentialState": zod.enum(['not_configured']),
   "createdAt": zod.string(),
@@ -1354,12 +1354,12 @@ export const GetProviderFoundationResponse = zod.object({
   "capability": zod.string().regex(getProviderFoundationResponsePoliciesItemOneCapabilityRegExp),
   "environment": zod.enum(['sandbox', 'test', 'live']),
   "executionMode": zod.enum(['sandbox_manual', 'provider']),
-  "providerId": zod.string().uuid().nullable(),
+  "providerId": zod.guid().nullable(),
   "fallback": zod.enum(['none', 'manual', 'secondary_provider']),
-  "secondaryProviderId": zod.string().uuid().nullable()
+  "secondaryProviderId": zod.guid().nullable()
 }).and(zod.object({
-  "id": zod.string().uuid(),
-  "tenantId": zod.string().uuid(),
+  "id": zod.guid(),
+  "tenantId": zod.guid(),
   "executionEnabled": zod.boolean(),
   "updatedAt": zod.string()
 }))),
@@ -1494,18 +1494,18 @@ export const CreateProviderDefinitionResponse = zod.object({
   "entitlementKey": zod.string().max(createProviderDefinitionResponseOneEntitlementKeyMax).nullable(),
   "tenantConfigurable": zod.boolean()
 }).and(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "createdAt": zod.string(),
   "updatedAt": zod.string(),
   "implementationStatus": zod.enum(['not_implemented']),
   "connectionStatus": zod.enum(['not_configured']),
-  "assignedTenants": zod.number().int(),
+  "assignedTenants": zod.number().refine(Number.isInteger, "Expected integer, received float"),
   "credentialStorageAvailable": zod.boolean()
 }))
 
 
 export const UpdateProviderDefinitionParams = zod.object({
-  "providerId": zod.coerce.string().uuid()
+  "providerId": zod.guid()
 })
 
 export const updateProviderDefinitionBodyNameMax = 120;
@@ -1625,18 +1625,18 @@ export const UpdateProviderDefinitionResponse = zod.object({
   "entitlementKey": zod.string().max(updateProviderDefinitionResponseOneEntitlementKeyMax).nullable(),
   "tenantConfigurable": zod.boolean()
 }).and(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "createdAt": zod.string(),
   "updatedAt": zod.string(),
   "implementationStatus": zod.enum(['not_implemented']),
   "connectionStatus": zod.enum(['not_configured']),
-  "assignedTenants": zod.number().int(),
+  "assignedTenants": zod.number().refine(Number.isInteger, "Expected integer, received float"),
   "credentialStorageAvailable": zod.boolean()
 }))
 
 
 export const GetTenantProviderFoundationParams = zod.object({
-  "tenantId": zod.coerce.string().uuid()
+  "tenantId": zod.guid()
 })
 
 export const getTenantProviderFoundationResponseProvidersItemOneNameMax = 120;
@@ -1702,23 +1702,23 @@ export const GetTenantProviderFoundationResponse = zod.object({
   "entitlementKey": zod.string().max(getTenantProviderFoundationResponseProvidersItemOneEntitlementKeyMax).nullable(),
   "tenantConfigurable": zod.boolean()
 }).and(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "createdAt": zod.string(),
   "updatedAt": zod.string(),
   "implementationStatus": zod.enum(['not_implemented']),
   "connectionStatus": zod.enum(['not_configured']),
-  "assignedTenants": zod.number().int(),
+  "assignedTenants": zod.number().refine(Number.isInteger, "Expected integer, received float"),
   "credentialStorageAvailable": zod.boolean()
 }))),
   "assignments": zod.array(zod.object({
-  "providerId": zod.string().uuid(),
+  "providerId": zod.guid(),
   "capability": zod.string().regex(getTenantProviderFoundationResponseAssignmentsItemOneCapabilityRegExp),
   "environment": zod.enum(['sandbox', 'test', 'live'])
 }).and(zod.object({
   "configuration": zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean()]))
 })).and(zod.object({
-  "id": zod.string().uuid(),
-  "tenantId": zod.string().uuid(),
+  "id": zod.guid(),
+  "tenantId": zod.guid(),
   "connectionStatus": zod.enum(['not_configured', 'configured']),
   "credentialState": zod.enum(['not_configured']),
   "createdAt": zod.string(),
@@ -1730,12 +1730,12 @@ export const GetTenantProviderFoundationResponse = zod.object({
   "capability": zod.string().regex(getTenantProviderFoundationResponsePoliciesItemOneCapabilityRegExp),
   "environment": zod.enum(['sandbox', 'test', 'live']),
   "executionMode": zod.enum(['sandbox_manual', 'provider']),
-  "providerId": zod.string().uuid().nullable(),
+  "providerId": zod.guid().nullable(),
   "fallback": zod.enum(['none', 'manual', 'secondary_provider']),
-  "secondaryProviderId": zod.string().uuid().nullable()
+  "secondaryProviderId": zod.guid().nullable()
 }).and(zod.object({
-  "id": zod.string().uuid(),
-  "tenantId": zod.string().uuid(),
+  "id": zod.guid(),
+  "tenantId": zod.guid(),
   "executionEnabled": zod.boolean(),
   "updatedAt": zod.string()
 }))),
@@ -1754,14 +1754,14 @@ export const GetTenantProviderFoundationResponse = zod.object({
 
 
 export const CreateProviderAssignmentParams = zod.object({
-  "tenantId": zod.coerce.string().uuid()
+  "tenantId": zod.guid()
 })
 
 export const createProviderAssignmentBodyCapabilityRegExp = new RegExp('^[a-z][a-z0-9_]{0,63}$');
 
 
 export const CreateProviderAssignmentBody = zod.object({
-  "providerId": zod.string().uuid(),
+  "providerId": zod.guid(),
   "capability": zod.string().regex(createProviderAssignmentBodyCapabilityRegExp),
   "environment": zod.enum(['sandbox', 'test', 'live'])
 })
@@ -1770,14 +1770,14 @@ export const createProviderAssignmentResponseOneCapabilityRegExp = new RegExp('^
 
 
 export const CreateProviderAssignmentResponse = zod.object({
-  "providerId": zod.string().uuid(),
+  "providerId": zod.guid(),
   "capability": zod.string().regex(createProviderAssignmentResponseOneCapabilityRegExp),
   "environment": zod.enum(['sandbox', 'test', 'live'])
 }).and(zod.object({
   "configuration": zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean()]))
 })).and(zod.object({
-  "id": zod.string().uuid(),
-  "tenantId": zod.string().uuid(),
+  "id": zod.guid(),
+  "tenantId": zod.guid(),
   "connectionStatus": zod.enum(['not_configured', 'configured']),
   "credentialState": zod.enum(['not_configured']),
   "createdAt": zod.string(),
@@ -1786,8 +1786,8 @@ export const CreateProviderAssignmentResponse = zod.object({
 
 
 export const UpdateProviderAssignmentParams = zod.object({
-  "tenantId": zod.coerce.string().uuid(),
-  "assignmentId": zod.coerce.string().uuid()
+  "tenantId": zod.guid(),
+  "assignmentId": zod.guid()
 })
 
 export const UpdateProviderAssignmentBody = zod.object({
@@ -1798,14 +1798,14 @@ export const updateProviderAssignmentResponseOneCapabilityRegExp = new RegExp('^
 
 
 export const UpdateProviderAssignmentResponse = zod.object({
-  "providerId": zod.string().uuid(),
+  "providerId": zod.guid(),
   "capability": zod.string().regex(updateProviderAssignmentResponseOneCapabilityRegExp),
   "environment": zod.enum(['sandbox', 'test', 'live'])
 }).and(zod.object({
   "configuration": zod.record(zod.string(), zod.union([zod.string(),zod.number(),zod.boolean()]))
 })).and(zod.object({
-  "id": zod.string().uuid(),
-  "tenantId": zod.string().uuid(),
+  "id": zod.guid(),
+  "tenantId": zod.guid(),
   "connectionStatus": zod.enum(['not_configured', 'configured']),
   "credentialState": zod.enum(['not_configured']),
   "createdAt": zod.string(),
@@ -1814,15 +1814,15 @@ export const UpdateProviderAssignmentResponse = zod.object({
 
 
 export const RemoveProviderAssignmentParams = zod.object({
-  "tenantId": zod.coerce.string().uuid(),
-  "assignmentId": zod.coerce.string().uuid()
+  "tenantId": zod.guid(),
+  "assignmentId": zod.guid()
 })
 
 export const RemoveProviderAssignmentResponse = zod.void()
 
 
 export const SaveProviderPolicyParams = zod.object({
-  "tenantId": zod.coerce.string().uuid()
+  "tenantId": zod.guid()
 })
 
 export const saveProviderPolicyBodyResourceIdMax = 100;
@@ -1836,9 +1836,9 @@ export const SaveProviderPolicyBody = zod.object({
   "capability": zod.string().regex(saveProviderPolicyBodyCapabilityRegExp),
   "environment": zod.enum(['sandbox', 'test', 'live']),
   "executionMode": zod.enum(['sandbox_manual', 'provider']),
-  "providerId": zod.string().uuid().nullable(),
+  "providerId": zod.guid().nullable(),
   "fallback": zod.enum(['none', 'manual', 'secondary_provider']),
-  "secondaryProviderId": zod.string().uuid().nullable()
+  "secondaryProviderId": zod.guid().nullable()
 })
 
 export const saveProviderPolicyResponseOneResourceIdMax = 100;
@@ -1852,20 +1852,20 @@ export const SaveProviderPolicyResponse = zod.object({
   "capability": zod.string().regex(saveProviderPolicyResponseOneCapabilityRegExp),
   "environment": zod.enum(['sandbox', 'test', 'live']),
   "executionMode": zod.enum(['sandbox_manual', 'provider']),
-  "providerId": zod.string().uuid().nullable(),
+  "providerId": zod.guid().nullable(),
   "fallback": zod.enum(['none', 'manual', 'secondary_provider']),
-  "secondaryProviderId": zod.string().uuid().nullable()
+  "secondaryProviderId": zod.guid().nullable()
 }).and(zod.object({
-  "id": zod.string().uuid(),
-  "tenantId": zod.string().uuid(),
+  "id": zod.guid(),
+  "tenantId": zod.guid(),
   "executionEnabled": zod.boolean(),
   "updatedAt": zod.string()
 }))
 
 
 export const RemoveProviderPolicyParams = zod.object({
-  "tenantId": zod.coerce.string().uuid(),
-  "policyId": zod.coerce.string().uuid()
+  "tenantId": zod.guid(),
+  "policyId": zod.guid()
 })
 
 export const RemoveProviderPolicyResponse = zod.void()
@@ -1875,7 +1875,7 @@ export const RemoveProviderPolicyResponse = zod.void()
  * @summary Read-only platform owner account, project, usage and audit directory
  */
 export const GetPlatformManagementResponse = zod.object({
-  "customerTotal": zod.number().int().nullable(),
+  "customerTotal": zod.number().refine(Number.isInteger, "Expected integer, received float").nullable(),
   "customers": zod.array(zod.object({
   "id": zod.string(),
   "name": zod.string(),
@@ -1921,7 +1921,7 @@ export const GetPlatformManagementResponse = zod.object({
  * @summary Get an authenticated operator-only read-only website preview without activation
  */
 export const GetTenantWebsitePreviewParams = zod.object({
-  "tenantId": zod.coerce.string().uuid()
+  "tenantId": zod.guid()
 })
 
 export const GetTenantWebsitePreviewResponse = zod.object({
@@ -1953,7 +1953,7 @@ export const GetExchangeVisualCatalogResponse = zod.object({
 
 export const GetDemoSessionResponse = zod.object({
   "active": zod.boolean(),
-  "tenantId": zod.string().uuid().nullable(),
+  "tenantId": zod.guid().nullable(),
   "readOnly": zod.boolean()
 })
 
@@ -1964,14 +1964,14 @@ export const StartDemoSessionBody = zod.object({
 
 export const StartDemoSessionResponse = zod.object({
   "active": zod.boolean(),
-  "tenantId": zod.string().uuid().nullable(),
+  "tenantId": zod.guid().nullable(),
   "readOnly": zod.boolean()
 })
 
 
 export const EndDemoSessionResponse = zod.object({
   "active": zod.boolean(),
-  "tenantId": zod.string().uuid().nullable(),
+  "tenantId": zod.guid().nullable(),
   "readOnly": zod.boolean()
 })
 
@@ -2145,7 +2145,7 @@ export const GetWhiteLabelCatalogResponse = zod.object({
   "discountPercent": zod.string().max(getWhiteLabelCatalogResponsePlansItemOneDiscountPercentMax).regex(getWhiteLabelCatalogResponsePlansItemOneDiscountPercentRegExp).optional(),
   "currency": zod.string().regex(getWhiteLabelCatalogResponsePlansItemOneCurrencyRegExp),
   "billingLabel": zod.string().max(getWhiteLabelCatalogResponsePlansItemOneBillingLabelMax),
-  "displayOrder": zod.number().int().min(getWhiteLabelCatalogResponsePlansItemOneDisplayOrderMin).max(getWhiteLabelCatalogResponsePlansItemOneDisplayOrderMax),
+  "displayOrder": zod.number().refine(Number.isInteger, "Expected integer, received float").min(getWhiteLabelCatalogResponsePlansItemOneDisplayOrderMin).max(getWhiteLabelCatalogResponsePlansItemOneDisplayOrderMax),
   "status": zod.enum(['enabled', 'disabled', 'archived']),
   "entitlements": zod.array(zod.object({
   "key": zod.string().max(getWhiteLabelCatalogResponsePlansItemOneEntitlementsItemKeyMax).regex(getWhiteLabelCatalogResponsePlansItemOneEntitlementsItemKeyRegExp),
@@ -2178,22 +2178,22 @@ export const GetWhiteLabelCatalogResponse = zod.object({
   "promoStartsAt": zod.coerce.date().nullish(),
   "promoEndsAt": zod.coerce.date().nullish(),
   "billingInterval": zod.enum(['monthly', 'yearly', 'monthly_and_yearly', 'custom']).optional(),
-  "trialDays": zod.number().int().min(getWhiteLabelCatalogResponsePlansItemOneProfileTrialDaysMin).max(getWhiteLabelCatalogResponsePlansItemOneProfileTrialDaysMax).optional(),
+  "trialDays": zod.number().refine(Number.isInteger, "Expected integer, received float").min(getWhiteLabelCatalogResponsePlansItemOneProfileTrialDaysMin).max(getWhiteLabelCatalogResponsePlansItemOneProfileTrialDaysMax).optional(),
   "ctaLabel": zod.string().max(getWhiteLabelCatalogResponsePlansItemOneProfileCtaLabelMax).optional(),
   "ctaUrl": zod.string().max(getWhiteLabelCatalogResponsePlansItemOneProfileCtaUrlMax).regex(getWhiteLabelCatalogResponsePlansItemOneProfileCtaUrlRegExp).optional(),
   "visibility": zod.enum(['public', 'hidden']).optional(),
-  "adminSeats": zod.number().int().min(1).max(getWhiteLabelCatalogResponsePlansItemOneProfileAdminSeatsMax).nullish(),
+  "adminSeats": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(getWhiteLabelCatalogResponsePlansItemOneProfileAdminSeatsMax).nullish(),
   "multiAdminRoles": zod.boolean().optional(),
   "supportLevel": zod.enum(['email', 'priority', 'dedicated']).optional(),
-  "supportResponseHours": zod.number().int().min(1).max(getWhiteLabelCatalogResponsePlansItemOneProfileSupportResponseHoursMax).nullish(),
-  "launchTargetBusinessDays": zod.number().int().min(1).max(getWhiteLabelCatalogResponsePlansItemOneProfileLaunchTargetBusinessDaysMax).nullish(),
+  "supportResponseHours": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(getWhiteLabelCatalogResponsePlansItemOneProfileSupportResponseHoursMax).nullish(),
+  "launchTargetBusinessDays": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(getWhiteLabelCatalogResponsePlansItemOneProfileLaunchTargetBusinessDaysMax).nullish(),
   "dedicatedManager": zod.boolean().optional(),
   "slaEnabled": zod.boolean().optional(),
   "slaTerms": zod.string().max(getWhiteLabelCatalogResponsePlansItemOneProfileSlaTermsMax).optional(),
   "earlyAccess": zod.boolean().optional(),
   "poweredByFooter": zod.boolean().optional(),
   "themeModes": zod.array(zod.enum(['light', 'dark'])).max(getWhiteLabelCatalogResponsePlansItemOneProfileThemeModesMax).optional(),
-  "convertProviderLimit": zod.number().int().min(getWhiteLabelCatalogResponsePlansItemOneProfileConvertProviderLimitMin).max(getWhiteLabelCatalogResponsePlansItemOneProfileConvertProviderLimitMax).nullish(),
+  "convertProviderLimit": zod.number().refine(Number.isInteger, "Expected integer, received float").min(getWhiteLabelCatalogResponsePlansItemOneProfileConvertProviderLimitMin).max(getWhiteLabelCatalogResponsePlansItemOneProfileConvertProviderLimitMax).nullish(),
   "requestedProviders": zod.array(zod.string().min(1).max(getWhiteLabelCatalogResponsePlansItemOneProfileRequestedProvidersItemMax)).max(getWhiteLabelCatalogResponsePlansItemOneProfileRequestedProvidersMax).optional(),
   "capabilities": zod.array(zod.object({
   "key": zod.string().regex(getWhiteLabelCatalogResponsePlansItemOneProfileCapabilitiesItemKeyRegExp),
@@ -2213,9 +2213,9 @@ export const GetWhiteLabelCatalogResponse = zod.object({
 })).max(getWhiteLabelCatalogResponsePlansItemOneProfileCapabilitiesMax).optional(),
   "internalNotes": zod.string().max(getWhiteLabelCatalogResponsePlansItemOneProfileInternalNotesMax).optional()
 }).optional().describe('Structured plan configuration. internalName and internalNotes are Super Admin only and never published.'),
-  "expectedRevision": zod.number().int().min(getWhiteLabelCatalogResponsePlansItemOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
+  "expectedRevision": zod.number().refine(Number.isInteger, "Expected integer, received float").min(getWhiteLabelCatalogResponsePlansItemOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
 }).and(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date(),
   "pricingConfigured": zod.boolean().optional(),
@@ -2224,7 +2224,7 @@ export const GetWhiteLabelCatalogResponse = zod.object({
   "label": zod.string().min(1).max(getWhiteLabelCatalogResponsePlansItemTwoFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(getWhiteLabelCatalogResponsePlansItemTwoFeatureRowsItemValueMax)
 }).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(getWhiteLabelCatalogResponsePlansItemTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.'),
-  "revision": zod.number().int().optional()
+  "revision": zod.number().refine(Number.isInteger, "Expected integer, received float").optional()
 }))),
   "addons": zod.array(zod.object({
   "monthlyPrice": zod.string().regex(getWhiteLabelCatalogResponseAddonsItemOneMonthlyPriceRegExp).nullish(),
@@ -2240,7 +2240,7 @@ export const GetWhiteLabelCatalogResponse = zod.object({
   "value": zod.union([zod.boolean(),zod.string().max(getWhiteLabelCatalogResponseAddonsItemOneEntitlementsItemValueTwoMax).regex(getWhiteLabelCatalogResponseAddonsItemOneEntitlementsItemValueTwoRegExp)])
 })).max(getWhiteLabelCatalogResponseAddonsItemOneEntitlementsMax)
 }).and(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "pricingConfigured": zod.boolean().optional()
 }))),
   "definitions": zod.array(zod.object({
@@ -2253,7 +2253,7 @@ export const GetWhiteLabelCatalogResponse = zod.object({
 
 
 export const GetMyWhiteLabelRequestParams = zod.object({
-  "requestId": zod.coerce.string().uuid()
+  "requestId": zod.guid()
 })
 
 export const getMyWhiteLabelRequestResponseOrderDesignOneStyleNameMax = 100;
@@ -2586,7 +2586,7 @@ export const getMyWhiteLabelRequestResponseOrderApprovedAddonsItemOneEntitlement
 
 export const GetMyWhiteLabelRequestResponse = zod.object({
   "order": zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "customerUserId": zod.string(),
   "projectName": zod.string(),
   "websiteName": zod.string().optional(),
@@ -2608,9 +2608,9 @@ export const GetMyWhiteLabelRequestResponse = zod.object({
   "description": zod.string().max(getMyWhiteLabelRequestResponseOrderDesignOneDescriptionMax),
   "referenceWebsiteUrl": zod.string().max(getMyWhiteLabelRequestResponseOrderDesignOneReferenceWebsiteUrlMax).nullable(),
   "notes": zod.string().max(getMyWhiteLabelRequestResponseOrderDesignOneNotesMax),
-  "logoAttachmentId": zod.string().uuid().nullable(),
-  "faviconAttachmentId": zod.string().uuid().nullable(),
-  "referenceAttachmentIds": zod.array(zod.string().uuid()).max(getMyWhiteLabelRequestResponseOrderDesignOneReferenceAttachmentIdsMax)
+  "logoAttachmentId": zod.guid().nullable(),
+  "faviconAttachmentId": zod.guid().nullable(),
+  "referenceAttachmentIds": zod.array(zod.guid()).max(getMyWhiteLabelRequestResponseOrderDesignOneReferenceAttachmentIdsMax)
 }),zod.null()]).optional(),
   "billingPeriod": zod.enum(['monthly', 'yearly']).optional(),
   "requestedPlan": zod.union([zod.object({
@@ -2622,7 +2622,7 @@ export const GetMyWhiteLabelRequestResponse = zod.object({
   "discountPercent": zod.string().max(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneDiscountPercentMax).regex(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneDiscountPercentRegExp).optional(),
   "currency": zod.string().regex(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneCurrencyRegExp),
   "billingLabel": zod.string().max(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneBillingLabelMax),
-  "displayOrder": zod.number().int().min(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneDisplayOrderMin).max(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneDisplayOrderMax),
+  "displayOrder": zod.number().refine(Number.isInteger, "Expected integer, received float").min(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneDisplayOrderMin).max(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneDisplayOrderMax),
   "status": zod.enum(['enabled', 'disabled', 'archived']),
   "entitlements": zod.array(zod.object({
   "key": zod.string().max(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneEntitlementsItemKeyMax).regex(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneEntitlementsItemKeyRegExp),
@@ -2655,22 +2655,22 @@ export const GetMyWhiteLabelRequestResponse = zod.object({
   "promoStartsAt": zod.coerce.date().nullish(),
   "promoEndsAt": zod.coerce.date().nullish(),
   "billingInterval": zod.enum(['monthly', 'yearly', 'monthly_and_yearly', 'custom']).optional(),
-  "trialDays": zod.number().int().min(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileTrialDaysMin).max(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileTrialDaysMax).optional(),
+  "trialDays": zod.number().refine(Number.isInteger, "Expected integer, received float").min(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileTrialDaysMin).max(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileTrialDaysMax).optional(),
   "ctaLabel": zod.string().max(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCtaLabelMax).optional(),
   "ctaUrl": zod.string().max(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCtaUrlMax).regex(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCtaUrlRegExp).optional(),
   "visibility": zod.enum(['public', 'hidden']).optional(),
-  "adminSeats": zod.number().int().min(1).max(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileAdminSeatsMax).nullish(),
+  "adminSeats": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileAdminSeatsMax).nullish(),
   "multiAdminRoles": zod.boolean().optional(),
   "supportLevel": zod.enum(['email', 'priority', 'dedicated']).optional(),
-  "supportResponseHours": zod.number().int().min(1).max(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileSupportResponseHoursMax).nullish(),
-  "launchTargetBusinessDays": zod.number().int().min(1).max(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileLaunchTargetBusinessDaysMax).nullish(),
+  "supportResponseHours": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileSupportResponseHoursMax).nullish(),
+  "launchTargetBusinessDays": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileLaunchTargetBusinessDaysMax).nullish(),
   "dedicatedManager": zod.boolean().optional(),
   "slaEnabled": zod.boolean().optional(),
   "slaTerms": zod.string().max(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileSlaTermsMax).optional(),
   "earlyAccess": zod.boolean().optional(),
   "poweredByFooter": zod.boolean().optional(),
   "themeModes": zod.array(zod.enum(['light', 'dark'])).max(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileThemeModesMax).optional(),
-  "convertProviderLimit": zod.number().int().min(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileConvertProviderLimitMin).max(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileConvertProviderLimitMax).nullish(),
+  "convertProviderLimit": zod.number().refine(Number.isInteger, "Expected integer, received float").min(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileConvertProviderLimitMin).max(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileConvertProviderLimitMax).nullish(),
   "requestedProviders": zod.array(zod.string().min(1).max(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileRequestedProvidersItemMax)).max(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileRequestedProvidersMax).optional(),
   "capabilities": zod.array(zod.object({
   "key": zod.string().regex(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCapabilitiesItemKeyRegExp),
@@ -2690,9 +2690,9 @@ export const GetMyWhiteLabelRequestResponse = zod.object({
 })).max(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCapabilitiesMax).optional(),
   "internalNotes": zod.string().max(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileInternalNotesMax).optional()
 }).optional().describe('Structured plan configuration. internalName and internalNotes are Super Admin only and never published.'),
-  "expectedRevision": zod.number().int().min(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
+  "expectedRevision": zod.number().refine(Number.isInteger, "Expected integer, received float").min(getMyWhiteLabelRequestResponseOrderRequestedPlanOneOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
 }).and(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date(),
   "pricingConfigured": zod.boolean().optional(),
@@ -2701,7 +2701,7 @@ export const GetMyWhiteLabelRequestResponse = zod.object({
   "label": zod.string().min(1).max(getMyWhiteLabelRequestResponseOrderRequestedPlanOneTwoFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(getMyWhiteLabelRequestResponseOrderRequestedPlanOneTwoFeatureRowsItemValueMax)
 }).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(getMyWhiteLabelRequestResponseOrderRequestedPlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.'),
-  "revision": zod.number().int().optional()
+  "revision": zod.number().refine(Number.isInteger, "Expected integer, received float").optional()
 })),zod.null()]).optional(),
   "requestedAddons": zod.array(zod.object({
   "monthlyPrice": zod.string().regex(getMyWhiteLabelRequestResponseOrderRequestedAddonsItemOneMonthlyPriceRegExp).nullish(),
@@ -2717,7 +2717,7 @@ export const GetMyWhiteLabelRequestResponse = zod.object({
   "value": zod.union([zod.boolean(),zod.string().max(getMyWhiteLabelRequestResponseOrderRequestedAddonsItemOneEntitlementsItemValueTwoMax).regex(getMyWhiteLabelRequestResponseOrderRequestedAddonsItemOneEntitlementsItemValueTwoRegExp)])
 })).max(getMyWhiteLabelRequestResponseOrderRequestedAddonsItemOneEntitlementsMax)
 }).and(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "pricingConfigured": zod.boolean().optional()
 }))).optional(),
   "approvedPlan": zod.union([zod.object({
@@ -2729,7 +2729,7 @@ export const GetMyWhiteLabelRequestResponse = zod.object({
   "discountPercent": zod.string().max(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneDiscountPercentMax).regex(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneDiscountPercentRegExp).optional(),
   "currency": zod.string().regex(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneCurrencyRegExp),
   "billingLabel": zod.string().max(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneBillingLabelMax),
-  "displayOrder": zod.number().int().min(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneDisplayOrderMin).max(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneDisplayOrderMax),
+  "displayOrder": zod.number().refine(Number.isInteger, "Expected integer, received float").min(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneDisplayOrderMin).max(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneDisplayOrderMax),
   "status": zod.enum(['enabled', 'disabled', 'archived']),
   "entitlements": zod.array(zod.object({
   "key": zod.string().max(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneEntitlementsItemKeyMax).regex(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneEntitlementsItemKeyRegExp),
@@ -2762,22 +2762,22 @@ export const GetMyWhiteLabelRequestResponse = zod.object({
   "promoStartsAt": zod.coerce.date().nullish(),
   "promoEndsAt": zod.coerce.date().nullish(),
   "billingInterval": zod.enum(['monthly', 'yearly', 'monthly_and_yearly', 'custom']).optional(),
-  "trialDays": zod.number().int().min(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileTrialDaysMin).max(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileTrialDaysMax).optional(),
+  "trialDays": zod.number().refine(Number.isInteger, "Expected integer, received float").min(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileTrialDaysMin).max(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileTrialDaysMax).optional(),
   "ctaLabel": zod.string().max(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCtaLabelMax).optional(),
   "ctaUrl": zod.string().max(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCtaUrlMax).regex(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCtaUrlRegExp).optional(),
   "visibility": zod.enum(['public', 'hidden']).optional(),
-  "adminSeats": zod.number().int().min(1).max(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileAdminSeatsMax).nullish(),
+  "adminSeats": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileAdminSeatsMax).nullish(),
   "multiAdminRoles": zod.boolean().optional(),
   "supportLevel": zod.enum(['email', 'priority', 'dedicated']).optional(),
-  "supportResponseHours": zod.number().int().min(1).max(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileSupportResponseHoursMax).nullish(),
-  "launchTargetBusinessDays": zod.number().int().min(1).max(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileLaunchTargetBusinessDaysMax).nullish(),
+  "supportResponseHours": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileSupportResponseHoursMax).nullish(),
+  "launchTargetBusinessDays": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileLaunchTargetBusinessDaysMax).nullish(),
   "dedicatedManager": zod.boolean().optional(),
   "slaEnabled": zod.boolean().optional(),
   "slaTerms": zod.string().max(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileSlaTermsMax).optional(),
   "earlyAccess": zod.boolean().optional(),
   "poweredByFooter": zod.boolean().optional(),
   "themeModes": zod.array(zod.enum(['light', 'dark'])).max(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileThemeModesMax).optional(),
-  "convertProviderLimit": zod.number().int().min(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileConvertProviderLimitMin).max(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileConvertProviderLimitMax).nullish(),
+  "convertProviderLimit": zod.number().refine(Number.isInteger, "Expected integer, received float").min(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileConvertProviderLimitMin).max(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileConvertProviderLimitMax).nullish(),
   "requestedProviders": zod.array(zod.string().min(1).max(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileRequestedProvidersItemMax)).max(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileRequestedProvidersMax).optional(),
   "capabilities": zod.array(zod.object({
   "key": zod.string().regex(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCapabilitiesItemKeyRegExp),
@@ -2797,9 +2797,9 @@ export const GetMyWhiteLabelRequestResponse = zod.object({
 })).max(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCapabilitiesMax).optional(),
   "internalNotes": zod.string().max(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileInternalNotesMax).optional()
 }).optional().describe('Structured plan configuration. internalName and internalNotes are Super Admin only and never published.'),
-  "expectedRevision": zod.number().int().min(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
+  "expectedRevision": zod.number().refine(Number.isInteger, "Expected integer, received float").min(getMyWhiteLabelRequestResponseOrderApprovedPlanOneOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
 }).and(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date(),
   "pricingConfigured": zod.boolean().optional(),
@@ -2808,7 +2808,7 @@ export const GetMyWhiteLabelRequestResponse = zod.object({
   "label": zod.string().min(1).max(getMyWhiteLabelRequestResponseOrderApprovedPlanOneTwoFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(getMyWhiteLabelRequestResponseOrderApprovedPlanOneTwoFeatureRowsItemValueMax)
 }).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(getMyWhiteLabelRequestResponseOrderApprovedPlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.'),
-  "revision": zod.number().int().optional()
+  "revision": zod.number().refine(Number.isInteger, "Expected integer, received float").optional()
 })),zod.null()]).optional(),
   "approvedAddons": zod.array(zod.object({
   "monthlyPrice": zod.string().regex(getMyWhiteLabelRequestResponseOrderApprovedAddonsItemOneMonthlyPriceRegExp).nullish(),
@@ -2824,14 +2824,14 @@ export const GetMyWhiteLabelRequestResponse = zod.object({
   "value": zod.union([zod.boolean(),zod.string().max(getMyWhiteLabelRequestResponseOrderApprovedAddonsItemOneEntitlementsItemValueTwoMax).regex(getMyWhiteLabelRequestResponseOrderApprovedAddonsItemOneEntitlementsItemValueTwoRegExp)])
 })).max(getMyWhiteLabelRequestResponseOrderApprovedAddonsItemOneEntitlementsMax)
 }).and(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "pricingConfigured": zod.boolean().optional()
 }))).optional(),
   "attachments": zod.array(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "fileName": zod.string(),
   "contentType": zod.string(),
-  "size": zod.number().int(),
+  "size": zod.number().refine(Number.isInteger, "Expected integer, received float"),
   "category": zod.enum(['logo', 'favicon', 'design_reference', 'requirement']),
   "createdAt": zod.coerce.date()
 })).optional(),
@@ -2841,12 +2841,12 @@ export const GetMyWhiteLabelRequestResponse = zod.object({
   "setupPrice": zod.string().nullable(),
   "currency": zod.string().nullable(),
   "operatorNote": zod.string(),
-  "tenantId": zod.string().uuid().nullable(),
+  "tenantId": zod.guid().nullable(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date()
 }),
   "history": zod.array(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "kind": zod.enum(['status', 'note']),
   "author": zod.string(),
   "visibility": zod.enum(['internal', 'customer']),
@@ -2858,7 +2858,7 @@ export const GetMyWhiteLabelRequestResponse = zod.object({
 
 
 export const GetWhiteLabelRequestParams = zod.object({
-  "requestId": zod.coerce.string().uuid()
+  "requestId": zod.guid()
 })
 
 export const getWhiteLabelRequestResponseOrderDesignOneStyleNameMax = 100;
@@ -3191,7 +3191,7 @@ export const getWhiteLabelRequestResponseOrderApprovedAddonsItemOneEntitlementsM
 
 export const GetWhiteLabelRequestResponse = zod.object({
   "order": zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "customerUserId": zod.string(),
   "projectName": zod.string(),
   "websiteName": zod.string().optional(),
@@ -3213,9 +3213,9 @@ export const GetWhiteLabelRequestResponse = zod.object({
   "description": zod.string().max(getWhiteLabelRequestResponseOrderDesignOneDescriptionMax),
   "referenceWebsiteUrl": zod.string().max(getWhiteLabelRequestResponseOrderDesignOneReferenceWebsiteUrlMax).nullable(),
   "notes": zod.string().max(getWhiteLabelRequestResponseOrderDesignOneNotesMax),
-  "logoAttachmentId": zod.string().uuid().nullable(),
-  "faviconAttachmentId": zod.string().uuid().nullable(),
-  "referenceAttachmentIds": zod.array(zod.string().uuid()).max(getWhiteLabelRequestResponseOrderDesignOneReferenceAttachmentIdsMax)
+  "logoAttachmentId": zod.guid().nullable(),
+  "faviconAttachmentId": zod.guid().nullable(),
+  "referenceAttachmentIds": zod.array(zod.guid()).max(getWhiteLabelRequestResponseOrderDesignOneReferenceAttachmentIdsMax)
 }),zod.null()]).optional(),
   "billingPeriod": zod.enum(['monthly', 'yearly']).optional(),
   "requestedPlan": zod.union([zod.object({
@@ -3227,7 +3227,7 @@ export const GetWhiteLabelRequestResponse = zod.object({
   "discountPercent": zod.string().max(getWhiteLabelRequestResponseOrderRequestedPlanOneOneDiscountPercentMax).regex(getWhiteLabelRequestResponseOrderRequestedPlanOneOneDiscountPercentRegExp).optional(),
   "currency": zod.string().regex(getWhiteLabelRequestResponseOrderRequestedPlanOneOneCurrencyRegExp),
   "billingLabel": zod.string().max(getWhiteLabelRequestResponseOrderRequestedPlanOneOneBillingLabelMax),
-  "displayOrder": zod.number().int().min(getWhiteLabelRequestResponseOrderRequestedPlanOneOneDisplayOrderMin).max(getWhiteLabelRequestResponseOrderRequestedPlanOneOneDisplayOrderMax),
+  "displayOrder": zod.number().refine(Number.isInteger, "Expected integer, received float").min(getWhiteLabelRequestResponseOrderRequestedPlanOneOneDisplayOrderMin).max(getWhiteLabelRequestResponseOrderRequestedPlanOneOneDisplayOrderMax),
   "status": zod.enum(['enabled', 'disabled', 'archived']),
   "entitlements": zod.array(zod.object({
   "key": zod.string().max(getWhiteLabelRequestResponseOrderRequestedPlanOneOneEntitlementsItemKeyMax).regex(getWhiteLabelRequestResponseOrderRequestedPlanOneOneEntitlementsItemKeyRegExp),
@@ -3260,22 +3260,22 @@ export const GetWhiteLabelRequestResponse = zod.object({
   "promoStartsAt": zod.coerce.date().nullish(),
   "promoEndsAt": zod.coerce.date().nullish(),
   "billingInterval": zod.enum(['monthly', 'yearly', 'monthly_and_yearly', 'custom']).optional(),
-  "trialDays": zod.number().int().min(getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileTrialDaysMin).max(getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileTrialDaysMax).optional(),
+  "trialDays": zod.number().refine(Number.isInteger, "Expected integer, received float").min(getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileTrialDaysMin).max(getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileTrialDaysMax).optional(),
   "ctaLabel": zod.string().max(getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCtaLabelMax).optional(),
   "ctaUrl": zod.string().max(getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCtaUrlMax).regex(getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCtaUrlRegExp).optional(),
   "visibility": zod.enum(['public', 'hidden']).optional(),
-  "adminSeats": zod.number().int().min(1).max(getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileAdminSeatsMax).nullish(),
+  "adminSeats": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileAdminSeatsMax).nullish(),
   "multiAdminRoles": zod.boolean().optional(),
   "supportLevel": zod.enum(['email', 'priority', 'dedicated']).optional(),
-  "supportResponseHours": zod.number().int().min(1).max(getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileSupportResponseHoursMax).nullish(),
-  "launchTargetBusinessDays": zod.number().int().min(1).max(getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileLaunchTargetBusinessDaysMax).nullish(),
+  "supportResponseHours": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileSupportResponseHoursMax).nullish(),
+  "launchTargetBusinessDays": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileLaunchTargetBusinessDaysMax).nullish(),
   "dedicatedManager": zod.boolean().optional(),
   "slaEnabled": zod.boolean().optional(),
   "slaTerms": zod.string().max(getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileSlaTermsMax).optional(),
   "earlyAccess": zod.boolean().optional(),
   "poweredByFooter": zod.boolean().optional(),
   "themeModes": zod.array(zod.enum(['light', 'dark'])).max(getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileThemeModesMax).optional(),
-  "convertProviderLimit": zod.number().int().min(getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileConvertProviderLimitMin).max(getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileConvertProviderLimitMax).nullish(),
+  "convertProviderLimit": zod.number().refine(Number.isInteger, "Expected integer, received float").min(getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileConvertProviderLimitMin).max(getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileConvertProviderLimitMax).nullish(),
   "requestedProviders": zod.array(zod.string().min(1).max(getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileRequestedProvidersItemMax)).max(getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileRequestedProvidersMax).optional(),
   "capabilities": zod.array(zod.object({
   "key": zod.string().regex(getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCapabilitiesItemKeyRegExp),
@@ -3295,9 +3295,9 @@ export const GetWhiteLabelRequestResponse = zod.object({
 })).max(getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileCapabilitiesMax).optional(),
   "internalNotes": zod.string().max(getWhiteLabelRequestResponseOrderRequestedPlanOneOneProfileInternalNotesMax).optional()
 }).optional().describe('Structured plan configuration. internalName and internalNotes are Super Admin only and never published.'),
-  "expectedRevision": zod.number().int().min(getWhiteLabelRequestResponseOrderRequestedPlanOneOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
+  "expectedRevision": zod.number().refine(Number.isInteger, "Expected integer, received float").min(getWhiteLabelRequestResponseOrderRequestedPlanOneOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
 }).and(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date(),
   "pricingConfigured": zod.boolean().optional(),
@@ -3306,7 +3306,7 @@ export const GetWhiteLabelRequestResponse = zod.object({
   "label": zod.string().min(1).max(getWhiteLabelRequestResponseOrderRequestedPlanOneTwoFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(getWhiteLabelRequestResponseOrderRequestedPlanOneTwoFeatureRowsItemValueMax)
 }).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(getWhiteLabelRequestResponseOrderRequestedPlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.'),
-  "revision": zod.number().int().optional()
+  "revision": zod.number().refine(Number.isInteger, "Expected integer, received float").optional()
 })),zod.null()]).optional(),
   "requestedAddons": zod.array(zod.object({
   "monthlyPrice": zod.string().regex(getWhiteLabelRequestResponseOrderRequestedAddonsItemOneMonthlyPriceRegExp).nullish(),
@@ -3322,7 +3322,7 @@ export const GetWhiteLabelRequestResponse = zod.object({
   "value": zod.union([zod.boolean(),zod.string().max(getWhiteLabelRequestResponseOrderRequestedAddonsItemOneEntitlementsItemValueTwoMax).regex(getWhiteLabelRequestResponseOrderRequestedAddonsItemOneEntitlementsItemValueTwoRegExp)])
 })).max(getWhiteLabelRequestResponseOrderRequestedAddonsItemOneEntitlementsMax)
 }).and(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "pricingConfigured": zod.boolean().optional()
 }))).optional(),
   "approvedPlan": zod.union([zod.object({
@@ -3334,7 +3334,7 @@ export const GetWhiteLabelRequestResponse = zod.object({
   "discountPercent": zod.string().max(getWhiteLabelRequestResponseOrderApprovedPlanOneOneDiscountPercentMax).regex(getWhiteLabelRequestResponseOrderApprovedPlanOneOneDiscountPercentRegExp).optional(),
   "currency": zod.string().regex(getWhiteLabelRequestResponseOrderApprovedPlanOneOneCurrencyRegExp),
   "billingLabel": zod.string().max(getWhiteLabelRequestResponseOrderApprovedPlanOneOneBillingLabelMax),
-  "displayOrder": zod.number().int().min(getWhiteLabelRequestResponseOrderApprovedPlanOneOneDisplayOrderMin).max(getWhiteLabelRequestResponseOrderApprovedPlanOneOneDisplayOrderMax),
+  "displayOrder": zod.number().refine(Number.isInteger, "Expected integer, received float").min(getWhiteLabelRequestResponseOrderApprovedPlanOneOneDisplayOrderMin).max(getWhiteLabelRequestResponseOrderApprovedPlanOneOneDisplayOrderMax),
   "status": zod.enum(['enabled', 'disabled', 'archived']),
   "entitlements": zod.array(zod.object({
   "key": zod.string().max(getWhiteLabelRequestResponseOrderApprovedPlanOneOneEntitlementsItemKeyMax).regex(getWhiteLabelRequestResponseOrderApprovedPlanOneOneEntitlementsItemKeyRegExp),
@@ -3367,22 +3367,22 @@ export const GetWhiteLabelRequestResponse = zod.object({
   "promoStartsAt": zod.coerce.date().nullish(),
   "promoEndsAt": zod.coerce.date().nullish(),
   "billingInterval": zod.enum(['monthly', 'yearly', 'monthly_and_yearly', 'custom']).optional(),
-  "trialDays": zod.number().int().min(getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileTrialDaysMin).max(getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileTrialDaysMax).optional(),
+  "trialDays": zod.number().refine(Number.isInteger, "Expected integer, received float").min(getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileTrialDaysMin).max(getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileTrialDaysMax).optional(),
   "ctaLabel": zod.string().max(getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCtaLabelMax).optional(),
   "ctaUrl": zod.string().max(getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCtaUrlMax).regex(getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCtaUrlRegExp).optional(),
   "visibility": zod.enum(['public', 'hidden']).optional(),
-  "adminSeats": zod.number().int().min(1).max(getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileAdminSeatsMax).nullish(),
+  "adminSeats": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileAdminSeatsMax).nullish(),
   "multiAdminRoles": zod.boolean().optional(),
   "supportLevel": zod.enum(['email', 'priority', 'dedicated']).optional(),
-  "supportResponseHours": zod.number().int().min(1).max(getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileSupportResponseHoursMax).nullish(),
-  "launchTargetBusinessDays": zod.number().int().min(1).max(getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileLaunchTargetBusinessDaysMax).nullish(),
+  "supportResponseHours": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileSupportResponseHoursMax).nullish(),
+  "launchTargetBusinessDays": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileLaunchTargetBusinessDaysMax).nullish(),
   "dedicatedManager": zod.boolean().optional(),
   "slaEnabled": zod.boolean().optional(),
   "slaTerms": zod.string().max(getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileSlaTermsMax).optional(),
   "earlyAccess": zod.boolean().optional(),
   "poweredByFooter": zod.boolean().optional(),
   "themeModes": zod.array(zod.enum(['light', 'dark'])).max(getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileThemeModesMax).optional(),
-  "convertProviderLimit": zod.number().int().min(getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileConvertProviderLimitMin).max(getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileConvertProviderLimitMax).nullish(),
+  "convertProviderLimit": zod.number().refine(Number.isInteger, "Expected integer, received float").min(getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileConvertProviderLimitMin).max(getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileConvertProviderLimitMax).nullish(),
   "requestedProviders": zod.array(zod.string().min(1).max(getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileRequestedProvidersItemMax)).max(getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileRequestedProvidersMax).optional(),
   "capabilities": zod.array(zod.object({
   "key": zod.string().regex(getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCapabilitiesItemKeyRegExp),
@@ -3402,9 +3402,9 @@ export const GetWhiteLabelRequestResponse = zod.object({
 })).max(getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileCapabilitiesMax).optional(),
   "internalNotes": zod.string().max(getWhiteLabelRequestResponseOrderApprovedPlanOneOneProfileInternalNotesMax).optional()
 }).optional().describe('Structured plan configuration. internalName and internalNotes are Super Admin only and never published.'),
-  "expectedRevision": zod.number().int().min(getWhiteLabelRequestResponseOrderApprovedPlanOneOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
+  "expectedRevision": zod.number().refine(Number.isInteger, "Expected integer, received float").min(getWhiteLabelRequestResponseOrderApprovedPlanOneOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
 }).and(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date(),
   "pricingConfigured": zod.boolean().optional(),
@@ -3413,7 +3413,7 @@ export const GetWhiteLabelRequestResponse = zod.object({
   "label": zod.string().min(1).max(getWhiteLabelRequestResponseOrderApprovedPlanOneTwoFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(getWhiteLabelRequestResponseOrderApprovedPlanOneTwoFeatureRowsItemValueMax)
 }).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(getWhiteLabelRequestResponseOrderApprovedPlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.'),
-  "revision": zod.number().int().optional()
+  "revision": zod.number().refine(Number.isInteger, "Expected integer, received float").optional()
 })),zod.null()]).optional(),
   "approvedAddons": zod.array(zod.object({
   "monthlyPrice": zod.string().regex(getWhiteLabelRequestResponseOrderApprovedAddonsItemOneMonthlyPriceRegExp).nullish(),
@@ -3429,14 +3429,14 @@ export const GetWhiteLabelRequestResponse = zod.object({
   "value": zod.union([zod.boolean(),zod.string().max(getWhiteLabelRequestResponseOrderApprovedAddonsItemOneEntitlementsItemValueTwoMax).regex(getWhiteLabelRequestResponseOrderApprovedAddonsItemOneEntitlementsItemValueTwoRegExp)])
 })).max(getWhiteLabelRequestResponseOrderApprovedAddonsItemOneEntitlementsMax)
 }).and(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "pricingConfigured": zod.boolean().optional()
 }))).optional(),
   "attachments": zod.array(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "fileName": zod.string(),
   "contentType": zod.string(),
-  "size": zod.number().int(),
+  "size": zod.number().refine(Number.isInteger, "Expected integer, received float"),
   "category": zod.enum(['logo', 'favicon', 'design_reference', 'requirement']),
   "createdAt": zod.coerce.date()
 })).optional(),
@@ -3446,12 +3446,12 @@ export const GetWhiteLabelRequestResponse = zod.object({
   "setupPrice": zod.string().nullable(),
   "currency": zod.string().nullable(),
   "operatorNote": zod.string(),
-  "tenantId": zod.string().uuid().nullable(),
+  "tenantId": zod.guid().nullable(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date()
 }),
   "history": zod.array(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "kind": zod.enum(['status', 'note']),
   "author": zod.string(),
   "visibility": zod.enum(['internal', 'customer']),
@@ -3463,7 +3463,7 @@ export const GetWhiteLabelRequestResponse = zod.object({
 
 
 export const AddWhiteLabelNoteParams = zod.object({
-  "requestId": zod.coerce.string().uuid()
+  "requestId": zod.guid()
 })
 
 export const addWhiteLabelNoteBodyMessageMax = 5000;
@@ -3476,7 +3476,7 @@ export const AddWhiteLabelNoteBody = zod.object({
 })
 
 export const AddWhiteLabelNoteResponse = zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "kind": zod.enum(['status', 'note']),
   "author": zod.string(),
   "visibility": zod.enum(['internal', 'customer']),
@@ -3487,14 +3487,14 @@ export const AddWhiteLabelNoteResponse = zod.object({
 
 
 export const GetWhiteLabelProvisioningParams = zod.object({
-  "requestId": zod.coerce.string().uuid()
+  "requestId": zod.guid()
 })
 
 export const GetWhiteLabelProvisioningResponse = zod.object({
-  "requestId": zod.string().uuid(),
+  "requestId": zod.guid(),
   "tenantId": zod.string().nullable(),
-  "completedCount": zod.number().int(),
-  "totalCount": zod.number().int(),
+  "completedCount": zod.number().refine(Number.isInteger, "Expected integer, received float"),
+  "totalCount": zod.number().refine(Number.isInteger, "Expected integer, received float"),
   "steps": zod.array(zod.object({
   "key": zod.string(),
   "label": zod.string(),
@@ -3510,14 +3510,14 @@ export const GetWhiteLabelProvisioningResponse = zod.object({
 
 
 export const RetryWhiteLabelProvisioningParams = zod.object({
-  "requestId": zod.coerce.string().uuid()
+  "requestId": zod.guid()
 })
 
 export const RetryWhiteLabelProvisioningResponse = zod.object({
-  "requestId": zod.string().uuid(),
+  "requestId": zod.guid(),
   "tenantId": zod.string().nullable(),
-  "completedCount": zod.number().int(),
-  "totalCount": zod.number().int(),
+  "completedCount": zod.number().refine(Number.isInteger, "Expected integer, received float"),
+  "totalCount": zod.number().refine(Number.isInteger, "Expected integer, received float"),
   "steps": zod.array(zod.object({
   "key": zod.string(),
   "label": zod.string(),
@@ -3533,7 +3533,7 @@ export const RetryWhiteLabelProvisioningResponse = zod.object({
 
 
 export const ListMyAdminPanelsResponseItem = zod.object({
-  "tenantId": zod.string().uuid(),
+  "tenantId": zod.guid(),
   "name": zod.string(),
   "brandName": zod.string(),
   "slug": zod.string(),
@@ -3872,7 +3872,7 @@ export const listMyWhiteLabelRequestsResponseApprovedAddonsItemOneEntitlementsMa
 
 
 export const ListMyWhiteLabelRequestsResponseItem = zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "customerUserId": zod.string(),
   "projectName": zod.string(),
   "websiteName": zod.string().optional(),
@@ -3894,9 +3894,9 @@ export const ListMyWhiteLabelRequestsResponseItem = zod.object({
   "description": zod.string().max(listMyWhiteLabelRequestsResponseDesignOneDescriptionMax),
   "referenceWebsiteUrl": zod.string().max(listMyWhiteLabelRequestsResponseDesignOneReferenceWebsiteUrlMax).nullable(),
   "notes": zod.string().max(listMyWhiteLabelRequestsResponseDesignOneNotesMax),
-  "logoAttachmentId": zod.string().uuid().nullable(),
-  "faviconAttachmentId": zod.string().uuid().nullable(),
-  "referenceAttachmentIds": zod.array(zod.string().uuid()).max(listMyWhiteLabelRequestsResponseDesignOneReferenceAttachmentIdsMax)
+  "logoAttachmentId": zod.guid().nullable(),
+  "faviconAttachmentId": zod.guid().nullable(),
+  "referenceAttachmentIds": zod.array(zod.guid()).max(listMyWhiteLabelRequestsResponseDesignOneReferenceAttachmentIdsMax)
 }),zod.null()]).optional(),
   "billingPeriod": zod.enum(['monthly', 'yearly']).optional(),
   "requestedPlan": zod.union([zod.object({
@@ -3908,7 +3908,7 @@ export const ListMyWhiteLabelRequestsResponseItem = zod.object({
   "discountPercent": zod.string().max(listMyWhiteLabelRequestsResponseRequestedPlanOneOneDiscountPercentMax).regex(listMyWhiteLabelRequestsResponseRequestedPlanOneOneDiscountPercentRegExp).optional(),
   "currency": zod.string().regex(listMyWhiteLabelRequestsResponseRequestedPlanOneOneCurrencyRegExp),
   "billingLabel": zod.string().max(listMyWhiteLabelRequestsResponseRequestedPlanOneOneBillingLabelMax),
-  "displayOrder": zod.number().int().min(listMyWhiteLabelRequestsResponseRequestedPlanOneOneDisplayOrderMin).max(listMyWhiteLabelRequestsResponseRequestedPlanOneOneDisplayOrderMax),
+  "displayOrder": zod.number().refine(Number.isInteger, "Expected integer, received float").min(listMyWhiteLabelRequestsResponseRequestedPlanOneOneDisplayOrderMin).max(listMyWhiteLabelRequestsResponseRequestedPlanOneOneDisplayOrderMax),
   "status": zod.enum(['enabled', 'disabled', 'archived']),
   "entitlements": zod.array(zod.object({
   "key": zod.string().max(listMyWhiteLabelRequestsResponseRequestedPlanOneOneEntitlementsItemKeyMax).regex(listMyWhiteLabelRequestsResponseRequestedPlanOneOneEntitlementsItemKeyRegExp),
@@ -3941,22 +3941,22 @@ export const ListMyWhiteLabelRequestsResponseItem = zod.object({
   "promoStartsAt": zod.coerce.date().nullish(),
   "promoEndsAt": zod.coerce.date().nullish(),
   "billingInterval": zod.enum(['monthly', 'yearly', 'monthly_and_yearly', 'custom']).optional(),
-  "trialDays": zod.number().int().min(listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileTrialDaysMin).max(listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileTrialDaysMax).optional(),
+  "trialDays": zod.number().refine(Number.isInteger, "Expected integer, received float").min(listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileTrialDaysMin).max(listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileTrialDaysMax).optional(),
   "ctaLabel": zod.string().max(listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileCtaLabelMax).optional(),
   "ctaUrl": zod.string().max(listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileCtaUrlMax).regex(listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileCtaUrlRegExp).optional(),
   "visibility": zod.enum(['public', 'hidden']).optional(),
-  "adminSeats": zod.number().int().min(1).max(listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileAdminSeatsMax).nullish(),
+  "adminSeats": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileAdminSeatsMax).nullish(),
   "multiAdminRoles": zod.boolean().optional(),
   "supportLevel": zod.enum(['email', 'priority', 'dedicated']).optional(),
-  "supportResponseHours": zod.number().int().min(1).max(listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileSupportResponseHoursMax).nullish(),
-  "launchTargetBusinessDays": zod.number().int().min(1).max(listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileLaunchTargetBusinessDaysMax).nullish(),
+  "supportResponseHours": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileSupportResponseHoursMax).nullish(),
+  "launchTargetBusinessDays": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileLaunchTargetBusinessDaysMax).nullish(),
   "dedicatedManager": zod.boolean().optional(),
   "slaEnabled": zod.boolean().optional(),
   "slaTerms": zod.string().max(listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileSlaTermsMax).optional(),
   "earlyAccess": zod.boolean().optional(),
   "poweredByFooter": zod.boolean().optional(),
   "themeModes": zod.array(zod.enum(['light', 'dark'])).max(listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileThemeModesMax).optional(),
-  "convertProviderLimit": zod.number().int().min(listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileConvertProviderLimitMin).max(listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileConvertProviderLimitMax).nullish(),
+  "convertProviderLimit": zod.number().refine(Number.isInteger, "Expected integer, received float").min(listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileConvertProviderLimitMin).max(listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileConvertProviderLimitMax).nullish(),
   "requestedProviders": zod.array(zod.string().min(1).max(listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileRequestedProvidersItemMax)).max(listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileRequestedProvidersMax).optional(),
   "capabilities": zod.array(zod.object({
   "key": zod.string().regex(listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileCapabilitiesItemKeyRegExp),
@@ -3976,9 +3976,9 @@ export const ListMyWhiteLabelRequestsResponseItem = zod.object({
 })).max(listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileCapabilitiesMax).optional(),
   "internalNotes": zod.string().max(listMyWhiteLabelRequestsResponseRequestedPlanOneOneProfileInternalNotesMax).optional()
 }).optional().describe('Structured plan configuration. internalName and internalNotes are Super Admin only and never published.'),
-  "expectedRevision": zod.number().int().min(listMyWhiteLabelRequestsResponseRequestedPlanOneOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
+  "expectedRevision": zod.number().refine(Number.isInteger, "Expected integer, received float").min(listMyWhiteLabelRequestsResponseRequestedPlanOneOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
 }).and(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date(),
   "pricingConfigured": zod.boolean().optional(),
@@ -3987,7 +3987,7 @@ export const ListMyWhiteLabelRequestsResponseItem = zod.object({
   "label": zod.string().min(1).max(listMyWhiteLabelRequestsResponseRequestedPlanOneTwoFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(listMyWhiteLabelRequestsResponseRequestedPlanOneTwoFeatureRowsItemValueMax)
 }).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(listMyWhiteLabelRequestsResponseRequestedPlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.'),
-  "revision": zod.number().int().optional()
+  "revision": zod.number().refine(Number.isInteger, "Expected integer, received float").optional()
 })),zod.null()]).optional(),
   "requestedAddons": zod.array(zod.object({
   "monthlyPrice": zod.string().regex(listMyWhiteLabelRequestsResponseRequestedAddonsItemOneMonthlyPriceRegExp).nullish(),
@@ -4003,7 +4003,7 @@ export const ListMyWhiteLabelRequestsResponseItem = zod.object({
   "value": zod.union([zod.boolean(),zod.string().max(listMyWhiteLabelRequestsResponseRequestedAddonsItemOneEntitlementsItemValueTwoMax).regex(listMyWhiteLabelRequestsResponseRequestedAddonsItemOneEntitlementsItemValueTwoRegExp)])
 })).max(listMyWhiteLabelRequestsResponseRequestedAddonsItemOneEntitlementsMax)
 }).and(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "pricingConfigured": zod.boolean().optional()
 }))).optional(),
   "approvedPlan": zod.union([zod.object({
@@ -4015,7 +4015,7 @@ export const ListMyWhiteLabelRequestsResponseItem = zod.object({
   "discountPercent": zod.string().max(listMyWhiteLabelRequestsResponseApprovedPlanOneOneDiscountPercentMax).regex(listMyWhiteLabelRequestsResponseApprovedPlanOneOneDiscountPercentRegExp).optional(),
   "currency": zod.string().regex(listMyWhiteLabelRequestsResponseApprovedPlanOneOneCurrencyRegExp),
   "billingLabel": zod.string().max(listMyWhiteLabelRequestsResponseApprovedPlanOneOneBillingLabelMax),
-  "displayOrder": zod.number().int().min(listMyWhiteLabelRequestsResponseApprovedPlanOneOneDisplayOrderMin).max(listMyWhiteLabelRequestsResponseApprovedPlanOneOneDisplayOrderMax),
+  "displayOrder": zod.number().refine(Number.isInteger, "Expected integer, received float").min(listMyWhiteLabelRequestsResponseApprovedPlanOneOneDisplayOrderMin).max(listMyWhiteLabelRequestsResponseApprovedPlanOneOneDisplayOrderMax),
   "status": zod.enum(['enabled', 'disabled', 'archived']),
   "entitlements": zod.array(zod.object({
   "key": zod.string().max(listMyWhiteLabelRequestsResponseApprovedPlanOneOneEntitlementsItemKeyMax).regex(listMyWhiteLabelRequestsResponseApprovedPlanOneOneEntitlementsItemKeyRegExp),
@@ -4048,22 +4048,22 @@ export const ListMyWhiteLabelRequestsResponseItem = zod.object({
   "promoStartsAt": zod.coerce.date().nullish(),
   "promoEndsAt": zod.coerce.date().nullish(),
   "billingInterval": zod.enum(['monthly', 'yearly', 'monthly_and_yearly', 'custom']).optional(),
-  "trialDays": zod.number().int().min(listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileTrialDaysMin).max(listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileTrialDaysMax).optional(),
+  "trialDays": zod.number().refine(Number.isInteger, "Expected integer, received float").min(listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileTrialDaysMin).max(listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileTrialDaysMax).optional(),
   "ctaLabel": zod.string().max(listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileCtaLabelMax).optional(),
   "ctaUrl": zod.string().max(listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileCtaUrlMax).regex(listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileCtaUrlRegExp).optional(),
   "visibility": zod.enum(['public', 'hidden']).optional(),
-  "adminSeats": zod.number().int().min(1).max(listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileAdminSeatsMax).nullish(),
+  "adminSeats": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileAdminSeatsMax).nullish(),
   "multiAdminRoles": zod.boolean().optional(),
   "supportLevel": zod.enum(['email', 'priority', 'dedicated']).optional(),
-  "supportResponseHours": zod.number().int().min(1).max(listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileSupportResponseHoursMax).nullish(),
-  "launchTargetBusinessDays": zod.number().int().min(1).max(listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileLaunchTargetBusinessDaysMax).nullish(),
+  "supportResponseHours": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileSupportResponseHoursMax).nullish(),
+  "launchTargetBusinessDays": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileLaunchTargetBusinessDaysMax).nullish(),
   "dedicatedManager": zod.boolean().optional(),
   "slaEnabled": zod.boolean().optional(),
   "slaTerms": zod.string().max(listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileSlaTermsMax).optional(),
   "earlyAccess": zod.boolean().optional(),
   "poweredByFooter": zod.boolean().optional(),
   "themeModes": zod.array(zod.enum(['light', 'dark'])).max(listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileThemeModesMax).optional(),
-  "convertProviderLimit": zod.number().int().min(listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileConvertProviderLimitMin).max(listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileConvertProviderLimitMax).nullish(),
+  "convertProviderLimit": zod.number().refine(Number.isInteger, "Expected integer, received float").min(listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileConvertProviderLimitMin).max(listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileConvertProviderLimitMax).nullish(),
   "requestedProviders": zod.array(zod.string().min(1).max(listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileRequestedProvidersItemMax)).max(listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileRequestedProvidersMax).optional(),
   "capabilities": zod.array(zod.object({
   "key": zod.string().regex(listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileCapabilitiesItemKeyRegExp),
@@ -4083,9 +4083,9 @@ export const ListMyWhiteLabelRequestsResponseItem = zod.object({
 })).max(listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileCapabilitiesMax).optional(),
   "internalNotes": zod.string().max(listMyWhiteLabelRequestsResponseApprovedPlanOneOneProfileInternalNotesMax).optional()
 }).optional().describe('Structured plan configuration. internalName and internalNotes are Super Admin only and never published.'),
-  "expectedRevision": zod.number().int().min(listMyWhiteLabelRequestsResponseApprovedPlanOneOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
+  "expectedRevision": zod.number().refine(Number.isInteger, "Expected integer, received float").min(listMyWhiteLabelRequestsResponseApprovedPlanOneOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
 }).and(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date(),
   "pricingConfigured": zod.boolean().optional(),
@@ -4094,7 +4094,7 @@ export const ListMyWhiteLabelRequestsResponseItem = zod.object({
   "label": zod.string().min(1).max(listMyWhiteLabelRequestsResponseApprovedPlanOneTwoFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(listMyWhiteLabelRequestsResponseApprovedPlanOneTwoFeatureRowsItemValueMax)
 }).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(listMyWhiteLabelRequestsResponseApprovedPlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.'),
-  "revision": zod.number().int().optional()
+  "revision": zod.number().refine(Number.isInteger, "Expected integer, received float").optional()
 })),zod.null()]).optional(),
   "approvedAddons": zod.array(zod.object({
   "monthlyPrice": zod.string().regex(listMyWhiteLabelRequestsResponseApprovedAddonsItemOneMonthlyPriceRegExp).nullish(),
@@ -4110,14 +4110,14 @@ export const ListMyWhiteLabelRequestsResponseItem = zod.object({
   "value": zod.union([zod.boolean(),zod.string().max(listMyWhiteLabelRequestsResponseApprovedAddonsItemOneEntitlementsItemValueTwoMax).regex(listMyWhiteLabelRequestsResponseApprovedAddonsItemOneEntitlementsItemValueTwoRegExp)])
 })).max(listMyWhiteLabelRequestsResponseApprovedAddonsItemOneEntitlementsMax)
 }).and(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "pricingConfigured": zod.boolean().optional()
 }))).optional(),
   "attachments": zod.array(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "fileName": zod.string(),
   "contentType": zod.string(),
-  "size": zod.number().int(),
+  "size": zod.number().refine(Number.isInteger, "Expected integer, received float"),
   "category": zod.enum(['logo', 'favicon', 'design_reference', 'requirement']),
   "createdAt": zod.coerce.date()
 })).optional(),
@@ -4127,7 +4127,7 @@ export const ListMyWhiteLabelRequestsResponseItem = zod.object({
   "setupPrice": zod.string().nullable(),
   "currency": zod.string().nullable(),
   "operatorNote": zod.string(),
-  "tenantId": zod.string().uuid().nullable(),
+  "tenantId": zod.guid().nullable(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date()
 })
@@ -4188,15 +4188,15 @@ export const SubmitWhiteLabelRequestBody = zod.object({
   "description": zod.string().max(submitWhiteLabelRequestBodyDesignDescriptionMax),
   "referenceWebsiteUrl": zod.string().max(submitWhiteLabelRequestBodyDesignReferenceWebsiteUrlMax).nullable(),
   "notes": zod.string().max(submitWhiteLabelRequestBodyDesignNotesMax),
-  "logoAttachmentId": zod.string().uuid().nullable(),
-  "faviconAttachmentId": zod.string().uuid().nullable(),
-  "referenceAttachmentIds": zod.array(zod.string().uuid()).max(submitWhiteLabelRequestBodyDesignReferenceAttachmentIdsMax)
+  "logoAttachmentId": zod.guid().nullable(),
+  "faviconAttachmentId": zod.guid().nullable(),
+  "referenceAttachmentIds": zod.array(zod.guid()).max(submitWhiteLabelRequestBodyDesignReferenceAttachmentIdsMax)
 }).optional(),
-  "requestedPlanId": zod.string().uuid().nullish(),
-  "requestedAddonIds": zod.array(zod.string().uuid()).max(submitWhiteLabelRequestBodyRequestedAddonIdsMax).optional(),
+  "requestedPlanId": zod.guid().nullish(),
+  "requestedAddonIds": zod.array(zod.guid()).max(submitWhiteLabelRequestBodyRequestedAddonIdsMax).optional(),
   "billingPeriod": zod.enum(['monthly', 'yearly']).optional(),
-  "attachmentIds": zod.array(zod.string().uuid()).max(submitWhiteLabelRequestBodyAttachmentIdsMax).optional(),
-  "idempotencyKey": zod.string().uuid()
+  "attachmentIds": zod.array(zod.guid()).max(submitWhiteLabelRequestBodyAttachmentIdsMax).optional(),
+  "idempotencyKey": zod.guid()
 })
 
 export const submitWhiteLabelRequestResponseDesignOneStyleNameMax = 100;
@@ -4528,7 +4528,7 @@ export const submitWhiteLabelRequestResponseApprovedAddonsItemOneEntitlementsMax
 
 
 export const SubmitWhiteLabelRequestResponse = zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "customerUserId": zod.string(),
   "projectName": zod.string(),
   "websiteName": zod.string().optional(),
@@ -4550,9 +4550,9 @@ export const SubmitWhiteLabelRequestResponse = zod.object({
   "description": zod.string().max(submitWhiteLabelRequestResponseDesignOneDescriptionMax),
   "referenceWebsiteUrl": zod.string().max(submitWhiteLabelRequestResponseDesignOneReferenceWebsiteUrlMax).nullable(),
   "notes": zod.string().max(submitWhiteLabelRequestResponseDesignOneNotesMax),
-  "logoAttachmentId": zod.string().uuid().nullable(),
-  "faviconAttachmentId": zod.string().uuid().nullable(),
-  "referenceAttachmentIds": zod.array(zod.string().uuid()).max(submitWhiteLabelRequestResponseDesignOneReferenceAttachmentIdsMax)
+  "logoAttachmentId": zod.guid().nullable(),
+  "faviconAttachmentId": zod.guid().nullable(),
+  "referenceAttachmentIds": zod.array(zod.guid()).max(submitWhiteLabelRequestResponseDesignOneReferenceAttachmentIdsMax)
 }),zod.null()]).optional(),
   "billingPeriod": zod.enum(['monthly', 'yearly']).optional(),
   "requestedPlan": zod.union([zod.object({
@@ -4564,7 +4564,7 @@ export const SubmitWhiteLabelRequestResponse = zod.object({
   "discountPercent": zod.string().max(submitWhiteLabelRequestResponseRequestedPlanOneOneDiscountPercentMax).regex(submitWhiteLabelRequestResponseRequestedPlanOneOneDiscountPercentRegExp).optional(),
   "currency": zod.string().regex(submitWhiteLabelRequestResponseRequestedPlanOneOneCurrencyRegExp),
   "billingLabel": zod.string().max(submitWhiteLabelRequestResponseRequestedPlanOneOneBillingLabelMax),
-  "displayOrder": zod.number().int().min(submitWhiteLabelRequestResponseRequestedPlanOneOneDisplayOrderMin).max(submitWhiteLabelRequestResponseRequestedPlanOneOneDisplayOrderMax),
+  "displayOrder": zod.number().refine(Number.isInteger, "Expected integer, received float").min(submitWhiteLabelRequestResponseRequestedPlanOneOneDisplayOrderMin).max(submitWhiteLabelRequestResponseRequestedPlanOneOneDisplayOrderMax),
   "status": zod.enum(['enabled', 'disabled', 'archived']),
   "entitlements": zod.array(zod.object({
   "key": zod.string().max(submitWhiteLabelRequestResponseRequestedPlanOneOneEntitlementsItemKeyMax).regex(submitWhiteLabelRequestResponseRequestedPlanOneOneEntitlementsItemKeyRegExp),
@@ -4597,22 +4597,22 @@ export const SubmitWhiteLabelRequestResponse = zod.object({
   "promoStartsAt": zod.coerce.date().nullish(),
   "promoEndsAt": zod.coerce.date().nullish(),
   "billingInterval": zod.enum(['monthly', 'yearly', 'monthly_and_yearly', 'custom']).optional(),
-  "trialDays": zod.number().int().min(submitWhiteLabelRequestResponseRequestedPlanOneOneProfileTrialDaysMin).max(submitWhiteLabelRequestResponseRequestedPlanOneOneProfileTrialDaysMax).optional(),
+  "trialDays": zod.number().refine(Number.isInteger, "Expected integer, received float").min(submitWhiteLabelRequestResponseRequestedPlanOneOneProfileTrialDaysMin).max(submitWhiteLabelRequestResponseRequestedPlanOneOneProfileTrialDaysMax).optional(),
   "ctaLabel": zod.string().max(submitWhiteLabelRequestResponseRequestedPlanOneOneProfileCtaLabelMax).optional(),
   "ctaUrl": zod.string().max(submitWhiteLabelRequestResponseRequestedPlanOneOneProfileCtaUrlMax).regex(submitWhiteLabelRequestResponseRequestedPlanOneOneProfileCtaUrlRegExp).optional(),
   "visibility": zod.enum(['public', 'hidden']).optional(),
-  "adminSeats": zod.number().int().min(1).max(submitWhiteLabelRequestResponseRequestedPlanOneOneProfileAdminSeatsMax).nullish(),
+  "adminSeats": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(submitWhiteLabelRequestResponseRequestedPlanOneOneProfileAdminSeatsMax).nullish(),
   "multiAdminRoles": zod.boolean().optional(),
   "supportLevel": zod.enum(['email', 'priority', 'dedicated']).optional(),
-  "supportResponseHours": zod.number().int().min(1).max(submitWhiteLabelRequestResponseRequestedPlanOneOneProfileSupportResponseHoursMax).nullish(),
-  "launchTargetBusinessDays": zod.number().int().min(1).max(submitWhiteLabelRequestResponseRequestedPlanOneOneProfileLaunchTargetBusinessDaysMax).nullish(),
+  "supportResponseHours": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(submitWhiteLabelRequestResponseRequestedPlanOneOneProfileSupportResponseHoursMax).nullish(),
+  "launchTargetBusinessDays": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(submitWhiteLabelRequestResponseRequestedPlanOneOneProfileLaunchTargetBusinessDaysMax).nullish(),
   "dedicatedManager": zod.boolean().optional(),
   "slaEnabled": zod.boolean().optional(),
   "slaTerms": zod.string().max(submitWhiteLabelRequestResponseRequestedPlanOneOneProfileSlaTermsMax).optional(),
   "earlyAccess": zod.boolean().optional(),
   "poweredByFooter": zod.boolean().optional(),
   "themeModes": zod.array(zod.enum(['light', 'dark'])).max(submitWhiteLabelRequestResponseRequestedPlanOneOneProfileThemeModesMax).optional(),
-  "convertProviderLimit": zod.number().int().min(submitWhiteLabelRequestResponseRequestedPlanOneOneProfileConvertProviderLimitMin).max(submitWhiteLabelRequestResponseRequestedPlanOneOneProfileConvertProviderLimitMax).nullish(),
+  "convertProviderLimit": zod.number().refine(Number.isInteger, "Expected integer, received float").min(submitWhiteLabelRequestResponseRequestedPlanOneOneProfileConvertProviderLimitMin).max(submitWhiteLabelRequestResponseRequestedPlanOneOneProfileConvertProviderLimitMax).nullish(),
   "requestedProviders": zod.array(zod.string().min(1).max(submitWhiteLabelRequestResponseRequestedPlanOneOneProfileRequestedProvidersItemMax)).max(submitWhiteLabelRequestResponseRequestedPlanOneOneProfileRequestedProvidersMax).optional(),
   "capabilities": zod.array(zod.object({
   "key": zod.string().regex(submitWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesItemKeyRegExp),
@@ -4632,9 +4632,9 @@ export const SubmitWhiteLabelRequestResponse = zod.object({
 })).max(submitWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesMax).optional(),
   "internalNotes": zod.string().max(submitWhiteLabelRequestResponseRequestedPlanOneOneProfileInternalNotesMax).optional()
 }).optional().describe('Structured plan configuration. internalName and internalNotes are Super Admin only and never published.'),
-  "expectedRevision": zod.number().int().min(submitWhiteLabelRequestResponseRequestedPlanOneOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
+  "expectedRevision": zod.number().refine(Number.isInteger, "Expected integer, received float").min(submitWhiteLabelRequestResponseRequestedPlanOneOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
 }).and(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date(),
   "pricingConfigured": zod.boolean().optional(),
@@ -4643,7 +4643,7 @@ export const SubmitWhiteLabelRequestResponse = zod.object({
   "label": zod.string().min(1).max(submitWhiteLabelRequestResponseRequestedPlanOneTwoFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(submitWhiteLabelRequestResponseRequestedPlanOneTwoFeatureRowsItemValueMax)
 }).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(submitWhiteLabelRequestResponseRequestedPlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.'),
-  "revision": zod.number().int().optional()
+  "revision": zod.number().refine(Number.isInteger, "Expected integer, received float").optional()
 })),zod.null()]).optional(),
   "requestedAddons": zod.array(zod.object({
   "monthlyPrice": zod.string().regex(submitWhiteLabelRequestResponseRequestedAddonsItemOneMonthlyPriceRegExp).nullish(),
@@ -4659,7 +4659,7 @@ export const SubmitWhiteLabelRequestResponse = zod.object({
   "value": zod.union([zod.boolean(),zod.string().max(submitWhiteLabelRequestResponseRequestedAddonsItemOneEntitlementsItemValueTwoMax).regex(submitWhiteLabelRequestResponseRequestedAddonsItemOneEntitlementsItemValueTwoRegExp)])
 })).max(submitWhiteLabelRequestResponseRequestedAddonsItemOneEntitlementsMax)
 }).and(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "pricingConfigured": zod.boolean().optional()
 }))).optional(),
   "approvedPlan": zod.union([zod.object({
@@ -4671,7 +4671,7 @@ export const SubmitWhiteLabelRequestResponse = zod.object({
   "discountPercent": zod.string().max(submitWhiteLabelRequestResponseApprovedPlanOneOneDiscountPercentMax).regex(submitWhiteLabelRequestResponseApprovedPlanOneOneDiscountPercentRegExp).optional(),
   "currency": zod.string().regex(submitWhiteLabelRequestResponseApprovedPlanOneOneCurrencyRegExp),
   "billingLabel": zod.string().max(submitWhiteLabelRequestResponseApprovedPlanOneOneBillingLabelMax),
-  "displayOrder": zod.number().int().min(submitWhiteLabelRequestResponseApprovedPlanOneOneDisplayOrderMin).max(submitWhiteLabelRequestResponseApprovedPlanOneOneDisplayOrderMax),
+  "displayOrder": zod.number().refine(Number.isInteger, "Expected integer, received float").min(submitWhiteLabelRequestResponseApprovedPlanOneOneDisplayOrderMin).max(submitWhiteLabelRequestResponseApprovedPlanOneOneDisplayOrderMax),
   "status": zod.enum(['enabled', 'disabled', 'archived']),
   "entitlements": zod.array(zod.object({
   "key": zod.string().max(submitWhiteLabelRequestResponseApprovedPlanOneOneEntitlementsItemKeyMax).regex(submitWhiteLabelRequestResponseApprovedPlanOneOneEntitlementsItemKeyRegExp),
@@ -4704,22 +4704,22 @@ export const SubmitWhiteLabelRequestResponse = zod.object({
   "promoStartsAt": zod.coerce.date().nullish(),
   "promoEndsAt": zod.coerce.date().nullish(),
   "billingInterval": zod.enum(['monthly', 'yearly', 'monthly_and_yearly', 'custom']).optional(),
-  "trialDays": zod.number().int().min(submitWhiteLabelRequestResponseApprovedPlanOneOneProfileTrialDaysMin).max(submitWhiteLabelRequestResponseApprovedPlanOneOneProfileTrialDaysMax).optional(),
+  "trialDays": zod.number().refine(Number.isInteger, "Expected integer, received float").min(submitWhiteLabelRequestResponseApprovedPlanOneOneProfileTrialDaysMin).max(submitWhiteLabelRequestResponseApprovedPlanOneOneProfileTrialDaysMax).optional(),
   "ctaLabel": zod.string().max(submitWhiteLabelRequestResponseApprovedPlanOneOneProfileCtaLabelMax).optional(),
   "ctaUrl": zod.string().max(submitWhiteLabelRequestResponseApprovedPlanOneOneProfileCtaUrlMax).regex(submitWhiteLabelRequestResponseApprovedPlanOneOneProfileCtaUrlRegExp).optional(),
   "visibility": zod.enum(['public', 'hidden']).optional(),
-  "adminSeats": zod.number().int().min(1).max(submitWhiteLabelRequestResponseApprovedPlanOneOneProfileAdminSeatsMax).nullish(),
+  "adminSeats": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(submitWhiteLabelRequestResponseApprovedPlanOneOneProfileAdminSeatsMax).nullish(),
   "multiAdminRoles": zod.boolean().optional(),
   "supportLevel": zod.enum(['email', 'priority', 'dedicated']).optional(),
-  "supportResponseHours": zod.number().int().min(1).max(submitWhiteLabelRequestResponseApprovedPlanOneOneProfileSupportResponseHoursMax).nullish(),
-  "launchTargetBusinessDays": zod.number().int().min(1).max(submitWhiteLabelRequestResponseApprovedPlanOneOneProfileLaunchTargetBusinessDaysMax).nullish(),
+  "supportResponseHours": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(submitWhiteLabelRequestResponseApprovedPlanOneOneProfileSupportResponseHoursMax).nullish(),
+  "launchTargetBusinessDays": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(submitWhiteLabelRequestResponseApprovedPlanOneOneProfileLaunchTargetBusinessDaysMax).nullish(),
   "dedicatedManager": zod.boolean().optional(),
   "slaEnabled": zod.boolean().optional(),
   "slaTerms": zod.string().max(submitWhiteLabelRequestResponseApprovedPlanOneOneProfileSlaTermsMax).optional(),
   "earlyAccess": zod.boolean().optional(),
   "poweredByFooter": zod.boolean().optional(),
   "themeModes": zod.array(zod.enum(['light', 'dark'])).max(submitWhiteLabelRequestResponseApprovedPlanOneOneProfileThemeModesMax).optional(),
-  "convertProviderLimit": zod.number().int().min(submitWhiteLabelRequestResponseApprovedPlanOneOneProfileConvertProviderLimitMin).max(submitWhiteLabelRequestResponseApprovedPlanOneOneProfileConvertProviderLimitMax).nullish(),
+  "convertProviderLimit": zod.number().refine(Number.isInteger, "Expected integer, received float").min(submitWhiteLabelRequestResponseApprovedPlanOneOneProfileConvertProviderLimitMin).max(submitWhiteLabelRequestResponseApprovedPlanOneOneProfileConvertProviderLimitMax).nullish(),
   "requestedProviders": zod.array(zod.string().min(1).max(submitWhiteLabelRequestResponseApprovedPlanOneOneProfileRequestedProvidersItemMax)).max(submitWhiteLabelRequestResponseApprovedPlanOneOneProfileRequestedProvidersMax).optional(),
   "capabilities": zod.array(zod.object({
   "key": zod.string().regex(submitWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesItemKeyRegExp),
@@ -4739,9 +4739,9 @@ export const SubmitWhiteLabelRequestResponse = zod.object({
 })).max(submitWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesMax).optional(),
   "internalNotes": zod.string().max(submitWhiteLabelRequestResponseApprovedPlanOneOneProfileInternalNotesMax).optional()
 }).optional().describe('Structured plan configuration. internalName and internalNotes are Super Admin only and never published.'),
-  "expectedRevision": zod.number().int().min(submitWhiteLabelRequestResponseApprovedPlanOneOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
+  "expectedRevision": zod.number().refine(Number.isInteger, "Expected integer, received float").min(submitWhiteLabelRequestResponseApprovedPlanOneOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
 }).and(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date(),
   "pricingConfigured": zod.boolean().optional(),
@@ -4750,7 +4750,7 @@ export const SubmitWhiteLabelRequestResponse = zod.object({
   "label": zod.string().min(1).max(submitWhiteLabelRequestResponseApprovedPlanOneTwoFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(submitWhiteLabelRequestResponseApprovedPlanOneTwoFeatureRowsItemValueMax)
 }).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(submitWhiteLabelRequestResponseApprovedPlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.'),
-  "revision": zod.number().int().optional()
+  "revision": zod.number().refine(Number.isInteger, "Expected integer, received float").optional()
 })),zod.null()]).optional(),
   "approvedAddons": zod.array(zod.object({
   "monthlyPrice": zod.string().regex(submitWhiteLabelRequestResponseApprovedAddonsItemOneMonthlyPriceRegExp).nullish(),
@@ -4766,14 +4766,14 @@ export const SubmitWhiteLabelRequestResponse = zod.object({
   "value": zod.union([zod.boolean(),zod.string().max(submitWhiteLabelRequestResponseApprovedAddonsItemOneEntitlementsItemValueTwoMax).regex(submitWhiteLabelRequestResponseApprovedAddonsItemOneEntitlementsItemValueTwoRegExp)])
 })).max(submitWhiteLabelRequestResponseApprovedAddonsItemOneEntitlementsMax)
 }).and(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "pricingConfigured": zod.boolean().optional()
 }))).optional(),
   "attachments": zod.array(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "fileName": zod.string(),
   "contentType": zod.string(),
-  "size": zod.number().int(),
+  "size": zod.number().refine(Number.isInteger, "Expected integer, received float"),
   "category": zod.enum(['logo', 'favicon', 'design_reference', 'requirement']),
   "createdAt": zod.coerce.date()
 })).optional(),
@@ -4783,7 +4783,7 @@ export const SubmitWhiteLabelRequestResponse = zod.object({
   "setupPrice": zod.string().nullable(),
   "currency": zod.string().nullable(),
   "operatorNote": zod.string(),
-  "tenantId": zod.string().uuid().nullable(),
+  "tenantId": zod.guid().nullable(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date()
 })
@@ -5118,7 +5118,7 @@ export const listWhiteLabelRequestsResponseApprovedAddonsItemOneEntitlementsMax 
 
 
 export const ListWhiteLabelRequestsResponseItem = zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "customerUserId": zod.string(),
   "projectName": zod.string(),
   "websiteName": zod.string().optional(),
@@ -5140,9 +5140,9 @@ export const ListWhiteLabelRequestsResponseItem = zod.object({
   "description": zod.string().max(listWhiteLabelRequestsResponseDesignOneDescriptionMax),
   "referenceWebsiteUrl": zod.string().max(listWhiteLabelRequestsResponseDesignOneReferenceWebsiteUrlMax).nullable(),
   "notes": zod.string().max(listWhiteLabelRequestsResponseDesignOneNotesMax),
-  "logoAttachmentId": zod.string().uuid().nullable(),
-  "faviconAttachmentId": zod.string().uuid().nullable(),
-  "referenceAttachmentIds": zod.array(zod.string().uuid()).max(listWhiteLabelRequestsResponseDesignOneReferenceAttachmentIdsMax)
+  "logoAttachmentId": zod.guid().nullable(),
+  "faviconAttachmentId": zod.guid().nullable(),
+  "referenceAttachmentIds": zod.array(zod.guid()).max(listWhiteLabelRequestsResponseDesignOneReferenceAttachmentIdsMax)
 }),zod.null()]).optional(),
   "billingPeriod": zod.enum(['monthly', 'yearly']).optional(),
   "requestedPlan": zod.union([zod.object({
@@ -5154,7 +5154,7 @@ export const ListWhiteLabelRequestsResponseItem = zod.object({
   "discountPercent": zod.string().max(listWhiteLabelRequestsResponseRequestedPlanOneOneDiscountPercentMax).regex(listWhiteLabelRequestsResponseRequestedPlanOneOneDiscountPercentRegExp).optional(),
   "currency": zod.string().regex(listWhiteLabelRequestsResponseRequestedPlanOneOneCurrencyRegExp),
   "billingLabel": zod.string().max(listWhiteLabelRequestsResponseRequestedPlanOneOneBillingLabelMax),
-  "displayOrder": zod.number().int().min(listWhiteLabelRequestsResponseRequestedPlanOneOneDisplayOrderMin).max(listWhiteLabelRequestsResponseRequestedPlanOneOneDisplayOrderMax),
+  "displayOrder": zod.number().refine(Number.isInteger, "Expected integer, received float").min(listWhiteLabelRequestsResponseRequestedPlanOneOneDisplayOrderMin).max(listWhiteLabelRequestsResponseRequestedPlanOneOneDisplayOrderMax),
   "status": zod.enum(['enabled', 'disabled', 'archived']),
   "entitlements": zod.array(zod.object({
   "key": zod.string().max(listWhiteLabelRequestsResponseRequestedPlanOneOneEntitlementsItemKeyMax).regex(listWhiteLabelRequestsResponseRequestedPlanOneOneEntitlementsItemKeyRegExp),
@@ -5187,22 +5187,22 @@ export const ListWhiteLabelRequestsResponseItem = zod.object({
   "promoStartsAt": zod.coerce.date().nullish(),
   "promoEndsAt": zod.coerce.date().nullish(),
   "billingInterval": zod.enum(['monthly', 'yearly', 'monthly_and_yearly', 'custom']).optional(),
-  "trialDays": zod.number().int().min(listWhiteLabelRequestsResponseRequestedPlanOneOneProfileTrialDaysMin).max(listWhiteLabelRequestsResponseRequestedPlanOneOneProfileTrialDaysMax).optional(),
+  "trialDays": zod.number().refine(Number.isInteger, "Expected integer, received float").min(listWhiteLabelRequestsResponseRequestedPlanOneOneProfileTrialDaysMin).max(listWhiteLabelRequestsResponseRequestedPlanOneOneProfileTrialDaysMax).optional(),
   "ctaLabel": zod.string().max(listWhiteLabelRequestsResponseRequestedPlanOneOneProfileCtaLabelMax).optional(),
   "ctaUrl": zod.string().max(listWhiteLabelRequestsResponseRequestedPlanOneOneProfileCtaUrlMax).regex(listWhiteLabelRequestsResponseRequestedPlanOneOneProfileCtaUrlRegExp).optional(),
   "visibility": zod.enum(['public', 'hidden']).optional(),
-  "adminSeats": zod.number().int().min(1).max(listWhiteLabelRequestsResponseRequestedPlanOneOneProfileAdminSeatsMax).nullish(),
+  "adminSeats": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(listWhiteLabelRequestsResponseRequestedPlanOneOneProfileAdminSeatsMax).nullish(),
   "multiAdminRoles": zod.boolean().optional(),
   "supportLevel": zod.enum(['email', 'priority', 'dedicated']).optional(),
-  "supportResponseHours": zod.number().int().min(1).max(listWhiteLabelRequestsResponseRequestedPlanOneOneProfileSupportResponseHoursMax).nullish(),
-  "launchTargetBusinessDays": zod.number().int().min(1).max(listWhiteLabelRequestsResponseRequestedPlanOneOneProfileLaunchTargetBusinessDaysMax).nullish(),
+  "supportResponseHours": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(listWhiteLabelRequestsResponseRequestedPlanOneOneProfileSupportResponseHoursMax).nullish(),
+  "launchTargetBusinessDays": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(listWhiteLabelRequestsResponseRequestedPlanOneOneProfileLaunchTargetBusinessDaysMax).nullish(),
   "dedicatedManager": zod.boolean().optional(),
   "slaEnabled": zod.boolean().optional(),
   "slaTerms": zod.string().max(listWhiteLabelRequestsResponseRequestedPlanOneOneProfileSlaTermsMax).optional(),
   "earlyAccess": zod.boolean().optional(),
   "poweredByFooter": zod.boolean().optional(),
   "themeModes": zod.array(zod.enum(['light', 'dark'])).max(listWhiteLabelRequestsResponseRequestedPlanOneOneProfileThemeModesMax).optional(),
-  "convertProviderLimit": zod.number().int().min(listWhiteLabelRequestsResponseRequestedPlanOneOneProfileConvertProviderLimitMin).max(listWhiteLabelRequestsResponseRequestedPlanOneOneProfileConvertProviderLimitMax).nullish(),
+  "convertProviderLimit": zod.number().refine(Number.isInteger, "Expected integer, received float").min(listWhiteLabelRequestsResponseRequestedPlanOneOneProfileConvertProviderLimitMin).max(listWhiteLabelRequestsResponseRequestedPlanOneOneProfileConvertProviderLimitMax).nullish(),
   "requestedProviders": zod.array(zod.string().min(1).max(listWhiteLabelRequestsResponseRequestedPlanOneOneProfileRequestedProvidersItemMax)).max(listWhiteLabelRequestsResponseRequestedPlanOneOneProfileRequestedProvidersMax).optional(),
   "capabilities": zod.array(zod.object({
   "key": zod.string().regex(listWhiteLabelRequestsResponseRequestedPlanOneOneProfileCapabilitiesItemKeyRegExp),
@@ -5222,9 +5222,9 @@ export const ListWhiteLabelRequestsResponseItem = zod.object({
 })).max(listWhiteLabelRequestsResponseRequestedPlanOneOneProfileCapabilitiesMax).optional(),
   "internalNotes": zod.string().max(listWhiteLabelRequestsResponseRequestedPlanOneOneProfileInternalNotesMax).optional()
 }).optional().describe('Structured plan configuration. internalName and internalNotes are Super Admin only and never published.'),
-  "expectedRevision": zod.number().int().min(listWhiteLabelRequestsResponseRequestedPlanOneOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
+  "expectedRevision": zod.number().refine(Number.isInteger, "Expected integer, received float").min(listWhiteLabelRequestsResponseRequestedPlanOneOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
 }).and(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date(),
   "pricingConfigured": zod.boolean().optional(),
@@ -5233,7 +5233,7 @@ export const ListWhiteLabelRequestsResponseItem = zod.object({
   "label": zod.string().min(1).max(listWhiteLabelRequestsResponseRequestedPlanOneTwoFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(listWhiteLabelRequestsResponseRequestedPlanOneTwoFeatureRowsItemValueMax)
 }).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(listWhiteLabelRequestsResponseRequestedPlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.'),
-  "revision": zod.number().int().optional()
+  "revision": zod.number().refine(Number.isInteger, "Expected integer, received float").optional()
 })),zod.null()]).optional(),
   "requestedAddons": zod.array(zod.object({
   "monthlyPrice": zod.string().regex(listWhiteLabelRequestsResponseRequestedAddonsItemOneMonthlyPriceRegExp).nullish(),
@@ -5249,7 +5249,7 @@ export const ListWhiteLabelRequestsResponseItem = zod.object({
   "value": zod.union([zod.boolean(),zod.string().max(listWhiteLabelRequestsResponseRequestedAddonsItemOneEntitlementsItemValueTwoMax).regex(listWhiteLabelRequestsResponseRequestedAddonsItemOneEntitlementsItemValueTwoRegExp)])
 })).max(listWhiteLabelRequestsResponseRequestedAddonsItemOneEntitlementsMax)
 }).and(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "pricingConfigured": zod.boolean().optional()
 }))).optional(),
   "approvedPlan": zod.union([zod.object({
@@ -5261,7 +5261,7 @@ export const ListWhiteLabelRequestsResponseItem = zod.object({
   "discountPercent": zod.string().max(listWhiteLabelRequestsResponseApprovedPlanOneOneDiscountPercentMax).regex(listWhiteLabelRequestsResponseApprovedPlanOneOneDiscountPercentRegExp).optional(),
   "currency": zod.string().regex(listWhiteLabelRequestsResponseApprovedPlanOneOneCurrencyRegExp),
   "billingLabel": zod.string().max(listWhiteLabelRequestsResponseApprovedPlanOneOneBillingLabelMax),
-  "displayOrder": zod.number().int().min(listWhiteLabelRequestsResponseApprovedPlanOneOneDisplayOrderMin).max(listWhiteLabelRequestsResponseApprovedPlanOneOneDisplayOrderMax),
+  "displayOrder": zod.number().refine(Number.isInteger, "Expected integer, received float").min(listWhiteLabelRequestsResponseApprovedPlanOneOneDisplayOrderMin).max(listWhiteLabelRequestsResponseApprovedPlanOneOneDisplayOrderMax),
   "status": zod.enum(['enabled', 'disabled', 'archived']),
   "entitlements": zod.array(zod.object({
   "key": zod.string().max(listWhiteLabelRequestsResponseApprovedPlanOneOneEntitlementsItemKeyMax).regex(listWhiteLabelRequestsResponseApprovedPlanOneOneEntitlementsItemKeyRegExp),
@@ -5294,22 +5294,22 @@ export const ListWhiteLabelRequestsResponseItem = zod.object({
   "promoStartsAt": zod.coerce.date().nullish(),
   "promoEndsAt": zod.coerce.date().nullish(),
   "billingInterval": zod.enum(['monthly', 'yearly', 'monthly_and_yearly', 'custom']).optional(),
-  "trialDays": zod.number().int().min(listWhiteLabelRequestsResponseApprovedPlanOneOneProfileTrialDaysMin).max(listWhiteLabelRequestsResponseApprovedPlanOneOneProfileTrialDaysMax).optional(),
+  "trialDays": zod.number().refine(Number.isInteger, "Expected integer, received float").min(listWhiteLabelRequestsResponseApprovedPlanOneOneProfileTrialDaysMin).max(listWhiteLabelRequestsResponseApprovedPlanOneOneProfileTrialDaysMax).optional(),
   "ctaLabel": zod.string().max(listWhiteLabelRequestsResponseApprovedPlanOneOneProfileCtaLabelMax).optional(),
   "ctaUrl": zod.string().max(listWhiteLabelRequestsResponseApprovedPlanOneOneProfileCtaUrlMax).regex(listWhiteLabelRequestsResponseApprovedPlanOneOneProfileCtaUrlRegExp).optional(),
   "visibility": zod.enum(['public', 'hidden']).optional(),
-  "adminSeats": zod.number().int().min(1).max(listWhiteLabelRequestsResponseApprovedPlanOneOneProfileAdminSeatsMax).nullish(),
+  "adminSeats": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(listWhiteLabelRequestsResponseApprovedPlanOneOneProfileAdminSeatsMax).nullish(),
   "multiAdminRoles": zod.boolean().optional(),
   "supportLevel": zod.enum(['email', 'priority', 'dedicated']).optional(),
-  "supportResponseHours": zod.number().int().min(1).max(listWhiteLabelRequestsResponseApprovedPlanOneOneProfileSupportResponseHoursMax).nullish(),
-  "launchTargetBusinessDays": zod.number().int().min(1).max(listWhiteLabelRequestsResponseApprovedPlanOneOneProfileLaunchTargetBusinessDaysMax).nullish(),
+  "supportResponseHours": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(listWhiteLabelRequestsResponseApprovedPlanOneOneProfileSupportResponseHoursMax).nullish(),
+  "launchTargetBusinessDays": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(listWhiteLabelRequestsResponseApprovedPlanOneOneProfileLaunchTargetBusinessDaysMax).nullish(),
   "dedicatedManager": zod.boolean().optional(),
   "slaEnabled": zod.boolean().optional(),
   "slaTerms": zod.string().max(listWhiteLabelRequestsResponseApprovedPlanOneOneProfileSlaTermsMax).optional(),
   "earlyAccess": zod.boolean().optional(),
   "poweredByFooter": zod.boolean().optional(),
   "themeModes": zod.array(zod.enum(['light', 'dark'])).max(listWhiteLabelRequestsResponseApprovedPlanOneOneProfileThemeModesMax).optional(),
-  "convertProviderLimit": zod.number().int().min(listWhiteLabelRequestsResponseApprovedPlanOneOneProfileConvertProviderLimitMin).max(listWhiteLabelRequestsResponseApprovedPlanOneOneProfileConvertProviderLimitMax).nullish(),
+  "convertProviderLimit": zod.number().refine(Number.isInteger, "Expected integer, received float").min(listWhiteLabelRequestsResponseApprovedPlanOneOneProfileConvertProviderLimitMin).max(listWhiteLabelRequestsResponseApprovedPlanOneOneProfileConvertProviderLimitMax).nullish(),
   "requestedProviders": zod.array(zod.string().min(1).max(listWhiteLabelRequestsResponseApprovedPlanOneOneProfileRequestedProvidersItemMax)).max(listWhiteLabelRequestsResponseApprovedPlanOneOneProfileRequestedProvidersMax).optional(),
   "capabilities": zod.array(zod.object({
   "key": zod.string().regex(listWhiteLabelRequestsResponseApprovedPlanOneOneProfileCapabilitiesItemKeyRegExp),
@@ -5329,9 +5329,9 @@ export const ListWhiteLabelRequestsResponseItem = zod.object({
 })).max(listWhiteLabelRequestsResponseApprovedPlanOneOneProfileCapabilitiesMax).optional(),
   "internalNotes": zod.string().max(listWhiteLabelRequestsResponseApprovedPlanOneOneProfileInternalNotesMax).optional()
 }).optional().describe('Structured plan configuration. internalName and internalNotes are Super Admin only and never published.'),
-  "expectedRevision": zod.number().int().min(listWhiteLabelRequestsResponseApprovedPlanOneOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
+  "expectedRevision": zod.number().refine(Number.isInteger, "Expected integer, received float").min(listWhiteLabelRequestsResponseApprovedPlanOneOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
 }).and(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date(),
   "pricingConfigured": zod.boolean().optional(),
@@ -5340,7 +5340,7 @@ export const ListWhiteLabelRequestsResponseItem = zod.object({
   "label": zod.string().min(1).max(listWhiteLabelRequestsResponseApprovedPlanOneTwoFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(listWhiteLabelRequestsResponseApprovedPlanOneTwoFeatureRowsItemValueMax)
 }).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(listWhiteLabelRequestsResponseApprovedPlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.'),
-  "revision": zod.number().int().optional()
+  "revision": zod.number().refine(Number.isInteger, "Expected integer, received float").optional()
 })),zod.null()]).optional(),
   "approvedAddons": zod.array(zod.object({
   "monthlyPrice": zod.string().regex(listWhiteLabelRequestsResponseApprovedAddonsItemOneMonthlyPriceRegExp).nullish(),
@@ -5356,14 +5356,14 @@ export const ListWhiteLabelRequestsResponseItem = zod.object({
   "value": zod.union([zod.boolean(),zod.string().max(listWhiteLabelRequestsResponseApprovedAddonsItemOneEntitlementsItemValueTwoMax).regex(listWhiteLabelRequestsResponseApprovedAddonsItemOneEntitlementsItemValueTwoRegExp)])
 })).max(listWhiteLabelRequestsResponseApprovedAddonsItemOneEntitlementsMax)
 }).and(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "pricingConfigured": zod.boolean().optional()
 }))).optional(),
   "attachments": zod.array(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "fileName": zod.string(),
   "contentType": zod.string(),
-  "size": zod.number().int(),
+  "size": zod.number().refine(Number.isInteger, "Expected integer, received float"),
   "category": zod.enum(['logo', 'favicon', 'design_reference', 'requirement']),
   "createdAt": zod.coerce.date()
 })).optional(),
@@ -5373,7 +5373,7 @@ export const ListWhiteLabelRequestsResponseItem = zod.object({
   "setupPrice": zod.string().nullable(),
   "currency": zod.string().nullable(),
   "operatorNote": zod.string(),
-  "tenantId": zod.string().uuid().nullable(),
+  "tenantId": zod.guid().nullable(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date()
 })
@@ -5381,7 +5381,7 @@ export const ListWhiteLabelRequestsResponse = zod.array(ListWhiteLabelRequestsRe
 
 
 export const ReviewWhiteLabelRequestParams = zod.object({
-  "requestId": zod.coerce.string().uuid()
+  "requestId": zod.guid()
 })
 
 export const reviewWhiteLabelRequestBodyMonthlyPriceRegExp = new RegExp('^\\d{1,12}(\\.\\d{1,2})?$');
@@ -5401,8 +5401,8 @@ export const ReviewWhiteLabelRequestBody = zod.object({
   "currency": zod.string().regex(reviewWhiteLabelRequestBodyCurrencyRegExp),
   "operatorNote": zod.string().max(reviewWhiteLabelRequestBodyOperatorNoteMax),
   "customizationPrice": zod.string().regex(reviewWhiteLabelRequestBodyCustomizationPriceRegExp).nullish(),
-  "approvedPlanId": zod.string().uuid().nullish(),
-  "approvedAddonIds": zod.array(zod.string().uuid()).max(reviewWhiteLabelRequestBodyApprovedAddonIdsMax).optional(),
+  "approvedPlanId": zod.guid().nullish(),
+  "approvedAddonIds": zod.array(zod.guid()).max(reviewWhiteLabelRequestBodyApprovedAddonIdsMax).optional(),
   "customDesignDecision": zod.enum(['pending', 'approved', 'rejected']).optional()
 })
 
@@ -5735,7 +5735,7 @@ export const reviewWhiteLabelRequestResponseApprovedAddonsItemOneEntitlementsMax
 
 
 export const ReviewWhiteLabelRequestResponse = zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "customerUserId": zod.string(),
   "projectName": zod.string(),
   "websiteName": zod.string().optional(),
@@ -5757,9 +5757,9 @@ export const ReviewWhiteLabelRequestResponse = zod.object({
   "description": zod.string().max(reviewWhiteLabelRequestResponseDesignOneDescriptionMax),
   "referenceWebsiteUrl": zod.string().max(reviewWhiteLabelRequestResponseDesignOneReferenceWebsiteUrlMax).nullable(),
   "notes": zod.string().max(reviewWhiteLabelRequestResponseDesignOneNotesMax),
-  "logoAttachmentId": zod.string().uuid().nullable(),
-  "faviconAttachmentId": zod.string().uuid().nullable(),
-  "referenceAttachmentIds": zod.array(zod.string().uuid()).max(reviewWhiteLabelRequestResponseDesignOneReferenceAttachmentIdsMax)
+  "logoAttachmentId": zod.guid().nullable(),
+  "faviconAttachmentId": zod.guid().nullable(),
+  "referenceAttachmentIds": zod.array(zod.guid()).max(reviewWhiteLabelRequestResponseDesignOneReferenceAttachmentIdsMax)
 }),zod.null()]).optional(),
   "billingPeriod": zod.enum(['monthly', 'yearly']).optional(),
   "requestedPlan": zod.union([zod.object({
@@ -5771,7 +5771,7 @@ export const ReviewWhiteLabelRequestResponse = zod.object({
   "discountPercent": zod.string().max(reviewWhiteLabelRequestResponseRequestedPlanOneOneDiscountPercentMax).regex(reviewWhiteLabelRequestResponseRequestedPlanOneOneDiscountPercentRegExp).optional(),
   "currency": zod.string().regex(reviewWhiteLabelRequestResponseRequestedPlanOneOneCurrencyRegExp),
   "billingLabel": zod.string().max(reviewWhiteLabelRequestResponseRequestedPlanOneOneBillingLabelMax),
-  "displayOrder": zod.number().int().min(reviewWhiteLabelRequestResponseRequestedPlanOneOneDisplayOrderMin).max(reviewWhiteLabelRequestResponseRequestedPlanOneOneDisplayOrderMax),
+  "displayOrder": zod.number().refine(Number.isInteger, "Expected integer, received float").min(reviewWhiteLabelRequestResponseRequestedPlanOneOneDisplayOrderMin).max(reviewWhiteLabelRequestResponseRequestedPlanOneOneDisplayOrderMax),
   "status": zod.enum(['enabled', 'disabled', 'archived']),
   "entitlements": zod.array(zod.object({
   "key": zod.string().max(reviewWhiteLabelRequestResponseRequestedPlanOneOneEntitlementsItemKeyMax).regex(reviewWhiteLabelRequestResponseRequestedPlanOneOneEntitlementsItemKeyRegExp),
@@ -5804,22 +5804,22 @@ export const ReviewWhiteLabelRequestResponse = zod.object({
   "promoStartsAt": zod.coerce.date().nullish(),
   "promoEndsAt": zod.coerce.date().nullish(),
   "billingInterval": zod.enum(['monthly', 'yearly', 'monthly_and_yearly', 'custom']).optional(),
-  "trialDays": zod.number().int().min(reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileTrialDaysMin).max(reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileTrialDaysMax).optional(),
+  "trialDays": zod.number().refine(Number.isInteger, "Expected integer, received float").min(reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileTrialDaysMin).max(reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileTrialDaysMax).optional(),
   "ctaLabel": zod.string().max(reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileCtaLabelMax).optional(),
   "ctaUrl": zod.string().max(reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileCtaUrlMax).regex(reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileCtaUrlRegExp).optional(),
   "visibility": zod.enum(['public', 'hidden']).optional(),
-  "adminSeats": zod.number().int().min(1).max(reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileAdminSeatsMax).nullish(),
+  "adminSeats": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileAdminSeatsMax).nullish(),
   "multiAdminRoles": zod.boolean().optional(),
   "supportLevel": zod.enum(['email', 'priority', 'dedicated']).optional(),
-  "supportResponseHours": zod.number().int().min(1).max(reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileSupportResponseHoursMax).nullish(),
-  "launchTargetBusinessDays": zod.number().int().min(1).max(reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileLaunchTargetBusinessDaysMax).nullish(),
+  "supportResponseHours": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileSupportResponseHoursMax).nullish(),
+  "launchTargetBusinessDays": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileLaunchTargetBusinessDaysMax).nullish(),
   "dedicatedManager": zod.boolean().optional(),
   "slaEnabled": zod.boolean().optional(),
   "slaTerms": zod.string().max(reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileSlaTermsMax).optional(),
   "earlyAccess": zod.boolean().optional(),
   "poweredByFooter": zod.boolean().optional(),
   "themeModes": zod.array(zod.enum(['light', 'dark'])).max(reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileThemeModesMax).optional(),
-  "convertProviderLimit": zod.number().int().min(reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileConvertProviderLimitMin).max(reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileConvertProviderLimitMax).nullish(),
+  "convertProviderLimit": zod.number().refine(Number.isInteger, "Expected integer, received float").min(reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileConvertProviderLimitMin).max(reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileConvertProviderLimitMax).nullish(),
   "requestedProviders": zod.array(zod.string().min(1).max(reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileRequestedProvidersItemMax)).max(reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileRequestedProvidersMax).optional(),
   "capabilities": zod.array(zod.object({
   "key": zod.string().regex(reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesItemKeyRegExp),
@@ -5839,9 +5839,9 @@ export const ReviewWhiteLabelRequestResponse = zod.object({
 })).max(reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesMax).optional(),
   "internalNotes": zod.string().max(reviewWhiteLabelRequestResponseRequestedPlanOneOneProfileInternalNotesMax).optional()
 }).optional().describe('Structured plan configuration. internalName and internalNotes are Super Admin only and never published.'),
-  "expectedRevision": zod.number().int().min(reviewWhiteLabelRequestResponseRequestedPlanOneOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
+  "expectedRevision": zod.number().refine(Number.isInteger, "Expected integer, received float").min(reviewWhiteLabelRequestResponseRequestedPlanOneOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
 }).and(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date(),
   "pricingConfigured": zod.boolean().optional(),
@@ -5850,7 +5850,7 @@ export const ReviewWhiteLabelRequestResponse = zod.object({
   "label": zod.string().min(1).max(reviewWhiteLabelRequestResponseRequestedPlanOneTwoFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(reviewWhiteLabelRequestResponseRequestedPlanOneTwoFeatureRowsItemValueMax)
 }).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(reviewWhiteLabelRequestResponseRequestedPlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.'),
-  "revision": zod.number().int().optional()
+  "revision": zod.number().refine(Number.isInteger, "Expected integer, received float").optional()
 })),zod.null()]).optional(),
   "requestedAddons": zod.array(zod.object({
   "monthlyPrice": zod.string().regex(reviewWhiteLabelRequestResponseRequestedAddonsItemOneMonthlyPriceRegExp).nullish(),
@@ -5866,7 +5866,7 @@ export const ReviewWhiteLabelRequestResponse = zod.object({
   "value": zod.union([zod.boolean(),zod.string().max(reviewWhiteLabelRequestResponseRequestedAddonsItemOneEntitlementsItemValueTwoMax).regex(reviewWhiteLabelRequestResponseRequestedAddonsItemOneEntitlementsItemValueTwoRegExp)])
 })).max(reviewWhiteLabelRequestResponseRequestedAddonsItemOneEntitlementsMax)
 }).and(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "pricingConfigured": zod.boolean().optional()
 }))).optional(),
   "approvedPlan": zod.union([zod.object({
@@ -5878,7 +5878,7 @@ export const ReviewWhiteLabelRequestResponse = zod.object({
   "discountPercent": zod.string().max(reviewWhiteLabelRequestResponseApprovedPlanOneOneDiscountPercentMax).regex(reviewWhiteLabelRequestResponseApprovedPlanOneOneDiscountPercentRegExp).optional(),
   "currency": zod.string().regex(reviewWhiteLabelRequestResponseApprovedPlanOneOneCurrencyRegExp),
   "billingLabel": zod.string().max(reviewWhiteLabelRequestResponseApprovedPlanOneOneBillingLabelMax),
-  "displayOrder": zod.number().int().min(reviewWhiteLabelRequestResponseApprovedPlanOneOneDisplayOrderMin).max(reviewWhiteLabelRequestResponseApprovedPlanOneOneDisplayOrderMax),
+  "displayOrder": zod.number().refine(Number.isInteger, "Expected integer, received float").min(reviewWhiteLabelRequestResponseApprovedPlanOneOneDisplayOrderMin).max(reviewWhiteLabelRequestResponseApprovedPlanOneOneDisplayOrderMax),
   "status": zod.enum(['enabled', 'disabled', 'archived']),
   "entitlements": zod.array(zod.object({
   "key": zod.string().max(reviewWhiteLabelRequestResponseApprovedPlanOneOneEntitlementsItemKeyMax).regex(reviewWhiteLabelRequestResponseApprovedPlanOneOneEntitlementsItemKeyRegExp),
@@ -5911,22 +5911,22 @@ export const ReviewWhiteLabelRequestResponse = zod.object({
   "promoStartsAt": zod.coerce.date().nullish(),
   "promoEndsAt": zod.coerce.date().nullish(),
   "billingInterval": zod.enum(['monthly', 'yearly', 'monthly_and_yearly', 'custom']).optional(),
-  "trialDays": zod.number().int().min(reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileTrialDaysMin).max(reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileTrialDaysMax).optional(),
+  "trialDays": zod.number().refine(Number.isInteger, "Expected integer, received float").min(reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileTrialDaysMin).max(reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileTrialDaysMax).optional(),
   "ctaLabel": zod.string().max(reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileCtaLabelMax).optional(),
   "ctaUrl": zod.string().max(reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileCtaUrlMax).regex(reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileCtaUrlRegExp).optional(),
   "visibility": zod.enum(['public', 'hidden']).optional(),
-  "adminSeats": zod.number().int().min(1).max(reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileAdminSeatsMax).nullish(),
+  "adminSeats": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileAdminSeatsMax).nullish(),
   "multiAdminRoles": zod.boolean().optional(),
   "supportLevel": zod.enum(['email', 'priority', 'dedicated']).optional(),
-  "supportResponseHours": zod.number().int().min(1).max(reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileSupportResponseHoursMax).nullish(),
-  "launchTargetBusinessDays": zod.number().int().min(1).max(reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileLaunchTargetBusinessDaysMax).nullish(),
+  "supportResponseHours": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileSupportResponseHoursMax).nullish(),
+  "launchTargetBusinessDays": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileLaunchTargetBusinessDaysMax).nullish(),
   "dedicatedManager": zod.boolean().optional(),
   "slaEnabled": zod.boolean().optional(),
   "slaTerms": zod.string().max(reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileSlaTermsMax).optional(),
   "earlyAccess": zod.boolean().optional(),
   "poweredByFooter": zod.boolean().optional(),
   "themeModes": zod.array(zod.enum(['light', 'dark'])).max(reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileThemeModesMax).optional(),
-  "convertProviderLimit": zod.number().int().min(reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileConvertProviderLimitMin).max(reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileConvertProviderLimitMax).nullish(),
+  "convertProviderLimit": zod.number().refine(Number.isInteger, "Expected integer, received float").min(reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileConvertProviderLimitMin).max(reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileConvertProviderLimitMax).nullish(),
   "requestedProviders": zod.array(zod.string().min(1).max(reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileRequestedProvidersItemMax)).max(reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileRequestedProvidersMax).optional(),
   "capabilities": zod.array(zod.object({
   "key": zod.string().regex(reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesItemKeyRegExp),
@@ -5946,9 +5946,9 @@ export const ReviewWhiteLabelRequestResponse = zod.object({
 })).max(reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesMax).optional(),
   "internalNotes": zod.string().max(reviewWhiteLabelRequestResponseApprovedPlanOneOneProfileInternalNotesMax).optional()
 }).optional().describe('Structured plan configuration. internalName and internalNotes are Super Admin only and never published.'),
-  "expectedRevision": zod.number().int().min(reviewWhiteLabelRequestResponseApprovedPlanOneOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
+  "expectedRevision": zod.number().refine(Number.isInteger, "Expected integer, received float").min(reviewWhiteLabelRequestResponseApprovedPlanOneOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
 }).and(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date(),
   "pricingConfigured": zod.boolean().optional(),
@@ -5957,7 +5957,7 @@ export const ReviewWhiteLabelRequestResponse = zod.object({
   "label": zod.string().min(1).max(reviewWhiteLabelRequestResponseApprovedPlanOneTwoFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(reviewWhiteLabelRequestResponseApprovedPlanOneTwoFeatureRowsItemValueMax)
 }).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(reviewWhiteLabelRequestResponseApprovedPlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.'),
-  "revision": zod.number().int().optional()
+  "revision": zod.number().refine(Number.isInteger, "Expected integer, received float").optional()
 })),zod.null()]).optional(),
   "approvedAddons": zod.array(zod.object({
   "monthlyPrice": zod.string().regex(reviewWhiteLabelRequestResponseApprovedAddonsItemOneMonthlyPriceRegExp).nullish(),
@@ -5973,14 +5973,14 @@ export const ReviewWhiteLabelRequestResponse = zod.object({
   "value": zod.union([zod.boolean(),zod.string().max(reviewWhiteLabelRequestResponseApprovedAddonsItemOneEntitlementsItemValueTwoMax).regex(reviewWhiteLabelRequestResponseApprovedAddonsItemOneEntitlementsItemValueTwoRegExp)])
 })).max(reviewWhiteLabelRequestResponseApprovedAddonsItemOneEntitlementsMax)
 }).and(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "pricingConfigured": zod.boolean().optional()
 }))).optional(),
   "attachments": zod.array(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "fileName": zod.string(),
   "contentType": zod.string(),
-  "size": zod.number().int(),
+  "size": zod.number().refine(Number.isInteger, "Expected integer, received float"),
   "category": zod.enum(['logo', 'favicon', 'design_reference', 'requirement']),
   "createdAt": zod.coerce.date()
 })).optional(),
@@ -5990,18 +5990,18 @@ export const ReviewWhiteLabelRequestResponse = zod.object({
   "setupPrice": zod.string().nullable(),
   "currency": zod.string().nullable(),
   "operatorNote": zod.string(),
-  "tenantId": zod.string().uuid().nullable(),
+  "tenantId": zod.guid().nullable(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date()
 })
 
 
 export const ProvisionWhiteLabelRequestParams = zod.object({
-  "requestId": zod.coerce.string().uuid()
+  "requestId": zod.guid()
 })
 
 export const ProvisionWhiteLabelRequestBody = zod.object({
-  "tenantId": zod.string().uuid()
+  "tenantId": zod.guid()
 })
 
 export const provisionWhiteLabelRequestResponseDesignOneStyleNameMax = 100;
@@ -6333,7 +6333,7 @@ export const provisionWhiteLabelRequestResponseApprovedAddonsItemOneEntitlements
 
 
 export const ProvisionWhiteLabelRequestResponse = zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "customerUserId": zod.string(),
   "projectName": zod.string(),
   "websiteName": zod.string().optional(),
@@ -6355,9 +6355,9 @@ export const ProvisionWhiteLabelRequestResponse = zod.object({
   "description": zod.string().max(provisionWhiteLabelRequestResponseDesignOneDescriptionMax),
   "referenceWebsiteUrl": zod.string().max(provisionWhiteLabelRequestResponseDesignOneReferenceWebsiteUrlMax).nullable(),
   "notes": zod.string().max(provisionWhiteLabelRequestResponseDesignOneNotesMax),
-  "logoAttachmentId": zod.string().uuid().nullable(),
-  "faviconAttachmentId": zod.string().uuid().nullable(),
-  "referenceAttachmentIds": zod.array(zod.string().uuid()).max(provisionWhiteLabelRequestResponseDesignOneReferenceAttachmentIdsMax)
+  "logoAttachmentId": zod.guid().nullable(),
+  "faviconAttachmentId": zod.guid().nullable(),
+  "referenceAttachmentIds": zod.array(zod.guid()).max(provisionWhiteLabelRequestResponseDesignOneReferenceAttachmentIdsMax)
 }),zod.null()]).optional(),
   "billingPeriod": zod.enum(['monthly', 'yearly']).optional(),
   "requestedPlan": zod.union([zod.object({
@@ -6369,7 +6369,7 @@ export const ProvisionWhiteLabelRequestResponse = zod.object({
   "discountPercent": zod.string().max(provisionWhiteLabelRequestResponseRequestedPlanOneOneDiscountPercentMax).regex(provisionWhiteLabelRequestResponseRequestedPlanOneOneDiscountPercentRegExp).optional(),
   "currency": zod.string().regex(provisionWhiteLabelRequestResponseRequestedPlanOneOneCurrencyRegExp),
   "billingLabel": zod.string().max(provisionWhiteLabelRequestResponseRequestedPlanOneOneBillingLabelMax),
-  "displayOrder": zod.number().int().min(provisionWhiteLabelRequestResponseRequestedPlanOneOneDisplayOrderMin).max(provisionWhiteLabelRequestResponseRequestedPlanOneOneDisplayOrderMax),
+  "displayOrder": zod.number().refine(Number.isInteger, "Expected integer, received float").min(provisionWhiteLabelRequestResponseRequestedPlanOneOneDisplayOrderMin).max(provisionWhiteLabelRequestResponseRequestedPlanOneOneDisplayOrderMax),
   "status": zod.enum(['enabled', 'disabled', 'archived']),
   "entitlements": zod.array(zod.object({
   "key": zod.string().max(provisionWhiteLabelRequestResponseRequestedPlanOneOneEntitlementsItemKeyMax).regex(provisionWhiteLabelRequestResponseRequestedPlanOneOneEntitlementsItemKeyRegExp),
@@ -6402,22 +6402,22 @@ export const ProvisionWhiteLabelRequestResponse = zod.object({
   "promoStartsAt": zod.coerce.date().nullish(),
   "promoEndsAt": zod.coerce.date().nullish(),
   "billingInterval": zod.enum(['monthly', 'yearly', 'monthly_and_yearly', 'custom']).optional(),
-  "trialDays": zod.number().int().min(provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileTrialDaysMin).max(provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileTrialDaysMax).optional(),
+  "trialDays": zod.number().refine(Number.isInteger, "Expected integer, received float").min(provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileTrialDaysMin).max(provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileTrialDaysMax).optional(),
   "ctaLabel": zod.string().max(provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileCtaLabelMax).optional(),
   "ctaUrl": zod.string().max(provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileCtaUrlMax).regex(provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileCtaUrlRegExp).optional(),
   "visibility": zod.enum(['public', 'hidden']).optional(),
-  "adminSeats": zod.number().int().min(1).max(provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileAdminSeatsMax).nullish(),
+  "adminSeats": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileAdminSeatsMax).nullish(),
   "multiAdminRoles": zod.boolean().optional(),
   "supportLevel": zod.enum(['email', 'priority', 'dedicated']).optional(),
-  "supportResponseHours": zod.number().int().min(1).max(provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileSupportResponseHoursMax).nullish(),
-  "launchTargetBusinessDays": zod.number().int().min(1).max(provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileLaunchTargetBusinessDaysMax).nullish(),
+  "supportResponseHours": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileSupportResponseHoursMax).nullish(),
+  "launchTargetBusinessDays": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileLaunchTargetBusinessDaysMax).nullish(),
   "dedicatedManager": zod.boolean().optional(),
   "slaEnabled": zod.boolean().optional(),
   "slaTerms": zod.string().max(provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileSlaTermsMax).optional(),
   "earlyAccess": zod.boolean().optional(),
   "poweredByFooter": zod.boolean().optional(),
   "themeModes": zod.array(zod.enum(['light', 'dark'])).max(provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileThemeModesMax).optional(),
-  "convertProviderLimit": zod.number().int().min(provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileConvertProviderLimitMin).max(provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileConvertProviderLimitMax).nullish(),
+  "convertProviderLimit": zod.number().refine(Number.isInteger, "Expected integer, received float").min(provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileConvertProviderLimitMin).max(provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileConvertProviderLimitMax).nullish(),
   "requestedProviders": zod.array(zod.string().min(1).max(provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileRequestedProvidersItemMax)).max(provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileRequestedProvidersMax).optional(),
   "capabilities": zod.array(zod.object({
   "key": zod.string().regex(provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesItemKeyRegExp),
@@ -6437,9 +6437,9 @@ export const ProvisionWhiteLabelRequestResponse = zod.object({
 })).max(provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileCapabilitiesMax).optional(),
   "internalNotes": zod.string().max(provisionWhiteLabelRequestResponseRequestedPlanOneOneProfileInternalNotesMax).optional()
 }).optional().describe('Structured plan configuration. internalName and internalNotes are Super Admin only and never published.'),
-  "expectedRevision": zod.number().int().min(provisionWhiteLabelRequestResponseRequestedPlanOneOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
+  "expectedRevision": zod.number().refine(Number.isInteger, "Expected integer, received float").min(provisionWhiteLabelRequestResponseRequestedPlanOneOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
 }).and(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date(),
   "pricingConfigured": zod.boolean().optional(),
@@ -6448,7 +6448,7 @@ export const ProvisionWhiteLabelRequestResponse = zod.object({
   "label": zod.string().min(1).max(provisionWhiteLabelRequestResponseRequestedPlanOneTwoFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(provisionWhiteLabelRequestResponseRequestedPlanOneTwoFeatureRowsItemValueMax)
 }).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(provisionWhiteLabelRequestResponseRequestedPlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.'),
-  "revision": zod.number().int().optional()
+  "revision": zod.number().refine(Number.isInteger, "Expected integer, received float").optional()
 })),zod.null()]).optional(),
   "requestedAddons": zod.array(zod.object({
   "monthlyPrice": zod.string().regex(provisionWhiteLabelRequestResponseRequestedAddonsItemOneMonthlyPriceRegExp).nullish(),
@@ -6464,7 +6464,7 @@ export const ProvisionWhiteLabelRequestResponse = zod.object({
   "value": zod.union([zod.boolean(),zod.string().max(provisionWhiteLabelRequestResponseRequestedAddonsItemOneEntitlementsItemValueTwoMax).regex(provisionWhiteLabelRequestResponseRequestedAddonsItemOneEntitlementsItemValueTwoRegExp)])
 })).max(provisionWhiteLabelRequestResponseRequestedAddonsItemOneEntitlementsMax)
 }).and(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "pricingConfigured": zod.boolean().optional()
 }))).optional(),
   "approvedPlan": zod.union([zod.object({
@@ -6476,7 +6476,7 @@ export const ProvisionWhiteLabelRequestResponse = zod.object({
   "discountPercent": zod.string().max(provisionWhiteLabelRequestResponseApprovedPlanOneOneDiscountPercentMax).regex(provisionWhiteLabelRequestResponseApprovedPlanOneOneDiscountPercentRegExp).optional(),
   "currency": zod.string().regex(provisionWhiteLabelRequestResponseApprovedPlanOneOneCurrencyRegExp),
   "billingLabel": zod.string().max(provisionWhiteLabelRequestResponseApprovedPlanOneOneBillingLabelMax),
-  "displayOrder": zod.number().int().min(provisionWhiteLabelRequestResponseApprovedPlanOneOneDisplayOrderMin).max(provisionWhiteLabelRequestResponseApprovedPlanOneOneDisplayOrderMax),
+  "displayOrder": zod.number().refine(Number.isInteger, "Expected integer, received float").min(provisionWhiteLabelRequestResponseApprovedPlanOneOneDisplayOrderMin).max(provisionWhiteLabelRequestResponseApprovedPlanOneOneDisplayOrderMax),
   "status": zod.enum(['enabled', 'disabled', 'archived']),
   "entitlements": zod.array(zod.object({
   "key": zod.string().max(provisionWhiteLabelRequestResponseApprovedPlanOneOneEntitlementsItemKeyMax).regex(provisionWhiteLabelRequestResponseApprovedPlanOneOneEntitlementsItemKeyRegExp),
@@ -6509,22 +6509,22 @@ export const ProvisionWhiteLabelRequestResponse = zod.object({
   "promoStartsAt": zod.coerce.date().nullish(),
   "promoEndsAt": zod.coerce.date().nullish(),
   "billingInterval": zod.enum(['monthly', 'yearly', 'monthly_and_yearly', 'custom']).optional(),
-  "trialDays": zod.number().int().min(provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileTrialDaysMin).max(provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileTrialDaysMax).optional(),
+  "trialDays": zod.number().refine(Number.isInteger, "Expected integer, received float").min(provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileTrialDaysMin).max(provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileTrialDaysMax).optional(),
   "ctaLabel": zod.string().max(provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileCtaLabelMax).optional(),
   "ctaUrl": zod.string().max(provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileCtaUrlMax).regex(provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileCtaUrlRegExp).optional(),
   "visibility": zod.enum(['public', 'hidden']).optional(),
-  "adminSeats": zod.number().int().min(1).max(provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileAdminSeatsMax).nullish(),
+  "adminSeats": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileAdminSeatsMax).nullish(),
   "multiAdminRoles": zod.boolean().optional(),
   "supportLevel": zod.enum(['email', 'priority', 'dedicated']).optional(),
-  "supportResponseHours": zod.number().int().min(1).max(provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileSupportResponseHoursMax).nullish(),
-  "launchTargetBusinessDays": zod.number().int().min(1).max(provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileLaunchTargetBusinessDaysMax).nullish(),
+  "supportResponseHours": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileSupportResponseHoursMax).nullish(),
+  "launchTargetBusinessDays": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileLaunchTargetBusinessDaysMax).nullish(),
   "dedicatedManager": zod.boolean().optional(),
   "slaEnabled": zod.boolean().optional(),
   "slaTerms": zod.string().max(provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileSlaTermsMax).optional(),
   "earlyAccess": zod.boolean().optional(),
   "poweredByFooter": zod.boolean().optional(),
   "themeModes": zod.array(zod.enum(['light', 'dark'])).max(provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileThemeModesMax).optional(),
-  "convertProviderLimit": zod.number().int().min(provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileConvertProviderLimitMin).max(provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileConvertProviderLimitMax).nullish(),
+  "convertProviderLimit": zod.number().refine(Number.isInteger, "Expected integer, received float").min(provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileConvertProviderLimitMin).max(provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileConvertProviderLimitMax).nullish(),
   "requestedProviders": zod.array(zod.string().min(1).max(provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileRequestedProvidersItemMax)).max(provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileRequestedProvidersMax).optional(),
   "capabilities": zod.array(zod.object({
   "key": zod.string().regex(provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesItemKeyRegExp),
@@ -6544,9 +6544,9 @@ export const ProvisionWhiteLabelRequestResponse = zod.object({
 })).max(provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileCapabilitiesMax).optional(),
   "internalNotes": zod.string().max(provisionWhiteLabelRequestResponseApprovedPlanOneOneProfileInternalNotesMax).optional()
 }).optional().describe('Structured plan configuration. internalName and internalNotes are Super Admin only and never published.'),
-  "expectedRevision": zod.number().int().min(provisionWhiteLabelRequestResponseApprovedPlanOneOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
+  "expectedRevision": zod.number().refine(Number.isInteger, "Expected integer, received float").min(provisionWhiteLabelRequestResponseApprovedPlanOneOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
 }).and(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date(),
   "pricingConfigured": zod.boolean().optional(),
@@ -6555,7 +6555,7 @@ export const ProvisionWhiteLabelRequestResponse = zod.object({
   "label": zod.string().min(1).max(provisionWhiteLabelRequestResponseApprovedPlanOneTwoFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(provisionWhiteLabelRequestResponseApprovedPlanOneTwoFeatureRowsItemValueMax)
 }).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(provisionWhiteLabelRequestResponseApprovedPlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.'),
-  "revision": zod.number().int().optional()
+  "revision": zod.number().refine(Number.isInteger, "Expected integer, received float").optional()
 })),zod.null()]).optional(),
   "approvedAddons": zod.array(zod.object({
   "monthlyPrice": zod.string().regex(provisionWhiteLabelRequestResponseApprovedAddonsItemOneMonthlyPriceRegExp).nullish(),
@@ -6571,14 +6571,14 @@ export const ProvisionWhiteLabelRequestResponse = zod.object({
   "value": zod.union([zod.boolean(),zod.string().max(provisionWhiteLabelRequestResponseApprovedAddonsItemOneEntitlementsItemValueTwoMax).regex(provisionWhiteLabelRequestResponseApprovedAddonsItemOneEntitlementsItemValueTwoRegExp)])
 })).max(provisionWhiteLabelRequestResponseApprovedAddonsItemOneEntitlementsMax)
 }).and(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "pricingConfigured": zod.boolean().optional()
 }))).optional(),
   "attachments": zod.array(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "fileName": zod.string(),
   "contentType": zod.string(),
-  "size": zod.number().int(),
+  "size": zod.number().refine(Number.isInteger, "Expected integer, received float"),
   "category": zod.enum(['logo', 'favicon', 'design_reference', 'requirement']),
   "createdAt": zod.coerce.date()
 })).optional(),
@@ -6588,21 +6588,21 @@ export const ProvisionWhiteLabelRequestResponse = zod.object({
   "setupPrice": zod.string().nullable(),
   "currency": zod.string().nullable(),
   "operatorNote": zod.string(),
-  "tenantId": zod.string().uuid().nullable(),
+  "tenantId": zod.guid().nullable(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date()
 })
 
 
 export const ListExchangeAuditParams = zod.object({
-  "tenantId": zod.coerce.string().uuid()
+  "tenantId": zod.guid()
 })
 
 
 
 
 export const ListExchangeAuditQueryParams = zod.object({
-  "page": zod.coerce.number().int().min(1).optional()
+  "page": zod.coerce.number().refine(Number.isInteger, "Expected integer, received float").min(1).optional()
 })
 
 export const ListExchangeAuditResponse = zod.object({
@@ -6611,17 +6611,17 @@ export const ListExchangeAuditResponse = zod.object({
   "eventType": zod.string(),
   "actorId": zod.string().optional(),
   "description": zod.string(),
-  "tenantId": zod.string().uuid().nullable(),
+  "tenantId": zod.guid().nullable(),
   "createdAt": zod.coerce.date()
 })),
-  "total": zod.number().int(),
-  "page": zod.number().int(),
-  "pageSize": zod.number().int()
+  "total": zod.number().refine(Number.isInteger, "Expected integer, received float"),
+  "page": zod.number().refine(Number.isInteger, "Expected integer, received float"),
+  "pageSize": zod.number().refine(Number.isInteger, "Expected integer, received float")
 })
 
 
 export const GetExchangeConfigurationParams = zod.object({
-  "tenantId": zod.coerce.string().uuid()
+  "tenantId": zod.guid()
 })
 
 export const getExchangeConfigurationResponseConfigurationPublicNoteMax = 1000;
@@ -6770,17 +6770,17 @@ export const GetExchangeConfigurationResponse = zod.object({
   "swap": zod.object({
   "source": zod.string().min(1).max(getExchangeConfigurationResponseConfigurationDefaultPairsSwapSourceMax),
   "destination": zod.string().min(1).max(getExchangeConfigurationResponseConfigurationDefaultPairsSwapDestinationMax),
-  "paymentMethodId": zod.string().uuid().optional()
+  "paymentMethodId": zod.guid().optional()
 }).optional(),
   "convert": zod.object({
   "source": zod.string().min(1).max(getExchangeConfigurationResponseConfigurationDefaultPairsConvertSourceMax),
   "destination": zod.string().min(1).max(getExchangeConfigurationResponseConfigurationDefaultPairsConvertDestinationMax),
-  "paymentMethodId": zod.string().uuid().optional()
+  "paymentMethodId": zod.guid().optional()
 }).optional()
 }).optional(),
   "fiatPlanRate": zod.string().regex(getExchangeConfigurationResponseConfigurationFiatPlanRateRegExp),
   "fiatPlanRates": zod.record(zod.string(), zod.string().regex(getExchangeConfigurationResponseConfigurationFiatPlanRatesRegExpOne)).optional(),
-  "fiatPrecisions": zod.record(zod.string(), zod.number().int().min(getExchangeConfigurationResponseConfigurationFiatPrecisionsMinOne).max(getExchangeConfigurationResponseConfigurationFiatPrecisionsMaxOne)).optional().describe('Server-computed from the authoritative global catalog on every read.'),
+  "fiatPrecisions": zod.record(zod.string(), zod.number().refine(Number.isInteger, "Expected integer, received float").min(getExchangeConfigurationResponseConfigurationFiatPrecisionsMinOne).max(getExchangeConfigurationResponseConfigurationFiatPrecisionsMaxOne)).optional().describe('Server-computed from the authoritative global catalog on every read.'),
   "actions": zod.object({
   "swap": zod.boolean(),
   "convert": zod.boolean(),
@@ -6790,9 +6790,9 @@ export const GetExchangeConfigurationResponse = zod.object({
   "assets": zod.array(zod.object({
   "assetId": zod.string().min(1).max(getExchangeConfigurationResponseConfigurationAssetsItemAssetIdMax),
   "enabled": zod.boolean(),
-  "displayOrder": zod.number().int().min(getExchangeConfigurationResponseConfigurationAssetsItemDisplayOrderMin).max(getExchangeConfigurationResponseConfigurationAssetsItemDisplayOrderMax),
+  "displayOrder": zod.number().refine(Number.isInteger, "Expected integer, received float").min(getExchangeConfigurationResponseConfigurationAssetsItemDisplayOrderMin).max(getExchangeConfigurationResponseConfigurationAssetsItemDisplayOrderMax),
   "symbol": zod.string().min(1).max(getExchangeConfigurationResponseConfigurationAssetsItemSymbolMax),
-  "decimals": zod.number().int().min(getExchangeConfigurationResponseConfigurationAssetsItemDecimalsMin).max(getExchangeConfigurationResponseConfigurationAssetsItemDecimalsMax),
+  "decimals": zod.number().refine(Number.isInteger, "Expected integer, received float").min(getExchangeConfigurationResponseConfigurationAssetsItemDecimalsMin).max(getExchangeConfigurationResponseConfigurationAssetsItemDecimalsMax),
   "logoUrl": zod.string().max(getExchangeConfigurationResponseConfigurationAssetsItemLogoUrlMax).nullable(),
   "sandboxPlanRate": zod.string().regex(getExchangeConfigurationResponseConfigurationAssetsItemSandboxPlanRateRegExp)
 })).max(getExchangeConfigurationResponseConfigurationAssetsMax),
@@ -6807,7 +6807,7 @@ export const GetExchangeConfigurationResponse = zod.object({
   "providerId": zod.string().max(getExchangeConfigurationResponseConfigurationNetworksItemProviderIdMax).optional()
 })).max(getExchangeConfigurationResponseConfigurationNetworksMax),
   "routes": zod.array(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "source": zod.string().min(1).max(getExchangeConfigurationResponseConfigurationRoutesItemSourceMax),
   "destination": zod.string().min(1).max(getExchangeConfigurationResponseConfigurationRoutesItemDestinationMax),
   "action": zod.enum(['swap', 'convert', 'buy', 'sell']),
@@ -6815,33 +6815,33 @@ export const GetExchangeConfigurationResponse = zod.object({
   "rate": zod.string().regex(getExchangeConfigurationResponseConfigurationRoutesItemRateRegExp),
   "minimum": zod.string().regex(getExchangeConfigurationResponseConfigurationRoutesItemMinimumRegExp),
   "maximum": zod.string().regex(getExchangeConfigurationResponseConfigurationRoutesItemMaximumRegExp),
-  "feeBps": zod.number().int().min(getExchangeConfigurationResponseConfigurationRoutesItemFeeBpsMin).max(getExchangeConfigurationResponseConfigurationRoutesItemFeeBpsMax),
+  "feeBps": zod.number().refine(Number.isInteger, "Expected integer, received float").min(getExchangeConfigurationResponseConfigurationRoutesItemFeeBpsMin).max(getExchangeConfigurationResponseConfigurationRoutesItemFeeBpsMax),
   "fixedFee": zod.string().regex(getExchangeConfigurationResponseConfigurationRoutesItemFixedFeeRegExp),
-  "spreadBps": zod.number().int().min(getExchangeConfigurationResponseConfigurationRoutesItemSpreadBpsMin).max(getExchangeConfigurationResponseConfigurationRoutesItemSpreadBpsMax),
-  "paymentMethodIds": zod.array(zod.string().uuid()).max(getExchangeConfigurationResponseConfigurationRoutesItemPaymentMethodIdsMax),
+  "spreadBps": zod.number().refine(Number.isInteger, "Expected integer, received float").min(getExchangeConfigurationResponseConfigurationRoutesItemSpreadBpsMin).max(getExchangeConfigurationResponseConfigurationRoutesItemSpreadBpsMax),
+  "paymentMethodIds": zod.array(zod.guid()).max(getExchangeConfigurationResponseConfigurationRoutesItemPaymentMethodIdsMax),
   "providerId": zod.string().max(getExchangeConfigurationResponseConfigurationRoutesItemProviderIdMax).optional()
 })).max(getExchangeConfigurationResponseConfigurationRoutesMax),
   "pricingRules": zod.array(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "action": zod.enum(['swap', 'convert', 'buy', 'sell']),
   "source": zod.string().min(1).max(getExchangeConfigurationResponseConfigurationPricingRulesItemSourceMax).describe('Tenant asset-network ID, fiat endpoint, or * for Any'),
   "destination": zod.string().min(1).max(getExchangeConfigurationResponseConfigurationPricingRulesItemDestinationMax),
-  "paymentMethodId": zod.string().uuid().optional(),
+  "paymentMethodId": zod.guid().optional(),
   "enabled": zod.boolean(),
-  "priority": zod.number().int().min(getExchangeConfigurationResponseConfigurationPricingRulesItemPriorityMin).max(getExchangeConfigurationResponseConfigurationPricingRulesItemPriorityMax),
+  "priority": zod.number().refine(Number.isInteger, "Expected integer, received float").min(getExchangeConfigurationResponseConfigurationPricingRulesItemPriorityMin).max(getExchangeConfigurationResponseConfigurationPricingRulesItemPriorityMax),
   "rate": zod.string().regex(getExchangeConfigurationResponseConfigurationPricingRulesItemRateRegExp).optional().describe('Optional explicit manual rate; omission preserves the route/provider base rate'),
-  "feeBps": zod.number().int().min(getExchangeConfigurationResponseConfigurationPricingRulesItemFeeBpsMin).max(getExchangeConfigurationResponseConfigurationPricingRulesItemFeeBpsMax),
+  "feeBps": zod.number().refine(Number.isInteger, "Expected integer, received float").min(getExchangeConfigurationResponseConfigurationPricingRulesItemFeeBpsMin).max(getExchangeConfigurationResponseConfigurationPricingRulesItemFeeBpsMax),
   "fixedFee": zod.string().regex(getExchangeConfigurationResponseConfigurationPricingRulesItemFixedFeeRegExp),
-  "spreadBps": zod.number().int().min(getExchangeConfigurationResponseConfigurationPricingRulesItemSpreadBpsMin).max(getExchangeConfigurationResponseConfigurationPricingRulesItemSpreadBpsMax),
+  "spreadBps": zod.number().refine(Number.isInteger, "Expected integer, received float").min(getExchangeConfigurationResponseConfigurationPricingRulesItemSpreadBpsMin).max(getExchangeConfigurationResponseConfigurationPricingRulesItemSpreadBpsMax),
   "state": zod.enum(['enabled', 'disabled', 'blocked']).optional(),
   "pricingMode": zod.enum(['manual', 'market']).optional().describe('Market requires fresh real reference data. Manual requires an explicitly configured rate.'),
   "minimum": zod.string().regex(getExchangeConfigurationResponseConfigurationPricingRulesItemMinimumRegExp).optional(),
   "maximum": zod.string().regex(getExchangeConfigurationResponseConfigurationPricingRulesItemMaximumRegExp).optional(),
-  "routeIds": zod.array(zod.string().uuid()).max(getExchangeConfigurationResponseConfigurationPricingRulesItemRouteIdsMax).optional()
+  "routeIds": zod.array(zod.guid()).max(getExchangeConfigurationResponseConfigurationPricingRulesItemRouteIdsMax).optional()
 })).max(getExchangeConfigurationResponseConfigurationPricingRulesMax).optional(),
   "wallets": zod.array(zod.object({
   "purpose": zod.enum(['customer', 'monitoring']).optional().describe('Customer public-address configuration is separate from Super Admin RPC monitoring. Omitted on legacy monitoring records.'),
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "label": zod.string().min(1).max(getExchangeConfigurationResponseConfigurationWalletsItemLabelMax),
   "assetNetworkId": zod.string().min(1).max(getExchangeConfigurationResponseConfigurationWalletsItemAssetNetworkIdMax),
   "address": zod.string().min(1).max(getExchangeConfigurationResponseConfigurationWalletsItemAddressMax),
@@ -6854,7 +6854,7 @@ export const GetExchangeConfigurationResponse = zod.object({
 })).max(getExchangeConfigurationResponseConfigurationWalletsMax).optional(),
   "paymentMethods": zod.array(zod.object({
   "receivingIbanRequired": zod.boolean().optional().describe('Public field requirement only; no operator bank details'),
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "label": zod.string().min(getExchangeConfigurationResponseConfigurationPaymentMethodsItemLabelMin).max(getExchangeConfigurationResponseConfigurationPaymentMethodsItemLabelMax),
   "instructions": zod.string().max(getExchangeConfigurationResponseConfigurationPaymentMethodsItemInstructionsMax).optional().describe('Optional sandbox payment instructions, frozen on order creation; never include credentials'),
   "enabled": zod.boolean(),
@@ -6868,7 +6868,7 @@ export const GetExchangeConfigurationResponse = zod.object({
   "methodType": zod.enum(['bank', 'card', 'manual']).optional(),
   "minimum": zod.string().regex(getExchangeConfigurationResponseConfigurationPaymentMethodsItemMinimumRegExp).optional(),
   "maximum": zod.string().regex(getExchangeConfigurationResponseConfigurationPaymentMethodsItemMaximumRegExp).nullish(),
-  "feeBps": zod.number().int().min(getExchangeConfigurationResponseConfigurationPaymentMethodsItemFeeBpsMin).max(getExchangeConfigurationResponseConfigurationPaymentMethodsItemFeeBpsMax).optional(),
+  "feeBps": zod.number().refine(Number.isInteger, "Expected integer, received float").min(getExchangeConfigurationResponseConfigurationPaymentMethodsItemFeeBpsMin).max(getExchangeConfigurationResponseConfigurationPaymentMethodsItemFeeBpsMax).optional(),
   "fixedFee": zod.string().regex(getExchangeConfigurationResponseConfigurationPaymentMethodsItemFixedFeeRegExp).optional(),
   "reserve": zod.string().regex(getExchangeConfigurationResponseConfigurationPaymentMethodsItemReserveRegExp).optional().describe('Administrator-maintained sandbox reserve metadata in fiat currency. No funds exist and this does not affect quotes or execution.')
 })).max(getExchangeConfigurationResponseConfigurationPaymentMethodsMax),
@@ -6880,7 +6880,7 @@ export const GetExchangeConfigurationResponse = zod.object({
 })).max(getExchangeConfigurationResponseConfigurationProvidersMax).optional()
 }),
   "catalog": zod.array(zod.object({
-  "decimals": zod.number().int().min(getExchangeConfigurationResponseCatalogItemDecimalsMin).max(getExchangeConfigurationResponseCatalogItemDecimalsMax).optional(),
+  "decimals": zod.number().refine(Number.isInteger, "Expected integer, received float").min(getExchangeConfigurationResponseCatalogItemDecimalsMin).max(getExchangeConfigurationResponseCatalogItemDecimalsMax).optional(),
   "contractAddress": zod.string().nullish(),
   "native": zod.boolean().optional(),
   "memoRequired": zod.boolean().optional(),
@@ -6907,7 +6907,7 @@ export const GetExchangeConfigurationResponse = zod.object({
 
 
 export const SaveExchangeConfigurationParams = zod.object({
-  "tenantId": zod.coerce.string().uuid()
+  "tenantId": zod.guid()
 })
 
 export const saveExchangeConfigurationBodyPublicNoteMax = 1000;
@@ -7049,12 +7049,12 @@ export const SaveExchangeConfigurationBody = zod.object({
   "swap": zod.object({
   "source": zod.string().min(1).max(saveExchangeConfigurationBodyDefaultPairsSwapSourceMax),
   "destination": zod.string().min(1).max(saveExchangeConfigurationBodyDefaultPairsSwapDestinationMax),
-  "paymentMethodId": zod.string().uuid().optional()
+  "paymentMethodId": zod.guid().optional()
 }).optional(),
   "convert": zod.object({
   "source": zod.string().min(1).max(saveExchangeConfigurationBodyDefaultPairsConvertSourceMax),
   "destination": zod.string().min(1).max(saveExchangeConfigurationBodyDefaultPairsConvertDestinationMax),
-  "paymentMethodId": zod.string().uuid().optional()
+  "paymentMethodId": zod.guid().optional()
 }).optional()
 }).optional(),
   "fiatPlanRate": zod.string().regex(saveExchangeConfigurationBodyFiatPlanRateRegExp),
@@ -7068,9 +7068,9 @@ export const SaveExchangeConfigurationBody = zod.object({
   "assets": zod.array(zod.object({
   "assetId": zod.string().min(1).max(saveExchangeConfigurationBodyAssetsItemAssetIdMax),
   "enabled": zod.boolean(),
-  "displayOrder": zod.number().int().min(saveExchangeConfigurationBodyAssetsItemDisplayOrderMin).max(saveExchangeConfigurationBodyAssetsItemDisplayOrderMax),
+  "displayOrder": zod.number().refine(Number.isInteger, "Expected integer, received float").min(saveExchangeConfigurationBodyAssetsItemDisplayOrderMin).max(saveExchangeConfigurationBodyAssetsItemDisplayOrderMax),
   "symbol": zod.string().min(1).max(saveExchangeConfigurationBodyAssetsItemSymbolMax),
-  "decimals": zod.number().int().min(saveExchangeConfigurationBodyAssetsItemDecimalsMin).max(saveExchangeConfigurationBodyAssetsItemDecimalsMax),
+  "decimals": zod.number().refine(Number.isInteger, "Expected integer, received float").min(saveExchangeConfigurationBodyAssetsItemDecimalsMin).max(saveExchangeConfigurationBodyAssetsItemDecimalsMax),
   "logoUrl": zod.string().max(saveExchangeConfigurationBodyAssetsItemLogoUrlMax).nullable(),
   "sandboxPlanRate": zod.string().regex(saveExchangeConfigurationBodyAssetsItemSandboxPlanRateRegExp)
 })).max(saveExchangeConfigurationBodyAssetsMax),
@@ -7085,7 +7085,7 @@ export const SaveExchangeConfigurationBody = zod.object({
   "providerId": zod.string().max(saveExchangeConfigurationBodyNetworksItemProviderIdMax).optional()
 })).max(saveExchangeConfigurationBodyNetworksMax),
   "routes": zod.array(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "source": zod.string().min(1).max(saveExchangeConfigurationBodyRoutesItemSourceMax),
   "destination": zod.string().min(1).max(saveExchangeConfigurationBodyRoutesItemDestinationMax),
   "action": zod.enum(['swap', 'convert', 'buy', 'sell']),
@@ -7093,33 +7093,33 @@ export const SaveExchangeConfigurationBody = zod.object({
   "rate": zod.string().regex(saveExchangeConfigurationBodyRoutesItemRateRegExp),
   "minimum": zod.string().regex(saveExchangeConfigurationBodyRoutesItemMinimumRegExp),
   "maximum": zod.string().regex(saveExchangeConfigurationBodyRoutesItemMaximumRegExp),
-  "feeBps": zod.number().int().min(saveExchangeConfigurationBodyRoutesItemFeeBpsMin).max(saveExchangeConfigurationBodyRoutesItemFeeBpsMax),
+  "feeBps": zod.number().refine(Number.isInteger, "Expected integer, received float").min(saveExchangeConfigurationBodyRoutesItemFeeBpsMin).max(saveExchangeConfigurationBodyRoutesItemFeeBpsMax),
   "fixedFee": zod.string().regex(saveExchangeConfigurationBodyRoutesItemFixedFeeRegExp),
-  "spreadBps": zod.number().int().min(saveExchangeConfigurationBodyRoutesItemSpreadBpsMin).max(saveExchangeConfigurationBodyRoutesItemSpreadBpsMax),
-  "paymentMethodIds": zod.array(zod.string().uuid()).max(saveExchangeConfigurationBodyRoutesItemPaymentMethodIdsMax),
+  "spreadBps": zod.number().refine(Number.isInteger, "Expected integer, received float").min(saveExchangeConfigurationBodyRoutesItemSpreadBpsMin).max(saveExchangeConfigurationBodyRoutesItemSpreadBpsMax),
+  "paymentMethodIds": zod.array(zod.guid()).max(saveExchangeConfigurationBodyRoutesItemPaymentMethodIdsMax),
   "providerId": zod.string().max(saveExchangeConfigurationBodyRoutesItemProviderIdMax).optional()
 })).max(saveExchangeConfigurationBodyRoutesMax),
   "pricingRules": zod.array(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "action": zod.enum(['swap', 'convert', 'buy', 'sell']),
   "source": zod.string().min(1).max(saveExchangeConfigurationBodyPricingRulesItemSourceMax).describe('Tenant asset-network ID, fiat endpoint, or * for Any'),
   "destination": zod.string().min(1).max(saveExchangeConfigurationBodyPricingRulesItemDestinationMax),
-  "paymentMethodId": zod.string().uuid().optional(),
+  "paymentMethodId": zod.guid().optional(),
   "enabled": zod.boolean(),
-  "priority": zod.number().int().min(saveExchangeConfigurationBodyPricingRulesItemPriorityMin).max(saveExchangeConfigurationBodyPricingRulesItemPriorityMax),
+  "priority": zod.number().refine(Number.isInteger, "Expected integer, received float").min(saveExchangeConfigurationBodyPricingRulesItemPriorityMin).max(saveExchangeConfigurationBodyPricingRulesItemPriorityMax),
   "rate": zod.string().regex(saveExchangeConfigurationBodyPricingRulesItemRateRegExp).optional().describe('Optional explicit manual rate; omission preserves the route/provider base rate'),
-  "feeBps": zod.number().int().min(saveExchangeConfigurationBodyPricingRulesItemFeeBpsMin).max(saveExchangeConfigurationBodyPricingRulesItemFeeBpsMax),
+  "feeBps": zod.number().refine(Number.isInteger, "Expected integer, received float").min(saveExchangeConfigurationBodyPricingRulesItemFeeBpsMin).max(saveExchangeConfigurationBodyPricingRulesItemFeeBpsMax),
   "fixedFee": zod.string().regex(saveExchangeConfigurationBodyPricingRulesItemFixedFeeRegExp),
-  "spreadBps": zod.number().int().min(saveExchangeConfigurationBodyPricingRulesItemSpreadBpsMin).max(saveExchangeConfigurationBodyPricingRulesItemSpreadBpsMax),
+  "spreadBps": zod.number().refine(Number.isInteger, "Expected integer, received float").min(saveExchangeConfigurationBodyPricingRulesItemSpreadBpsMin).max(saveExchangeConfigurationBodyPricingRulesItemSpreadBpsMax),
   "state": zod.enum(['enabled', 'disabled', 'blocked']).optional(),
   "pricingMode": zod.enum(['manual', 'market']).optional().describe('Market requires fresh real reference data. Manual requires an explicitly configured rate.'),
   "minimum": zod.string().regex(saveExchangeConfigurationBodyPricingRulesItemMinimumRegExp).optional(),
   "maximum": zod.string().regex(saveExchangeConfigurationBodyPricingRulesItemMaximumRegExp).optional(),
-  "routeIds": zod.array(zod.string().uuid()).max(saveExchangeConfigurationBodyPricingRulesItemRouteIdsMax).optional()
+  "routeIds": zod.array(zod.guid()).max(saveExchangeConfigurationBodyPricingRulesItemRouteIdsMax).optional()
 })).max(saveExchangeConfigurationBodyPricingRulesMax).optional(),
   "wallets": zod.array(zod.object({
   "purpose": zod.enum(['customer', 'monitoring']).optional().describe('Customer public-address configuration is separate from Super Admin RPC monitoring. Omitted on legacy monitoring records.'),
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "label": zod.string().min(1).max(saveExchangeConfigurationBodyWalletsItemLabelMax),
   "assetNetworkId": zod.string().min(1).max(saveExchangeConfigurationBodyWalletsItemAssetNetworkIdMax),
   "address": zod.string().min(1).max(saveExchangeConfigurationBodyWalletsItemAddressMax),
@@ -7132,7 +7132,7 @@ export const SaveExchangeConfigurationBody = zod.object({
 })).max(saveExchangeConfigurationBodyWalletsMax).optional(),
   "paymentMethods": zod.array(zod.object({
   "receivingIbanRequired": zod.boolean().optional().describe('Public field requirement only; no operator bank details'),
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "label": zod.string().min(saveExchangeConfigurationBodyPaymentMethodsItemLabelMin).max(saveExchangeConfigurationBodyPaymentMethodsItemLabelMax),
   "instructions": zod.string().max(saveExchangeConfigurationBodyPaymentMethodsItemInstructionsMax).optional().describe('Optional sandbox payment instructions, frozen on order creation; never include credentials'),
   "enabled": zod.boolean(),
@@ -7146,7 +7146,7 @@ export const SaveExchangeConfigurationBody = zod.object({
   "methodType": zod.enum(['bank', 'card', 'manual']).optional(),
   "minimum": zod.string().regex(saveExchangeConfigurationBodyPaymentMethodsItemMinimumRegExp).optional(),
   "maximum": zod.string().regex(saveExchangeConfigurationBodyPaymentMethodsItemMaximumRegExp).nullish(),
-  "feeBps": zod.number().int().min(saveExchangeConfigurationBodyPaymentMethodsItemFeeBpsMin).max(saveExchangeConfigurationBodyPaymentMethodsItemFeeBpsMax).optional(),
+  "feeBps": zod.number().refine(Number.isInteger, "Expected integer, received float").min(saveExchangeConfigurationBodyPaymentMethodsItemFeeBpsMin).max(saveExchangeConfigurationBodyPaymentMethodsItemFeeBpsMax).optional(),
   "fixedFee": zod.string().regex(saveExchangeConfigurationBodyPaymentMethodsItemFixedFeeRegExp).optional(),
   "reserve": zod.string().regex(saveExchangeConfigurationBodyPaymentMethodsItemReserveRegExp).optional().describe('Administrator-maintained sandbox reserve metadata in fiat currency. No funds exist and this does not affect quotes or execution.')
 })).max(saveExchangeConfigurationBodyPaymentMethodsMax),
@@ -7304,17 +7304,17 @@ export const SaveExchangeConfigurationResponse = zod.object({
   "swap": zod.object({
   "source": zod.string().min(1).max(saveExchangeConfigurationResponseConfigurationDefaultPairsSwapSourceMax),
   "destination": zod.string().min(1).max(saveExchangeConfigurationResponseConfigurationDefaultPairsSwapDestinationMax),
-  "paymentMethodId": zod.string().uuid().optional()
+  "paymentMethodId": zod.guid().optional()
 }).optional(),
   "convert": zod.object({
   "source": zod.string().min(1).max(saveExchangeConfigurationResponseConfigurationDefaultPairsConvertSourceMax),
   "destination": zod.string().min(1).max(saveExchangeConfigurationResponseConfigurationDefaultPairsConvertDestinationMax),
-  "paymentMethodId": zod.string().uuid().optional()
+  "paymentMethodId": zod.guid().optional()
 }).optional()
 }).optional(),
   "fiatPlanRate": zod.string().regex(saveExchangeConfigurationResponseConfigurationFiatPlanRateRegExp),
   "fiatPlanRates": zod.record(zod.string(), zod.string().regex(saveExchangeConfigurationResponseConfigurationFiatPlanRatesRegExpOne)).optional(),
-  "fiatPrecisions": zod.record(zod.string(), zod.number().int().min(saveExchangeConfigurationResponseConfigurationFiatPrecisionsMinOne).max(saveExchangeConfigurationResponseConfigurationFiatPrecisionsMaxOne)).optional().describe('Server-computed from the authoritative global catalog on every read.'),
+  "fiatPrecisions": zod.record(zod.string(), zod.number().refine(Number.isInteger, "Expected integer, received float").min(saveExchangeConfigurationResponseConfigurationFiatPrecisionsMinOne).max(saveExchangeConfigurationResponseConfigurationFiatPrecisionsMaxOne)).optional().describe('Server-computed from the authoritative global catalog on every read.'),
   "actions": zod.object({
   "swap": zod.boolean(),
   "convert": zod.boolean(),
@@ -7324,9 +7324,9 @@ export const SaveExchangeConfigurationResponse = zod.object({
   "assets": zod.array(zod.object({
   "assetId": zod.string().min(1).max(saveExchangeConfigurationResponseConfigurationAssetsItemAssetIdMax),
   "enabled": zod.boolean(),
-  "displayOrder": zod.number().int().min(saveExchangeConfigurationResponseConfigurationAssetsItemDisplayOrderMin).max(saveExchangeConfigurationResponseConfigurationAssetsItemDisplayOrderMax),
+  "displayOrder": zod.number().refine(Number.isInteger, "Expected integer, received float").min(saveExchangeConfigurationResponseConfigurationAssetsItemDisplayOrderMin).max(saveExchangeConfigurationResponseConfigurationAssetsItemDisplayOrderMax),
   "symbol": zod.string().min(1).max(saveExchangeConfigurationResponseConfigurationAssetsItemSymbolMax),
-  "decimals": zod.number().int().min(saveExchangeConfigurationResponseConfigurationAssetsItemDecimalsMin).max(saveExchangeConfigurationResponseConfigurationAssetsItemDecimalsMax),
+  "decimals": zod.number().refine(Number.isInteger, "Expected integer, received float").min(saveExchangeConfigurationResponseConfigurationAssetsItemDecimalsMin).max(saveExchangeConfigurationResponseConfigurationAssetsItemDecimalsMax),
   "logoUrl": zod.string().max(saveExchangeConfigurationResponseConfigurationAssetsItemLogoUrlMax).nullable(),
   "sandboxPlanRate": zod.string().regex(saveExchangeConfigurationResponseConfigurationAssetsItemSandboxPlanRateRegExp)
 })).max(saveExchangeConfigurationResponseConfigurationAssetsMax),
@@ -7341,7 +7341,7 @@ export const SaveExchangeConfigurationResponse = zod.object({
   "providerId": zod.string().max(saveExchangeConfigurationResponseConfigurationNetworksItemProviderIdMax).optional()
 })).max(saveExchangeConfigurationResponseConfigurationNetworksMax),
   "routes": zod.array(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "source": zod.string().min(1).max(saveExchangeConfigurationResponseConfigurationRoutesItemSourceMax),
   "destination": zod.string().min(1).max(saveExchangeConfigurationResponseConfigurationRoutesItemDestinationMax),
   "action": zod.enum(['swap', 'convert', 'buy', 'sell']),
@@ -7349,33 +7349,33 @@ export const SaveExchangeConfigurationResponse = zod.object({
   "rate": zod.string().regex(saveExchangeConfigurationResponseConfigurationRoutesItemRateRegExp),
   "minimum": zod.string().regex(saveExchangeConfigurationResponseConfigurationRoutesItemMinimumRegExp),
   "maximum": zod.string().regex(saveExchangeConfigurationResponseConfigurationRoutesItemMaximumRegExp),
-  "feeBps": zod.number().int().min(saveExchangeConfigurationResponseConfigurationRoutesItemFeeBpsMin).max(saveExchangeConfigurationResponseConfigurationRoutesItemFeeBpsMax),
+  "feeBps": zod.number().refine(Number.isInteger, "Expected integer, received float").min(saveExchangeConfigurationResponseConfigurationRoutesItemFeeBpsMin).max(saveExchangeConfigurationResponseConfigurationRoutesItemFeeBpsMax),
   "fixedFee": zod.string().regex(saveExchangeConfigurationResponseConfigurationRoutesItemFixedFeeRegExp),
-  "spreadBps": zod.number().int().min(saveExchangeConfigurationResponseConfigurationRoutesItemSpreadBpsMin).max(saveExchangeConfigurationResponseConfigurationRoutesItemSpreadBpsMax),
-  "paymentMethodIds": zod.array(zod.string().uuid()).max(saveExchangeConfigurationResponseConfigurationRoutesItemPaymentMethodIdsMax),
+  "spreadBps": zod.number().refine(Number.isInteger, "Expected integer, received float").min(saveExchangeConfigurationResponseConfigurationRoutesItemSpreadBpsMin).max(saveExchangeConfigurationResponseConfigurationRoutesItemSpreadBpsMax),
+  "paymentMethodIds": zod.array(zod.guid()).max(saveExchangeConfigurationResponseConfigurationRoutesItemPaymentMethodIdsMax),
   "providerId": zod.string().max(saveExchangeConfigurationResponseConfigurationRoutesItemProviderIdMax).optional()
 })).max(saveExchangeConfigurationResponseConfigurationRoutesMax),
   "pricingRules": zod.array(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "action": zod.enum(['swap', 'convert', 'buy', 'sell']),
   "source": zod.string().min(1).max(saveExchangeConfigurationResponseConfigurationPricingRulesItemSourceMax).describe('Tenant asset-network ID, fiat endpoint, or * for Any'),
   "destination": zod.string().min(1).max(saveExchangeConfigurationResponseConfigurationPricingRulesItemDestinationMax),
-  "paymentMethodId": zod.string().uuid().optional(),
+  "paymentMethodId": zod.guid().optional(),
   "enabled": zod.boolean(),
-  "priority": zod.number().int().min(saveExchangeConfigurationResponseConfigurationPricingRulesItemPriorityMin).max(saveExchangeConfigurationResponseConfigurationPricingRulesItemPriorityMax),
+  "priority": zod.number().refine(Number.isInteger, "Expected integer, received float").min(saveExchangeConfigurationResponseConfigurationPricingRulesItemPriorityMin).max(saveExchangeConfigurationResponseConfigurationPricingRulesItemPriorityMax),
   "rate": zod.string().regex(saveExchangeConfigurationResponseConfigurationPricingRulesItemRateRegExp).optional().describe('Optional explicit manual rate; omission preserves the route/provider base rate'),
-  "feeBps": zod.number().int().min(saveExchangeConfigurationResponseConfigurationPricingRulesItemFeeBpsMin).max(saveExchangeConfigurationResponseConfigurationPricingRulesItemFeeBpsMax),
+  "feeBps": zod.number().refine(Number.isInteger, "Expected integer, received float").min(saveExchangeConfigurationResponseConfigurationPricingRulesItemFeeBpsMin).max(saveExchangeConfigurationResponseConfigurationPricingRulesItemFeeBpsMax),
   "fixedFee": zod.string().regex(saveExchangeConfigurationResponseConfigurationPricingRulesItemFixedFeeRegExp),
-  "spreadBps": zod.number().int().min(saveExchangeConfigurationResponseConfigurationPricingRulesItemSpreadBpsMin).max(saveExchangeConfigurationResponseConfigurationPricingRulesItemSpreadBpsMax),
+  "spreadBps": zod.number().refine(Number.isInteger, "Expected integer, received float").min(saveExchangeConfigurationResponseConfigurationPricingRulesItemSpreadBpsMin).max(saveExchangeConfigurationResponseConfigurationPricingRulesItemSpreadBpsMax),
   "state": zod.enum(['enabled', 'disabled', 'blocked']).optional(),
   "pricingMode": zod.enum(['manual', 'market']).optional().describe('Market requires fresh real reference data. Manual requires an explicitly configured rate.'),
   "minimum": zod.string().regex(saveExchangeConfigurationResponseConfigurationPricingRulesItemMinimumRegExp).optional(),
   "maximum": zod.string().regex(saveExchangeConfigurationResponseConfigurationPricingRulesItemMaximumRegExp).optional(),
-  "routeIds": zod.array(zod.string().uuid()).max(saveExchangeConfigurationResponseConfigurationPricingRulesItemRouteIdsMax).optional()
+  "routeIds": zod.array(zod.guid()).max(saveExchangeConfigurationResponseConfigurationPricingRulesItemRouteIdsMax).optional()
 })).max(saveExchangeConfigurationResponseConfigurationPricingRulesMax).optional(),
   "wallets": zod.array(zod.object({
   "purpose": zod.enum(['customer', 'monitoring']).optional().describe('Customer public-address configuration is separate from Super Admin RPC monitoring. Omitted on legacy monitoring records.'),
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "label": zod.string().min(1).max(saveExchangeConfigurationResponseConfigurationWalletsItemLabelMax),
   "assetNetworkId": zod.string().min(1).max(saveExchangeConfigurationResponseConfigurationWalletsItemAssetNetworkIdMax),
   "address": zod.string().min(1).max(saveExchangeConfigurationResponseConfigurationWalletsItemAddressMax),
@@ -7388,7 +7388,7 @@ export const SaveExchangeConfigurationResponse = zod.object({
 })).max(saveExchangeConfigurationResponseConfigurationWalletsMax).optional(),
   "paymentMethods": zod.array(zod.object({
   "receivingIbanRequired": zod.boolean().optional().describe('Public field requirement only; no operator bank details'),
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "label": zod.string().min(saveExchangeConfigurationResponseConfigurationPaymentMethodsItemLabelMin).max(saveExchangeConfigurationResponseConfigurationPaymentMethodsItemLabelMax),
   "instructions": zod.string().max(saveExchangeConfigurationResponseConfigurationPaymentMethodsItemInstructionsMax).optional().describe('Optional sandbox payment instructions, frozen on order creation; never include credentials'),
   "enabled": zod.boolean(),
@@ -7402,7 +7402,7 @@ export const SaveExchangeConfigurationResponse = zod.object({
   "methodType": zod.enum(['bank', 'card', 'manual']).optional(),
   "minimum": zod.string().regex(saveExchangeConfigurationResponseConfigurationPaymentMethodsItemMinimumRegExp).optional(),
   "maximum": zod.string().regex(saveExchangeConfigurationResponseConfigurationPaymentMethodsItemMaximumRegExp).nullish(),
-  "feeBps": zod.number().int().min(saveExchangeConfigurationResponseConfigurationPaymentMethodsItemFeeBpsMin).max(saveExchangeConfigurationResponseConfigurationPaymentMethodsItemFeeBpsMax).optional(),
+  "feeBps": zod.number().refine(Number.isInteger, "Expected integer, received float").min(saveExchangeConfigurationResponseConfigurationPaymentMethodsItemFeeBpsMin).max(saveExchangeConfigurationResponseConfigurationPaymentMethodsItemFeeBpsMax).optional(),
   "fixedFee": zod.string().regex(saveExchangeConfigurationResponseConfigurationPaymentMethodsItemFixedFeeRegExp).optional(),
   "reserve": zod.string().regex(saveExchangeConfigurationResponseConfigurationPaymentMethodsItemReserveRegExp).optional().describe('Administrator-maintained sandbox reserve metadata in fiat currency. No funds exist and this does not affect quotes or execution.')
 })).max(saveExchangeConfigurationResponseConfigurationPaymentMethodsMax),
@@ -7414,7 +7414,7 @@ export const SaveExchangeConfigurationResponse = zod.object({
 })).max(saveExchangeConfigurationResponseConfigurationProvidersMax).optional()
 }),
   "catalog": zod.array(zod.object({
-  "decimals": zod.number().int().min(saveExchangeConfigurationResponseCatalogItemDecimalsMin).max(saveExchangeConfigurationResponseCatalogItemDecimalsMax).optional(),
+  "decimals": zod.number().refine(Number.isInteger, "Expected integer, received float").min(saveExchangeConfigurationResponseCatalogItemDecimalsMin).max(saveExchangeConfigurationResponseCatalogItemDecimalsMax).optional(),
   "contractAddress": zod.string().nullish(),
   "native": zod.boolean().optional(),
   "memoRequired": zod.boolean().optional(),
@@ -7441,7 +7441,7 @@ export const SaveExchangeConfigurationResponse = zod.object({
 
 
 export const TestExchangeQuoteParams = zod.object({
-  "tenantId": zod.coerce.string().uuid()
+  "tenantId": zod.guid()
 })
 
 export const testExchangeQuoteBodySourceMax = 80;
@@ -7456,7 +7456,7 @@ export const TestExchangeQuoteBody = zod.object({
   "source": zod.string().min(1).max(testExchangeQuoteBodySourceMax),
   "destination": zod.string().min(1).max(testExchangeQuoteBodyDestinationMax),
   "amount": zod.string().regex(testExchangeQuoteBodyAmountRegExp),
-  "paymentMethodId": zod.string().uuid().optional()
+  "paymentMethodId": zod.guid().optional()
 })
 
 export const testExchangeQuoteResponsePricingRuleSnapshotSourceMax = 80;
@@ -7483,7 +7483,7 @@ export const testExchangeQuoteResponsePricingRuleSnapshotRouteIdsMax = 100;
 export const TestExchangeQuoteResponse = zod.object({
   "token": zod.string(),
   "expiresAt": zod.coerce.date(),
-  "routeId": zod.string().uuid(),
+  "routeId": zod.guid(),
   "action": zod.enum(['swap', 'convert', 'buy', 'sell']),
   "source": zod.string(),
   "destination": zod.string(),
@@ -7496,27 +7496,27 @@ export const TestExchangeQuoteResponse = zod.object({
   "destinationFee": zod.string().optional(),
   "minimum": zod.string(),
   "maximum": zod.string(),
-  "spreadBps": zod.number().int(),
+  "spreadBps": zod.number().refine(Number.isInteger, "Expected integer, received float"),
   "sandboxOnly": zod.literal(true),
   "pricingSource": zod.string().optional().describe('Read-only Sandbox pricing provider, manual, or explicitly configured manual fallback. Never implies financial execution.'),
-  "pricingRuleId": zod.string().uuid().nullish().describe('Matched tenant pricing rule; null for unchanged route pricing'),
+  "pricingRuleId": zod.guid().nullish().describe('Matched tenant pricing rule; null for unchanged route pricing'),
   "pricingRuleSnapshot": zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "action": zod.enum(['swap', 'convert', 'buy', 'sell']),
   "source": zod.string().min(1).max(testExchangeQuoteResponsePricingRuleSnapshotSourceMax).describe('Tenant asset-network ID, fiat endpoint, or * for Any'),
   "destination": zod.string().min(1).max(testExchangeQuoteResponsePricingRuleSnapshotDestinationMax),
-  "paymentMethodId": zod.string().uuid().optional(),
+  "paymentMethodId": zod.guid().optional(),
   "enabled": zod.boolean(),
-  "priority": zod.number().int().min(testExchangeQuoteResponsePricingRuleSnapshotPriorityMin).max(testExchangeQuoteResponsePricingRuleSnapshotPriorityMax),
+  "priority": zod.number().refine(Number.isInteger, "Expected integer, received float").min(testExchangeQuoteResponsePricingRuleSnapshotPriorityMin).max(testExchangeQuoteResponsePricingRuleSnapshotPriorityMax),
   "rate": zod.string().regex(testExchangeQuoteResponsePricingRuleSnapshotRateRegExp).optional().describe('Optional explicit manual rate; omission preserves the route/provider base rate'),
-  "feeBps": zod.number().int().min(testExchangeQuoteResponsePricingRuleSnapshotFeeBpsMin).max(testExchangeQuoteResponsePricingRuleSnapshotFeeBpsMax),
+  "feeBps": zod.number().refine(Number.isInteger, "Expected integer, received float").min(testExchangeQuoteResponsePricingRuleSnapshotFeeBpsMin).max(testExchangeQuoteResponsePricingRuleSnapshotFeeBpsMax),
   "fixedFee": zod.string().regex(testExchangeQuoteResponsePricingRuleSnapshotFixedFeeRegExp),
-  "spreadBps": zod.number().int().min(testExchangeQuoteResponsePricingRuleSnapshotSpreadBpsMin).max(testExchangeQuoteResponsePricingRuleSnapshotSpreadBpsMax),
+  "spreadBps": zod.number().refine(Number.isInteger, "Expected integer, received float").min(testExchangeQuoteResponsePricingRuleSnapshotSpreadBpsMin).max(testExchangeQuoteResponsePricingRuleSnapshotSpreadBpsMax),
   "state": zod.enum(['enabled', 'disabled', 'blocked']).optional(),
   "pricingMode": zod.enum(['manual', 'market']).optional().describe('Market requires fresh real reference data. Manual requires an explicitly configured rate.'),
   "minimum": zod.string().regex(testExchangeQuoteResponsePricingRuleSnapshotMinimumRegExp).optional(),
   "maximum": zod.string().regex(testExchangeQuoteResponsePricingRuleSnapshotMaximumRegExp).optional(),
-  "routeIds": zod.array(zod.string().uuid()).max(testExchangeQuoteResponsePricingRuleSnapshotRouteIdsMax).optional()
+  "routeIds": zod.array(zod.guid()).max(testExchangeQuoteResponsePricingRuleSnapshotRouteIdsMax).optional()
 }).optional(),
   "marketRate": zod.string().optional(),
   "rateProvider": zod.string().optional(),
@@ -7527,7 +7527,7 @@ export const TestExchangeQuoteResponse = zod.object({
 
 
 export const ListExchangeOrdersParams = zod.object({
-  "tenantId": zod.coerce.string().uuid()
+  "tenantId": zod.guid()
 })
 
 export const listExchangeOrdersQuerySearchMax = 100;
@@ -7546,7 +7546,7 @@ export const ListExchangeOrdersQueryParams = zod.object({
   "from": zod.coerce.string().regex(listExchangeOrdersQueryFromRegExp).optional(),
   "to": zod.coerce.string().regex(listExchangeOrdersQueryToRegExp).optional(),
   "customer": zod.coerce.string().regex(listExchangeOrdersQueryCustomerRegExp).optional(),
-  "page": zod.coerce.number().int().min(1).optional()
+  "page": zod.coerce.number().refine(Number.isInteger, "Expected integer, received float").min(1).optional()
 })
 
 export const listExchangeOrdersResponseOrdersItemPaymentInstructionsMax = 2000;
@@ -7594,10 +7594,10 @@ export const listExchangeOrdersResponseOrdersItemPricingRuleSnapshotRouteIdsMax 
 
 export const ListExchangeOrdersResponse = zod.object({
   "orders": zod.array(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "status": zod.string(),
   "pricingSource": zod.string().optional().describe('Immutable pricing source retained from the signed Sandbox quote.'),
-  "pricingRuleId": zod.string().uuid().nullish(),
+  "pricingRuleId": zod.guid().nullish(),
   "action": zod.enum(['swap', 'convert', 'buy', 'sell']),
   "source": zod.string(),
   "destination": zod.string(),
@@ -7608,7 +7608,7 @@ export const ListExchangeOrdersResponse = zod.object({
   "rate": zod.string(),
   "fee": zod.string(),
   "destinationFee": zod.string().optional(),
-  "spreadBps": zod.number().int(),
+  "spreadBps": zod.number().refine(Number.isInteger, "Expected integer, received float"),
   "paymentMethod": zod.string().nullable(),
   "paymentMethodId": zod.string().nullish().describe('Stable configured payment identity. Older orders may have only a historical label.'),
   "paymentInstructions": zod.string().max(listExchangeOrdersResponseOrdersItemPaymentInstructionsMax).nullish(),
@@ -7635,22 +7635,22 @@ export const ListExchangeOrdersResponse = zod.object({
   "phone": zod.string().max(listExchangeOrdersResponseOrdersItemCustomerDetailsPhoneMax).optional()
 }).optional(),
   "pricingRuleSnapshot": zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "action": zod.enum(['swap', 'convert', 'buy', 'sell']),
   "source": zod.string().min(1).max(listExchangeOrdersResponseOrdersItemPricingRuleSnapshotSourceMax).describe('Tenant asset-network ID, fiat endpoint, or * for Any'),
   "destination": zod.string().min(1).max(listExchangeOrdersResponseOrdersItemPricingRuleSnapshotDestinationMax),
-  "paymentMethodId": zod.string().uuid().optional(),
+  "paymentMethodId": zod.guid().optional(),
   "enabled": zod.boolean(),
-  "priority": zod.number().int().min(listExchangeOrdersResponseOrdersItemPricingRuleSnapshotPriorityMin).max(listExchangeOrdersResponseOrdersItemPricingRuleSnapshotPriorityMax),
+  "priority": zod.number().refine(Number.isInteger, "Expected integer, received float").min(listExchangeOrdersResponseOrdersItemPricingRuleSnapshotPriorityMin).max(listExchangeOrdersResponseOrdersItemPricingRuleSnapshotPriorityMax),
   "rate": zod.string().regex(listExchangeOrdersResponseOrdersItemPricingRuleSnapshotRateRegExp).optional().describe('Optional explicit manual rate; omission preserves the route/provider base rate'),
-  "feeBps": zod.number().int().min(listExchangeOrdersResponseOrdersItemPricingRuleSnapshotFeeBpsMin).max(listExchangeOrdersResponseOrdersItemPricingRuleSnapshotFeeBpsMax),
+  "feeBps": zod.number().refine(Number.isInteger, "Expected integer, received float").min(listExchangeOrdersResponseOrdersItemPricingRuleSnapshotFeeBpsMin).max(listExchangeOrdersResponseOrdersItemPricingRuleSnapshotFeeBpsMax),
   "fixedFee": zod.string().regex(listExchangeOrdersResponseOrdersItemPricingRuleSnapshotFixedFeeRegExp),
-  "spreadBps": zod.number().int().min(listExchangeOrdersResponseOrdersItemPricingRuleSnapshotSpreadBpsMin).max(listExchangeOrdersResponseOrdersItemPricingRuleSnapshotSpreadBpsMax),
+  "spreadBps": zod.number().refine(Number.isInteger, "Expected integer, received float").min(listExchangeOrdersResponseOrdersItemPricingRuleSnapshotSpreadBpsMin).max(listExchangeOrdersResponseOrdersItemPricingRuleSnapshotSpreadBpsMax),
   "state": zod.enum(['enabled', 'disabled', 'blocked']).optional(),
   "pricingMode": zod.enum(['manual', 'market']).optional().describe('Market requires fresh real reference data. Manual requires an explicitly configured rate.'),
   "minimum": zod.string().regex(listExchangeOrdersResponseOrdersItemPricingRuleSnapshotMinimumRegExp).optional(),
   "maximum": zod.string().regex(listExchangeOrdersResponseOrdersItemPricingRuleSnapshotMaximumRegExp).optional(),
-  "routeIds": zod.array(zod.string().uuid()).max(listExchangeOrdersResponseOrdersItemPricingRuleSnapshotRouteIdsMax).optional()
+  "routeIds": zod.array(zod.guid()).max(listExchangeOrdersResponseOrdersItemPricingRuleSnapshotRouteIdsMax).optional()
 }).optional(),
   "marketRate": zod.string().optional(),
   "rateProvider": zod.string().optional(),
@@ -7671,15 +7671,15 @@ export const ListExchangeOrdersResponse = zod.object({
   "note": zod.string()
 })).optional()
 })),
-  "total": zod.number().int(),
-  "page": zod.number().int(),
-  "pageSize": zod.number().int()
+  "total": zod.number().refine(Number.isInteger, "Expected integer, received float"),
+  "page": zod.number().refine(Number.isInteger, "Expected integer, received float"),
+  "pageSize": zod.number().refine(Number.isInteger, "Expected integer, received float")
 })
 
 
 export const GetExchangeOrderParams = zod.object({
-  "tenantId": zod.coerce.string().uuid(),
-  "orderId": zod.coerce.string().uuid()
+  "tenantId": zod.guid(),
+  "orderId": zod.guid()
 })
 
 export const getExchangeOrderResponsePaymentInstructionsMax = 2000;
@@ -7726,10 +7726,10 @@ export const getExchangeOrderResponsePricingRuleSnapshotRouteIdsMax = 100;
 
 
 export const GetExchangeOrderResponse = zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "status": zod.string(),
   "pricingSource": zod.string().optional().describe('Immutable pricing source retained from the signed Sandbox quote.'),
-  "pricingRuleId": zod.string().uuid().nullish(),
+  "pricingRuleId": zod.guid().nullish(),
   "action": zod.enum(['swap', 'convert', 'buy', 'sell']),
   "source": zod.string(),
   "destination": zod.string(),
@@ -7740,7 +7740,7 @@ export const GetExchangeOrderResponse = zod.object({
   "rate": zod.string(),
   "fee": zod.string(),
   "destinationFee": zod.string().optional(),
-  "spreadBps": zod.number().int(),
+  "spreadBps": zod.number().refine(Number.isInteger, "Expected integer, received float"),
   "paymentMethod": zod.string().nullable(),
   "paymentMethodId": zod.string().nullish().describe('Stable configured payment identity. Older orders may have only a historical label.'),
   "paymentInstructions": zod.string().max(getExchangeOrderResponsePaymentInstructionsMax).nullish(),
@@ -7767,22 +7767,22 @@ export const GetExchangeOrderResponse = zod.object({
   "phone": zod.string().max(getExchangeOrderResponseCustomerDetailsPhoneMax).optional()
 }).optional(),
   "pricingRuleSnapshot": zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "action": zod.enum(['swap', 'convert', 'buy', 'sell']),
   "source": zod.string().min(1).max(getExchangeOrderResponsePricingRuleSnapshotSourceMax).describe('Tenant asset-network ID, fiat endpoint, or * for Any'),
   "destination": zod.string().min(1).max(getExchangeOrderResponsePricingRuleSnapshotDestinationMax),
-  "paymentMethodId": zod.string().uuid().optional(),
+  "paymentMethodId": zod.guid().optional(),
   "enabled": zod.boolean(),
-  "priority": zod.number().int().min(getExchangeOrderResponsePricingRuleSnapshotPriorityMin).max(getExchangeOrderResponsePricingRuleSnapshotPriorityMax),
+  "priority": zod.number().refine(Number.isInteger, "Expected integer, received float").min(getExchangeOrderResponsePricingRuleSnapshotPriorityMin).max(getExchangeOrderResponsePricingRuleSnapshotPriorityMax),
   "rate": zod.string().regex(getExchangeOrderResponsePricingRuleSnapshotRateRegExp).optional().describe('Optional explicit manual rate; omission preserves the route/provider base rate'),
-  "feeBps": zod.number().int().min(getExchangeOrderResponsePricingRuleSnapshotFeeBpsMin).max(getExchangeOrderResponsePricingRuleSnapshotFeeBpsMax),
+  "feeBps": zod.number().refine(Number.isInteger, "Expected integer, received float").min(getExchangeOrderResponsePricingRuleSnapshotFeeBpsMin).max(getExchangeOrderResponsePricingRuleSnapshotFeeBpsMax),
   "fixedFee": zod.string().regex(getExchangeOrderResponsePricingRuleSnapshotFixedFeeRegExp),
-  "spreadBps": zod.number().int().min(getExchangeOrderResponsePricingRuleSnapshotSpreadBpsMin).max(getExchangeOrderResponsePricingRuleSnapshotSpreadBpsMax),
+  "spreadBps": zod.number().refine(Number.isInteger, "Expected integer, received float").min(getExchangeOrderResponsePricingRuleSnapshotSpreadBpsMin).max(getExchangeOrderResponsePricingRuleSnapshotSpreadBpsMax),
   "state": zod.enum(['enabled', 'disabled', 'blocked']).optional(),
   "pricingMode": zod.enum(['manual', 'market']).optional().describe('Market requires fresh real reference data. Manual requires an explicitly configured rate.'),
   "minimum": zod.string().regex(getExchangeOrderResponsePricingRuleSnapshotMinimumRegExp).optional(),
   "maximum": zod.string().regex(getExchangeOrderResponsePricingRuleSnapshotMaximumRegExp).optional(),
-  "routeIds": zod.array(zod.string().uuid()).max(getExchangeOrderResponsePricingRuleSnapshotRouteIdsMax).optional()
+  "routeIds": zod.array(zod.guid()).max(getExchangeOrderResponsePricingRuleSnapshotRouteIdsMax).optional()
 }).optional(),
   "marketRate": zod.string().optional(),
   "rateProvider": zod.string().optional(),
@@ -7806,8 +7806,8 @@ export const GetExchangeOrderResponse = zod.object({
 
 
 export const UpdateExchangeOrderStatusParams = zod.object({
-  "tenantId": zod.coerce.string().uuid(),
-  "orderId": zod.coerce.string().uuid()
+  "tenantId": zod.guid(),
+  "orderId": zod.guid()
 })
 
 export const updateExchangeOrderStatusBodyNoteMax = 500;
@@ -7878,10 +7878,10 @@ export const updateExchangeOrderStatusResponsePricingRuleSnapshotRouteIdsMax = 1
 
 
 export const UpdateExchangeOrderStatusResponse = zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "status": zod.string(),
   "pricingSource": zod.string().optional().describe('Immutable pricing source retained from the signed Sandbox quote.'),
-  "pricingRuleId": zod.string().uuid().nullish(),
+  "pricingRuleId": zod.guid().nullish(),
   "action": zod.enum(['swap', 'convert', 'buy', 'sell']),
   "source": zod.string(),
   "destination": zod.string(),
@@ -7892,7 +7892,7 @@ export const UpdateExchangeOrderStatusResponse = zod.object({
   "rate": zod.string(),
   "fee": zod.string(),
   "destinationFee": zod.string().optional(),
-  "spreadBps": zod.number().int(),
+  "spreadBps": zod.number().refine(Number.isInteger, "Expected integer, received float"),
   "paymentMethod": zod.string().nullable(),
   "paymentMethodId": zod.string().nullish().describe('Stable configured payment identity. Older orders may have only a historical label.'),
   "paymentInstructions": zod.string().max(updateExchangeOrderStatusResponsePaymentInstructionsMax).nullish(),
@@ -7919,22 +7919,22 @@ export const UpdateExchangeOrderStatusResponse = zod.object({
   "phone": zod.string().max(updateExchangeOrderStatusResponseCustomerDetailsPhoneMax).optional()
 }).optional(),
   "pricingRuleSnapshot": zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "action": zod.enum(['swap', 'convert', 'buy', 'sell']),
   "source": zod.string().min(1).max(updateExchangeOrderStatusResponsePricingRuleSnapshotSourceMax).describe('Tenant asset-network ID, fiat endpoint, or * for Any'),
   "destination": zod.string().min(1).max(updateExchangeOrderStatusResponsePricingRuleSnapshotDestinationMax),
-  "paymentMethodId": zod.string().uuid().optional(),
+  "paymentMethodId": zod.guid().optional(),
   "enabled": zod.boolean(),
-  "priority": zod.number().int().min(updateExchangeOrderStatusResponsePricingRuleSnapshotPriorityMin).max(updateExchangeOrderStatusResponsePricingRuleSnapshotPriorityMax),
+  "priority": zod.number().refine(Number.isInteger, "Expected integer, received float").min(updateExchangeOrderStatusResponsePricingRuleSnapshotPriorityMin).max(updateExchangeOrderStatusResponsePricingRuleSnapshotPriorityMax),
   "rate": zod.string().regex(updateExchangeOrderStatusResponsePricingRuleSnapshotRateRegExp).optional().describe('Optional explicit manual rate; omission preserves the route/provider base rate'),
-  "feeBps": zod.number().int().min(updateExchangeOrderStatusResponsePricingRuleSnapshotFeeBpsMin).max(updateExchangeOrderStatusResponsePricingRuleSnapshotFeeBpsMax),
+  "feeBps": zod.number().refine(Number.isInteger, "Expected integer, received float").min(updateExchangeOrderStatusResponsePricingRuleSnapshotFeeBpsMin).max(updateExchangeOrderStatusResponsePricingRuleSnapshotFeeBpsMax),
   "fixedFee": zod.string().regex(updateExchangeOrderStatusResponsePricingRuleSnapshotFixedFeeRegExp),
-  "spreadBps": zod.number().int().min(updateExchangeOrderStatusResponsePricingRuleSnapshotSpreadBpsMin).max(updateExchangeOrderStatusResponsePricingRuleSnapshotSpreadBpsMax),
+  "spreadBps": zod.number().refine(Number.isInteger, "Expected integer, received float").min(updateExchangeOrderStatusResponsePricingRuleSnapshotSpreadBpsMin).max(updateExchangeOrderStatusResponsePricingRuleSnapshotSpreadBpsMax),
   "state": zod.enum(['enabled', 'disabled', 'blocked']).optional(),
   "pricingMode": zod.enum(['manual', 'market']).optional().describe('Market requires fresh real reference data. Manual requires an explicitly configured rate.'),
   "minimum": zod.string().regex(updateExchangeOrderStatusResponsePricingRuleSnapshotMinimumRegExp).optional(),
   "maximum": zod.string().regex(updateExchangeOrderStatusResponsePricingRuleSnapshotMaximumRegExp).optional(),
-  "routeIds": zod.array(zod.string().uuid()).max(updateExchangeOrderStatusResponsePricingRuleSnapshotRouteIdsMax).optional()
+  "routeIds": zod.array(zod.guid()).max(updateExchangeOrderStatusResponsePricingRuleSnapshotRouteIdsMax).optional()
 }).optional(),
   "marketRate": zod.string().optional(),
   "rateProvider": zod.string().optional(),
@@ -7958,7 +7958,7 @@ export const UpdateExchangeOrderStatusResponse = zod.object({
 
 
 export const GetExchangeDashboardParams = zod.object({
-  "tenantId": zod.coerce.string().uuid()
+  "tenantId": zod.guid()
 })
 
 export const getExchangeDashboardResponseRecentOrdersItemPaymentInstructionsMax = 2000;
@@ -8006,26 +8006,26 @@ export const getExchangeDashboardResponseRecentOrdersItemPricingRuleSnapshotRout
 
 export const GetExchangeDashboardResponse = zod.object({
   "enabled": zod.boolean(),
-  "total": zod.number().int(),
-  "pending": zod.number().int(),
-  "processing": zod.number().int(),
-  "completed": zod.number().int(),
-  "cancelled": zod.number().int(),
-  "failed": zod.number().int(),
-  "assets": zod.number().int(),
-  "networks": zod.number().int(),
-  "routes": zod.number().int(),
-  "customers": zod.number().int().optional(),
-  "paymentMethods": zod.number().int().optional(),
+  "total": zod.number().refine(Number.isInteger, "Expected integer, received float"),
+  "pending": zod.number().refine(Number.isInteger, "Expected integer, received float"),
+  "processing": zod.number().refine(Number.isInteger, "Expected integer, received float"),
+  "completed": zod.number().refine(Number.isInteger, "Expected integer, received float"),
+  "cancelled": zod.number().refine(Number.isInteger, "Expected integer, received float"),
+  "failed": zod.number().refine(Number.isInteger, "Expected integer, received float"),
+  "assets": zod.number().refine(Number.isInteger, "Expected integer, received float"),
+  "networks": zod.number().refine(Number.isInteger, "Expected integer, received float"),
+  "routes": zod.number().refine(Number.isInteger, "Expected integer, received float"),
+  "customers": zod.number().refine(Number.isInteger, "Expected integer, received float").optional(),
+  "paymentMethods": zod.number().refine(Number.isInteger, "Expected integer, received float").optional(),
   "volume": zod.array(zod.object({
   "symbol": zod.string(),
   "amount": zod.string()
 })),
   "recentOrders": zod.array(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "status": zod.string(),
   "pricingSource": zod.string().optional().describe('Immutable pricing source retained from the signed Sandbox quote.'),
-  "pricingRuleId": zod.string().uuid().nullish(),
+  "pricingRuleId": zod.guid().nullish(),
   "action": zod.enum(['swap', 'convert', 'buy', 'sell']),
   "source": zod.string(),
   "destination": zod.string(),
@@ -8036,7 +8036,7 @@ export const GetExchangeDashboardResponse = zod.object({
   "rate": zod.string(),
   "fee": zod.string(),
   "destinationFee": zod.string().optional(),
-  "spreadBps": zod.number().int(),
+  "spreadBps": zod.number().refine(Number.isInteger, "Expected integer, received float"),
   "paymentMethod": zod.string().nullable(),
   "paymentMethodId": zod.string().nullish().describe('Stable configured payment identity. Older orders may have only a historical label.'),
   "paymentInstructions": zod.string().max(getExchangeDashboardResponseRecentOrdersItemPaymentInstructionsMax).nullish(),
@@ -8063,22 +8063,22 @@ export const GetExchangeDashboardResponse = zod.object({
   "phone": zod.string().max(getExchangeDashboardResponseRecentOrdersItemCustomerDetailsPhoneMax).optional()
 }).optional(),
   "pricingRuleSnapshot": zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "action": zod.enum(['swap', 'convert', 'buy', 'sell']),
   "source": zod.string().min(1).max(getExchangeDashboardResponseRecentOrdersItemPricingRuleSnapshotSourceMax).describe('Tenant asset-network ID, fiat endpoint, or * for Any'),
   "destination": zod.string().min(1).max(getExchangeDashboardResponseRecentOrdersItemPricingRuleSnapshotDestinationMax),
-  "paymentMethodId": zod.string().uuid().optional(),
+  "paymentMethodId": zod.guid().optional(),
   "enabled": zod.boolean(),
-  "priority": zod.number().int().min(getExchangeDashboardResponseRecentOrdersItemPricingRuleSnapshotPriorityMin).max(getExchangeDashboardResponseRecentOrdersItemPricingRuleSnapshotPriorityMax),
+  "priority": zod.number().refine(Number.isInteger, "Expected integer, received float").min(getExchangeDashboardResponseRecentOrdersItemPricingRuleSnapshotPriorityMin).max(getExchangeDashboardResponseRecentOrdersItemPricingRuleSnapshotPriorityMax),
   "rate": zod.string().regex(getExchangeDashboardResponseRecentOrdersItemPricingRuleSnapshotRateRegExp).optional().describe('Optional explicit manual rate; omission preserves the route/provider base rate'),
-  "feeBps": zod.number().int().min(getExchangeDashboardResponseRecentOrdersItemPricingRuleSnapshotFeeBpsMin).max(getExchangeDashboardResponseRecentOrdersItemPricingRuleSnapshotFeeBpsMax),
+  "feeBps": zod.number().refine(Number.isInteger, "Expected integer, received float").min(getExchangeDashboardResponseRecentOrdersItemPricingRuleSnapshotFeeBpsMin).max(getExchangeDashboardResponseRecentOrdersItemPricingRuleSnapshotFeeBpsMax),
   "fixedFee": zod.string().regex(getExchangeDashboardResponseRecentOrdersItemPricingRuleSnapshotFixedFeeRegExp),
-  "spreadBps": zod.number().int().min(getExchangeDashboardResponseRecentOrdersItemPricingRuleSnapshotSpreadBpsMin).max(getExchangeDashboardResponseRecentOrdersItemPricingRuleSnapshotSpreadBpsMax),
+  "spreadBps": zod.number().refine(Number.isInteger, "Expected integer, received float").min(getExchangeDashboardResponseRecentOrdersItemPricingRuleSnapshotSpreadBpsMin).max(getExchangeDashboardResponseRecentOrdersItemPricingRuleSnapshotSpreadBpsMax),
   "state": zod.enum(['enabled', 'disabled', 'blocked']).optional(),
   "pricingMode": zod.enum(['manual', 'market']).optional().describe('Market requires fresh real reference data. Manual requires an explicitly configured rate.'),
   "minimum": zod.string().regex(getExchangeDashboardResponseRecentOrdersItemPricingRuleSnapshotMinimumRegExp).optional(),
   "maximum": zod.string().regex(getExchangeDashboardResponseRecentOrdersItemPricingRuleSnapshotMaximumRegExp).optional(),
-  "routeIds": zod.array(zod.string().uuid()).max(getExchangeDashboardResponseRecentOrdersItemPricingRuleSnapshotRouteIdsMax).optional()
+  "routeIds": zod.array(zod.guid()).max(getExchangeDashboardResponseRecentOrdersItemPricingRuleSnapshotRouteIdsMax).optional()
 }).optional(),
   "marketRate": zod.string().optional(),
   "rateProvider": zod.string().optional(),
@@ -8103,7 +8103,7 @@ export const GetExchangeDashboardResponse = zod.object({
 
 
 export const ListExchangeCustomersParams = zod.object({
-  "tenantId": zod.coerce.string().uuid()
+  "tenantId": zod.guid()
 })
 
 export const listExchangeCustomersResponseNotesMax = 2000;
@@ -8114,7 +8114,7 @@ export const ListExchangeCustomersResponseItem = zod.object({
   "id": zod.string(),
   "name": zod.string(),
   "email": zod.string().nullable(),
-  "orders": zod.number().int(),
+  "orders": zod.number().refine(Number.isInteger, "Expected integer, received float"),
   "lastActivity": zod.coerce.date(),
   "status": zod.enum(['unidentified', 'contact', 'archived']),
   "notes": zod.string().max(listExchangeCustomersResponseNotesMax).optional()
@@ -8195,18 +8195,18 @@ export const GetPublicExchangeResponse = zod.object({
   "status": zod.enum(['enabled', 'disabled', 'catalog_only']),
   "logoUrl": zod.string().max(getPublicExchangeResponseCurrenciesItemLogoUrlMax).nullable(),
   "metadata": zod.record(zod.string(), zod.unknown()),
-  "revision": zod.number().int().min(getPublicExchangeResponseCurrenciesItemRevisionMin)
+  "revision": zod.number().refine(Number.isInteger, "Expected integer, received float").min(getPublicExchangeResponseCurrenciesItemRevisionMin)
 })).optional(),
   "defaultPairs": zod.object({
   "swap": zod.object({
   "source": zod.string().min(1).max(getPublicExchangeResponseDefaultPairsSwapSourceMax),
   "destination": zod.string().min(1).max(getPublicExchangeResponseDefaultPairsSwapDestinationMax),
-  "paymentMethodId": zod.string().uuid().optional()
+  "paymentMethodId": zod.guid().optional()
 }).optional(),
   "convert": zod.object({
   "source": zod.string().min(1).max(getPublicExchangeResponseDefaultPairsConvertSourceMax),
   "destination": zod.string().min(1).max(getPublicExchangeResponseDefaultPairsConvertDestinationMax),
-  "paymentMethodId": zod.string().uuid().optional()
+  "paymentMethodId": zod.guid().optional()
 }).optional()
 }).optional(),
   "enabled": zod.boolean(),
@@ -8221,11 +8221,11 @@ export const GetPublicExchangeResponse = zod.object({
   "networkName": zod.string(),
   "testnet": zod.boolean(),
   "logoUrl": zod.string().nullish(),
-  "decimals": zod.number().int().optional(),
+  "decimals": zod.number().refine(Number.isInteger, "Expected integer, received float").optional(),
   "memoRequired": zod.boolean().optional()
 })),
   "routes": zod.array(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "source": zod.string().min(1).max(getPublicExchangeResponseRoutesItemSourceMax),
   "destination": zod.string().min(1).max(getPublicExchangeResponseRoutesItemDestinationMax),
   "action": zod.enum(['swap', 'convert', 'buy', 'sell']),
@@ -8233,15 +8233,15 @@ export const GetPublicExchangeResponse = zod.object({
   "rate": zod.string().regex(getPublicExchangeResponseRoutesItemRateRegExp),
   "minimum": zod.string().regex(getPublicExchangeResponseRoutesItemMinimumRegExp),
   "maximum": zod.string().regex(getPublicExchangeResponseRoutesItemMaximumRegExp),
-  "feeBps": zod.number().int().min(getPublicExchangeResponseRoutesItemFeeBpsMin).max(getPublicExchangeResponseRoutesItemFeeBpsMax),
+  "feeBps": zod.number().refine(Number.isInteger, "Expected integer, received float").min(getPublicExchangeResponseRoutesItemFeeBpsMin).max(getPublicExchangeResponseRoutesItemFeeBpsMax),
   "fixedFee": zod.string().regex(getPublicExchangeResponseRoutesItemFixedFeeRegExp),
-  "spreadBps": zod.number().int().min(getPublicExchangeResponseRoutesItemSpreadBpsMin).max(getPublicExchangeResponseRoutesItemSpreadBpsMax),
-  "paymentMethodIds": zod.array(zod.string().uuid()).max(getPublicExchangeResponseRoutesItemPaymentMethodIdsMax),
+  "spreadBps": zod.number().refine(Number.isInteger, "Expected integer, received float").min(getPublicExchangeResponseRoutesItemSpreadBpsMin).max(getPublicExchangeResponseRoutesItemSpreadBpsMax),
+  "paymentMethodIds": zod.array(zod.guid()).max(getPublicExchangeResponseRoutesItemPaymentMethodIdsMax),
   "providerId": zod.string().max(getPublicExchangeResponseRoutesItemProviderIdMax).optional()
 })),
   "paymentMethods": zod.array(zod.object({
   "receivingIbanRequired": zod.boolean().optional().describe('Public field requirement only; no operator bank details'),
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "label": zod.string().min(getPublicExchangeResponsePaymentMethodsItemLabelMin).max(getPublicExchangeResponsePaymentMethodsItemLabelMax),
   "instructions": zod.string().max(getPublicExchangeResponsePaymentMethodsItemInstructionsMax).optional().describe('Optional sandbox payment instructions, frozen on order creation; never include credentials'),
   "enabled": zod.boolean(),
@@ -8255,7 +8255,7 @@ export const GetPublicExchangeResponse = zod.object({
   "methodType": zod.enum(['bank', 'card', 'manual']).optional(),
   "minimum": zod.string().regex(getPublicExchangeResponsePaymentMethodsItemMinimumRegExp).optional(),
   "maximum": zod.string().regex(getPublicExchangeResponsePaymentMethodsItemMaximumRegExp).nullish(),
-  "feeBps": zod.number().int().min(getPublicExchangeResponsePaymentMethodsItemFeeBpsMin).max(getPublicExchangeResponsePaymentMethodsItemFeeBpsMax).optional(),
+  "feeBps": zod.number().refine(Number.isInteger, "Expected integer, received float").min(getPublicExchangeResponsePaymentMethodsItemFeeBpsMin).max(getPublicExchangeResponsePaymentMethodsItemFeeBpsMax).optional(),
   "fixedFee": zod.string().regex(getPublicExchangeResponsePaymentMethodsItemFixedFeeRegExp).optional(),
   "reserve": zod.string().regex(getPublicExchangeResponsePaymentMethodsItemReserveRegExp).optional().describe('Administrator-maintained sandbox reserve metadata in fiat currency. No funds exist and this does not affect quotes or execution.')
 })),
@@ -8280,7 +8280,7 @@ export const CreateSandboxQuoteBody = zod.object({
   "source": zod.string().min(1).max(createSandboxQuoteBodySourceMax),
   "destination": zod.string().min(1).max(createSandboxQuoteBodyDestinationMax),
   "amount": zod.string().regex(createSandboxQuoteBodyAmountRegExp),
-  "paymentMethodId": zod.string().uuid().optional()
+  "paymentMethodId": zod.guid().optional()
 })
 
 export const createSandboxQuoteResponsePricingRuleSnapshotSourceMax = 80;
@@ -8307,7 +8307,7 @@ export const createSandboxQuoteResponsePricingRuleSnapshotRouteIdsMax = 100;
 export const CreateSandboxQuoteResponse = zod.object({
   "token": zod.string(),
   "expiresAt": zod.coerce.date(),
-  "routeId": zod.string().uuid(),
+  "routeId": zod.guid(),
   "action": zod.enum(['swap', 'convert', 'buy', 'sell']),
   "source": zod.string(),
   "destination": zod.string(),
@@ -8320,27 +8320,27 @@ export const CreateSandboxQuoteResponse = zod.object({
   "destinationFee": zod.string().optional(),
   "minimum": zod.string(),
   "maximum": zod.string(),
-  "spreadBps": zod.number().int(),
+  "spreadBps": zod.number().refine(Number.isInteger, "Expected integer, received float"),
   "sandboxOnly": zod.literal(true),
   "pricingSource": zod.string().optional().describe('Read-only Sandbox pricing provider, manual, or explicitly configured manual fallback. Never implies financial execution.'),
-  "pricingRuleId": zod.string().uuid().nullish().describe('Matched tenant pricing rule; null for unchanged route pricing'),
+  "pricingRuleId": zod.guid().nullish().describe('Matched tenant pricing rule; null for unchanged route pricing'),
   "pricingRuleSnapshot": zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "action": zod.enum(['swap', 'convert', 'buy', 'sell']),
   "source": zod.string().min(1).max(createSandboxQuoteResponsePricingRuleSnapshotSourceMax).describe('Tenant asset-network ID, fiat endpoint, or * for Any'),
   "destination": zod.string().min(1).max(createSandboxQuoteResponsePricingRuleSnapshotDestinationMax),
-  "paymentMethodId": zod.string().uuid().optional(),
+  "paymentMethodId": zod.guid().optional(),
   "enabled": zod.boolean(),
-  "priority": zod.number().int().min(createSandboxQuoteResponsePricingRuleSnapshotPriorityMin).max(createSandboxQuoteResponsePricingRuleSnapshotPriorityMax),
+  "priority": zod.number().refine(Number.isInteger, "Expected integer, received float").min(createSandboxQuoteResponsePricingRuleSnapshotPriorityMin).max(createSandboxQuoteResponsePricingRuleSnapshotPriorityMax),
   "rate": zod.string().regex(createSandboxQuoteResponsePricingRuleSnapshotRateRegExp).optional().describe('Optional explicit manual rate; omission preserves the route/provider base rate'),
-  "feeBps": zod.number().int().min(createSandboxQuoteResponsePricingRuleSnapshotFeeBpsMin).max(createSandboxQuoteResponsePricingRuleSnapshotFeeBpsMax),
+  "feeBps": zod.number().refine(Number.isInteger, "Expected integer, received float").min(createSandboxQuoteResponsePricingRuleSnapshotFeeBpsMin).max(createSandboxQuoteResponsePricingRuleSnapshotFeeBpsMax),
   "fixedFee": zod.string().regex(createSandboxQuoteResponsePricingRuleSnapshotFixedFeeRegExp),
-  "spreadBps": zod.number().int().min(createSandboxQuoteResponsePricingRuleSnapshotSpreadBpsMin).max(createSandboxQuoteResponsePricingRuleSnapshotSpreadBpsMax),
+  "spreadBps": zod.number().refine(Number.isInteger, "Expected integer, received float").min(createSandboxQuoteResponsePricingRuleSnapshotSpreadBpsMin).max(createSandboxQuoteResponsePricingRuleSnapshotSpreadBpsMax),
   "state": zod.enum(['enabled', 'disabled', 'blocked']).optional(),
   "pricingMode": zod.enum(['manual', 'market']).optional().describe('Market requires fresh real reference data. Manual requires an explicitly configured rate.'),
   "minimum": zod.string().regex(createSandboxQuoteResponsePricingRuleSnapshotMinimumRegExp).optional(),
   "maximum": zod.string().regex(createSandboxQuoteResponsePricingRuleSnapshotMaximumRegExp).optional(),
-  "routeIds": zod.array(zod.string().uuid()).max(createSandboxQuoteResponsePricingRuleSnapshotRouteIdsMax).optional()
+  "routeIds": zod.array(zod.guid()).max(createSandboxQuoteResponsePricingRuleSnapshotRouteIdsMax).optional()
 }).optional(),
   "marketRate": zod.string().optional(),
   "rateProvider": zod.string().optional(),
@@ -8385,10 +8385,10 @@ export const reviewSandboxOrderBodyCustomerDetailsPhoneMax = 60;
 
 export const ReviewSandboxOrderBody = zod.object({
   "customerName": zod.string().min(1).max(reviewSandboxOrderBodyCustomerNameMax).optional(),
-  "customerEmail": zod.string().email().max(reviewSandboxOrderBodyCustomerEmailMax).optional(),
+  "customerEmail": zod.email().max(reviewSandboxOrderBodyCustomerEmailMax).optional(),
   "contactConsent": zod.boolean().optional().describe('Must be true when optional contact details are supplied. Does not opt in to marketing.'),
   "quoteToken": zod.string().min(reviewSandboxOrderBodyQuoteTokenMin).max(reviewSandboxOrderBodyQuoteTokenMax),
-  "idempotencyKey": zod.string().uuid(),
+  "idempotencyKey": zod.guid(),
   "workflowVersion": zod.literal(2).optional(),
   "customerDetails": zod.object({
   "beneficiaryName": zod.string().max(reviewSandboxOrderBodyCustomerDetailsBeneficiaryNameMax).optional(),
@@ -8429,7 +8429,7 @@ export const ReviewSandboxOrderResponse = zod.object({
   "quote": zod.object({
   "token": zod.string(),
   "expiresAt": zod.coerce.date(),
-  "routeId": zod.string().uuid(),
+  "routeId": zod.guid(),
   "action": zod.enum(['swap', 'convert', 'buy', 'sell']),
   "source": zod.string(),
   "destination": zod.string(),
@@ -8442,27 +8442,27 @@ export const ReviewSandboxOrderResponse = zod.object({
   "destinationFee": zod.string().optional(),
   "minimum": zod.string(),
   "maximum": zod.string(),
-  "spreadBps": zod.number().int(),
+  "spreadBps": zod.number().refine(Number.isInteger, "Expected integer, received float"),
   "sandboxOnly": zod.literal(true),
   "pricingSource": zod.string().optional().describe('Read-only Sandbox pricing provider, manual, or explicitly configured manual fallback. Never implies financial execution.'),
-  "pricingRuleId": zod.string().uuid().nullish().describe('Matched tenant pricing rule; null for unchanged route pricing'),
+  "pricingRuleId": zod.guid().nullish().describe('Matched tenant pricing rule; null for unchanged route pricing'),
   "pricingRuleSnapshot": zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "action": zod.enum(['swap', 'convert', 'buy', 'sell']),
   "source": zod.string().min(1).max(reviewSandboxOrderResponseQuotePricingRuleSnapshotSourceMax).describe('Tenant asset-network ID, fiat endpoint, or * for Any'),
   "destination": zod.string().min(1).max(reviewSandboxOrderResponseQuotePricingRuleSnapshotDestinationMax),
-  "paymentMethodId": zod.string().uuid().optional(),
+  "paymentMethodId": zod.guid().optional(),
   "enabled": zod.boolean(),
-  "priority": zod.number().int().min(reviewSandboxOrderResponseQuotePricingRuleSnapshotPriorityMin).max(reviewSandboxOrderResponseQuotePricingRuleSnapshotPriorityMax),
+  "priority": zod.number().refine(Number.isInteger, "Expected integer, received float").min(reviewSandboxOrderResponseQuotePricingRuleSnapshotPriorityMin).max(reviewSandboxOrderResponseQuotePricingRuleSnapshotPriorityMax),
   "rate": zod.string().regex(reviewSandboxOrderResponseQuotePricingRuleSnapshotRateRegExp).optional().describe('Optional explicit manual rate; omission preserves the route/provider base rate'),
-  "feeBps": zod.number().int().min(reviewSandboxOrderResponseQuotePricingRuleSnapshotFeeBpsMin).max(reviewSandboxOrderResponseQuotePricingRuleSnapshotFeeBpsMax),
+  "feeBps": zod.number().refine(Number.isInteger, "Expected integer, received float").min(reviewSandboxOrderResponseQuotePricingRuleSnapshotFeeBpsMin).max(reviewSandboxOrderResponseQuotePricingRuleSnapshotFeeBpsMax),
   "fixedFee": zod.string().regex(reviewSandboxOrderResponseQuotePricingRuleSnapshotFixedFeeRegExp),
-  "spreadBps": zod.number().int().min(reviewSandboxOrderResponseQuotePricingRuleSnapshotSpreadBpsMin).max(reviewSandboxOrderResponseQuotePricingRuleSnapshotSpreadBpsMax),
+  "spreadBps": zod.number().refine(Number.isInteger, "Expected integer, received float").min(reviewSandboxOrderResponseQuotePricingRuleSnapshotSpreadBpsMin).max(reviewSandboxOrderResponseQuotePricingRuleSnapshotSpreadBpsMax),
   "state": zod.enum(['enabled', 'disabled', 'blocked']).optional(),
   "pricingMode": zod.enum(['manual', 'market']).optional().describe('Market requires fresh real reference data. Manual requires an explicitly configured rate.'),
   "minimum": zod.string().regex(reviewSandboxOrderResponseQuotePricingRuleSnapshotMinimumRegExp).optional(),
   "maximum": zod.string().regex(reviewSandboxOrderResponseQuotePricingRuleSnapshotMaximumRegExp).optional(),
-  "routeIds": zod.array(zod.string().uuid()).max(reviewSandboxOrderResponseQuotePricingRuleSnapshotRouteIdsMax).optional()
+  "routeIds": zod.array(zod.guid()).max(reviewSandboxOrderResponseQuotePricingRuleSnapshotRouteIdsMax).optional()
 }).optional(),
   "marketRate": zod.string().optional(),
   "rateProvider": zod.string().optional(),
@@ -8511,10 +8511,10 @@ export const createSandboxOrderBodyCustomerDetailsPhoneMax = 60;
 
 export const CreateSandboxOrderBody = zod.object({
   "customerName": zod.string().min(1).max(createSandboxOrderBodyCustomerNameMax).optional(),
-  "customerEmail": zod.string().email().max(createSandboxOrderBodyCustomerEmailMax).optional(),
+  "customerEmail": zod.email().max(createSandboxOrderBodyCustomerEmailMax).optional(),
   "contactConsent": zod.boolean().optional().describe('Must be true when optional contact details are supplied. Does not opt in to marketing.'),
   "quoteToken": zod.string().min(createSandboxOrderBodyQuoteTokenMin).max(createSandboxOrderBodyQuoteTokenMax),
-  "idempotencyKey": zod.string().uuid(),
+  "idempotencyKey": zod.guid(),
   "workflowVersion": zod.literal(2).optional(),
   "customerDetails": zod.object({
   "beneficiaryName": zod.string().max(createSandboxOrderBodyCustomerDetailsBeneficiaryNameMax).optional(),
@@ -8575,10 +8575,10 @@ export const createSandboxOrderResponseOrderPricingRuleSnapshotRouteIdsMax = 100
 
 export const CreateSandboxOrderResponse = zod.object({
   "order": zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "status": zod.string(),
   "pricingSource": zod.string().optional().describe('Immutable pricing source retained from the signed Sandbox quote.'),
-  "pricingRuleId": zod.string().uuid().nullish(),
+  "pricingRuleId": zod.guid().nullish(),
   "action": zod.enum(['swap', 'convert', 'buy', 'sell']),
   "source": zod.string(),
   "destination": zod.string(),
@@ -8589,7 +8589,7 @@ export const CreateSandboxOrderResponse = zod.object({
   "rate": zod.string(),
   "fee": zod.string(),
   "destinationFee": zod.string().optional(),
-  "spreadBps": zod.number().int(),
+  "spreadBps": zod.number().refine(Number.isInteger, "Expected integer, received float"),
   "paymentMethod": zod.string().nullable(),
   "paymentMethodId": zod.string().nullish().describe('Stable configured payment identity. Older orders may have only a historical label.'),
   "paymentInstructions": zod.string().max(createSandboxOrderResponseOrderPaymentInstructionsMax).nullish(),
@@ -8616,22 +8616,22 @@ export const CreateSandboxOrderResponse = zod.object({
   "phone": zod.string().max(createSandboxOrderResponseOrderCustomerDetailsPhoneMax).optional()
 }).optional(),
   "pricingRuleSnapshot": zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "action": zod.enum(['swap', 'convert', 'buy', 'sell']),
   "source": zod.string().min(1).max(createSandboxOrderResponseOrderPricingRuleSnapshotSourceMax).describe('Tenant asset-network ID, fiat endpoint, or * for Any'),
   "destination": zod.string().min(1).max(createSandboxOrderResponseOrderPricingRuleSnapshotDestinationMax),
-  "paymentMethodId": zod.string().uuid().optional(),
+  "paymentMethodId": zod.guid().optional(),
   "enabled": zod.boolean(),
-  "priority": zod.number().int().min(createSandboxOrderResponseOrderPricingRuleSnapshotPriorityMin).max(createSandboxOrderResponseOrderPricingRuleSnapshotPriorityMax),
+  "priority": zod.number().refine(Number.isInteger, "Expected integer, received float").min(createSandboxOrderResponseOrderPricingRuleSnapshotPriorityMin).max(createSandboxOrderResponseOrderPricingRuleSnapshotPriorityMax),
   "rate": zod.string().regex(createSandboxOrderResponseOrderPricingRuleSnapshotRateRegExp).optional().describe('Optional explicit manual rate; omission preserves the route/provider base rate'),
-  "feeBps": zod.number().int().min(createSandboxOrderResponseOrderPricingRuleSnapshotFeeBpsMin).max(createSandboxOrderResponseOrderPricingRuleSnapshotFeeBpsMax),
+  "feeBps": zod.number().refine(Number.isInteger, "Expected integer, received float").min(createSandboxOrderResponseOrderPricingRuleSnapshotFeeBpsMin).max(createSandboxOrderResponseOrderPricingRuleSnapshotFeeBpsMax),
   "fixedFee": zod.string().regex(createSandboxOrderResponseOrderPricingRuleSnapshotFixedFeeRegExp),
-  "spreadBps": zod.number().int().min(createSandboxOrderResponseOrderPricingRuleSnapshotSpreadBpsMin).max(createSandboxOrderResponseOrderPricingRuleSnapshotSpreadBpsMax),
+  "spreadBps": zod.number().refine(Number.isInteger, "Expected integer, received float").min(createSandboxOrderResponseOrderPricingRuleSnapshotSpreadBpsMin).max(createSandboxOrderResponseOrderPricingRuleSnapshotSpreadBpsMax),
   "state": zod.enum(['enabled', 'disabled', 'blocked']).optional(),
   "pricingMode": zod.enum(['manual', 'market']).optional().describe('Market requires fresh real reference data. Manual requires an explicitly configured rate.'),
   "minimum": zod.string().regex(createSandboxOrderResponseOrderPricingRuleSnapshotMinimumRegExp).optional(),
   "maximum": zod.string().regex(createSandboxOrderResponseOrderPricingRuleSnapshotMaximumRegExp).optional(),
-  "routeIds": zod.array(zod.string().uuid()).max(createSandboxOrderResponseOrderPricingRuleSnapshotRouteIdsMax).optional()
+  "routeIds": zod.array(zod.guid()).max(createSandboxOrderResponseOrderPricingRuleSnapshotRouteIdsMax).optional()
 }).optional(),
   "marketRate": zod.string().optional(),
   "rateProvider": zod.string().optional(),
@@ -8658,7 +8658,7 @@ export const CreateSandboxOrderResponse = zod.object({
 
 export const TrackSandboxOrderParams = zod.object({
   "slug": zod.coerce.string(),
-  "orderId": zod.coerce.string().uuid()
+  "orderId": zod.guid()
 })
 
 export const trackSandboxOrderHeaderTrackingTokenMin = 32;
@@ -8714,10 +8714,10 @@ export const trackSandboxOrderResponsePricingRuleSnapshotRouteIdsMax = 100;
 
 
 export const TrackSandboxOrderResponse = zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "status": zod.string(),
   "pricingSource": zod.string().optional().describe('Immutable pricing source retained from the signed Sandbox quote.'),
-  "pricingRuleId": zod.string().uuid().nullish(),
+  "pricingRuleId": zod.guid().nullish(),
   "action": zod.enum(['swap', 'convert', 'buy', 'sell']),
   "source": zod.string(),
   "destination": zod.string(),
@@ -8728,7 +8728,7 @@ export const TrackSandboxOrderResponse = zod.object({
   "rate": zod.string(),
   "fee": zod.string(),
   "destinationFee": zod.string().optional(),
-  "spreadBps": zod.number().int(),
+  "spreadBps": zod.number().refine(Number.isInteger, "Expected integer, received float"),
   "paymentMethod": zod.string().nullable(),
   "paymentMethodId": zod.string().nullish().describe('Stable configured payment identity. Older orders may have only a historical label.'),
   "paymentInstructions": zod.string().max(trackSandboxOrderResponsePaymentInstructionsMax).nullish(),
@@ -8755,22 +8755,22 @@ export const TrackSandboxOrderResponse = zod.object({
   "phone": zod.string().max(trackSandboxOrderResponseCustomerDetailsPhoneMax).optional()
 }).optional(),
   "pricingRuleSnapshot": zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "action": zod.enum(['swap', 'convert', 'buy', 'sell']),
   "source": zod.string().min(1).max(trackSandboxOrderResponsePricingRuleSnapshotSourceMax).describe('Tenant asset-network ID, fiat endpoint, or * for Any'),
   "destination": zod.string().min(1).max(trackSandboxOrderResponsePricingRuleSnapshotDestinationMax),
-  "paymentMethodId": zod.string().uuid().optional(),
+  "paymentMethodId": zod.guid().optional(),
   "enabled": zod.boolean(),
-  "priority": zod.number().int().min(trackSandboxOrderResponsePricingRuleSnapshotPriorityMin).max(trackSandboxOrderResponsePricingRuleSnapshotPriorityMax),
+  "priority": zod.number().refine(Number.isInteger, "Expected integer, received float").min(trackSandboxOrderResponsePricingRuleSnapshotPriorityMin).max(trackSandboxOrderResponsePricingRuleSnapshotPriorityMax),
   "rate": zod.string().regex(trackSandboxOrderResponsePricingRuleSnapshotRateRegExp).optional().describe('Optional explicit manual rate; omission preserves the route/provider base rate'),
-  "feeBps": zod.number().int().min(trackSandboxOrderResponsePricingRuleSnapshotFeeBpsMin).max(trackSandboxOrderResponsePricingRuleSnapshotFeeBpsMax),
+  "feeBps": zod.number().refine(Number.isInteger, "Expected integer, received float").min(trackSandboxOrderResponsePricingRuleSnapshotFeeBpsMin).max(trackSandboxOrderResponsePricingRuleSnapshotFeeBpsMax),
   "fixedFee": zod.string().regex(trackSandboxOrderResponsePricingRuleSnapshotFixedFeeRegExp),
-  "spreadBps": zod.number().int().min(trackSandboxOrderResponsePricingRuleSnapshotSpreadBpsMin).max(trackSandboxOrderResponsePricingRuleSnapshotSpreadBpsMax),
+  "spreadBps": zod.number().refine(Number.isInteger, "Expected integer, received float").min(trackSandboxOrderResponsePricingRuleSnapshotSpreadBpsMin).max(trackSandboxOrderResponsePricingRuleSnapshotSpreadBpsMax),
   "state": zod.enum(['enabled', 'disabled', 'blocked']).optional(),
   "pricingMode": zod.enum(['manual', 'market']).optional().describe('Market requires fresh real reference data. Manual requires an explicitly configured rate.'),
   "minimum": zod.string().regex(trackSandboxOrderResponsePricingRuleSnapshotMinimumRegExp).optional(),
   "maximum": zod.string().regex(trackSandboxOrderResponsePricingRuleSnapshotMaximumRegExp).optional(),
-  "routeIds": zod.array(zod.string().uuid()).max(trackSandboxOrderResponsePricingRuleSnapshotRouteIdsMax).optional()
+  "routeIds": zod.array(zod.guid()).max(trackSandboxOrderResponsePricingRuleSnapshotRouteIdsMax).optional()
 }).optional(),
   "marketRate": zod.string().optional(),
   "rateProvider": zod.string().optional(),
@@ -8795,7 +8795,7 @@ export const TrackSandboxOrderResponse = zod.object({
 
 export const DownloadSandboxOrderInvoiceParams = zod.object({
   "slug": zod.coerce.string(),
-  "orderId": zod.coerce.string().uuid()
+  "orderId": zod.guid()
 })
 
 export const downloadSandboxOrderInvoiceHeaderTrackingTokenMin = 32;
@@ -8814,7 +8814,7 @@ export const updateExchangeCustomerPathCustomerIdRegExp = new RegExp('^[a-f0-9]{
 
 
 export const UpdateExchangeCustomerParams = zod.object({
-  "tenantId": zod.coerce.string().uuid(),
+  "tenantId": zod.guid(),
   "customerId": zod.coerce.string().regex(updateExchangeCustomerPathCustomerIdRegExp)
 })
 
@@ -8836,7 +8836,7 @@ export const UpdateExchangeCustomerResponse = zod.object({
 
 
 export const GetExchangeNotificationsParams = zod.object({
-  "tenantId": zod.coerce.string().uuid()
+  "tenantId": zod.guid()
 })
 
 export const GetExchangeNotificationsResponse = zod.object({
@@ -8851,14 +8851,14 @@ export const GetExchangeNotificationsResponse = zod.object({
   "eventType": zod.string(),
   "actorId": zod.string().optional(),
   "description": zod.string(),
-  "tenantId": zod.string().uuid().nullable(),
+  "tenantId": zod.guid().nullable(),
   "createdAt": zod.coerce.date()
 }))
 })
 
 
 export const SaveExchangeNotificationPreferencesParams = zod.object({
-  "tenantId": zod.coerce.string().uuid()
+  "tenantId": zod.guid()
 })
 
 export const SaveExchangeNotificationPreferencesBody = zod.object({
@@ -8879,7 +8879,7 @@ export const SaveExchangeNotificationPreferencesResponse = zod.object({
   "eventType": zod.string(),
   "actorId": zod.string().optional(),
   "description": zod.string(),
-  "tenantId": zod.string().uuid().nullable(),
+  "tenantId": zod.guid().nullable(),
   "createdAt": zod.coerce.date()
 }))
 })
@@ -9029,7 +9029,7 @@ export const GetPublicProductCatalogResponseItem = zod.object({
   "billingPeriod": zod.enum(['monthly', 'yearly', 'one_time', 'on_request']),
   "status": zod.enum(['available', 'coming_soon']),
   "ctaLabel": zod.string().min(getPublicProductCatalogResponseOneCtaLabelMin).max(getPublicProductCatalogResponseOneCtaLabelMax),
-  "displayOrder": zod.number().int().min(getPublicProductCatalogResponseOneDisplayOrderMin).max(getPublicProductCatalogResponseOneDisplayOrderMax),
+  "displayOrder": zod.number().refine(Number.isInteger, "Expected integer, received float").min(getPublicProductCatalogResponseOneDisplayOrderMin).max(getPublicProductCatalogResponseOneDisplayOrderMax),
   "explore": zod.object({
   "eyebrow": zod.string().max(getPublicProductCatalogResponseOneExploreEyebrowMax),
   "headline": zod.string().max(getPublicProductCatalogResponseOneExploreHeadlineMax),
@@ -9101,7 +9101,7 @@ export const GetPublicProductCatalogResponseItem = zod.object({
 })).max(getPublicProductCatalogResponseOneExploreGalleryMax),
   "pricingTiers": zod.array(zod.object({
   "label": zod.string().min(getPublicProductCatalogResponseOneExplorePricingTiersItemLabelMin).max(getPublicProductCatalogResponseOneExplorePricingTiersItemLabelMax),
-  "planId": zod.string().uuid().nullable()
+  "planId": zod.guid().nullable()
 })).max(getPublicProductCatalogResponseOneExplorePricingTiersMax).optional()
 }).optional()
 }).and(zod.object({
@@ -9123,7 +9123,7 @@ export const getPublicPlanProposalsResponsePlansItemEntitlementsItemValueTwoRegE
 
 export const GetPublicPlanProposalsResponse = zod.object({
   "plans": zod.array(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "name": zod.string(),
   "planName": zod.string(),
   "description": zod.string(),
@@ -9287,7 +9287,7 @@ export const ListLandingProductsResponseItem = zod.object({
   "billingPeriod": zod.enum(['monthly', 'yearly', 'one_time', 'on_request']),
   "status": zod.enum(['available', 'coming_soon']),
   "ctaLabel": zod.string().min(listLandingProductsResponseOneCtaLabelMin).max(listLandingProductsResponseOneCtaLabelMax),
-  "displayOrder": zod.number().int().min(listLandingProductsResponseOneDisplayOrderMin).max(listLandingProductsResponseOneDisplayOrderMax),
+  "displayOrder": zod.number().refine(Number.isInteger, "Expected integer, received float").min(listLandingProductsResponseOneDisplayOrderMin).max(listLandingProductsResponseOneDisplayOrderMax),
   "explore": zod.object({
   "eyebrow": zod.string().max(listLandingProductsResponseOneExploreEyebrowMax),
   "headline": zod.string().max(listLandingProductsResponseOneExploreHeadlineMax),
@@ -9359,7 +9359,7 @@ export const ListLandingProductsResponseItem = zod.object({
 })).max(listLandingProductsResponseOneExploreGalleryMax),
   "pricingTiers": zod.array(zod.object({
   "label": zod.string().min(listLandingProductsResponseOneExplorePricingTiersItemLabelMin).max(listLandingProductsResponseOneExplorePricingTiersItemLabelMax),
-  "planId": zod.string().uuid().nullable()
+  "planId": zod.guid().nullable()
 })).max(listLandingProductsResponseOneExplorePricingTiersMax).optional()
 }).optional()
 }).and(zod.object({
@@ -9523,7 +9523,7 @@ export const UpdateLandingProductBody = zod.object({
   "billingPeriod": zod.enum(['monthly', 'yearly', 'one_time', 'on_request']),
   "status": zod.enum(['available', 'coming_soon']),
   "ctaLabel": zod.string().min(updateLandingProductBodyCtaLabelMin).max(updateLandingProductBodyCtaLabelMax),
-  "displayOrder": zod.number().int().min(updateLandingProductBodyDisplayOrderMin).max(updateLandingProductBodyDisplayOrderMax),
+  "displayOrder": zod.number().refine(Number.isInteger, "Expected integer, received float").min(updateLandingProductBodyDisplayOrderMin).max(updateLandingProductBodyDisplayOrderMax),
   "explore": zod.object({
   "eyebrow": zod.string().max(updateLandingProductBodyExploreEyebrowMax),
   "headline": zod.string().max(updateLandingProductBodyExploreHeadlineMax),
@@ -9595,7 +9595,7 @@ export const UpdateLandingProductBody = zod.object({
 })).max(updateLandingProductBodyExploreGalleryMax),
   "pricingTiers": zod.array(zod.object({
   "label": zod.string().min(updateLandingProductBodyExplorePricingTiersItemLabelMin).max(updateLandingProductBodyExplorePricingTiersItemLabelMax),
-  "planId": zod.string().uuid().nullable()
+  "planId": zod.guid().nullable()
 })).max(updateLandingProductBodyExplorePricingTiersMax).optional()
 }).optional()
 })
@@ -9744,7 +9744,7 @@ export const UpdateLandingProductResponse = zod.object({
   "billingPeriod": zod.enum(['monthly', 'yearly', 'one_time', 'on_request']),
   "status": zod.enum(['available', 'coming_soon']),
   "ctaLabel": zod.string().min(updateLandingProductResponseOneCtaLabelMin).max(updateLandingProductResponseOneCtaLabelMax),
-  "displayOrder": zod.number().int().min(updateLandingProductResponseOneDisplayOrderMin).max(updateLandingProductResponseOneDisplayOrderMax),
+  "displayOrder": zod.number().refine(Number.isInteger, "Expected integer, received float").min(updateLandingProductResponseOneDisplayOrderMin).max(updateLandingProductResponseOneDisplayOrderMax),
   "explore": zod.object({
   "eyebrow": zod.string().max(updateLandingProductResponseOneExploreEyebrowMax),
   "headline": zod.string().max(updateLandingProductResponseOneExploreHeadlineMax),
@@ -9816,7 +9816,7 @@ export const UpdateLandingProductResponse = zod.object({
 })).max(updateLandingProductResponseOneExploreGalleryMax),
   "pricingTiers": zod.array(zod.object({
   "label": zod.string().min(updateLandingProductResponseOneExplorePricingTiersItemLabelMin).max(updateLandingProductResponseOneExplorePricingTiersItemLabelMax),
-  "planId": zod.string().uuid().nullable()
+  "planId": zod.guid().nullable()
 })).max(updateLandingProductResponseOneExplorePricingTiersMax).optional()
 }).optional()
 }).and(zod.object({
@@ -9826,7 +9826,7 @@ export const UpdateLandingProductResponse = zod.object({
 
 
 export const ListTenantAdministratorsParams = zod.object({
-  "tenantId": zod.coerce.string().uuid()
+  "tenantId": zod.guid()
 })
 
 export const ListTenantAdministratorsResponseItem = zod.object({
@@ -9840,7 +9840,7 @@ export const ListTenantAdministratorsResponse = zod.array(ListTenantAdministrato
 
 
 export const AssignTenantAdministratorParams = zod.object({
-  "tenantId": zod.coerce.string().uuid()
+  "tenantId": zod.guid()
 })
 
 export const assignTenantAdministratorBodyUserIdRegExp = new RegExp('^user_[a-zA-Z0-9]+$');
@@ -9863,7 +9863,7 @@ export const setTenantAdministratorStatusPathUserIdRegExp = new RegExp('^user_[a
 
 
 export const SetTenantAdministratorStatusParams = zod.object({
-  "tenantId": zod.coerce.string().uuid(),
+  "tenantId": zod.guid(),
   "userId": zod.coerce.string().regex(setTenantAdministratorStatusPathUserIdRegExp)
 })
 
@@ -9877,7 +9877,7 @@ export const SetTenantAdministratorStatusResponse = zod.object({
 
 
 export const GetExchangePreviewIntegrationsParams = zod.object({
-  "tenantId": zod.coerce.string().uuid()
+  "tenantId": zod.guid()
 })
 
 export const getExchangePreviewIntegrationsResponseSettingsApiLabelMax = 120;
@@ -9924,7 +9924,7 @@ export const GetExchangePreviewIntegrationsResponse = zod.object({
 
 
 export const SaveExchangePreviewIntegrationsParams = zod.object({
-  "tenantId": zod.coerce.string().uuid()
+  "tenantId": zod.guid()
 })
 
 export const saveExchangePreviewIntegrationsBodySettingsApiLabelMax = 120;
@@ -10020,7 +10020,7 @@ export const getProductConfigurationPathModuleKeyRegExp = new RegExp('^[a-z][a-z
 
 
 export const GetProductConfigurationParams = zod.object({
-  "tenantId": zod.coerce.string().uuid(),
+  "tenantId": zod.guid(),
   "moduleKey": zod.coerce.string().max(getProductConfigurationPathModuleKeyMax).regex(getProductConfigurationPathModuleKeyRegExp)
 })
 
@@ -10036,7 +10036,7 @@ export const setProductConfigurationPathModuleKeyRegExp = new RegExp('^[a-z][a-z
 
 
 export const SetProductConfigurationParams = zod.object({
-  "tenantId": zod.coerce.string().uuid(),
+  "tenantId": zod.guid(),
   "moduleKey": zod.coerce.string().max(setProductConfigurationPathModuleKeyMax).regex(setProductConfigurationPathModuleKeyRegExp)
 })
 
@@ -10224,7 +10224,7 @@ export const setStaffPermissionsPathUserIdRegExp = new RegExp('^user_[a-zA-Z0-9]
 
 
 export const SetStaffPermissionsParams = zod.object({
-  "tenantId": zod.coerce.string().uuid(),
+  "tenantId": zod.guid(),
   "userId": zod.coerce.string().regex(setStaffPermissionsPathUserIdRegExp)
 })
 
@@ -10242,20 +10242,20 @@ export const SetStaffPermissionsResponse = zod.object({
 
 
 export const ListCustomerDomainsResponseItem = zod.object({
-  "tenantId": zod.string().uuid(),
+  "tenantId": zod.guid(),
   "name": zod.string(),
   "slug": zod.string(),
   "tenantStatus": zod.string(),
   "domain": zod.string().nullable(),
   "status": zod.string(),
   "deliveryStatus": zod.string(),
-  "requestId": zod.string().uuid().nullable()
+  "requestId": zod.guid().nullable()
 })
 export const ListCustomerDomainsResponse = zod.array(ListCustomerDomainsResponseItem)
 
 
 export const ManageTenantDomainHostingParams = zod.object({
-  "tenantId": zod.coerce.string().uuid()
+  "tenantId": zod.guid()
 })
 
 export const ManageTenantDomainHostingBody = zod.object({
@@ -10296,7 +10296,7 @@ export const ManageTenantDomainHostingResponse = zod.object({
 
 
 export const GetDomainVerificationParams = zod.object({
-  "tenantId": zod.coerce.string().uuid()
+  "tenantId": zod.guid()
 })
 
 export const GetDomainVerificationResponse = zod.object({
@@ -10333,7 +10333,7 @@ export const GetDomainVerificationResponse = zod.object({
 
 
 export const VerifyTenantDomainParams = zod.object({
-  "tenantId": zod.coerce.string().uuid()
+  "tenantId": zod.guid()
 })
 
 export const VerifyTenantDomainResponse = zod.object({
@@ -10370,7 +10370,7 @@ export const VerifyTenantDomainResponse = zod.object({
 
 
 export const CheckTenantDomainHostingParams = zod.object({
-  "tenantId": zod.coerce.string().uuid()
+  "tenantId": zod.guid()
 })
 
 export const CheckTenantDomainHostingResponse = zod.object({
@@ -10480,7 +10480,7 @@ export const resolvePublicDomainResponseWebsiteSettingsTermsContentMax = 20000;
 
 
 export const ResolvePublicDomainResponse = zod.object({
-  "schema_version": zod.number().int().optional(),
+  "schema_version": zod.number().refine(Number.isInteger, "Expected integer, received float").optional(),
   "releaseChecksum": zod.string().optional(),
   "preview": zod.boolean().optional(),
   "defaultLanguage": zod.string().optional(),
@@ -10539,7 +10539,7 @@ export const ResolvePublicDomainResponse = zod.object({
   "networkName": zod.string(),
   "testnet": zod.boolean(),
   "logoUrl": zod.string().nullish(),
-  "decimals": zod.number().int().optional(),
+  "decimals": zod.number().refine(Number.isInteger, "Expected integer, received float").optional(),
   "memoRequired": zod.boolean().optional()
 }))
 })
@@ -10578,10 +10578,10 @@ export const GetCurrentPrincipalResponse = zod.object({
   "userId": zod.string(),
   "email": zod.string().nullable(),
   "role": zod.enum(['super_admin', 'client_admin', 'staff', 'unassigned']),
-  "tenantId": zod.string().uuid().nullable(),
+  "tenantId": zod.guid().nullable(),
   "sandboxOnly": zod.boolean(),
   "memberships": zod.array(zod.object({
-  "tenantId": zod.string().uuid(),
+  "tenantId": zod.guid(),
   "role": zod.enum(['client_admin', 'staff']),
   "permissions": zod.array(zod.string())
 })).optional()
@@ -10592,17 +10592,17 @@ export const GetCurrentPrincipalResponse = zod.object({
  * @summary Get a safe administrative overview
  */
 export const GetPlatformOverviewResponse = zod.object({
-  "totalTenants": zod.number().int(),
-  "activeTenants": zod.number().int(),
-  "draftTenants": zod.number().int(),
-  "enabledModules": zod.number().int(),
+  "totalTenants": zod.number().refine(Number.isInteger, "Expected integer, received float"),
+  "activeTenants": zod.number().refine(Number.isInteger, "Expected integer, received float"),
+  "draftTenants": zod.number().refine(Number.isInteger, "Expected integer, received float"),
+  "enabledModules": zod.number().refine(Number.isInteger, "Expected integer, received float"),
   "sandboxOnly": zod.boolean(),
   "recentActivity": zod.array(zod.object({
   "id": zod.string(),
   "eventType": zod.string(),
   "actorId": zod.string().optional(),
   "description": zod.string(),
-  "tenantId": zod.string().uuid().nullable(),
+  "tenantId": zod.guid().nullable(),
   "createdAt": zod.coerce.date()
 }))
 })
@@ -10616,7 +10616,7 @@ export const ListPlatformActivityResponseItem = zod.object({
   "eventType": zod.string(),
   "actorId": zod.string().optional(),
   "description": zod.string(),
-  "tenantId": zod.string().uuid().nullable(),
+  "tenantId": zod.guid().nullable(),
   "createdAt": zod.coerce.date()
 })
 export const ListPlatformActivityResponse = zod.array(ListPlatformActivityResponseItem)
@@ -10654,7 +10654,7 @@ export const ListSandboxAssetNetworksResponse = zod.object({
   "networkName": zod.string(),
   "testnet": zod.boolean(),
   "logoUrl": zod.string().nullish(),
-  "decimals": zod.number().int().optional(),
+  "decimals": zod.number().refine(Number.isInteger, "Expected integer, received float").optional(),
   "memoRequired": zod.boolean().optional()
 })),
   "sandboxOnly": zod.boolean()
@@ -10672,7 +10672,7 @@ export const listTenantsResponseEnabledModulesItemRegExp = new RegExp('^[a-z][a-
 
 export const ListTenantsResponseItem = zod.object({
   "exchangeProvisioned": zod.boolean().optional(),
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "name": zod.string(),
   "slug": zod.string(),
   "brandName": zod.string(),
@@ -10702,7 +10702,7 @@ export const createTenantBodySlugRegExp = new RegExp('^[a-z0-9]+(?:-[a-z0-9]+)*$
 export const CreateTenantBody = zod.object({
   "name": zod.string().min(createTenantBodyNameMin).max(createTenantBodyNameMax),
   "slug": zod.string().min(createTenantBodySlugMin).max(createTenantBodySlugMax).regex(createTenantBodySlugRegExp),
-  "planId": zod.string().uuid(),
+  "planId": zod.guid(),
   "prepareTrial": zod.boolean().optional().describe('Create an unassigned draft; review and start a published trial separately.')
 })
 
@@ -10762,7 +10762,7 @@ export const createTenantResponseTwoWebsiteSettingsTermsContentMax = 20000;
 
 export const CreateTenantResponse = zod.object({
   "exchangeProvisioned": zod.boolean().optional(),
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "name": zod.string(),
   "slug": zod.string(),
   "brandName": zod.string(),
@@ -10828,7 +10828,7 @@ export const CreateTenantResponse = zod.object({
  * @summary Get one tenant and its provisioning state
  */
 export const GetTenantParams = zod.object({
-  "tenantId": zod.coerce.string().uuid()
+  "tenantId": zod.guid()
 })
 
 export const getTenantResponseOneEnabledModulesItemMax = 64;
@@ -10887,7 +10887,7 @@ export const getTenantResponseTwoWebsiteSettingsTermsContentMax = 20000;
 
 export const GetTenantResponse = zod.object({
   "exchangeProvisioned": zod.boolean().optional(),
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "name": zod.string(),
   "slug": zod.string(),
   "brandName": zod.string(),
@@ -10953,7 +10953,7 @@ export const GetTenantResponse = zod.object({
  * @summary Set the tenant brand
  */
 export const UpdateTenantBrandParams = zod.object({
-  "tenantId": zod.coerce.string().uuid()
+  "tenantId": zod.guid()
 })
 
 export const updateTenantBrandBodyBrandNameMin = 2;
@@ -11037,7 +11037,7 @@ export const updateTenantBrandResponseTwoWebsiteSettingsTermsContentMax = 20000;
 
 export const UpdateTenantBrandResponse = zod.object({
   "exchangeProvisioned": zod.boolean().optional(),
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "name": zod.string(),
   "slug": zod.string(),
   "brandName": zod.string(),
@@ -11103,7 +11103,7 @@ export const UpdateTenantBrandResponse = zod.object({
  * @summary Set or clear a tenant domain
  */
 export const UpdateTenantDomainParams = zod.object({
-  "tenantId": zod.coerce.string().uuid()
+  "tenantId": zod.guid()
 })
 
 export const updateTenantDomainBodyDomainMax = 253;
@@ -11170,7 +11170,7 @@ export const updateTenantDomainResponseTwoWebsiteSettingsTermsContentMax = 20000
 
 export const UpdateTenantDomainResponse = zod.object({
   "exchangeProvisioned": zod.boolean().optional(),
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "name": zod.string(),
   "slug": zod.string(),
   "brandName": zod.string(),
@@ -11236,7 +11236,7 @@ export const UpdateTenantDomainResponse = zod.object({
  * @summary Set enabled product modules for a tenant
  */
 export const UpdateTenantModulesParams = zod.object({
-  "tenantId": zod.coerce.string().uuid()
+  "tenantId": zod.guid()
 })
 
 export const updateTenantModulesBodyModuleKeysItemMax = 64;
@@ -11305,7 +11305,7 @@ export const updateTenantModulesResponseTwoWebsiteSettingsTermsContentMax = 2000
 
 export const UpdateTenantModulesResponse = zod.object({
   "exchangeProvisioned": zod.boolean().optional(),
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "name": zod.string(),
   "slug": zod.string(),
   "brandName": zod.string(),
@@ -11371,7 +11371,7 @@ export const UpdateTenantModulesResponse = zod.object({
  * @summary Set supported sandbox assets and networks for a tenant
  */
 export const UpdateTenantAssetsNetworksParams = zod.object({
-  "tenantId": zod.coerce.string().uuid()
+  "tenantId": zod.guid()
 })
 
 export const UpdateTenantAssetsNetworksBody = zod.object({
@@ -11434,7 +11434,7 @@ export const updateTenantAssetsNetworksResponseTwoWebsiteSettingsTermsContentMax
 
 export const UpdateTenantAssetsNetworksResponse = zod.object({
   "exchangeProvisioned": zod.boolean().optional(),
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "name": zod.string(),
   "slug": zod.string(),
   "brandName": zod.string(),
@@ -11500,7 +11500,7 @@ export const UpdateTenantAssetsNetworksResponse = zod.object({
  * @summary Set sandbox-only tenant configuration
  */
 export const UpdateTenantConfigurationParams = zod.object({
-  "tenantId": zod.coerce.string().uuid()
+  "tenantId": zod.guid()
 })
 
 export const UpdateTenantConfigurationBody = zod.object({
@@ -11566,7 +11566,7 @@ export const updateTenantConfigurationResponseTwoWebsiteSettingsTermsContentMax 
 
 export const UpdateTenantConfigurationResponse = zod.object({
   "exchangeProvisioned": zod.boolean().optional(),
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "name": zod.string(),
   "slug": zod.string(),
   "brandName": zod.string(),
@@ -11632,7 +11632,7 @@ export const UpdateTenantConfigurationResponse = zod.object({
  * @summary Activate a fully provisioned tenant in sandbox mode
  */
 export const ActivateTenantParams = zod.object({
-  "tenantId": zod.coerce.string().uuid()
+  "tenantId": zod.guid()
 })
 
 export const activateTenantResponseOneEnabledModulesItemMax = 64;
@@ -11691,7 +11691,7 @@ export const activateTenantResponseTwoWebsiteSettingsTermsContentMax = 20000;
 
 export const ActivateTenantResponse = zod.object({
   "exchangeProvisioned": zod.boolean().optional(),
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "name": zod.string(),
   "slug": zod.string(),
   "brandName": zod.string(),
@@ -11906,7 +11906,7 @@ export const ListPlansResponseItem = zod.object({
   "discountPercent": zod.string().max(listPlansResponseOneDiscountPercentMax).regex(listPlansResponseOneDiscountPercentRegExp).optional(),
   "currency": zod.string().regex(listPlansResponseOneCurrencyRegExp),
   "billingLabel": zod.string().max(listPlansResponseOneBillingLabelMax),
-  "displayOrder": zod.number().int().min(listPlansResponseOneDisplayOrderMin).max(listPlansResponseOneDisplayOrderMax),
+  "displayOrder": zod.number().refine(Number.isInteger, "Expected integer, received float").min(listPlansResponseOneDisplayOrderMin).max(listPlansResponseOneDisplayOrderMax),
   "status": zod.enum(['enabled', 'disabled', 'archived']),
   "entitlements": zod.array(zod.object({
   "key": zod.string().max(listPlansResponseOneEntitlementsItemKeyMax).regex(listPlansResponseOneEntitlementsItemKeyRegExp),
@@ -11939,22 +11939,22 @@ export const ListPlansResponseItem = zod.object({
   "promoStartsAt": zod.coerce.date().nullish(),
   "promoEndsAt": zod.coerce.date().nullish(),
   "billingInterval": zod.enum(['monthly', 'yearly', 'monthly_and_yearly', 'custom']).optional(),
-  "trialDays": zod.number().int().min(listPlansResponseOneProfileTrialDaysMin).max(listPlansResponseOneProfileTrialDaysMax).optional(),
+  "trialDays": zod.number().refine(Number.isInteger, "Expected integer, received float").min(listPlansResponseOneProfileTrialDaysMin).max(listPlansResponseOneProfileTrialDaysMax).optional(),
   "ctaLabel": zod.string().max(listPlansResponseOneProfileCtaLabelMax).optional(),
   "ctaUrl": zod.string().max(listPlansResponseOneProfileCtaUrlMax).regex(listPlansResponseOneProfileCtaUrlRegExp).optional(),
   "visibility": zod.enum(['public', 'hidden']).optional(),
-  "adminSeats": zod.number().int().min(1).max(listPlansResponseOneProfileAdminSeatsMax).nullish(),
+  "adminSeats": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(listPlansResponseOneProfileAdminSeatsMax).nullish(),
   "multiAdminRoles": zod.boolean().optional(),
   "supportLevel": zod.enum(['email', 'priority', 'dedicated']).optional(),
-  "supportResponseHours": zod.number().int().min(1).max(listPlansResponseOneProfileSupportResponseHoursMax).nullish(),
-  "launchTargetBusinessDays": zod.number().int().min(1).max(listPlansResponseOneProfileLaunchTargetBusinessDaysMax).nullish(),
+  "supportResponseHours": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(listPlansResponseOneProfileSupportResponseHoursMax).nullish(),
+  "launchTargetBusinessDays": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(listPlansResponseOneProfileLaunchTargetBusinessDaysMax).nullish(),
   "dedicatedManager": zod.boolean().optional(),
   "slaEnabled": zod.boolean().optional(),
   "slaTerms": zod.string().max(listPlansResponseOneProfileSlaTermsMax).optional(),
   "earlyAccess": zod.boolean().optional(),
   "poweredByFooter": zod.boolean().optional(),
   "themeModes": zod.array(zod.enum(['light', 'dark'])).max(listPlansResponseOneProfileThemeModesMax).optional(),
-  "convertProviderLimit": zod.number().int().min(listPlansResponseOneProfileConvertProviderLimitMin).max(listPlansResponseOneProfileConvertProviderLimitMax).nullish(),
+  "convertProviderLimit": zod.number().refine(Number.isInteger, "Expected integer, received float").min(listPlansResponseOneProfileConvertProviderLimitMin).max(listPlansResponseOneProfileConvertProviderLimitMax).nullish(),
   "requestedProviders": zod.array(zod.string().min(1).max(listPlansResponseOneProfileRequestedProvidersItemMax)).max(listPlansResponseOneProfileRequestedProvidersMax).optional(),
   "capabilities": zod.array(zod.object({
   "key": zod.string().regex(listPlansResponseOneProfileCapabilitiesItemKeyRegExp),
@@ -11974,9 +11974,9 @@ export const ListPlansResponseItem = zod.object({
 })).max(listPlansResponseOneProfileCapabilitiesMax).optional(),
   "internalNotes": zod.string().max(listPlansResponseOneProfileInternalNotesMax).optional()
 }).optional().describe('Structured plan configuration. internalName and internalNotes are Super Admin only and never published.'),
-  "expectedRevision": zod.number().int().min(listPlansResponseOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
+  "expectedRevision": zod.number().refine(Number.isInteger, "Expected integer, received float").min(listPlansResponseOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
 }).and(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date(),
   "pricingConfigured": zod.boolean().optional(),
@@ -11985,7 +11985,7 @@ export const ListPlansResponseItem = zod.object({
   "label": zod.string().min(1).max(listPlansResponseTwoFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(listPlansResponseTwoFeatureRowsItemValueMax)
 }).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(listPlansResponseTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.'),
-  "revision": zod.number().int().optional()
+  "revision": zod.number().refine(Number.isInteger, "Expected integer, received float").optional()
 }))
 export const ListPlansResponse = zod.array(ListPlansResponseItem)
 
@@ -12130,7 +12130,7 @@ export const CreatePlanBody = zod.object({
   "discountPercent": zod.string().max(createPlanBodyDiscountPercentMax).regex(createPlanBodyDiscountPercentRegExp).optional(),
   "currency": zod.string().regex(createPlanBodyCurrencyRegExp),
   "billingLabel": zod.string().max(createPlanBodyBillingLabelMax),
-  "displayOrder": zod.number().int().min(createPlanBodyDisplayOrderMin).max(createPlanBodyDisplayOrderMax),
+  "displayOrder": zod.number().refine(Number.isInteger, "Expected integer, received float").min(createPlanBodyDisplayOrderMin).max(createPlanBodyDisplayOrderMax),
   "status": zod.enum(['enabled', 'disabled', 'archived']),
   "entitlements": zod.array(zod.object({
   "key": zod.string().max(createPlanBodyEntitlementsItemKeyMax).regex(createPlanBodyEntitlementsItemKeyRegExp),
@@ -12163,22 +12163,22 @@ export const CreatePlanBody = zod.object({
   "promoStartsAt": zod.coerce.date().nullish(),
   "promoEndsAt": zod.coerce.date().nullish(),
   "billingInterval": zod.enum(['monthly', 'yearly', 'monthly_and_yearly', 'custom']).optional(),
-  "trialDays": zod.number().int().min(createPlanBodyProfileTrialDaysMin).max(createPlanBodyProfileTrialDaysMax).optional(),
+  "trialDays": zod.number().refine(Number.isInteger, "Expected integer, received float").min(createPlanBodyProfileTrialDaysMin).max(createPlanBodyProfileTrialDaysMax).optional(),
   "ctaLabel": zod.string().max(createPlanBodyProfileCtaLabelMax).optional(),
   "ctaUrl": zod.string().max(createPlanBodyProfileCtaUrlMax).regex(createPlanBodyProfileCtaUrlRegExp).optional(),
   "visibility": zod.enum(['public', 'hidden']).optional(),
-  "adminSeats": zod.number().int().min(1).max(createPlanBodyProfileAdminSeatsMax).nullish(),
+  "adminSeats": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(createPlanBodyProfileAdminSeatsMax).nullish(),
   "multiAdminRoles": zod.boolean().optional(),
   "supportLevel": zod.enum(['email', 'priority', 'dedicated']).optional(),
-  "supportResponseHours": zod.number().int().min(1).max(createPlanBodyProfileSupportResponseHoursMax).nullish(),
-  "launchTargetBusinessDays": zod.number().int().min(1).max(createPlanBodyProfileLaunchTargetBusinessDaysMax).nullish(),
+  "supportResponseHours": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(createPlanBodyProfileSupportResponseHoursMax).nullish(),
+  "launchTargetBusinessDays": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(createPlanBodyProfileLaunchTargetBusinessDaysMax).nullish(),
   "dedicatedManager": zod.boolean().optional(),
   "slaEnabled": zod.boolean().optional(),
   "slaTerms": zod.string().max(createPlanBodyProfileSlaTermsMax).optional(),
   "earlyAccess": zod.boolean().optional(),
   "poweredByFooter": zod.boolean().optional(),
   "themeModes": zod.array(zod.enum(['light', 'dark'])).max(createPlanBodyProfileThemeModesMax).optional(),
-  "convertProviderLimit": zod.number().int().min(createPlanBodyProfileConvertProviderLimitMin).max(createPlanBodyProfileConvertProviderLimitMax).nullish(),
+  "convertProviderLimit": zod.number().refine(Number.isInteger, "Expected integer, received float").min(createPlanBodyProfileConvertProviderLimitMin).max(createPlanBodyProfileConvertProviderLimitMax).nullish(),
   "requestedProviders": zod.array(zod.string().min(1).max(createPlanBodyProfileRequestedProvidersItemMax)).max(createPlanBodyProfileRequestedProvidersMax).optional(),
   "capabilities": zod.array(zod.object({
   "key": zod.string().regex(createPlanBodyProfileCapabilitiesItemKeyRegExp),
@@ -12198,7 +12198,7 @@ export const CreatePlanBody = zod.object({
 })).max(createPlanBodyProfileCapabilitiesMax).optional(),
   "internalNotes": zod.string().max(createPlanBodyProfileInternalNotesMax).optional()
 }).optional().describe('Structured plan configuration. internalName and internalNotes are Super Admin only and never published.'),
-  "expectedRevision": zod.number().int().min(createPlanBodyExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
+  "expectedRevision": zod.number().refine(Number.isInteger, "Expected integer, received float").min(createPlanBodyExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
 })
 
 export const createPlanResponseOneNameMin = 2;
@@ -12345,7 +12345,7 @@ export const CreatePlanResponse = zod.object({
   "discountPercent": zod.string().max(createPlanResponseOneDiscountPercentMax).regex(createPlanResponseOneDiscountPercentRegExp).optional(),
   "currency": zod.string().regex(createPlanResponseOneCurrencyRegExp),
   "billingLabel": zod.string().max(createPlanResponseOneBillingLabelMax),
-  "displayOrder": zod.number().int().min(createPlanResponseOneDisplayOrderMin).max(createPlanResponseOneDisplayOrderMax),
+  "displayOrder": zod.number().refine(Number.isInteger, "Expected integer, received float").min(createPlanResponseOneDisplayOrderMin).max(createPlanResponseOneDisplayOrderMax),
   "status": zod.enum(['enabled', 'disabled', 'archived']),
   "entitlements": zod.array(zod.object({
   "key": zod.string().max(createPlanResponseOneEntitlementsItemKeyMax).regex(createPlanResponseOneEntitlementsItemKeyRegExp),
@@ -12378,22 +12378,22 @@ export const CreatePlanResponse = zod.object({
   "promoStartsAt": zod.coerce.date().nullish(),
   "promoEndsAt": zod.coerce.date().nullish(),
   "billingInterval": zod.enum(['monthly', 'yearly', 'monthly_and_yearly', 'custom']).optional(),
-  "trialDays": zod.number().int().min(createPlanResponseOneProfileTrialDaysMin).max(createPlanResponseOneProfileTrialDaysMax).optional(),
+  "trialDays": zod.number().refine(Number.isInteger, "Expected integer, received float").min(createPlanResponseOneProfileTrialDaysMin).max(createPlanResponseOneProfileTrialDaysMax).optional(),
   "ctaLabel": zod.string().max(createPlanResponseOneProfileCtaLabelMax).optional(),
   "ctaUrl": zod.string().max(createPlanResponseOneProfileCtaUrlMax).regex(createPlanResponseOneProfileCtaUrlRegExp).optional(),
   "visibility": zod.enum(['public', 'hidden']).optional(),
-  "adminSeats": zod.number().int().min(1).max(createPlanResponseOneProfileAdminSeatsMax).nullish(),
+  "adminSeats": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(createPlanResponseOneProfileAdminSeatsMax).nullish(),
   "multiAdminRoles": zod.boolean().optional(),
   "supportLevel": zod.enum(['email', 'priority', 'dedicated']).optional(),
-  "supportResponseHours": zod.number().int().min(1).max(createPlanResponseOneProfileSupportResponseHoursMax).nullish(),
-  "launchTargetBusinessDays": zod.number().int().min(1).max(createPlanResponseOneProfileLaunchTargetBusinessDaysMax).nullish(),
+  "supportResponseHours": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(createPlanResponseOneProfileSupportResponseHoursMax).nullish(),
+  "launchTargetBusinessDays": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(createPlanResponseOneProfileLaunchTargetBusinessDaysMax).nullish(),
   "dedicatedManager": zod.boolean().optional(),
   "slaEnabled": zod.boolean().optional(),
   "slaTerms": zod.string().max(createPlanResponseOneProfileSlaTermsMax).optional(),
   "earlyAccess": zod.boolean().optional(),
   "poweredByFooter": zod.boolean().optional(),
   "themeModes": zod.array(zod.enum(['light', 'dark'])).max(createPlanResponseOneProfileThemeModesMax).optional(),
-  "convertProviderLimit": zod.number().int().min(createPlanResponseOneProfileConvertProviderLimitMin).max(createPlanResponseOneProfileConvertProviderLimitMax).nullish(),
+  "convertProviderLimit": zod.number().refine(Number.isInteger, "Expected integer, received float").min(createPlanResponseOneProfileConvertProviderLimitMin).max(createPlanResponseOneProfileConvertProviderLimitMax).nullish(),
   "requestedProviders": zod.array(zod.string().min(1).max(createPlanResponseOneProfileRequestedProvidersItemMax)).max(createPlanResponseOneProfileRequestedProvidersMax).optional(),
   "capabilities": zod.array(zod.object({
   "key": zod.string().regex(createPlanResponseOneProfileCapabilitiesItemKeyRegExp),
@@ -12413,9 +12413,9 @@ export const CreatePlanResponse = zod.object({
 })).max(createPlanResponseOneProfileCapabilitiesMax).optional(),
   "internalNotes": zod.string().max(createPlanResponseOneProfileInternalNotesMax).optional()
 }).optional().describe('Structured plan configuration. internalName and internalNotes are Super Admin only and never published.'),
-  "expectedRevision": zod.number().int().min(createPlanResponseOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
+  "expectedRevision": zod.number().refine(Number.isInteger, "Expected integer, received float").min(createPlanResponseOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
 }).and(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date(),
   "pricingConfigured": zod.boolean().optional(),
@@ -12424,12 +12424,12 @@ export const CreatePlanResponse = zod.object({
   "label": zod.string().min(1).max(createPlanResponseTwoFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(createPlanResponseTwoFeatureRowsItemValueMax)
 }).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(createPlanResponseTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.'),
-  "revision": zod.number().int().optional()
+  "revision": zod.number().refine(Number.isInteger, "Expected integer, received float").optional()
 }))
 
 
 export const DeletePlanParams = zod.object({
-  "planId": zod.coerce.string().uuid()
+  "planId": zod.guid()
 })
 
 export const deletePlanQueryExpectedRevisionMin = 0;
@@ -12437,7 +12437,7 @@ export const deletePlanQueryExpectedRevisionMin = 0;
 
 
 export const DeletePlanQueryParams = zod.object({
-  "expectedRevision": zod.coerce.number().int().min(deletePlanQueryExpectedRevisionMin)
+  "expectedRevision": zod.coerce.number().refine(Number.isInteger, "Expected integer, received float").min(deletePlanQueryExpectedRevisionMin)
 })
 
 export const DeletePlanResponse = zod.object({
@@ -12446,7 +12446,7 @@ export const DeletePlanResponse = zod.object({
 
 
 export const GetPlanParams = zod.object({
-  "planId": zod.coerce.string().uuid()
+  "planId": zod.guid()
 })
 
 export const getPlanResponseOneNameMin = 2;
@@ -12593,7 +12593,7 @@ export const GetPlanResponse = zod.object({
   "discountPercent": zod.string().max(getPlanResponseOneDiscountPercentMax).regex(getPlanResponseOneDiscountPercentRegExp).optional(),
   "currency": zod.string().regex(getPlanResponseOneCurrencyRegExp),
   "billingLabel": zod.string().max(getPlanResponseOneBillingLabelMax),
-  "displayOrder": zod.number().int().min(getPlanResponseOneDisplayOrderMin).max(getPlanResponseOneDisplayOrderMax),
+  "displayOrder": zod.number().refine(Number.isInteger, "Expected integer, received float").min(getPlanResponseOneDisplayOrderMin).max(getPlanResponseOneDisplayOrderMax),
   "status": zod.enum(['enabled', 'disabled', 'archived']),
   "entitlements": zod.array(zod.object({
   "key": zod.string().max(getPlanResponseOneEntitlementsItemKeyMax).regex(getPlanResponseOneEntitlementsItemKeyRegExp),
@@ -12626,22 +12626,22 @@ export const GetPlanResponse = zod.object({
   "promoStartsAt": zod.coerce.date().nullish(),
   "promoEndsAt": zod.coerce.date().nullish(),
   "billingInterval": zod.enum(['monthly', 'yearly', 'monthly_and_yearly', 'custom']).optional(),
-  "trialDays": zod.number().int().min(getPlanResponseOneProfileTrialDaysMin).max(getPlanResponseOneProfileTrialDaysMax).optional(),
+  "trialDays": zod.number().refine(Number.isInteger, "Expected integer, received float").min(getPlanResponseOneProfileTrialDaysMin).max(getPlanResponseOneProfileTrialDaysMax).optional(),
   "ctaLabel": zod.string().max(getPlanResponseOneProfileCtaLabelMax).optional(),
   "ctaUrl": zod.string().max(getPlanResponseOneProfileCtaUrlMax).regex(getPlanResponseOneProfileCtaUrlRegExp).optional(),
   "visibility": zod.enum(['public', 'hidden']).optional(),
-  "adminSeats": zod.number().int().min(1).max(getPlanResponseOneProfileAdminSeatsMax).nullish(),
+  "adminSeats": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(getPlanResponseOneProfileAdminSeatsMax).nullish(),
   "multiAdminRoles": zod.boolean().optional(),
   "supportLevel": zod.enum(['email', 'priority', 'dedicated']).optional(),
-  "supportResponseHours": zod.number().int().min(1).max(getPlanResponseOneProfileSupportResponseHoursMax).nullish(),
-  "launchTargetBusinessDays": zod.number().int().min(1).max(getPlanResponseOneProfileLaunchTargetBusinessDaysMax).nullish(),
+  "supportResponseHours": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(getPlanResponseOneProfileSupportResponseHoursMax).nullish(),
+  "launchTargetBusinessDays": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(getPlanResponseOneProfileLaunchTargetBusinessDaysMax).nullish(),
   "dedicatedManager": zod.boolean().optional(),
   "slaEnabled": zod.boolean().optional(),
   "slaTerms": zod.string().max(getPlanResponseOneProfileSlaTermsMax).optional(),
   "earlyAccess": zod.boolean().optional(),
   "poweredByFooter": zod.boolean().optional(),
   "themeModes": zod.array(zod.enum(['light', 'dark'])).max(getPlanResponseOneProfileThemeModesMax).optional(),
-  "convertProviderLimit": zod.number().int().min(getPlanResponseOneProfileConvertProviderLimitMin).max(getPlanResponseOneProfileConvertProviderLimitMax).nullish(),
+  "convertProviderLimit": zod.number().refine(Number.isInteger, "Expected integer, received float").min(getPlanResponseOneProfileConvertProviderLimitMin).max(getPlanResponseOneProfileConvertProviderLimitMax).nullish(),
   "requestedProviders": zod.array(zod.string().min(1).max(getPlanResponseOneProfileRequestedProvidersItemMax)).max(getPlanResponseOneProfileRequestedProvidersMax).optional(),
   "capabilities": zod.array(zod.object({
   "key": zod.string().regex(getPlanResponseOneProfileCapabilitiesItemKeyRegExp),
@@ -12661,9 +12661,9 @@ export const GetPlanResponse = zod.object({
 })).max(getPlanResponseOneProfileCapabilitiesMax).optional(),
   "internalNotes": zod.string().max(getPlanResponseOneProfileInternalNotesMax).optional()
 }).optional().describe('Structured plan configuration. internalName and internalNotes are Super Admin only and never published.'),
-  "expectedRevision": zod.number().int().min(getPlanResponseOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
+  "expectedRevision": zod.number().refine(Number.isInteger, "Expected integer, received float").min(getPlanResponseOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
 }).and(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date(),
   "pricingConfigured": zod.boolean().optional(),
@@ -12672,12 +12672,12 @@ export const GetPlanResponse = zod.object({
   "label": zod.string().min(1).max(getPlanResponseTwoFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(getPlanResponseTwoFeatureRowsItemValueMax)
 }).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(getPlanResponseTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.'),
-  "revision": zod.number().int().optional()
+  "revision": zod.number().refine(Number.isInteger, "Expected integer, received float").optional()
 }))
 
 
 export const UpdatePlanParams = zod.object({
-  "planId": zod.coerce.string().uuid()
+  "planId": zod.guid()
 })
 
 export const updatePlanBodyNameMin = 2;
@@ -12820,7 +12820,7 @@ export const UpdatePlanBody = zod.object({
   "discountPercent": zod.string().max(updatePlanBodyDiscountPercentMax).regex(updatePlanBodyDiscountPercentRegExp).optional(),
   "currency": zod.string().regex(updatePlanBodyCurrencyRegExp),
   "billingLabel": zod.string().max(updatePlanBodyBillingLabelMax),
-  "displayOrder": zod.number().int().min(updatePlanBodyDisplayOrderMin).max(updatePlanBodyDisplayOrderMax),
+  "displayOrder": zod.number().refine(Number.isInteger, "Expected integer, received float").min(updatePlanBodyDisplayOrderMin).max(updatePlanBodyDisplayOrderMax),
   "status": zod.enum(['enabled', 'disabled', 'archived']),
   "entitlements": zod.array(zod.object({
   "key": zod.string().max(updatePlanBodyEntitlementsItemKeyMax).regex(updatePlanBodyEntitlementsItemKeyRegExp),
@@ -12853,22 +12853,22 @@ export const UpdatePlanBody = zod.object({
   "promoStartsAt": zod.coerce.date().nullish(),
   "promoEndsAt": zod.coerce.date().nullish(),
   "billingInterval": zod.enum(['monthly', 'yearly', 'monthly_and_yearly', 'custom']).optional(),
-  "trialDays": zod.number().int().min(updatePlanBodyProfileTrialDaysMin).max(updatePlanBodyProfileTrialDaysMax).optional(),
+  "trialDays": zod.number().refine(Number.isInteger, "Expected integer, received float").min(updatePlanBodyProfileTrialDaysMin).max(updatePlanBodyProfileTrialDaysMax).optional(),
   "ctaLabel": zod.string().max(updatePlanBodyProfileCtaLabelMax).optional(),
   "ctaUrl": zod.string().max(updatePlanBodyProfileCtaUrlMax).regex(updatePlanBodyProfileCtaUrlRegExp).optional(),
   "visibility": zod.enum(['public', 'hidden']).optional(),
-  "adminSeats": zod.number().int().min(1).max(updatePlanBodyProfileAdminSeatsMax).nullish(),
+  "adminSeats": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(updatePlanBodyProfileAdminSeatsMax).nullish(),
   "multiAdminRoles": zod.boolean().optional(),
   "supportLevel": zod.enum(['email', 'priority', 'dedicated']).optional(),
-  "supportResponseHours": zod.number().int().min(1).max(updatePlanBodyProfileSupportResponseHoursMax).nullish(),
-  "launchTargetBusinessDays": zod.number().int().min(1).max(updatePlanBodyProfileLaunchTargetBusinessDaysMax).nullish(),
+  "supportResponseHours": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(updatePlanBodyProfileSupportResponseHoursMax).nullish(),
+  "launchTargetBusinessDays": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(updatePlanBodyProfileLaunchTargetBusinessDaysMax).nullish(),
   "dedicatedManager": zod.boolean().optional(),
   "slaEnabled": zod.boolean().optional(),
   "slaTerms": zod.string().max(updatePlanBodyProfileSlaTermsMax).optional(),
   "earlyAccess": zod.boolean().optional(),
   "poweredByFooter": zod.boolean().optional(),
   "themeModes": zod.array(zod.enum(['light', 'dark'])).max(updatePlanBodyProfileThemeModesMax).optional(),
-  "convertProviderLimit": zod.number().int().min(updatePlanBodyProfileConvertProviderLimitMin).max(updatePlanBodyProfileConvertProviderLimitMax).nullish(),
+  "convertProviderLimit": zod.number().refine(Number.isInteger, "Expected integer, received float").min(updatePlanBodyProfileConvertProviderLimitMin).max(updatePlanBodyProfileConvertProviderLimitMax).nullish(),
   "requestedProviders": zod.array(zod.string().min(1).max(updatePlanBodyProfileRequestedProvidersItemMax)).max(updatePlanBodyProfileRequestedProvidersMax).optional(),
   "capabilities": zod.array(zod.object({
   "key": zod.string().regex(updatePlanBodyProfileCapabilitiesItemKeyRegExp),
@@ -12888,7 +12888,7 @@ export const UpdatePlanBody = zod.object({
 })).max(updatePlanBodyProfileCapabilitiesMax).optional(),
   "internalNotes": zod.string().max(updatePlanBodyProfileInternalNotesMax).optional()
 }).optional().describe('Structured plan configuration. internalName and internalNotes are Super Admin only and never published.'),
-  "expectedRevision": zod.number().int().min(updatePlanBodyExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
+  "expectedRevision": zod.number().refine(Number.isInteger, "Expected integer, received float").min(updatePlanBodyExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
 })
 
 export const updatePlanResponseOneNameMin = 2;
@@ -13035,7 +13035,7 @@ export const UpdatePlanResponse = zod.object({
   "discountPercent": zod.string().max(updatePlanResponseOneDiscountPercentMax).regex(updatePlanResponseOneDiscountPercentRegExp).optional(),
   "currency": zod.string().regex(updatePlanResponseOneCurrencyRegExp),
   "billingLabel": zod.string().max(updatePlanResponseOneBillingLabelMax),
-  "displayOrder": zod.number().int().min(updatePlanResponseOneDisplayOrderMin).max(updatePlanResponseOneDisplayOrderMax),
+  "displayOrder": zod.number().refine(Number.isInteger, "Expected integer, received float").min(updatePlanResponseOneDisplayOrderMin).max(updatePlanResponseOneDisplayOrderMax),
   "status": zod.enum(['enabled', 'disabled', 'archived']),
   "entitlements": zod.array(zod.object({
   "key": zod.string().max(updatePlanResponseOneEntitlementsItemKeyMax).regex(updatePlanResponseOneEntitlementsItemKeyRegExp),
@@ -13068,22 +13068,22 @@ export const UpdatePlanResponse = zod.object({
   "promoStartsAt": zod.coerce.date().nullish(),
   "promoEndsAt": zod.coerce.date().nullish(),
   "billingInterval": zod.enum(['monthly', 'yearly', 'monthly_and_yearly', 'custom']).optional(),
-  "trialDays": zod.number().int().min(updatePlanResponseOneProfileTrialDaysMin).max(updatePlanResponseOneProfileTrialDaysMax).optional(),
+  "trialDays": zod.number().refine(Number.isInteger, "Expected integer, received float").min(updatePlanResponseOneProfileTrialDaysMin).max(updatePlanResponseOneProfileTrialDaysMax).optional(),
   "ctaLabel": zod.string().max(updatePlanResponseOneProfileCtaLabelMax).optional(),
   "ctaUrl": zod.string().max(updatePlanResponseOneProfileCtaUrlMax).regex(updatePlanResponseOneProfileCtaUrlRegExp).optional(),
   "visibility": zod.enum(['public', 'hidden']).optional(),
-  "adminSeats": zod.number().int().min(1).max(updatePlanResponseOneProfileAdminSeatsMax).nullish(),
+  "adminSeats": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(updatePlanResponseOneProfileAdminSeatsMax).nullish(),
   "multiAdminRoles": zod.boolean().optional(),
   "supportLevel": zod.enum(['email', 'priority', 'dedicated']).optional(),
-  "supportResponseHours": zod.number().int().min(1).max(updatePlanResponseOneProfileSupportResponseHoursMax).nullish(),
-  "launchTargetBusinessDays": zod.number().int().min(1).max(updatePlanResponseOneProfileLaunchTargetBusinessDaysMax).nullish(),
+  "supportResponseHours": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(updatePlanResponseOneProfileSupportResponseHoursMax).nullish(),
+  "launchTargetBusinessDays": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(updatePlanResponseOneProfileLaunchTargetBusinessDaysMax).nullish(),
   "dedicatedManager": zod.boolean().optional(),
   "slaEnabled": zod.boolean().optional(),
   "slaTerms": zod.string().max(updatePlanResponseOneProfileSlaTermsMax).optional(),
   "earlyAccess": zod.boolean().optional(),
   "poweredByFooter": zod.boolean().optional(),
   "themeModes": zod.array(zod.enum(['light', 'dark'])).max(updatePlanResponseOneProfileThemeModesMax).optional(),
-  "convertProviderLimit": zod.number().int().min(updatePlanResponseOneProfileConvertProviderLimitMin).max(updatePlanResponseOneProfileConvertProviderLimitMax).nullish(),
+  "convertProviderLimit": zod.number().refine(Number.isInteger, "Expected integer, received float").min(updatePlanResponseOneProfileConvertProviderLimitMin).max(updatePlanResponseOneProfileConvertProviderLimitMax).nullish(),
   "requestedProviders": zod.array(zod.string().min(1).max(updatePlanResponseOneProfileRequestedProvidersItemMax)).max(updatePlanResponseOneProfileRequestedProvidersMax).optional(),
   "capabilities": zod.array(zod.object({
   "key": zod.string().regex(updatePlanResponseOneProfileCapabilitiesItemKeyRegExp),
@@ -13103,9 +13103,9 @@ export const UpdatePlanResponse = zod.object({
 })).max(updatePlanResponseOneProfileCapabilitiesMax).optional(),
   "internalNotes": zod.string().max(updatePlanResponseOneProfileInternalNotesMax).optional()
 }).optional().describe('Structured plan configuration. internalName and internalNotes are Super Admin only and never published.'),
-  "expectedRevision": zod.number().int().min(updatePlanResponseOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
+  "expectedRevision": zod.number().refine(Number.isInteger, "Expected integer, received float").min(updatePlanResponseOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
 }).and(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date(),
   "pricingConfigured": zod.boolean().optional(),
@@ -13114,26 +13114,26 @@ export const UpdatePlanResponse = zod.object({
   "label": zod.string().min(1).max(updatePlanResponseTwoFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(updatePlanResponseTwoFeatureRowsItemValueMax)
 }).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(updatePlanResponseTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.'),
-  "revision": zod.number().int().optional()
+  "revision": zod.number().refine(Number.isInteger, "Expected integer, received float").optional()
 }))
 
 
 export const ListPublicationVersionsResponse = zod.object({
   "currentRevision": zod.string().nullable(),
   "versions": zod.array(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "revision": zod.string(),
   "reason": zod.string(),
   "publishedBy": zod.string(),
   "rollbackOf": zod.string().nullable(),
   "publishedAt": zod.coerce.date(),
-  "planCount": zod.number().int()
+  "planCount": zod.number().refine(Number.isInteger, "Expected integer, received float")
 }))
 })
 
 
 export const RollbackPublicationParams = zod.object({
-  "versionId": zod.coerce.string().uuid()
+  "versionId": zod.guid()
 })
 
 export const rollbackPublicationBodyExpectedPublishedRevisionRegExp = new RegExp('^[a-f0-9]{64}$');
@@ -13160,8 +13160,8 @@ export const reorderPlansBodyPlansMax = 500;
 
 export const ReorderPlansBody = zod.object({
   "plans": zod.array(zod.object({
-  "id": zod.string().uuid(),
-  "revision": zod.number().int().min(reorderPlansBodyPlansItemRevisionMin)
+  "id": zod.guid(),
+  "revision": zod.number().refine(Number.isInteger, "Expected integer, received float").min(reorderPlansBodyPlansItemRevisionMin)
 })).min(1).max(reorderPlansBodyPlansMax)
 })
 
@@ -13171,11 +13171,11 @@ export const ReorderPlansResponse = zod.object({
 
 
 export const GetPlanHistoryParams = zod.object({
-  "planId": zod.coerce.string().uuid()
+  "planId": zod.guid()
 })
 
 export const GetPlanHistoryResponseItem = zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "actorId": zod.string(),
   "eventType": zod.string(),
   "description": zod.string(),
@@ -13186,18 +13186,18 @@ export const GetPlanHistoryResponse = zod.array(GetPlanHistoryResponseItem)
 
 
 export const GetPlanMigrationPreviewParams = zod.object({
-  "planId": zod.coerce.string().uuid()
+  "planId": zod.guid()
 })
 
 export const GetPlanMigrationPreviewQueryParams = zod.object({
-  "targetPlanId": zod.coerce.string().uuid()
+  "targetPlanId": zod.guid()
 })
 
 export const GetPlanMigrationPreviewResponse = zod.object({
   "previewToken": zod.string().describe('Binds a confirm to this exact published target and these exact current contracts'),
   "publishedRevision": zod.string(),
   "target": zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "name": zod.string(),
   "prices": zod.object({
   "monthlyPrice": zod.string().nullable(),
@@ -13207,7 +13207,7 @@ export const GetPlanMigrationPreviewResponse = zod.object({
 })
 }),
   "subscribers": zod.array(zod.object({
-  "tenantId": zod.string().uuid(),
+  "tenantId": zod.guid(),
   "tenantName": zod.string(),
   "frozen": zod.boolean(),
   "frozenAt": zod.coerce.date().nullable(),
@@ -13221,15 +13221,15 @@ export const GetPlanMigrationPreviewResponse = zod.object({
   "priceChanged": zod.boolean(),
   "entitlementChanges": zod.array(zod.object({
   "key": zod.string(),
-  "current": zod.unknown(),
-  "target": zod.unknown()
+  "current": zod.unknown().optional(),
+  "target": zod.unknown().optional()
 }))
 }))
 })
 
 
 export const MigratePlanSubscriptionsParams = zod.object({
-  "planId": zod.coerce.string().uuid()
+  "planId": zod.guid()
 })
 
 export const migratePlanSubscriptionsBodyTenantIdsMax = 1000;
@@ -13241,20 +13241,20 @@ export const migratePlanSubscriptionsBodyPreviewTokenRegExp = new RegExp('^[a-f0
 
 
 export const MigratePlanSubscriptionsBody = zod.object({
-  "toPlanId": zod.string().uuid(),
-  "tenantIds": zod.array(zod.string().uuid()).min(1).max(migratePlanSubscriptionsBodyTenantIdsMax),
+  "toPlanId": zod.guid(),
+  "tenantIds": zod.array(zod.guid()).min(1).max(migratePlanSubscriptionsBodyTenantIdsMax),
   "reason": zod.string().min(migratePlanSubscriptionsBodyReasonMin).max(migratePlanSubscriptionsBodyReasonMax),
   "confirmed": zod.literal(true),
   "previewToken": zod.string().regex(migratePlanSubscriptionsBodyPreviewTokenRegExp)
 })
 
 export const MigratePlanSubscriptionsResponse = zod.object({
-  "moved": zod.array(zod.string().uuid())
+  "moved": zod.array(zod.guid())
 })
 
 
 export const DuplicatePlanParams = zod.object({
-  "planId": zod.coerce.string().uuid()
+  "planId": zod.guid()
 })
 
 export const duplicatePlanResponseOneNameMin = 2;
@@ -13401,7 +13401,7 @@ export const DuplicatePlanResponse = zod.object({
   "discountPercent": zod.string().max(duplicatePlanResponseOneDiscountPercentMax).regex(duplicatePlanResponseOneDiscountPercentRegExp).optional(),
   "currency": zod.string().regex(duplicatePlanResponseOneCurrencyRegExp),
   "billingLabel": zod.string().max(duplicatePlanResponseOneBillingLabelMax),
-  "displayOrder": zod.number().int().min(duplicatePlanResponseOneDisplayOrderMin).max(duplicatePlanResponseOneDisplayOrderMax),
+  "displayOrder": zod.number().refine(Number.isInteger, "Expected integer, received float").min(duplicatePlanResponseOneDisplayOrderMin).max(duplicatePlanResponseOneDisplayOrderMax),
   "status": zod.enum(['enabled', 'disabled', 'archived']),
   "entitlements": zod.array(zod.object({
   "key": zod.string().max(duplicatePlanResponseOneEntitlementsItemKeyMax).regex(duplicatePlanResponseOneEntitlementsItemKeyRegExp),
@@ -13434,22 +13434,22 @@ export const DuplicatePlanResponse = zod.object({
   "promoStartsAt": zod.coerce.date().nullish(),
   "promoEndsAt": zod.coerce.date().nullish(),
   "billingInterval": zod.enum(['monthly', 'yearly', 'monthly_and_yearly', 'custom']).optional(),
-  "trialDays": zod.number().int().min(duplicatePlanResponseOneProfileTrialDaysMin).max(duplicatePlanResponseOneProfileTrialDaysMax).optional(),
+  "trialDays": zod.number().refine(Number.isInteger, "Expected integer, received float").min(duplicatePlanResponseOneProfileTrialDaysMin).max(duplicatePlanResponseOneProfileTrialDaysMax).optional(),
   "ctaLabel": zod.string().max(duplicatePlanResponseOneProfileCtaLabelMax).optional(),
   "ctaUrl": zod.string().max(duplicatePlanResponseOneProfileCtaUrlMax).regex(duplicatePlanResponseOneProfileCtaUrlRegExp).optional(),
   "visibility": zod.enum(['public', 'hidden']).optional(),
-  "adminSeats": zod.number().int().min(1).max(duplicatePlanResponseOneProfileAdminSeatsMax).nullish(),
+  "adminSeats": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(duplicatePlanResponseOneProfileAdminSeatsMax).nullish(),
   "multiAdminRoles": zod.boolean().optional(),
   "supportLevel": zod.enum(['email', 'priority', 'dedicated']).optional(),
-  "supportResponseHours": zod.number().int().min(1).max(duplicatePlanResponseOneProfileSupportResponseHoursMax).nullish(),
-  "launchTargetBusinessDays": zod.number().int().min(1).max(duplicatePlanResponseOneProfileLaunchTargetBusinessDaysMax).nullish(),
+  "supportResponseHours": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(duplicatePlanResponseOneProfileSupportResponseHoursMax).nullish(),
+  "launchTargetBusinessDays": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(duplicatePlanResponseOneProfileLaunchTargetBusinessDaysMax).nullish(),
   "dedicatedManager": zod.boolean().optional(),
   "slaEnabled": zod.boolean().optional(),
   "slaTerms": zod.string().max(duplicatePlanResponseOneProfileSlaTermsMax).optional(),
   "earlyAccess": zod.boolean().optional(),
   "poweredByFooter": zod.boolean().optional(),
   "themeModes": zod.array(zod.enum(['light', 'dark'])).max(duplicatePlanResponseOneProfileThemeModesMax).optional(),
-  "convertProviderLimit": zod.number().int().min(duplicatePlanResponseOneProfileConvertProviderLimitMin).max(duplicatePlanResponseOneProfileConvertProviderLimitMax).nullish(),
+  "convertProviderLimit": zod.number().refine(Number.isInteger, "Expected integer, received float").min(duplicatePlanResponseOneProfileConvertProviderLimitMin).max(duplicatePlanResponseOneProfileConvertProviderLimitMax).nullish(),
   "requestedProviders": zod.array(zod.string().min(1).max(duplicatePlanResponseOneProfileRequestedProvidersItemMax)).max(duplicatePlanResponseOneProfileRequestedProvidersMax).optional(),
   "capabilities": zod.array(zod.object({
   "key": zod.string().regex(duplicatePlanResponseOneProfileCapabilitiesItemKeyRegExp),
@@ -13469,9 +13469,9 @@ export const DuplicatePlanResponse = zod.object({
 })).max(duplicatePlanResponseOneProfileCapabilitiesMax).optional(),
   "internalNotes": zod.string().max(duplicatePlanResponseOneProfileInternalNotesMax).optional()
 }).optional().describe('Structured plan configuration. internalName and internalNotes are Super Admin only and never published.'),
-  "expectedRevision": zod.number().int().min(duplicatePlanResponseOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
+  "expectedRevision": zod.number().refine(Number.isInteger, "Expected integer, received float").min(duplicatePlanResponseOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
 }).and(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date(),
   "pricingConfigured": zod.boolean().optional(),
@@ -13480,12 +13480,12 @@ export const DuplicatePlanResponse = zod.object({
   "label": zod.string().min(1).max(duplicatePlanResponseTwoFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(duplicatePlanResponseTwoFeatureRowsItemValueMax)
 }).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(duplicatePlanResponseTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.'),
-  "revision": zod.number().int().optional()
+  "revision": zod.number().refine(Number.isInteger, "Expected integer, received float").optional()
 }))
 
 
 export const SetPlanStatusParams = zod.object({
-  "planId": zod.coerce.string().uuid()
+  "planId": zod.guid()
 })
 
 export const setPlanStatusBodyExpectedRevisionMin = 0;
@@ -13494,7 +13494,7 @@ export const setPlanStatusBodyExpectedRevisionMin = 0;
 
 export const SetPlanStatusBody = zod.object({
   "status": zod.enum(['enabled', 'disabled', 'archived']),
-  "expectedRevision": zod.number().int().min(setPlanStatusBodyExpectedRevisionMin)
+  "expectedRevision": zod.number().refine(Number.isInteger, "Expected integer, received float").min(setPlanStatusBodyExpectedRevisionMin)
 })
 
 export const setPlanStatusResponseOneNameMin = 2;
@@ -13641,7 +13641,7 @@ export const SetPlanStatusResponse = zod.object({
   "discountPercent": zod.string().max(setPlanStatusResponseOneDiscountPercentMax).regex(setPlanStatusResponseOneDiscountPercentRegExp).optional(),
   "currency": zod.string().regex(setPlanStatusResponseOneCurrencyRegExp),
   "billingLabel": zod.string().max(setPlanStatusResponseOneBillingLabelMax),
-  "displayOrder": zod.number().int().min(setPlanStatusResponseOneDisplayOrderMin).max(setPlanStatusResponseOneDisplayOrderMax),
+  "displayOrder": zod.number().refine(Number.isInteger, "Expected integer, received float").min(setPlanStatusResponseOneDisplayOrderMin).max(setPlanStatusResponseOneDisplayOrderMax),
   "status": zod.enum(['enabled', 'disabled', 'archived']),
   "entitlements": zod.array(zod.object({
   "key": zod.string().max(setPlanStatusResponseOneEntitlementsItemKeyMax).regex(setPlanStatusResponseOneEntitlementsItemKeyRegExp),
@@ -13674,22 +13674,22 @@ export const SetPlanStatusResponse = zod.object({
   "promoStartsAt": zod.coerce.date().nullish(),
   "promoEndsAt": zod.coerce.date().nullish(),
   "billingInterval": zod.enum(['monthly', 'yearly', 'monthly_and_yearly', 'custom']).optional(),
-  "trialDays": zod.number().int().min(setPlanStatusResponseOneProfileTrialDaysMin).max(setPlanStatusResponseOneProfileTrialDaysMax).optional(),
+  "trialDays": zod.number().refine(Number.isInteger, "Expected integer, received float").min(setPlanStatusResponseOneProfileTrialDaysMin).max(setPlanStatusResponseOneProfileTrialDaysMax).optional(),
   "ctaLabel": zod.string().max(setPlanStatusResponseOneProfileCtaLabelMax).optional(),
   "ctaUrl": zod.string().max(setPlanStatusResponseOneProfileCtaUrlMax).regex(setPlanStatusResponseOneProfileCtaUrlRegExp).optional(),
   "visibility": zod.enum(['public', 'hidden']).optional(),
-  "adminSeats": zod.number().int().min(1).max(setPlanStatusResponseOneProfileAdminSeatsMax).nullish(),
+  "adminSeats": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(setPlanStatusResponseOneProfileAdminSeatsMax).nullish(),
   "multiAdminRoles": zod.boolean().optional(),
   "supportLevel": zod.enum(['email', 'priority', 'dedicated']).optional(),
-  "supportResponseHours": zod.number().int().min(1).max(setPlanStatusResponseOneProfileSupportResponseHoursMax).nullish(),
-  "launchTargetBusinessDays": zod.number().int().min(1).max(setPlanStatusResponseOneProfileLaunchTargetBusinessDaysMax).nullish(),
+  "supportResponseHours": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(setPlanStatusResponseOneProfileSupportResponseHoursMax).nullish(),
+  "launchTargetBusinessDays": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(setPlanStatusResponseOneProfileLaunchTargetBusinessDaysMax).nullish(),
   "dedicatedManager": zod.boolean().optional(),
   "slaEnabled": zod.boolean().optional(),
   "slaTerms": zod.string().max(setPlanStatusResponseOneProfileSlaTermsMax).optional(),
   "earlyAccess": zod.boolean().optional(),
   "poweredByFooter": zod.boolean().optional(),
   "themeModes": zod.array(zod.enum(['light', 'dark'])).max(setPlanStatusResponseOneProfileThemeModesMax).optional(),
-  "convertProviderLimit": zod.number().int().min(setPlanStatusResponseOneProfileConvertProviderLimitMin).max(setPlanStatusResponseOneProfileConvertProviderLimitMax).nullish(),
+  "convertProviderLimit": zod.number().refine(Number.isInteger, "Expected integer, received float").min(setPlanStatusResponseOneProfileConvertProviderLimitMin).max(setPlanStatusResponseOneProfileConvertProviderLimitMax).nullish(),
   "requestedProviders": zod.array(zod.string().min(1).max(setPlanStatusResponseOneProfileRequestedProvidersItemMax)).max(setPlanStatusResponseOneProfileRequestedProvidersMax).optional(),
   "capabilities": zod.array(zod.object({
   "key": zod.string().regex(setPlanStatusResponseOneProfileCapabilitiesItemKeyRegExp),
@@ -13709,9 +13709,9 @@ export const SetPlanStatusResponse = zod.object({
 })).max(setPlanStatusResponseOneProfileCapabilitiesMax).optional(),
   "internalNotes": zod.string().max(setPlanStatusResponseOneProfileInternalNotesMax).optional()
 }).optional().describe('Structured plan configuration. internalName and internalNotes are Super Admin only and never published.'),
-  "expectedRevision": zod.number().int().min(setPlanStatusResponseOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
+  "expectedRevision": zod.number().refine(Number.isInteger, "Expected integer, received float").min(setPlanStatusResponseOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
 }).and(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date(),
   "pricingConfigured": zod.boolean().optional(),
@@ -13720,7 +13720,7 @@ export const SetPlanStatusResponse = zod.object({
   "label": zod.string().min(1).max(setPlanStatusResponseTwoFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(setPlanStatusResponseTwoFeatureRowsItemValueMax)
 }).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(setPlanStatusResponseTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.'),
-  "revision": zod.number().int().optional()
+  "revision": zod.number().refine(Number.isInteger, "Expected integer, received float").optional()
 }))
 
 
@@ -13763,7 +13763,7 @@ export const ListAddonsResponseItem = zod.object({
   "value": zod.union([zod.boolean(),zod.string().max(listAddonsResponseOneEntitlementsItemValueTwoMax).regex(listAddonsResponseOneEntitlementsItemValueTwoRegExp)])
 })).max(listAddonsResponseOneEntitlementsMax)
 }).and(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "pricingConfigured": zod.boolean().optional()
 }))
 export const ListAddonsResponse = zod.array(ListAddonsResponseItem)
@@ -13848,13 +13848,13 @@ export const CreateAddonResponse = zod.object({
   "value": zod.union([zod.boolean(),zod.string().max(createAddonResponseOneEntitlementsItemValueTwoMax).regex(createAddonResponseOneEntitlementsItemValueTwoRegExp)])
 })).max(createAddonResponseOneEntitlementsMax)
 }).and(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "pricingConfigured": zod.boolean().optional()
 }))
 
 
 export const DeleteAddonParams = zod.object({
-  "addonId": zod.coerce.string().uuid()
+  "addonId": zod.guid()
 })
 
 export const DeleteAddonResponse = zod.object({
@@ -13863,7 +13863,7 @@ export const DeleteAddonResponse = zod.object({
 
 
 export const UpdateAddonParams = zod.object({
-  "addonId": zod.coerce.string().uuid()
+  "addonId": zod.guid()
 })
 
 export const updateAddonBodyMonthlyPriceRegExp = new RegExp('^\\d{1,12}(\\.\\d{1,2})?$');
@@ -13945,13 +13945,13 @@ export const UpdateAddonResponse = zod.object({
   "value": zod.union([zod.boolean(),zod.string().max(updateAddonResponseOneEntitlementsItemValueTwoMax).regex(updateAddonResponseOneEntitlementsItemValueTwoRegExp)])
 })).max(updateAddonResponseOneEntitlementsMax)
 }).and(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "pricingConfigured": zod.boolean().optional()
 }))
 
 
 export const StartTenantTrialParams = zod.object({
-  "tenantId": zod.coerce.string().uuid()
+  "tenantId": zod.guid()
 })
 
 
@@ -13961,10 +13961,10 @@ export const startTenantTrialBodyReasonMax = 500;
 
 
 export const StartTenantTrialBody = zod.object({
-  "planId": zod.string().uuid(),
+  "planId": zod.guid(),
   "billingPeriod": zod.enum(['monthly', 'yearly']),
   "publishedRevision": zod.string().min(1),
-  "idempotencyKey": zod.string().uuid(),
+  "idempotencyKey": zod.guid(),
   "reason": zod.string().min(startTenantTrialBodyReasonMin).max(startTenantTrialBodyReasonMax)
 })
 
@@ -14139,7 +14139,7 @@ export const startTenantTrialResponseOverridesItemTwoReasonMax = 500;
 
 
 export const StartTenantTrialResponse = zod.object({
-  "tenantId": zod.string().uuid(),
+  "tenantId": zod.guid(),
   "tenantStatus": zod.string(),
   "status": zod.enum(['active', 'suspended', 'cancelled', 'unassigned']),
   "billingPeriod": zod.enum(['monthly', 'yearly']).optional(),
@@ -14149,7 +14149,7 @@ export const StartTenantTrialResponse = zod.object({
   "currency": zod.string().nullish(),
   "billingConnected": zod.boolean().optional(),
   "trial": zod.union([zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "state": zod.enum(['active', 'cancelled', 'expired']),
   "startedAt": zod.string(),
   "endsAt": zod.string(),
@@ -14168,7 +14168,7 @@ export const StartTenantTrialResponse = zod.object({
   "discountPercent": zod.string().max(startTenantTrialResponsePlanOneOneDiscountPercentMax).regex(startTenantTrialResponsePlanOneOneDiscountPercentRegExp).optional(),
   "currency": zod.string().regex(startTenantTrialResponsePlanOneOneCurrencyRegExp),
   "billingLabel": zod.string().max(startTenantTrialResponsePlanOneOneBillingLabelMax),
-  "displayOrder": zod.number().int().min(startTenantTrialResponsePlanOneOneDisplayOrderMin).max(startTenantTrialResponsePlanOneOneDisplayOrderMax),
+  "displayOrder": zod.number().refine(Number.isInteger, "Expected integer, received float").min(startTenantTrialResponsePlanOneOneDisplayOrderMin).max(startTenantTrialResponsePlanOneOneDisplayOrderMax),
   "status": zod.enum(['enabled', 'disabled', 'archived']),
   "entitlements": zod.array(zod.object({
   "key": zod.string().max(startTenantTrialResponsePlanOneOneEntitlementsItemKeyMax).regex(startTenantTrialResponsePlanOneOneEntitlementsItemKeyRegExp),
@@ -14201,22 +14201,22 @@ export const StartTenantTrialResponse = zod.object({
   "promoStartsAt": zod.coerce.date().nullish(),
   "promoEndsAt": zod.coerce.date().nullish(),
   "billingInterval": zod.enum(['monthly', 'yearly', 'monthly_and_yearly', 'custom']).optional(),
-  "trialDays": zod.number().int().min(startTenantTrialResponsePlanOneOneProfileTrialDaysMin).max(startTenantTrialResponsePlanOneOneProfileTrialDaysMax).optional(),
+  "trialDays": zod.number().refine(Number.isInteger, "Expected integer, received float").min(startTenantTrialResponsePlanOneOneProfileTrialDaysMin).max(startTenantTrialResponsePlanOneOneProfileTrialDaysMax).optional(),
   "ctaLabel": zod.string().max(startTenantTrialResponsePlanOneOneProfileCtaLabelMax).optional(),
   "ctaUrl": zod.string().max(startTenantTrialResponsePlanOneOneProfileCtaUrlMax).regex(startTenantTrialResponsePlanOneOneProfileCtaUrlRegExp).optional(),
   "visibility": zod.enum(['public', 'hidden']).optional(),
-  "adminSeats": zod.number().int().min(1).max(startTenantTrialResponsePlanOneOneProfileAdminSeatsMax).nullish(),
+  "adminSeats": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(startTenantTrialResponsePlanOneOneProfileAdminSeatsMax).nullish(),
   "multiAdminRoles": zod.boolean().optional(),
   "supportLevel": zod.enum(['email', 'priority', 'dedicated']).optional(),
-  "supportResponseHours": zod.number().int().min(1).max(startTenantTrialResponsePlanOneOneProfileSupportResponseHoursMax).nullish(),
-  "launchTargetBusinessDays": zod.number().int().min(1).max(startTenantTrialResponsePlanOneOneProfileLaunchTargetBusinessDaysMax).nullish(),
+  "supportResponseHours": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(startTenantTrialResponsePlanOneOneProfileSupportResponseHoursMax).nullish(),
+  "launchTargetBusinessDays": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(startTenantTrialResponsePlanOneOneProfileLaunchTargetBusinessDaysMax).nullish(),
   "dedicatedManager": zod.boolean().optional(),
   "slaEnabled": zod.boolean().optional(),
   "slaTerms": zod.string().max(startTenantTrialResponsePlanOneOneProfileSlaTermsMax).optional(),
   "earlyAccess": zod.boolean().optional(),
   "poweredByFooter": zod.boolean().optional(),
   "themeModes": zod.array(zod.enum(['light', 'dark'])).max(startTenantTrialResponsePlanOneOneProfileThemeModesMax).optional(),
-  "convertProviderLimit": zod.number().int().min(startTenantTrialResponsePlanOneOneProfileConvertProviderLimitMin).max(startTenantTrialResponsePlanOneOneProfileConvertProviderLimitMax).nullish(),
+  "convertProviderLimit": zod.number().refine(Number.isInteger, "Expected integer, received float").min(startTenantTrialResponsePlanOneOneProfileConvertProviderLimitMin).max(startTenantTrialResponsePlanOneOneProfileConvertProviderLimitMax).nullish(),
   "requestedProviders": zod.array(zod.string().min(1).max(startTenantTrialResponsePlanOneOneProfileRequestedProvidersItemMax)).max(startTenantTrialResponsePlanOneOneProfileRequestedProvidersMax).optional(),
   "capabilities": zod.array(zod.object({
   "key": zod.string().regex(startTenantTrialResponsePlanOneOneProfileCapabilitiesItemKeyRegExp),
@@ -14236,9 +14236,9 @@ export const StartTenantTrialResponse = zod.object({
 })).max(startTenantTrialResponsePlanOneOneProfileCapabilitiesMax).optional(),
   "internalNotes": zod.string().max(startTenantTrialResponsePlanOneOneProfileInternalNotesMax).optional()
 }).optional().describe('Structured plan configuration. internalName and internalNotes are Super Admin only and never published.'),
-  "expectedRevision": zod.number().int().min(startTenantTrialResponsePlanOneOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
+  "expectedRevision": zod.number().refine(Number.isInteger, "Expected integer, received float").min(startTenantTrialResponsePlanOneOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
 }).and(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date(),
   "pricingConfigured": zod.boolean().optional(),
@@ -14247,7 +14247,7 @@ export const StartTenantTrialResponse = zod.object({
   "label": zod.string().min(1).max(startTenantTrialResponsePlanOneTwoFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(startTenantTrialResponsePlanOneTwoFeatureRowsItemValueMax)
 }).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(startTenantTrialResponsePlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.'),
-  "revision": zod.number().int().optional()
+  "revision": zod.number().refine(Number.isInteger, "Expected integer, received float").optional()
 })),zod.null()]),
   "addons": zod.array(zod.object({
   "monthlyPrice": zod.string().regex(startTenantTrialResponseAddonsItemOneMonthlyPriceRegExp).nullish(),
@@ -14263,7 +14263,7 @@ export const StartTenantTrialResponse = zod.object({
   "value": zod.union([zod.boolean(),zod.string().max(startTenantTrialResponseAddonsItemOneEntitlementsItemValueTwoMax).regex(startTenantTrialResponseAddonsItemOneEntitlementsItemValueTwoRegExp)])
 })).max(startTenantTrialResponseAddonsItemOneEntitlementsMax)
 }).and(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "pricingConfigured": zod.boolean().optional()
 }))),
   "overrides": zod.array(zod.object({
@@ -14288,7 +14288,7 @@ export const StartTenantTrialResponse = zod.object({
 
 
 export const UpdateTenantTrialParams = zod.object({
-  "tenantId": zod.coerce.string().uuid()
+  "tenantId": zod.guid()
 })
 
 export const updateTenantTrialBodyReasonMin = 2;
@@ -14297,7 +14297,7 @@ export const updateTenantTrialBodyReasonMax = 500;
 
 
 export const UpdateTenantTrialBody = zod.object({
-  "trialId": zod.string().uuid(),
+  "trialId": zod.guid(),
   "action": zod.enum(['cancel', 'request_renewal']),
   "reason": zod.string().min(updateTenantTrialBodyReasonMin).max(updateTenantTrialBodyReasonMax)
 })
@@ -14473,7 +14473,7 @@ export const updateTenantTrialResponseOverridesItemTwoReasonMax = 500;
 
 
 export const UpdateTenantTrialResponse = zod.object({
-  "tenantId": zod.string().uuid(),
+  "tenantId": zod.guid(),
   "tenantStatus": zod.string(),
   "status": zod.enum(['active', 'suspended', 'cancelled', 'unassigned']),
   "billingPeriod": zod.enum(['monthly', 'yearly']).optional(),
@@ -14483,7 +14483,7 @@ export const UpdateTenantTrialResponse = zod.object({
   "currency": zod.string().nullish(),
   "billingConnected": zod.boolean().optional(),
   "trial": zod.union([zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "state": zod.enum(['active', 'cancelled', 'expired']),
   "startedAt": zod.string(),
   "endsAt": zod.string(),
@@ -14502,7 +14502,7 @@ export const UpdateTenantTrialResponse = zod.object({
   "discountPercent": zod.string().max(updateTenantTrialResponsePlanOneOneDiscountPercentMax).regex(updateTenantTrialResponsePlanOneOneDiscountPercentRegExp).optional(),
   "currency": zod.string().regex(updateTenantTrialResponsePlanOneOneCurrencyRegExp),
   "billingLabel": zod.string().max(updateTenantTrialResponsePlanOneOneBillingLabelMax),
-  "displayOrder": zod.number().int().min(updateTenantTrialResponsePlanOneOneDisplayOrderMin).max(updateTenantTrialResponsePlanOneOneDisplayOrderMax),
+  "displayOrder": zod.number().refine(Number.isInteger, "Expected integer, received float").min(updateTenantTrialResponsePlanOneOneDisplayOrderMin).max(updateTenantTrialResponsePlanOneOneDisplayOrderMax),
   "status": zod.enum(['enabled', 'disabled', 'archived']),
   "entitlements": zod.array(zod.object({
   "key": zod.string().max(updateTenantTrialResponsePlanOneOneEntitlementsItemKeyMax).regex(updateTenantTrialResponsePlanOneOneEntitlementsItemKeyRegExp),
@@ -14535,22 +14535,22 @@ export const UpdateTenantTrialResponse = zod.object({
   "promoStartsAt": zod.coerce.date().nullish(),
   "promoEndsAt": zod.coerce.date().nullish(),
   "billingInterval": zod.enum(['monthly', 'yearly', 'monthly_and_yearly', 'custom']).optional(),
-  "trialDays": zod.number().int().min(updateTenantTrialResponsePlanOneOneProfileTrialDaysMin).max(updateTenantTrialResponsePlanOneOneProfileTrialDaysMax).optional(),
+  "trialDays": zod.number().refine(Number.isInteger, "Expected integer, received float").min(updateTenantTrialResponsePlanOneOneProfileTrialDaysMin).max(updateTenantTrialResponsePlanOneOneProfileTrialDaysMax).optional(),
   "ctaLabel": zod.string().max(updateTenantTrialResponsePlanOneOneProfileCtaLabelMax).optional(),
   "ctaUrl": zod.string().max(updateTenantTrialResponsePlanOneOneProfileCtaUrlMax).regex(updateTenantTrialResponsePlanOneOneProfileCtaUrlRegExp).optional(),
   "visibility": zod.enum(['public', 'hidden']).optional(),
-  "adminSeats": zod.number().int().min(1).max(updateTenantTrialResponsePlanOneOneProfileAdminSeatsMax).nullish(),
+  "adminSeats": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(updateTenantTrialResponsePlanOneOneProfileAdminSeatsMax).nullish(),
   "multiAdminRoles": zod.boolean().optional(),
   "supportLevel": zod.enum(['email', 'priority', 'dedicated']).optional(),
-  "supportResponseHours": zod.number().int().min(1).max(updateTenantTrialResponsePlanOneOneProfileSupportResponseHoursMax).nullish(),
-  "launchTargetBusinessDays": zod.number().int().min(1).max(updateTenantTrialResponsePlanOneOneProfileLaunchTargetBusinessDaysMax).nullish(),
+  "supportResponseHours": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(updateTenantTrialResponsePlanOneOneProfileSupportResponseHoursMax).nullish(),
+  "launchTargetBusinessDays": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(updateTenantTrialResponsePlanOneOneProfileLaunchTargetBusinessDaysMax).nullish(),
   "dedicatedManager": zod.boolean().optional(),
   "slaEnabled": zod.boolean().optional(),
   "slaTerms": zod.string().max(updateTenantTrialResponsePlanOneOneProfileSlaTermsMax).optional(),
   "earlyAccess": zod.boolean().optional(),
   "poweredByFooter": zod.boolean().optional(),
   "themeModes": zod.array(zod.enum(['light', 'dark'])).max(updateTenantTrialResponsePlanOneOneProfileThemeModesMax).optional(),
-  "convertProviderLimit": zod.number().int().min(updateTenantTrialResponsePlanOneOneProfileConvertProviderLimitMin).max(updateTenantTrialResponsePlanOneOneProfileConvertProviderLimitMax).nullish(),
+  "convertProviderLimit": zod.number().refine(Number.isInteger, "Expected integer, received float").min(updateTenantTrialResponsePlanOneOneProfileConvertProviderLimitMin).max(updateTenantTrialResponsePlanOneOneProfileConvertProviderLimitMax).nullish(),
   "requestedProviders": zod.array(zod.string().min(1).max(updateTenantTrialResponsePlanOneOneProfileRequestedProvidersItemMax)).max(updateTenantTrialResponsePlanOneOneProfileRequestedProvidersMax).optional(),
   "capabilities": zod.array(zod.object({
   "key": zod.string().regex(updateTenantTrialResponsePlanOneOneProfileCapabilitiesItemKeyRegExp),
@@ -14570,9 +14570,9 @@ export const UpdateTenantTrialResponse = zod.object({
 })).max(updateTenantTrialResponsePlanOneOneProfileCapabilitiesMax).optional(),
   "internalNotes": zod.string().max(updateTenantTrialResponsePlanOneOneProfileInternalNotesMax).optional()
 }).optional().describe('Structured plan configuration. internalName and internalNotes are Super Admin only and never published.'),
-  "expectedRevision": zod.number().int().min(updateTenantTrialResponsePlanOneOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
+  "expectedRevision": zod.number().refine(Number.isInteger, "Expected integer, received float").min(updateTenantTrialResponsePlanOneOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
 }).and(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date(),
   "pricingConfigured": zod.boolean().optional(),
@@ -14581,7 +14581,7 @@ export const UpdateTenantTrialResponse = zod.object({
   "label": zod.string().min(1).max(updateTenantTrialResponsePlanOneTwoFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(updateTenantTrialResponsePlanOneTwoFeatureRowsItemValueMax)
 }).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(updateTenantTrialResponsePlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.'),
-  "revision": zod.number().int().optional()
+  "revision": zod.number().refine(Number.isInteger, "Expected integer, received float").optional()
 })),zod.null()]),
   "addons": zod.array(zod.object({
   "monthlyPrice": zod.string().regex(updateTenantTrialResponseAddonsItemOneMonthlyPriceRegExp).nullish(),
@@ -14597,7 +14597,7 @@ export const UpdateTenantTrialResponse = zod.object({
   "value": zod.union([zod.boolean(),zod.string().max(updateTenantTrialResponseAddonsItemOneEntitlementsItemValueTwoMax).regex(updateTenantTrialResponseAddonsItemOneEntitlementsItemValueTwoRegExp)])
 })).max(updateTenantTrialResponseAddonsItemOneEntitlementsMax)
 }).and(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "pricingConfigured": zod.boolean().optional()
 }))),
   "overrides": zod.array(zod.object({
@@ -14622,7 +14622,7 @@ export const UpdateTenantTrialResponse = zod.object({
 
 
 export const GetTenantSubscriptionParams = zod.object({
-  "tenantId": zod.coerce.string().uuid()
+  "tenantId": zod.guid()
 })
 
 export const getTenantSubscriptionResponsePlanOneOneNameMin = 2;
@@ -14796,7 +14796,7 @@ export const getTenantSubscriptionResponseOverridesItemTwoReasonMax = 500;
 
 
 export const GetTenantSubscriptionResponse = zod.object({
-  "tenantId": zod.string().uuid(),
+  "tenantId": zod.guid(),
   "tenantStatus": zod.string(),
   "status": zod.enum(['active', 'suspended', 'cancelled', 'unassigned']),
   "billingPeriod": zod.enum(['monthly', 'yearly']).optional(),
@@ -14806,7 +14806,7 @@ export const GetTenantSubscriptionResponse = zod.object({
   "currency": zod.string().nullish(),
   "billingConnected": zod.boolean().optional(),
   "trial": zod.union([zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "state": zod.enum(['active', 'cancelled', 'expired']),
   "startedAt": zod.string(),
   "endsAt": zod.string(),
@@ -14825,7 +14825,7 @@ export const GetTenantSubscriptionResponse = zod.object({
   "discountPercent": zod.string().max(getTenantSubscriptionResponsePlanOneOneDiscountPercentMax).regex(getTenantSubscriptionResponsePlanOneOneDiscountPercentRegExp).optional(),
   "currency": zod.string().regex(getTenantSubscriptionResponsePlanOneOneCurrencyRegExp),
   "billingLabel": zod.string().max(getTenantSubscriptionResponsePlanOneOneBillingLabelMax),
-  "displayOrder": zod.number().int().min(getTenantSubscriptionResponsePlanOneOneDisplayOrderMin).max(getTenantSubscriptionResponsePlanOneOneDisplayOrderMax),
+  "displayOrder": zod.number().refine(Number.isInteger, "Expected integer, received float").min(getTenantSubscriptionResponsePlanOneOneDisplayOrderMin).max(getTenantSubscriptionResponsePlanOneOneDisplayOrderMax),
   "status": zod.enum(['enabled', 'disabled', 'archived']),
   "entitlements": zod.array(zod.object({
   "key": zod.string().max(getTenantSubscriptionResponsePlanOneOneEntitlementsItemKeyMax).regex(getTenantSubscriptionResponsePlanOneOneEntitlementsItemKeyRegExp),
@@ -14858,22 +14858,22 @@ export const GetTenantSubscriptionResponse = zod.object({
   "promoStartsAt": zod.coerce.date().nullish(),
   "promoEndsAt": zod.coerce.date().nullish(),
   "billingInterval": zod.enum(['monthly', 'yearly', 'monthly_and_yearly', 'custom']).optional(),
-  "trialDays": zod.number().int().min(getTenantSubscriptionResponsePlanOneOneProfileTrialDaysMin).max(getTenantSubscriptionResponsePlanOneOneProfileTrialDaysMax).optional(),
+  "trialDays": zod.number().refine(Number.isInteger, "Expected integer, received float").min(getTenantSubscriptionResponsePlanOneOneProfileTrialDaysMin).max(getTenantSubscriptionResponsePlanOneOneProfileTrialDaysMax).optional(),
   "ctaLabel": zod.string().max(getTenantSubscriptionResponsePlanOneOneProfileCtaLabelMax).optional(),
   "ctaUrl": zod.string().max(getTenantSubscriptionResponsePlanOneOneProfileCtaUrlMax).regex(getTenantSubscriptionResponsePlanOneOneProfileCtaUrlRegExp).optional(),
   "visibility": zod.enum(['public', 'hidden']).optional(),
-  "adminSeats": zod.number().int().min(1).max(getTenantSubscriptionResponsePlanOneOneProfileAdminSeatsMax).nullish(),
+  "adminSeats": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(getTenantSubscriptionResponsePlanOneOneProfileAdminSeatsMax).nullish(),
   "multiAdminRoles": zod.boolean().optional(),
   "supportLevel": zod.enum(['email', 'priority', 'dedicated']).optional(),
-  "supportResponseHours": zod.number().int().min(1).max(getTenantSubscriptionResponsePlanOneOneProfileSupportResponseHoursMax).nullish(),
-  "launchTargetBusinessDays": zod.number().int().min(1).max(getTenantSubscriptionResponsePlanOneOneProfileLaunchTargetBusinessDaysMax).nullish(),
+  "supportResponseHours": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(getTenantSubscriptionResponsePlanOneOneProfileSupportResponseHoursMax).nullish(),
+  "launchTargetBusinessDays": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(getTenantSubscriptionResponsePlanOneOneProfileLaunchTargetBusinessDaysMax).nullish(),
   "dedicatedManager": zod.boolean().optional(),
   "slaEnabled": zod.boolean().optional(),
   "slaTerms": zod.string().max(getTenantSubscriptionResponsePlanOneOneProfileSlaTermsMax).optional(),
   "earlyAccess": zod.boolean().optional(),
   "poweredByFooter": zod.boolean().optional(),
   "themeModes": zod.array(zod.enum(['light', 'dark'])).max(getTenantSubscriptionResponsePlanOneOneProfileThemeModesMax).optional(),
-  "convertProviderLimit": zod.number().int().min(getTenantSubscriptionResponsePlanOneOneProfileConvertProviderLimitMin).max(getTenantSubscriptionResponsePlanOneOneProfileConvertProviderLimitMax).nullish(),
+  "convertProviderLimit": zod.number().refine(Number.isInteger, "Expected integer, received float").min(getTenantSubscriptionResponsePlanOneOneProfileConvertProviderLimitMin).max(getTenantSubscriptionResponsePlanOneOneProfileConvertProviderLimitMax).nullish(),
   "requestedProviders": zod.array(zod.string().min(1).max(getTenantSubscriptionResponsePlanOneOneProfileRequestedProvidersItemMax)).max(getTenantSubscriptionResponsePlanOneOneProfileRequestedProvidersMax).optional(),
   "capabilities": zod.array(zod.object({
   "key": zod.string().regex(getTenantSubscriptionResponsePlanOneOneProfileCapabilitiesItemKeyRegExp),
@@ -14893,9 +14893,9 @@ export const GetTenantSubscriptionResponse = zod.object({
 })).max(getTenantSubscriptionResponsePlanOneOneProfileCapabilitiesMax).optional(),
   "internalNotes": zod.string().max(getTenantSubscriptionResponsePlanOneOneProfileInternalNotesMax).optional()
 }).optional().describe('Structured plan configuration. internalName and internalNotes are Super Admin only and never published.'),
-  "expectedRevision": zod.number().int().min(getTenantSubscriptionResponsePlanOneOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
+  "expectedRevision": zod.number().refine(Number.isInteger, "Expected integer, received float").min(getTenantSubscriptionResponsePlanOneOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
 }).and(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date(),
   "pricingConfigured": zod.boolean().optional(),
@@ -14904,7 +14904,7 @@ export const GetTenantSubscriptionResponse = zod.object({
   "label": zod.string().min(1).max(getTenantSubscriptionResponsePlanOneTwoFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(getTenantSubscriptionResponsePlanOneTwoFeatureRowsItemValueMax)
 }).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(getTenantSubscriptionResponsePlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.'),
-  "revision": zod.number().int().optional()
+  "revision": zod.number().refine(Number.isInteger, "Expected integer, received float").optional()
 })),zod.null()]),
   "addons": zod.array(zod.object({
   "monthlyPrice": zod.string().regex(getTenantSubscriptionResponseAddonsItemOneMonthlyPriceRegExp).nullish(),
@@ -14920,7 +14920,7 @@ export const GetTenantSubscriptionResponse = zod.object({
   "value": zod.union([zod.boolean(),zod.string().max(getTenantSubscriptionResponseAddonsItemOneEntitlementsItemValueTwoMax).regex(getTenantSubscriptionResponseAddonsItemOneEntitlementsItemValueTwoRegExp)])
 })).max(getTenantSubscriptionResponseAddonsItemOneEntitlementsMax)
 }).and(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "pricingConfigured": zod.boolean().optional()
 }))),
   "overrides": zod.array(zod.object({
@@ -14945,11 +14945,11 @@ export const GetTenantSubscriptionResponse = zod.object({
 
 
 export const ChangeTenantPlanParams = zod.object({
-  "tenantId": zod.coerce.string().uuid()
+  "tenantId": zod.guid()
 })
 
 export const ChangeTenantPlanBody = zod.object({
-  "planId": zod.string().uuid()
+  "planId": zod.guid()
 })
 
 export const changeTenantPlanResponsePlanOneOneNameMin = 2;
@@ -15123,7 +15123,7 @@ export const changeTenantPlanResponseOverridesItemTwoReasonMax = 500;
 
 
 export const ChangeTenantPlanResponse = zod.object({
-  "tenantId": zod.string().uuid(),
+  "tenantId": zod.guid(),
   "tenantStatus": zod.string(),
   "status": zod.enum(['active', 'suspended', 'cancelled', 'unassigned']),
   "billingPeriod": zod.enum(['monthly', 'yearly']).optional(),
@@ -15133,7 +15133,7 @@ export const ChangeTenantPlanResponse = zod.object({
   "currency": zod.string().nullish(),
   "billingConnected": zod.boolean().optional(),
   "trial": zod.union([zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "state": zod.enum(['active', 'cancelled', 'expired']),
   "startedAt": zod.string(),
   "endsAt": zod.string(),
@@ -15152,7 +15152,7 @@ export const ChangeTenantPlanResponse = zod.object({
   "discountPercent": zod.string().max(changeTenantPlanResponsePlanOneOneDiscountPercentMax).regex(changeTenantPlanResponsePlanOneOneDiscountPercentRegExp).optional(),
   "currency": zod.string().regex(changeTenantPlanResponsePlanOneOneCurrencyRegExp),
   "billingLabel": zod.string().max(changeTenantPlanResponsePlanOneOneBillingLabelMax),
-  "displayOrder": zod.number().int().min(changeTenantPlanResponsePlanOneOneDisplayOrderMin).max(changeTenantPlanResponsePlanOneOneDisplayOrderMax),
+  "displayOrder": zod.number().refine(Number.isInteger, "Expected integer, received float").min(changeTenantPlanResponsePlanOneOneDisplayOrderMin).max(changeTenantPlanResponsePlanOneOneDisplayOrderMax),
   "status": zod.enum(['enabled', 'disabled', 'archived']),
   "entitlements": zod.array(zod.object({
   "key": zod.string().max(changeTenantPlanResponsePlanOneOneEntitlementsItemKeyMax).regex(changeTenantPlanResponsePlanOneOneEntitlementsItemKeyRegExp),
@@ -15185,22 +15185,22 @@ export const ChangeTenantPlanResponse = zod.object({
   "promoStartsAt": zod.coerce.date().nullish(),
   "promoEndsAt": zod.coerce.date().nullish(),
   "billingInterval": zod.enum(['monthly', 'yearly', 'monthly_and_yearly', 'custom']).optional(),
-  "trialDays": zod.number().int().min(changeTenantPlanResponsePlanOneOneProfileTrialDaysMin).max(changeTenantPlanResponsePlanOneOneProfileTrialDaysMax).optional(),
+  "trialDays": zod.number().refine(Number.isInteger, "Expected integer, received float").min(changeTenantPlanResponsePlanOneOneProfileTrialDaysMin).max(changeTenantPlanResponsePlanOneOneProfileTrialDaysMax).optional(),
   "ctaLabel": zod.string().max(changeTenantPlanResponsePlanOneOneProfileCtaLabelMax).optional(),
   "ctaUrl": zod.string().max(changeTenantPlanResponsePlanOneOneProfileCtaUrlMax).regex(changeTenantPlanResponsePlanOneOneProfileCtaUrlRegExp).optional(),
   "visibility": zod.enum(['public', 'hidden']).optional(),
-  "adminSeats": zod.number().int().min(1).max(changeTenantPlanResponsePlanOneOneProfileAdminSeatsMax).nullish(),
+  "adminSeats": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(changeTenantPlanResponsePlanOneOneProfileAdminSeatsMax).nullish(),
   "multiAdminRoles": zod.boolean().optional(),
   "supportLevel": zod.enum(['email', 'priority', 'dedicated']).optional(),
-  "supportResponseHours": zod.number().int().min(1).max(changeTenantPlanResponsePlanOneOneProfileSupportResponseHoursMax).nullish(),
-  "launchTargetBusinessDays": zod.number().int().min(1).max(changeTenantPlanResponsePlanOneOneProfileLaunchTargetBusinessDaysMax).nullish(),
+  "supportResponseHours": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(changeTenantPlanResponsePlanOneOneProfileSupportResponseHoursMax).nullish(),
+  "launchTargetBusinessDays": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(changeTenantPlanResponsePlanOneOneProfileLaunchTargetBusinessDaysMax).nullish(),
   "dedicatedManager": zod.boolean().optional(),
   "slaEnabled": zod.boolean().optional(),
   "slaTerms": zod.string().max(changeTenantPlanResponsePlanOneOneProfileSlaTermsMax).optional(),
   "earlyAccess": zod.boolean().optional(),
   "poweredByFooter": zod.boolean().optional(),
   "themeModes": zod.array(zod.enum(['light', 'dark'])).max(changeTenantPlanResponsePlanOneOneProfileThemeModesMax).optional(),
-  "convertProviderLimit": zod.number().int().min(changeTenantPlanResponsePlanOneOneProfileConvertProviderLimitMin).max(changeTenantPlanResponsePlanOneOneProfileConvertProviderLimitMax).nullish(),
+  "convertProviderLimit": zod.number().refine(Number.isInteger, "Expected integer, received float").min(changeTenantPlanResponsePlanOneOneProfileConvertProviderLimitMin).max(changeTenantPlanResponsePlanOneOneProfileConvertProviderLimitMax).nullish(),
   "requestedProviders": zod.array(zod.string().min(1).max(changeTenantPlanResponsePlanOneOneProfileRequestedProvidersItemMax)).max(changeTenantPlanResponsePlanOneOneProfileRequestedProvidersMax).optional(),
   "capabilities": zod.array(zod.object({
   "key": zod.string().regex(changeTenantPlanResponsePlanOneOneProfileCapabilitiesItemKeyRegExp),
@@ -15220,9 +15220,9 @@ export const ChangeTenantPlanResponse = zod.object({
 })).max(changeTenantPlanResponsePlanOneOneProfileCapabilitiesMax).optional(),
   "internalNotes": zod.string().max(changeTenantPlanResponsePlanOneOneProfileInternalNotesMax).optional()
 }).optional().describe('Structured plan configuration. internalName and internalNotes are Super Admin only and never published.'),
-  "expectedRevision": zod.number().int().min(changeTenantPlanResponsePlanOneOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
+  "expectedRevision": zod.number().refine(Number.isInteger, "Expected integer, received float").min(changeTenantPlanResponsePlanOneOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
 }).and(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date(),
   "pricingConfigured": zod.boolean().optional(),
@@ -15231,7 +15231,7 @@ export const ChangeTenantPlanResponse = zod.object({
   "label": zod.string().min(1).max(changeTenantPlanResponsePlanOneTwoFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(changeTenantPlanResponsePlanOneTwoFeatureRowsItemValueMax)
 }).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(changeTenantPlanResponsePlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.'),
-  "revision": zod.number().int().optional()
+  "revision": zod.number().refine(Number.isInteger, "Expected integer, received float").optional()
 })),zod.null()]),
   "addons": zod.array(zod.object({
   "monthlyPrice": zod.string().regex(changeTenantPlanResponseAddonsItemOneMonthlyPriceRegExp).nullish(),
@@ -15247,7 +15247,7 @@ export const ChangeTenantPlanResponse = zod.object({
   "value": zod.union([zod.boolean(),zod.string().max(changeTenantPlanResponseAddonsItemOneEntitlementsItemValueTwoMax).regex(changeTenantPlanResponseAddonsItemOneEntitlementsItemValueTwoRegExp)])
 })).max(changeTenantPlanResponseAddonsItemOneEntitlementsMax)
 }).and(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "pricingConfigured": zod.boolean().optional()
 }))),
   "overrides": zod.array(zod.object({
@@ -15272,7 +15272,7 @@ export const ChangeTenantPlanResponse = zod.object({
 
 
 export const UpdateSubscriptionCommercialParams = zod.object({
-  "tenantId": zod.coerce.string().uuid()
+  "tenantId": zod.guid()
 })
 
 export const updateSubscriptionCommercialBodyDiscountPercentMax = 6;
@@ -15465,7 +15465,7 @@ export const updateSubscriptionCommercialResponseOverridesItemTwoReasonMax = 500
 
 
 export const UpdateSubscriptionCommercialResponse = zod.object({
-  "tenantId": zod.string().uuid(),
+  "tenantId": zod.guid(),
   "tenantStatus": zod.string(),
   "status": zod.enum(['active', 'suspended', 'cancelled', 'unassigned']),
   "billingPeriod": zod.enum(['monthly', 'yearly']).optional(),
@@ -15475,7 +15475,7 @@ export const UpdateSubscriptionCommercialResponse = zod.object({
   "currency": zod.string().nullish(),
   "billingConnected": zod.boolean().optional(),
   "trial": zod.union([zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "state": zod.enum(['active', 'cancelled', 'expired']),
   "startedAt": zod.string(),
   "endsAt": zod.string(),
@@ -15494,7 +15494,7 @@ export const UpdateSubscriptionCommercialResponse = zod.object({
   "discountPercent": zod.string().max(updateSubscriptionCommercialResponsePlanOneOneDiscountPercentMax).regex(updateSubscriptionCommercialResponsePlanOneOneDiscountPercentRegExp).optional(),
   "currency": zod.string().regex(updateSubscriptionCommercialResponsePlanOneOneCurrencyRegExp),
   "billingLabel": zod.string().max(updateSubscriptionCommercialResponsePlanOneOneBillingLabelMax),
-  "displayOrder": zod.number().int().min(updateSubscriptionCommercialResponsePlanOneOneDisplayOrderMin).max(updateSubscriptionCommercialResponsePlanOneOneDisplayOrderMax),
+  "displayOrder": zod.number().refine(Number.isInteger, "Expected integer, received float").min(updateSubscriptionCommercialResponsePlanOneOneDisplayOrderMin).max(updateSubscriptionCommercialResponsePlanOneOneDisplayOrderMax),
   "status": zod.enum(['enabled', 'disabled', 'archived']),
   "entitlements": zod.array(zod.object({
   "key": zod.string().max(updateSubscriptionCommercialResponsePlanOneOneEntitlementsItemKeyMax).regex(updateSubscriptionCommercialResponsePlanOneOneEntitlementsItemKeyRegExp),
@@ -15527,22 +15527,22 @@ export const UpdateSubscriptionCommercialResponse = zod.object({
   "promoStartsAt": zod.coerce.date().nullish(),
   "promoEndsAt": zod.coerce.date().nullish(),
   "billingInterval": zod.enum(['monthly', 'yearly', 'monthly_and_yearly', 'custom']).optional(),
-  "trialDays": zod.number().int().min(updateSubscriptionCommercialResponsePlanOneOneProfileTrialDaysMin).max(updateSubscriptionCommercialResponsePlanOneOneProfileTrialDaysMax).optional(),
+  "trialDays": zod.number().refine(Number.isInteger, "Expected integer, received float").min(updateSubscriptionCommercialResponsePlanOneOneProfileTrialDaysMin).max(updateSubscriptionCommercialResponsePlanOneOneProfileTrialDaysMax).optional(),
   "ctaLabel": zod.string().max(updateSubscriptionCommercialResponsePlanOneOneProfileCtaLabelMax).optional(),
   "ctaUrl": zod.string().max(updateSubscriptionCommercialResponsePlanOneOneProfileCtaUrlMax).regex(updateSubscriptionCommercialResponsePlanOneOneProfileCtaUrlRegExp).optional(),
   "visibility": zod.enum(['public', 'hidden']).optional(),
-  "adminSeats": zod.number().int().min(1).max(updateSubscriptionCommercialResponsePlanOneOneProfileAdminSeatsMax).nullish(),
+  "adminSeats": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(updateSubscriptionCommercialResponsePlanOneOneProfileAdminSeatsMax).nullish(),
   "multiAdminRoles": zod.boolean().optional(),
   "supportLevel": zod.enum(['email', 'priority', 'dedicated']).optional(),
-  "supportResponseHours": zod.number().int().min(1).max(updateSubscriptionCommercialResponsePlanOneOneProfileSupportResponseHoursMax).nullish(),
-  "launchTargetBusinessDays": zod.number().int().min(1).max(updateSubscriptionCommercialResponsePlanOneOneProfileLaunchTargetBusinessDaysMax).nullish(),
+  "supportResponseHours": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(updateSubscriptionCommercialResponsePlanOneOneProfileSupportResponseHoursMax).nullish(),
+  "launchTargetBusinessDays": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(updateSubscriptionCommercialResponsePlanOneOneProfileLaunchTargetBusinessDaysMax).nullish(),
   "dedicatedManager": zod.boolean().optional(),
   "slaEnabled": zod.boolean().optional(),
   "slaTerms": zod.string().max(updateSubscriptionCommercialResponsePlanOneOneProfileSlaTermsMax).optional(),
   "earlyAccess": zod.boolean().optional(),
   "poweredByFooter": zod.boolean().optional(),
   "themeModes": zod.array(zod.enum(['light', 'dark'])).max(updateSubscriptionCommercialResponsePlanOneOneProfileThemeModesMax).optional(),
-  "convertProviderLimit": zod.number().int().min(updateSubscriptionCommercialResponsePlanOneOneProfileConvertProviderLimitMin).max(updateSubscriptionCommercialResponsePlanOneOneProfileConvertProviderLimitMax).nullish(),
+  "convertProviderLimit": zod.number().refine(Number.isInteger, "Expected integer, received float").min(updateSubscriptionCommercialResponsePlanOneOneProfileConvertProviderLimitMin).max(updateSubscriptionCommercialResponsePlanOneOneProfileConvertProviderLimitMax).nullish(),
   "requestedProviders": zod.array(zod.string().min(1).max(updateSubscriptionCommercialResponsePlanOneOneProfileRequestedProvidersItemMax)).max(updateSubscriptionCommercialResponsePlanOneOneProfileRequestedProvidersMax).optional(),
   "capabilities": zod.array(zod.object({
   "key": zod.string().regex(updateSubscriptionCommercialResponsePlanOneOneProfileCapabilitiesItemKeyRegExp),
@@ -15562,9 +15562,9 @@ export const UpdateSubscriptionCommercialResponse = zod.object({
 })).max(updateSubscriptionCommercialResponsePlanOneOneProfileCapabilitiesMax).optional(),
   "internalNotes": zod.string().max(updateSubscriptionCommercialResponsePlanOneOneProfileInternalNotesMax).optional()
 }).optional().describe('Structured plan configuration. internalName and internalNotes are Super Admin only and never published.'),
-  "expectedRevision": zod.number().int().min(updateSubscriptionCommercialResponsePlanOneOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
+  "expectedRevision": zod.number().refine(Number.isInteger, "Expected integer, received float").min(updateSubscriptionCommercialResponsePlanOneOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
 }).and(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date(),
   "pricingConfigured": zod.boolean().optional(),
@@ -15573,7 +15573,7 @@ export const UpdateSubscriptionCommercialResponse = zod.object({
   "label": zod.string().min(1).max(updateSubscriptionCommercialResponsePlanOneTwoFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(updateSubscriptionCommercialResponsePlanOneTwoFeatureRowsItemValueMax)
 }).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(updateSubscriptionCommercialResponsePlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.'),
-  "revision": zod.number().int().optional()
+  "revision": zod.number().refine(Number.isInteger, "Expected integer, received float").optional()
 })),zod.null()]),
   "addons": zod.array(zod.object({
   "monthlyPrice": zod.string().regex(updateSubscriptionCommercialResponseAddonsItemOneMonthlyPriceRegExp).nullish(),
@@ -15589,7 +15589,7 @@ export const UpdateSubscriptionCommercialResponse = zod.object({
   "value": zod.union([zod.boolean(),zod.string().max(updateSubscriptionCommercialResponseAddonsItemOneEntitlementsItemValueTwoMax).regex(updateSubscriptionCommercialResponseAddonsItemOneEntitlementsItemValueTwoRegExp)])
 })).max(updateSubscriptionCommercialResponseAddonsItemOneEntitlementsMax)
 }).and(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "pricingConfigured": zod.boolean().optional()
 }))),
   "overrides": zod.array(zod.object({
@@ -15619,15 +15619,15 @@ export const getCustomerNotificationsResponseUnreadCountMin = 0;
 
 export const GetCustomerNotificationsResponse = zod.object({
   "items": zod.array(zod.object({
-  "id": zod.string().uuid(),
-  "requestId": zod.string().uuid(),
+  "id": zod.guid(),
+  "requestId": zod.guid(),
   "orderReference": zod.string(),
   "message": zod.string(),
   "status": zod.string().nullable(),
   "createdAt": zod.coerce.date(),
   "readAt": zod.coerce.date().nullable()
 })),
-  "unreadCount": zod.number().int().min(getCustomerNotificationsResponseUnreadCountMin),
+  "unreadCount": zod.number().refine(Number.isInteger, "Expected integer, received float").min(getCustomerNotificationsResponseUnreadCountMin),
   "outboundConnected": zod.boolean()
 })
 
@@ -15637,7 +15637,7 @@ export const markCustomerNotificationsReadBodyIdsMax = 100;
 
 
 export const MarkCustomerNotificationsReadBody = zod.object({
-  "ids": zod.array(zod.string().uuid()).max(markCustomerNotificationsReadBodyIdsMax)
+  "ids": zod.array(zod.guid()).max(markCustomerNotificationsReadBodyIdsMax)
 })
 
 export const MarkCustomerNotificationsReadResponse = zod.object({
@@ -15646,11 +15646,11 @@ export const MarkCustomerNotificationsReadResponse = zod.object({
 
 
 export const SetTenantAddonsParams = zod.object({
-  "tenantId": zod.coerce.string().uuid()
+  "tenantId": zod.guid()
 })
 
 export const SetTenantAddonsBody = zod.object({
-  "addonIds": zod.array(zod.string().uuid())
+  "addonIds": zod.array(zod.guid())
 })
 
 export const setTenantAddonsResponsePlanOneOneNameMin = 2;
@@ -15824,7 +15824,7 @@ export const setTenantAddonsResponseOverridesItemTwoReasonMax = 500;
 
 
 export const SetTenantAddonsResponse = zod.object({
-  "tenantId": zod.string().uuid(),
+  "tenantId": zod.guid(),
   "tenantStatus": zod.string(),
   "status": zod.enum(['active', 'suspended', 'cancelled', 'unassigned']),
   "billingPeriod": zod.enum(['monthly', 'yearly']).optional(),
@@ -15834,7 +15834,7 @@ export const SetTenantAddonsResponse = zod.object({
   "currency": zod.string().nullish(),
   "billingConnected": zod.boolean().optional(),
   "trial": zod.union([zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "state": zod.enum(['active', 'cancelled', 'expired']),
   "startedAt": zod.string(),
   "endsAt": zod.string(),
@@ -15853,7 +15853,7 @@ export const SetTenantAddonsResponse = zod.object({
   "discountPercent": zod.string().max(setTenantAddonsResponsePlanOneOneDiscountPercentMax).regex(setTenantAddonsResponsePlanOneOneDiscountPercentRegExp).optional(),
   "currency": zod.string().regex(setTenantAddonsResponsePlanOneOneCurrencyRegExp),
   "billingLabel": zod.string().max(setTenantAddonsResponsePlanOneOneBillingLabelMax),
-  "displayOrder": zod.number().int().min(setTenantAddonsResponsePlanOneOneDisplayOrderMin).max(setTenantAddonsResponsePlanOneOneDisplayOrderMax),
+  "displayOrder": zod.number().refine(Number.isInteger, "Expected integer, received float").min(setTenantAddonsResponsePlanOneOneDisplayOrderMin).max(setTenantAddonsResponsePlanOneOneDisplayOrderMax),
   "status": zod.enum(['enabled', 'disabled', 'archived']),
   "entitlements": zod.array(zod.object({
   "key": zod.string().max(setTenantAddonsResponsePlanOneOneEntitlementsItemKeyMax).regex(setTenantAddonsResponsePlanOneOneEntitlementsItemKeyRegExp),
@@ -15886,22 +15886,22 @@ export const SetTenantAddonsResponse = zod.object({
   "promoStartsAt": zod.coerce.date().nullish(),
   "promoEndsAt": zod.coerce.date().nullish(),
   "billingInterval": zod.enum(['monthly', 'yearly', 'monthly_and_yearly', 'custom']).optional(),
-  "trialDays": zod.number().int().min(setTenantAddonsResponsePlanOneOneProfileTrialDaysMin).max(setTenantAddonsResponsePlanOneOneProfileTrialDaysMax).optional(),
+  "trialDays": zod.number().refine(Number.isInteger, "Expected integer, received float").min(setTenantAddonsResponsePlanOneOneProfileTrialDaysMin).max(setTenantAddonsResponsePlanOneOneProfileTrialDaysMax).optional(),
   "ctaLabel": zod.string().max(setTenantAddonsResponsePlanOneOneProfileCtaLabelMax).optional(),
   "ctaUrl": zod.string().max(setTenantAddonsResponsePlanOneOneProfileCtaUrlMax).regex(setTenantAddonsResponsePlanOneOneProfileCtaUrlRegExp).optional(),
   "visibility": zod.enum(['public', 'hidden']).optional(),
-  "adminSeats": zod.number().int().min(1).max(setTenantAddonsResponsePlanOneOneProfileAdminSeatsMax).nullish(),
+  "adminSeats": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(setTenantAddonsResponsePlanOneOneProfileAdminSeatsMax).nullish(),
   "multiAdminRoles": zod.boolean().optional(),
   "supportLevel": zod.enum(['email', 'priority', 'dedicated']).optional(),
-  "supportResponseHours": zod.number().int().min(1).max(setTenantAddonsResponsePlanOneOneProfileSupportResponseHoursMax).nullish(),
-  "launchTargetBusinessDays": zod.number().int().min(1).max(setTenantAddonsResponsePlanOneOneProfileLaunchTargetBusinessDaysMax).nullish(),
+  "supportResponseHours": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(setTenantAddonsResponsePlanOneOneProfileSupportResponseHoursMax).nullish(),
+  "launchTargetBusinessDays": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(setTenantAddonsResponsePlanOneOneProfileLaunchTargetBusinessDaysMax).nullish(),
   "dedicatedManager": zod.boolean().optional(),
   "slaEnabled": zod.boolean().optional(),
   "slaTerms": zod.string().max(setTenantAddonsResponsePlanOneOneProfileSlaTermsMax).optional(),
   "earlyAccess": zod.boolean().optional(),
   "poweredByFooter": zod.boolean().optional(),
   "themeModes": zod.array(zod.enum(['light', 'dark'])).max(setTenantAddonsResponsePlanOneOneProfileThemeModesMax).optional(),
-  "convertProviderLimit": zod.number().int().min(setTenantAddonsResponsePlanOneOneProfileConvertProviderLimitMin).max(setTenantAddonsResponsePlanOneOneProfileConvertProviderLimitMax).nullish(),
+  "convertProviderLimit": zod.number().refine(Number.isInteger, "Expected integer, received float").min(setTenantAddonsResponsePlanOneOneProfileConvertProviderLimitMin).max(setTenantAddonsResponsePlanOneOneProfileConvertProviderLimitMax).nullish(),
   "requestedProviders": zod.array(zod.string().min(1).max(setTenantAddonsResponsePlanOneOneProfileRequestedProvidersItemMax)).max(setTenantAddonsResponsePlanOneOneProfileRequestedProvidersMax).optional(),
   "capabilities": zod.array(zod.object({
   "key": zod.string().regex(setTenantAddonsResponsePlanOneOneProfileCapabilitiesItemKeyRegExp),
@@ -15921,9 +15921,9 @@ export const SetTenantAddonsResponse = zod.object({
 })).max(setTenantAddonsResponsePlanOneOneProfileCapabilitiesMax).optional(),
   "internalNotes": zod.string().max(setTenantAddonsResponsePlanOneOneProfileInternalNotesMax).optional()
 }).optional().describe('Structured plan configuration. internalName and internalNotes are Super Admin only and never published.'),
-  "expectedRevision": zod.number().int().min(setTenantAddonsResponsePlanOneOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
+  "expectedRevision": zod.number().refine(Number.isInteger, "Expected integer, received float").min(setTenantAddonsResponsePlanOneOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
 }).and(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date(),
   "pricingConfigured": zod.boolean().optional(),
@@ -15932,7 +15932,7 @@ export const SetTenantAddonsResponse = zod.object({
   "label": zod.string().min(1).max(setTenantAddonsResponsePlanOneTwoFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(setTenantAddonsResponsePlanOneTwoFeatureRowsItemValueMax)
 }).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(setTenantAddonsResponsePlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.'),
-  "revision": zod.number().int().optional()
+  "revision": zod.number().refine(Number.isInteger, "Expected integer, received float").optional()
 })),zod.null()]),
   "addons": zod.array(zod.object({
   "monthlyPrice": zod.string().regex(setTenantAddonsResponseAddonsItemOneMonthlyPriceRegExp).nullish(),
@@ -15948,7 +15948,7 @@ export const SetTenantAddonsResponse = zod.object({
   "value": zod.union([zod.boolean(),zod.string().max(setTenantAddonsResponseAddonsItemOneEntitlementsItemValueTwoMax).regex(setTenantAddonsResponseAddonsItemOneEntitlementsItemValueTwoRegExp)])
 })).max(setTenantAddonsResponseAddonsItemOneEntitlementsMax)
 }).and(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "pricingConfigured": zod.boolean().optional()
 }))),
   "overrides": zod.array(zod.object({
@@ -15973,7 +15973,7 @@ export const SetTenantAddonsResponse = zod.object({
 
 
 export const SetTenantOverridesParams = zod.object({
-  "tenantId": zod.coerce.string().uuid()
+  "tenantId": zod.guid()
 })
 
 export const setTenantOverridesBodyOverridesItemOneKeyMax = 80;
@@ -16171,7 +16171,7 @@ export const setTenantOverridesResponseOverridesItemTwoReasonMax = 500;
 
 
 export const SetTenantOverridesResponse = zod.object({
-  "tenantId": zod.string().uuid(),
+  "tenantId": zod.guid(),
   "tenantStatus": zod.string(),
   "status": zod.enum(['active', 'suspended', 'cancelled', 'unassigned']),
   "billingPeriod": zod.enum(['monthly', 'yearly']).optional(),
@@ -16181,7 +16181,7 @@ export const SetTenantOverridesResponse = zod.object({
   "currency": zod.string().nullish(),
   "billingConnected": zod.boolean().optional(),
   "trial": zod.union([zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "state": zod.enum(['active', 'cancelled', 'expired']),
   "startedAt": zod.string(),
   "endsAt": zod.string(),
@@ -16200,7 +16200,7 @@ export const SetTenantOverridesResponse = zod.object({
   "discountPercent": zod.string().max(setTenantOverridesResponsePlanOneOneDiscountPercentMax).regex(setTenantOverridesResponsePlanOneOneDiscountPercentRegExp).optional(),
   "currency": zod.string().regex(setTenantOverridesResponsePlanOneOneCurrencyRegExp),
   "billingLabel": zod.string().max(setTenantOverridesResponsePlanOneOneBillingLabelMax),
-  "displayOrder": zod.number().int().min(setTenantOverridesResponsePlanOneOneDisplayOrderMin).max(setTenantOverridesResponsePlanOneOneDisplayOrderMax),
+  "displayOrder": zod.number().refine(Number.isInteger, "Expected integer, received float").min(setTenantOverridesResponsePlanOneOneDisplayOrderMin).max(setTenantOverridesResponsePlanOneOneDisplayOrderMax),
   "status": zod.enum(['enabled', 'disabled', 'archived']),
   "entitlements": zod.array(zod.object({
   "key": zod.string().max(setTenantOverridesResponsePlanOneOneEntitlementsItemKeyMax).regex(setTenantOverridesResponsePlanOneOneEntitlementsItemKeyRegExp),
@@ -16233,22 +16233,22 @@ export const SetTenantOverridesResponse = zod.object({
   "promoStartsAt": zod.coerce.date().nullish(),
   "promoEndsAt": zod.coerce.date().nullish(),
   "billingInterval": zod.enum(['monthly', 'yearly', 'monthly_and_yearly', 'custom']).optional(),
-  "trialDays": zod.number().int().min(setTenantOverridesResponsePlanOneOneProfileTrialDaysMin).max(setTenantOverridesResponsePlanOneOneProfileTrialDaysMax).optional(),
+  "trialDays": zod.number().refine(Number.isInteger, "Expected integer, received float").min(setTenantOverridesResponsePlanOneOneProfileTrialDaysMin).max(setTenantOverridesResponsePlanOneOneProfileTrialDaysMax).optional(),
   "ctaLabel": zod.string().max(setTenantOverridesResponsePlanOneOneProfileCtaLabelMax).optional(),
   "ctaUrl": zod.string().max(setTenantOverridesResponsePlanOneOneProfileCtaUrlMax).regex(setTenantOverridesResponsePlanOneOneProfileCtaUrlRegExp).optional(),
   "visibility": zod.enum(['public', 'hidden']).optional(),
-  "adminSeats": zod.number().int().min(1).max(setTenantOverridesResponsePlanOneOneProfileAdminSeatsMax).nullish(),
+  "adminSeats": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(setTenantOverridesResponsePlanOneOneProfileAdminSeatsMax).nullish(),
   "multiAdminRoles": zod.boolean().optional(),
   "supportLevel": zod.enum(['email', 'priority', 'dedicated']).optional(),
-  "supportResponseHours": zod.number().int().min(1).max(setTenantOverridesResponsePlanOneOneProfileSupportResponseHoursMax).nullish(),
-  "launchTargetBusinessDays": zod.number().int().min(1).max(setTenantOverridesResponsePlanOneOneProfileLaunchTargetBusinessDaysMax).nullish(),
+  "supportResponseHours": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(setTenantOverridesResponsePlanOneOneProfileSupportResponseHoursMax).nullish(),
+  "launchTargetBusinessDays": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(setTenantOverridesResponsePlanOneOneProfileLaunchTargetBusinessDaysMax).nullish(),
   "dedicatedManager": zod.boolean().optional(),
   "slaEnabled": zod.boolean().optional(),
   "slaTerms": zod.string().max(setTenantOverridesResponsePlanOneOneProfileSlaTermsMax).optional(),
   "earlyAccess": zod.boolean().optional(),
   "poweredByFooter": zod.boolean().optional(),
   "themeModes": zod.array(zod.enum(['light', 'dark'])).max(setTenantOverridesResponsePlanOneOneProfileThemeModesMax).optional(),
-  "convertProviderLimit": zod.number().int().min(setTenantOverridesResponsePlanOneOneProfileConvertProviderLimitMin).max(setTenantOverridesResponsePlanOneOneProfileConvertProviderLimitMax).nullish(),
+  "convertProviderLimit": zod.number().refine(Number.isInteger, "Expected integer, received float").min(setTenantOverridesResponsePlanOneOneProfileConvertProviderLimitMin).max(setTenantOverridesResponsePlanOneOneProfileConvertProviderLimitMax).nullish(),
   "requestedProviders": zod.array(zod.string().min(1).max(setTenantOverridesResponsePlanOneOneProfileRequestedProvidersItemMax)).max(setTenantOverridesResponsePlanOneOneProfileRequestedProvidersMax).optional(),
   "capabilities": zod.array(zod.object({
   "key": zod.string().regex(setTenantOverridesResponsePlanOneOneProfileCapabilitiesItemKeyRegExp),
@@ -16268,9 +16268,9 @@ export const SetTenantOverridesResponse = zod.object({
 })).max(setTenantOverridesResponsePlanOneOneProfileCapabilitiesMax).optional(),
   "internalNotes": zod.string().max(setTenantOverridesResponsePlanOneOneProfileInternalNotesMax).optional()
 }).optional().describe('Structured plan configuration. internalName and internalNotes are Super Admin only and never published.'),
-  "expectedRevision": zod.number().int().min(setTenantOverridesResponsePlanOneOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
+  "expectedRevision": zod.number().refine(Number.isInteger, "Expected integer, received float").min(setTenantOverridesResponsePlanOneOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
 }).and(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date(),
   "pricingConfigured": zod.boolean().optional(),
@@ -16279,7 +16279,7 @@ export const SetTenantOverridesResponse = zod.object({
   "label": zod.string().min(1).max(setTenantOverridesResponsePlanOneTwoFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(setTenantOverridesResponsePlanOneTwoFeatureRowsItemValueMax)
 }).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(setTenantOverridesResponsePlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.'),
-  "revision": zod.number().int().optional()
+  "revision": zod.number().refine(Number.isInteger, "Expected integer, received float").optional()
 })),zod.null()]),
   "addons": zod.array(zod.object({
   "monthlyPrice": zod.string().regex(setTenantOverridesResponseAddonsItemOneMonthlyPriceRegExp).nullish(),
@@ -16295,7 +16295,7 @@ export const SetTenantOverridesResponse = zod.object({
   "value": zod.union([zod.boolean(),zod.string().max(setTenantOverridesResponseAddonsItemOneEntitlementsItemValueTwoMax).regex(setTenantOverridesResponseAddonsItemOneEntitlementsItemValueTwoRegExp)])
 })).max(setTenantOverridesResponseAddonsItemOneEntitlementsMax)
 }).and(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "pricingConfigured": zod.boolean().optional()
 }))),
   "overrides": zod.array(zod.object({
@@ -16320,7 +16320,7 @@ export const SetTenantOverridesResponse = zod.object({
 
 
 export const SetTenantSuspensionParams = zod.object({
-  "tenantId": zod.coerce.string().uuid()
+  "tenantId": zod.guid()
 })
 
 export const setTenantSuspensionBodyReasonMin = 2;
@@ -16504,7 +16504,7 @@ export const setTenantSuspensionResponseOverridesItemTwoReasonMax = 500;
 
 
 export const SetTenantSuspensionResponse = zod.object({
-  "tenantId": zod.string().uuid(),
+  "tenantId": zod.guid(),
   "tenantStatus": zod.string(),
   "status": zod.enum(['active', 'suspended', 'cancelled', 'unassigned']),
   "billingPeriod": zod.enum(['monthly', 'yearly']).optional(),
@@ -16514,7 +16514,7 @@ export const SetTenantSuspensionResponse = zod.object({
   "currency": zod.string().nullish(),
   "billingConnected": zod.boolean().optional(),
   "trial": zod.union([zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "state": zod.enum(['active', 'cancelled', 'expired']),
   "startedAt": zod.string(),
   "endsAt": zod.string(),
@@ -16533,7 +16533,7 @@ export const SetTenantSuspensionResponse = zod.object({
   "discountPercent": zod.string().max(setTenantSuspensionResponsePlanOneOneDiscountPercentMax).regex(setTenantSuspensionResponsePlanOneOneDiscountPercentRegExp).optional(),
   "currency": zod.string().regex(setTenantSuspensionResponsePlanOneOneCurrencyRegExp),
   "billingLabel": zod.string().max(setTenantSuspensionResponsePlanOneOneBillingLabelMax),
-  "displayOrder": zod.number().int().min(setTenantSuspensionResponsePlanOneOneDisplayOrderMin).max(setTenantSuspensionResponsePlanOneOneDisplayOrderMax),
+  "displayOrder": zod.number().refine(Number.isInteger, "Expected integer, received float").min(setTenantSuspensionResponsePlanOneOneDisplayOrderMin).max(setTenantSuspensionResponsePlanOneOneDisplayOrderMax),
   "status": zod.enum(['enabled', 'disabled', 'archived']),
   "entitlements": zod.array(zod.object({
   "key": zod.string().max(setTenantSuspensionResponsePlanOneOneEntitlementsItemKeyMax).regex(setTenantSuspensionResponsePlanOneOneEntitlementsItemKeyRegExp),
@@ -16566,22 +16566,22 @@ export const SetTenantSuspensionResponse = zod.object({
   "promoStartsAt": zod.coerce.date().nullish(),
   "promoEndsAt": zod.coerce.date().nullish(),
   "billingInterval": zod.enum(['monthly', 'yearly', 'monthly_and_yearly', 'custom']).optional(),
-  "trialDays": zod.number().int().min(setTenantSuspensionResponsePlanOneOneProfileTrialDaysMin).max(setTenantSuspensionResponsePlanOneOneProfileTrialDaysMax).optional(),
+  "trialDays": zod.number().refine(Number.isInteger, "Expected integer, received float").min(setTenantSuspensionResponsePlanOneOneProfileTrialDaysMin).max(setTenantSuspensionResponsePlanOneOneProfileTrialDaysMax).optional(),
   "ctaLabel": zod.string().max(setTenantSuspensionResponsePlanOneOneProfileCtaLabelMax).optional(),
   "ctaUrl": zod.string().max(setTenantSuspensionResponsePlanOneOneProfileCtaUrlMax).regex(setTenantSuspensionResponsePlanOneOneProfileCtaUrlRegExp).optional(),
   "visibility": zod.enum(['public', 'hidden']).optional(),
-  "adminSeats": zod.number().int().min(1).max(setTenantSuspensionResponsePlanOneOneProfileAdminSeatsMax).nullish(),
+  "adminSeats": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(setTenantSuspensionResponsePlanOneOneProfileAdminSeatsMax).nullish(),
   "multiAdminRoles": zod.boolean().optional(),
   "supportLevel": zod.enum(['email', 'priority', 'dedicated']).optional(),
-  "supportResponseHours": zod.number().int().min(1).max(setTenantSuspensionResponsePlanOneOneProfileSupportResponseHoursMax).nullish(),
-  "launchTargetBusinessDays": zod.number().int().min(1).max(setTenantSuspensionResponsePlanOneOneProfileLaunchTargetBusinessDaysMax).nullish(),
+  "supportResponseHours": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(setTenantSuspensionResponsePlanOneOneProfileSupportResponseHoursMax).nullish(),
+  "launchTargetBusinessDays": zod.number().refine(Number.isInteger, "Expected integer, received float").min(1).max(setTenantSuspensionResponsePlanOneOneProfileLaunchTargetBusinessDaysMax).nullish(),
   "dedicatedManager": zod.boolean().optional(),
   "slaEnabled": zod.boolean().optional(),
   "slaTerms": zod.string().max(setTenantSuspensionResponsePlanOneOneProfileSlaTermsMax).optional(),
   "earlyAccess": zod.boolean().optional(),
   "poweredByFooter": zod.boolean().optional(),
   "themeModes": zod.array(zod.enum(['light', 'dark'])).max(setTenantSuspensionResponsePlanOneOneProfileThemeModesMax).optional(),
-  "convertProviderLimit": zod.number().int().min(setTenantSuspensionResponsePlanOneOneProfileConvertProviderLimitMin).max(setTenantSuspensionResponsePlanOneOneProfileConvertProviderLimitMax).nullish(),
+  "convertProviderLimit": zod.number().refine(Number.isInteger, "Expected integer, received float").min(setTenantSuspensionResponsePlanOneOneProfileConvertProviderLimitMin).max(setTenantSuspensionResponsePlanOneOneProfileConvertProviderLimitMax).nullish(),
   "requestedProviders": zod.array(zod.string().min(1).max(setTenantSuspensionResponsePlanOneOneProfileRequestedProvidersItemMax)).max(setTenantSuspensionResponsePlanOneOneProfileRequestedProvidersMax).optional(),
   "capabilities": zod.array(zod.object({
   "key": zod.string().regex(setTenantSuspensionResponsePlanOneOneProfileCapabilitiesItemKeyRegExp),
@@ -16601,9 +16601,9 @@ export const SetTenantSuspensionResponse = zod.object({
 })).max(setTenantSuspensionResponsePlanOneOneProfileCapabilitiesMax).optional(),
   "internalNotes": zod.string().max(setTenantSuspensionResponsePlanOneOneProfileInternalNotesMax).optional()
 }).optional().describe('Structured plan configuration. internalName and internalNotes are Super Admin only and never published.'),
-  "expectedRevision": zod.number().int().min(setTenantSuspensionResponsePlanOneOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
+  "expectedRevision": zod.number().refine(Number.isInteger, "Expected integer, received float").min(setTenantSuspensionResponsePlanOneOneExpectedRevisionMin).optional().describe('Optimistic concurrency token from the last read; a mismatch returns 409.')
 }).and(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "createdAt": zod.coerce.date(),
   "updatedAt": zod.coerce.date(),
   "pricingConfigured": zod.boolean().optional(),
@@ -16612,7 +16612,7 @@ export const SetTenantSuspensionResponse = zod.object({
   "label": zod.string().min(1).max(setTenantSuspensionResponsePlanOneTwoFeatureRowsItemLabelMax),
   "value": zod.string().min(1).max(setTenantSuspensionResponsePlanOneTwoFeatureRowsItemValueMax)
 }).describe('Ordered marketing display text only, never an entitlement, permission or HTML.')).default(setTenantSuspensionResponsePlanOneTwoFeatureRowsDefault).describe('Ordered plain-text marketing rows only; legacy published snapshots return an empty array.'),
-  "revision": zod.number().int().optional()
+  "revision": zod.number().refine(Number.isInteger, "Expected integer, received float").optional()
 })),zod.null()]),
   "addons": zod.array(zod.object({
   "monthlyPrice": zod.string().regex(setTenantSuspensionResponseAddonsItemOneMonthlyPriceRegExp).nullish(),
@@ -16628,7 +16628,7 @@ export const SetTenantSuspensionResponse = zod.object({
   "value": zod.union([zod.boolean(),zod.string().max(setTenantSuspensionResponseAddonsItemOneEntitlementsItemValueTwoMax).regex(setTenantSuspensionResponseAddonsItemOneEntitlementsItemValueTwoRegExp)])
 })).max(setTenantSuspensionResponseAddonsItemOneEntitlementsMax)
 }).and(zod.object({
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "pricingConfigured": zod.boolean().optional()
 }))),
   "overrides": zod.array(zod.object({
@@ -16653,7 +16653,7 @@ export const SetTenantSuspensionResponse = zod.object({
 
 
 export const UpdateTenantWebsiteSettingsParams = zod.object({
-  "tenantId": zod.coerce.string().uuid()
+  "tenantId": zod.guid()
 })
 
 export const updateTenantWebsiteSettingsBodyReviewLinksItemLabelMax = 80;
@@ -16799,7 +16799,7 @@ export const updateTenantWebsiteSettingsResponseTwoWebsiteSettingsTermsContentMa
 
 export const UpdateTenantWebsiteSettingsResponse = zod.object({
   "exchangeProvisioned": zod.boolean().optional(),
-  "id": zod.string().uuid(),
+  "id": zod.guid(),
   "name": zod.string(),
   "slug": zod.string(),
   "brandName": zod.string(),
@@ -16862,7 +16862,7 @@ export const UpdateTenantWebsiteSettingsResponse = zod.object({
 
 
 export const ListTenantResourcesParams = zod.object({
-  "tenantId": zod.coerce.string().uuid(),
+  "tenantId": zod.guid(),
   "resourceType": zod.enum(['staff', 'api_keys', 'webhooks', 'payment_methods'])
 })
 
@@ -16877,7 +16877,7 @@ export const ListTenantResourcesResponse = zod.array(ListTenantResourcesResponse
 
 
 export const CreateTenantResourceParams = zod.object({
-  "tenantId": zod.coerce.string().uuid(),
+  "tenantId": zod.guid(),
   "resourceType": zod.enum(['staff', 'api_keys', 'webhooks', 'payment_methods'])
 })
 
@@ -16906,7 +16906,7 @@ export const CreateTenantResourceResponse = zod.object({
 
 
 export const RemoveTenantResourceParams = zod.object({
-  "tenantId": zod.coerce.string().uuid(),
+  "tenantId": zod.guid(),
   "resourceType": zod.enum(['staff', 'api_keys', 'webhooks', 'payment_methods']),
   "resourceId": zod.coerce.string()
 })
@@ -16982,7 +16982,7 @@ export const getPublicSiteResponseWebsiteSettingsTermsContentMax = 20000;
 
 
 export const GetPublicSiteResponse = zod.object({
-  "schema_version": zod.number().int().optional(),
+  "schema_version": zod.number().refine(Number.isInteger, "Expected integer, received float").optional(),
   "releaseChecksum": zod.string().optional(),
   "preview": zod.boolean().optional(),
   "defaultLanguage": zod.string().optional(),
@@ -17041,7 +17041,7 @@ export const GetPublicSiteResponse = zod.object({
   "networkName": zod.string(),
   "testnet": zod.boolean(),
   "logoUrl": zod.string().nullish(),
-  "decimals": zod.number().int().optional(),
+  "decimals": zod.number().refine(Number.isInteger, "Expected integer, received float").optional(),
   "memoRequired": zod.boolean().optional()
 }))
 })
