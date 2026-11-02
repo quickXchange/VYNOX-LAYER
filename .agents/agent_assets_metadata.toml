@@ -1316,3 +1316,17 @@ mtime_ms = 1793473185847
 storage_uri = "gcs://replit-rams-assets-reed/rams/assets/repl:372d2684-97ec-4ce5-b16a-77fb322db72a/fda679aa-3312-44cc-b234-a88a1dad4f52/636180f2-34c5-4947-9c5d-dfa976678d25"
 storage_version_token = "1793473190840996"
 content_type = "application/pdf"
+
+[[outputs]]
+id = "rHdkTK_guNpE5eDfnWhH8"
+uri = "file://generated-artifacts/backend-audit/backend-verification-report.html"
+type = "html"
+title = "Backend and Database Verification Report"
+description = "Fixes, browser/database evidence, 166-route inventory, 66-table catalog, and explicit unverified scope. Partial audit—not a whole-platform sign-off."
+logical_id = "267bcea6-5648-4786-ae32-6754b4a12205"
+content_hash = "sha256:10f217f1f5e3ee9c7d9c4ad51ddc0e0f5b4fc44eae195a905e05defe56ee6611"
+size = 163481
+mtime_ms = 1793634093397
+storage_uri = "gcs://replit-rams-assets-reed/rams/assets/repl:372d2684-97ec-4ce5-b16a-77fb322db72a/267bcea6-5648-4786-ae32-6754b4a12205/356ffee3-48df-4f4d-8389-e5c9397575c0"
+storage_version_token = "1793634133173865"
+content_type = "text/html"

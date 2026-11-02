@@ -1,4 +1,5 @@
 import { withDatabase, type DatabaseClient } from "@workspace/db";
+import { customerHostname } from "../domains/hostname";
 import { SubmitWhiteLabelRequestBody, ReviewWhiteLabelRequestBody, AddWhiteLabelNoteBody, type WhiteLabelNoteInput, type WhiteLabelRequestInput, type WhiteLabelReviewInput } from "@workspace/api-zod";
 import { createHash } from "node:crypto";
 import { contextFor, requireSuperAdmin, type Principal } from "../authentication/service";
@@ -63,6 +64,7 @@ export function submitRequest(p: Principal, raw: WhiteLabelRequestInput, sandbox
   if (p.role === "super_admin") throw new HttpError(403, "Super Admin reviews customer requests; use a customer account to submit.");
   const input = SubmitWhiteLabelRequestBody.parse(raw);
   if (!input.preferredDomain?.trim()) throw new HttpError(400, "Preferred domain is required.");
+  customerHostname(input.preferredDomain);
   if(input.actions.some(action=>!["swap","convert"].includes(action)))
     throw new HttpError(400,"Only Crypto/Fiat Swap and Crypto/Crypto Convert can be ordered. Buy and Sell are retired.");
   const { idempotencyKey, ...fields } = input;

@@ -20,3 +20,9 @@ Native sign-in tests must suppress automatic accessibility snapshots of populate
 **Why:** A managed browser snapshot included disposable sign-in field values despite instructions not to print credentials. The test stopped and the identities were deleted.
 
 **How to apply:** Use a browser execution path with controlled, sanitized output before entering credentials. Never reuse affected disposable credentials; revoke sessions and delete their exact scoped accounts first.
+
+Do not create replacement QA administrators for repeated browser-harness retries after losing the only in-memory MFA material. Stop and request secure access to the retained fixture instead.
+
+**Why:** Failed harness runs left additional active Development administrator fixtures with unrecoverable in-memory factors, without advancing the cross-role verification.
+
+**How to apply:** Persist exact non-secret fixture scope, keep one controlled credential process alive across journeys, and treat its loss as a blocker. Never reset existing factors, create more privileged identities, or delete fixtures without the required approval.

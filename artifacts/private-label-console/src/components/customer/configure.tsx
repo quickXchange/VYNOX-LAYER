@@ -11,14 +11,31 @@ import { ProjectStep, DesignStep } from './step-project-design';
 import { planPeriods } from './plan-bits';
 import { FeaturesStep, PlanStep, AddonsStep } from './step-plan-addons';
 import { RequirementsStep, ReviewStep } from './step-requirements-review';
+import { usePrincipal } from '@/lib/principal';
+import { draftKey, readDraft } from './configure-draft';
 
 export function ConfigureExchange() {
+  const principal = usePrincipal();
+  return <ConfigureExchangeDraft key={principal.userId} userId={principal.userId} />;
+}
+function ConfigureExchangeDraft({ userId }: { userId: string }) {
+  const [restored] = useState(() => {
+    try { return readDraft(sessionStorage, userId); } catch { return null; }
+  });
   const qc = useQueryClient(); const submit = useSubmitWhiteLabelRequest();
   const catQ = useGetWhiteLabelCatalog({ query: { refetchInterval: 5000, refetchOnWindowFocus: true, staleTime: 0 } as never });
   const cat = catQ;
-  const [cfg, setCfg] = useState<Cfg>(initialCfg()); const [step, setStep] = useState(0); const [maxStep, setMax] = useState(0);
+  const [cfg, setCfg] = useState<Cfg>(restored?.cfg ?? initialCfg()); const [step, setStep] = useState(restored?.step ?? 0); const [maxStep, setMax] = useState(restored?.maxStep ?? 0);
   const [busy, setBusy] = useState(0); const [err, setErr] = useState<string | null>(null); const [done, setDone] = useState<WlOrder | null>(null);
-  const key = useRef(crypto.randomUUID());
+  const key = useRef(restored?.key ?? crypto.randomUUID());
+  const [draftWarning, setDraftWarning] = useState(false);
+  useEffect(() => {
+    try {
+      if (done) sessionStorage.removeItem(draftKey(userId));
+      else sessionStorage.setItem(draftKey(userId), JSON.stringify({ cfg, step, maxStep, key: key.current, savedAt: Date.now() }));
+      setDraftWarning(false);
+    } catch { setDraftWarning(true); }
+  }, [cfg, step, maxStep, done, userId]);
   const intendedPlanApplied = useRef(false);
   useEffect(() => {
     if (!cat.data || intendedPlanApplied.current) return;
@@ -64,6 +81,7 @@ export function ConfigureExchange() {
   return (
     <>
       <PageHeader eyebrow="White label" title="Configure Exchange" />
+      {draftWarning && <p role="status" className="text-sm text-destructive">This browser cannot save your draft. Keep this page open until you submit.</p>}
       <ol className="mb-8 grid grid-cols-2 gap-x-3 gap-y-2 sm:grid-cols-4 xl:flex xl:gap-1" aria-label="Steps">
         {STEPS.map((s, i) => (
           <li key={s} className="min-w-0 flex-1"><button type="button" disabled={i > maxStep || busy > 0} aria-current={i === step ? 'step' : undefined} onClick={() => go(i)} data-testid={`step-${s.toLowerCase()}`}

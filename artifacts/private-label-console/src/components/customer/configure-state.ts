@@ -17,9 +17,18 @@ export const requestDetails = (c: Cfg) => c.acts.includes('convert')
   ? [`Requested Convert providers: ${providerNames(c).join(', ')} (subject to operator review and setup).`, c.details].filter(Boolean).join('\n\n')
   : c.details;
 export type StepProps = { cfg: Cfg; set: (p: Partial<Cfg> | ((c: Cfg) => Partial<Cfg>)) => void; onBusy: (d: number) => void };
+export function validPreferredDomain(value: string): boolean {
+  const raw = value.trim().replace(/\.$/, '');
+  if (!raw || /[/\\:@?#%\s]/.test(raw)) return false;
+  try {
+    const host = new URL(`https://${raw}`).hostname;
+    return host.length <= 253 && /^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z][a-z0-9-]{1,62}$/.test(host)
+      && !host.endsWith('.replit.dev');
+  } catch { return false; }
+}
 export const stepError = (i: number, c: Cfg): string => {
   if ((i === 1 || i === 5) && fileError(c)) return fileError(c);
-  if (i === 0) return c.brandName.trim().length < 2 ? 'Brand name needs 2+ characters' : !c.domain.trim() ? 'Preferred domain is required' : '';
+  if (i === 0) return c.brandName.trim().length < 2 ? 'Brand name needs 2+ characters' : !c.domain.trim() ? 'Preferred domain is required' : !validPreferredDomain(c.domain) ? 'Enter a valid domain without a protocol, port or path' : '';
   if (i === 1) return c.designType === 'custom' && c.styleName.trim().length < 2 ? 'Give your custom style a name' : c.refUrl.trim() && !/^https?:\/\/\S+$/i.test(c.refUrl.trim()) ? 'Reference website must start with http:// or https://' : '';
   if (i === 2) return c.acts.length === 0 ? 'Choose at least one feature' : c.acts.includes('convert') && !providerNames(c).length ? 'Choose at least one Convert provider' : '';
   if (i === 3) return c.planId ? '' : 'Select a plan';
