@@ -1330,3 +1330,17 @@ mtime_ms = 1793634093397
 storage_uri = "gcs://replit-rams-assets-reed/rams/assets/repl:372d2684-97ec-4ce5-b16a-77fb322db72a/267bcea6-5648-4786-ae32-6754b4a12205/356ffee3-48df-4f4d-8389-e5c9397575c0"
 storage_version_token = "1793634133173865"
 content_type = "text/html"
+
+[[outputs]]
+id = "H9D21HZTv_DVjr6SQoQgt"
+uri = "file://generated-artifacts/backend-audit/unblocked-audit-addendum.html"
+type = "html"
+title = "Backend audit — additional unblocked checks"
+description = "Development-only evidence: endpoint caller mapping, anonymous GET and write rejection checks, and foreign-key index review. Explicitly separates these checks from full workflow verification."
+logical_id = "055d0e9e-bacf-4a13-b766-332e7327f255"
+content_hash = "sha256:466201b5115d77a7f7b05151e0fb17ad0b9920b8df037c2e8b2f8955b1b67022"
+size = 80985
+mtime_ms = 1793694610699
+storage_uri = "gcs://replit-rams-assets-reed/rams/assets/repl:372d2684-97ec-4ce5-b16a-77fb322db72a/055d0e9e-bacf-4a13-b766-332e7327f255/eaf019f9-0121-4c8b-b5dc-39ae30986fa8"
+storage_version_token = "1793694620526290"
+content_type = "text/html"
