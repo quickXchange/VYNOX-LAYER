@@ -1358,3 +1358,17 @@ mtime_ms = 1793781850855
 storage_uri = "gcs://replit-rams-assets-reed/rams/assets/repl:372d2684-97ec-4ce5-b16a-77fb322db72a/251eec90-f53e-46b2-85d4-a2d65255255e/1b636c89-88c1-40c8-8966-bbb51ec72073"
 storage_version_token = "1793781855617319"
 content_type = "text/html"
+
+[[outputs]]
+id = "GKGLGSIgVeV4AbgtpH6rS"
+uri = "file://generated-artifacts/backend-audit/milestone2b-blocker-resolution-report.html"
+type = "html"
+title = "VYNOX LAYER — Milestone 2B Blocker Resolution Report"
+description = "Interim blocker inventory, 303 backend and six intake regression passes, current QA database evidence and specific remaining access actions."
+logical_id = "78c5dc1e-045c-4774-8eaa-def429f2ba10"
+content_hash = "sha256:ac3b6cda9be0ad740a6a291e8b34b7a3665f2bad7d091b0698f0066e25034d9b"
+size = 9880
+mtime_ms = 1793872173814
+storage_uri = "gcs://replit-rams-assets-reed/rams/assets/repl:372d2684-97ec-4ce5-b16a-77fb322db72a/78c5dc1e-045c-4774-8eaa-def429f2ba10/5971a15f-2435-4175-82f5-86ec53be7c5e"
+storage_version_token = "1793872174392530"
+content_type = "text/html"
